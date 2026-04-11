@@ -1,0 +1,47 @@
+[
+  {
+    "id": "quiz",
+    "ic": "📝",
+    "l": "Quiz"
+  },
+  {
+    "id": "study",
+    "ic": "📚",
+    "l": "Study"
+  },
+  {
+    "id": "lib",
+    "ic": "📖",
+    "l": "Library"
+  },
+  {
+    "id": "flash",
+    "ic": "🃏",
+    "l": "Cards"
+  },
+  {
+    "id": "articles",
+    "ic": "📄",
+    "l": "Articles"
+  },
+  {
+    "id": "calc",
+    "ic": "🧮",
+    "l": "Calc"
+  },
+  {
+    "id": "track",
+    "ic": "📊",
+    "l": "Track"
+  },
+  {
+    "id": "search",
+    "ic": "🔍",
+    "l": "Search"
+  },
+  {
+    "id": "chat",
+    "ic": "💬",
+    "l": "Chat"
+  }
+]

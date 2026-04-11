@@ -1,0 +1,17 @@
+{
+  "name": "Pnimit Mega — Internal Medicine Board Prep",
+  "short_name": "Pnimit Mega",
+  "description": "Israeli Internal Medicine Shlav A Board Prep — Harrison's 22e + P0064-2025 Syllabus",
+  "start_url": "pnimit-mega.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
