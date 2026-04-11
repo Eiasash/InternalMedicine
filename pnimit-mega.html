@@ -284,7 +284,7 @@ upd();setInterval(upd,30000);
 
 <a href="#main-content" class="skip-link">Skip to content</a>
 <div class="hdr" style="position:relative">
-<h1>Pnimit Mega <span style="font-size:9px;font-weight:400;color:#64748b;vertical-align:middle">v1.0</span></h1>
+<h1>Pnimit Mega <span style="font-size:9px;font-weight:400;color:#64748b;vertical-align:middle">v1.1</span></h1>
 <button class="dm-btn" onclick="toggleStudyMode()" title="Night/Study Mode" aria-label="Toggle night mode" style="right:44px">🕯️</button><button class="dm-btn" onclick="toggleDark()" title="Dark Mode" aria-label="Toggle dark mode">🌓</button><button class="dm-btn" onclick="showHelp()" title="Help" aria-label="Help" style="right:82px;font-size:11px">❓</button>
 <p id="hdr-sub">Loading...</p>
 </div>
@@ -1068,7 +1068,7 @@ _exCache[_apKey]='<div style="color:#64748b">⏳ AI analyzing each option...</di
 render();
 try{
 const wrongOpts=q.o.filter((_,i)=>i!==q.c);
-const txt=await callAI([{role:'user',content:`Geriatric board exam question. For EACH wrong option, explain in 1-2 sentences why it's wrong HERE and when it WOULD be correct.
+const txt=await callAI([{role:'user',content:`Internal medicine board exam question. For EACH wrong option, explain in 1-2 sentences why it's wrong HERE and when it WOULD be correct.
 
 Question: ${q.q}
 Correct: ${q.o[q.c]}
@@ -1649,7 +1649,7 @@ h+=`<div class="card"><button class="acc-h" onclick="toggleNote(${i})">
 <span class="acc-ar${openNote===i?' op':''}">▼</span></button>`;
 if(openNote===i){
 const _fmtNote=function(txt){
-const parts=txt.split(/📖\s*HAZZARD'?S?\s*8e\s*BOARD\s*PEARLS:\s*/i);
+const parts=txt.split(/📖\s*HARRISON BOARD PEARLS:\s*/i);
 const clinicalNotes=parts[0]||'';
 const boardPearls=parts[1]||'';
 function fmtLine(line){
@@ -2349,7 +2349,7 @@ return h;
 let calcVals={};
 function calcUp(k,v){calcVals[k]=parseFloat(v)||0;render();}
 function renderCalc(){
-let h=`<div class="sec-t">🧮 Clinical Calculators</div><div class="sec-s">CrCl · CHA₂DS₂-VASc · CURB-65 · GDS-15 · Braden · PADUA</div>`;
+let h=`<div class="sec-t">🧮 Clinical Calculators</div><div class="sec-s">CrCl · CHA₂DS₂-VASc · CURB-65 · Wells · PADUA · Braden · Norton</div>`;
 
 // CrCl
 const age=calcVals.age||75,wt=calcVals.wt||55,cr=calcVals.cr||1.0,fem=calcVals.fem===undefined?0.85:calcVals.fem;
@@ -2885,7 +2885,7 @@ function calcEstScore(){
   return totalWeight>0?Math.round(weightedScore/totalWeight*100):null;
 }
 
-// ===== HAZZARD'S 8e CHAPTER → PDF PAGE MAPPING =====
+// ===== HARRISON'S 22e CHAPTER MAPPING =====
 // Maps topic names to {ch: 'Chapter(s)', p: PDF page number}
 // PDF: https://drive.google.com/file/d/1sW0asEfszQJvbeAqd8Lzcf6Q20JPq77r/view
 const HAZ_PDF='https://drive.google.com/file/d/1sW0asEfszQJvbeAqd8Lzcf6Q20JPq77r/view';
@@ -2899,7 +2899,7 @@ const HAZ_CHAPTERS = {
   'Pressure Injuries': {ch:'55',p:852},
   'Depression & Late-Life Mood': {ch:'63',p:1016},
   'Frailty & Sarcopenia': {ch:'42',p:650},
-  'Geriatric Pharmacology (Beers/STOPP/START)': {ch:'22–23',p:336},
+  'Clinical Pharmacology': {ch:'22–23',p:336},
   'CGA': {ch:'14',p:226},
   'Functional Assessment (FIM)': {ch:'15',p:242},
   'Cognitive Assessment': {ch:'13',p:214},
@@ -2930,7 +2930,7 @@ const HAZ_CHAPTERS = {
   'Sleep Disorders': {ch:'57',p:888},
   'Substance Use & Alcohol': {ch:'25',p:380},
   'Anemia': {ch:'76',p:1200},
-  'Cancer & Geriatric Oncology': {ch:'77',p:1228},
+  'Cancer & Oncology': {ch:'77',p:1228},
   'Arthritis (OA, RA, Crystal)': {ch:'79–80',p:1254},
   'Hip Fracture': {ch:'78',p:1244},
   'Hearing Loss': {ch:'40',p:628},
@@ -2947,7 +2947,7 @@ const HAZ_CHAPTERS = {
   'Exercise & Physical Activity': {ch:'50',p:776},
   'Fecal Incontinence': {ch:'49',p:764},
   'Sexual Health': {ch:'53',p:828},
-  'Geriatric EM': {ch:'37',p:582},
+  'Emergency Medicine': {ch:'37',p:582},
   'Home Care': {ch:'11',p:192},
   'Technology & Aging': {ch:'12',p:206},
   'Anxiety, Late-Life Psychosis': {ch:'64',p:1032},
@@ -2956,7 +2956,7 @@ const HAZ_CHAPTERS = {
 // ===== STUDY PLAN DATA =====
 const STUDY_PLAN = [
   { tier: 1, label: 'Tier 1 — Know Cold', color: '#dc3545', desc: '~40% of exam', domains: [
-    { name: 'Geriatric Syndromes', topics: [
+    { name: 'Clinical Syndromes', topics: [
       { n: 'Delirium', ti: 5, hrs: '4-5h' },
       { n: 'Dementia — Alzheimer\'s', ti: 6, hrs: '6-8h' },
       { n: 'Dementia — Other Types (DLB, FTD, VaD, NPH)', ti: 6, hrs: '4-5h' },
@@ -2968,7 +2968,7 @@ const STUDY_PLAN = [
       { n: 'Frailty & Sarcopenia', ti: 3, hrs: '3h' },
     ]},
     { name: 'Pharmacology & Assessment', topics: [
-      { n: 'Geriatric Pharmacology (Beers/STOPP/START)', ti: 8, hrs: '5-6h' },
+      { n: 'Clinical Pharmacology', ti: 8, hrs: '5-6h' },
       { n: 'CGA', ti: 2, hrs: '3-4h' },
       { n: 'Functional Assessment (FIM)', ti: 36, hrs: '2-3h' },
       { n: 'Cognitive Assessment', ti: 6, hrs: '2h' },
@@ -3021,7 +3021,7 @@ const STUDY_PLAN = [
   { tier: 3, label: 'Tier 3 — Important', color: '#0D7377', desc: '~20% of exam', domains: [
     { name: 'Heme/Onc & MSK', topics: [
       { n: 'Anemia', ti: 25, hrs: '2-3h' },
-      { n: 'Cancer & Geriatric Oncology', ti: 26, hrs: '3h' },
+      { n: 'Cancer & Oncology', ti: 26, hrs: '3h' },
       { n: 'Arthritis (OA, RA, Crystal)', ti: 16, hrs: '3h' },
       { n: 'Hip Fracture', ti: 15, hrs: '2-3h' },
     ]},
@@ -3046,7 +3046,7 @@ const STUDY_PLAN = [
       { n: 'Exercise & Physical Activity', ti: 3, hrs: '1h' },
       { n: 'Fecal Incontinence', ti: 12, hrs: '1h' },
       { n: 'Sexual Health', ti: 0, hrs: '1h' },
-      { n: 'Geriatric EM', ti: 39, hrs: '1-2h' },
+      { n: 'Emergency Medicine', ti: 39, hrs: '1-2h' },
       { n: 'Home Care', ti: 35, hrs: '1h' },
       { n: 'Technology & Aging', ti: 35, hrs: '1h' },
       { n: 'Anxiety, Late-Life Psychosis', ti: 7, hrs: '1-2h' },
@@ -3516,7 +3516,7 @@ h+=`<button onclick="eolState={competent:null,terminal:null,directive:null,proxy
 return h;
 }
 
-// ===== GERIATRIC LAB OVERLAY & BAYESIAN SLIDER =====
+// ===== LAB OVERLAY & BAYESIAN SLIDER =====
 let frailtyLevel=3;
 function renderLabOverlay(){
 const labs=[
@@ -3531,7 +3531,7 @@ const labs=[
 {name:'Sodium',unit:'mmol/L',young:[136,145],old:[133,145],note:'Hyponatremia common; drug-induced (SSRIs, diuretics, carbamazepine) is most common cause'},
 {name:'B12',unit:'pg/mL',young:[200,900],old:[300,900],note:'Low-normal (200-300) may be functionally deficient in elderly; check methylmalonic acid'}
 ];
-let h=`<div class="sec-t">🔬 Geriatric Lab Reference</div>
+let h=`<div class="sec-t">🔬 Lab Reference</div>
 <div class="sec-s">Age-adjusted ranges + Frailty impact on test interpretation</div>`;
 // Frailty slider
 h+=`<div class="card" style="padding:14px;margin-bottom:10px">
@@ -3803,7 +3803,7 @@ else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>{const b
 }
 function shareApp(){
 const url=location.href;
-if(navigator.share){navigator.share({title:'Pnimit Mega Mega — Geriatrics Board Prep',text:'Internal Medicine Board Prep — Harrison\'s 22e + Required Articlesulators + Spaced Repetition',url:url}).catch(()=>{});}
+if(navigator.share){navigator.share({title:'Pnimit Mega — Internal Medicine Board Prep',text:'Internal Medicine Board Prep — Harrison\'s 22e + Required Articlesulators + Spaced Repetition',url:url}).catch(()=>{});}
 else if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>alert('✅ Link copied!'));}
 }
 
@@ -3968,7 +3968,7 @@ body:JSON.stringify({message:msg,diagnostics:diag,app_version:APP_VERSION,type,c
 if(type==='wrong_answer'&&qObj){
 if(st){st.textContent='🤖 AI verifying...';st.style.color='#8b5cf6';}
 try{
-const aiText=await callAI([{role:'user',content:`Geriatric board exam. A student reports wrong answer key.\nQUESTION: ${qObj.q}\nOPTIONS: ${qObj.o.map((o,i)=>(i===qObj.c?'[MARKED CORRECT] ':'')+o).join(' | ')}\nSTUDENT SAYS: ${msg}\nIs the answer key correct or wrong? 2-3 sentences. Start with VERDICT: CORRECT or VERDICT: WRONG.`}],400);
+const aiText=await callAI([{role:'user',content:`Internal medicine board exam. A student reports wrong answer key.\nQUESTION: ${qObj.q}\nOPTIONS: ${qObj.o.map((o,i)=>(i===qObj.c?'[MARKED CORRECT] ':'')+o).join(' | ')}\nSTUDENT SAYS: ${msg}\nIs the answer key correct or wrong? 2-3 sentences. Start with VERDICT: CORRECT or VERDICT: WRONG.`}],400);
 const isWrong=aiText.startsWith('VERDICT: WRONG');
 const aiBox=document.getElementById('aiVerifyResult');
 if(aiBox){
