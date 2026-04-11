@@ -1441,7 +1441,7 @@ ${!pomoActive?'<span class="tt-wrap"><button onclick="startPomodoro()" class="bt
 </div>`;
 h+=`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">`;
 const _trapCount=QZ.filter((_,i)=>isExamTrap(i)).length;
-const filts=[['all',`הכל (${QZ.length})`],['2021','21'],['2022','22'],['יוני 23','Jun23'],['2023-ב','23-ב'],['מאי 24','May24'],['ספט 24','Sep24'],['יוני 25','Jun25'],['2025-א','25-א'],['hard','🔥 Hard'],['slow','⏱️ Slow'],['weak','🎯 Weak'],['due','🔄 Due'],['traps',`🪤 Traps (${_trapCount})`],['nbs','🎯 Next Best Step']];
+const filts=[['all',`הכל (${QZ.length})`],['2020','20'],['Jun21','Jun21'],['Jun22','Jun22'],['Jun23','Jun23'],['May24','May24'],['Oct24','Oct24'],['Jun25','Jun25'],['hard','🔥 Hard'],['slow','⏱️ Slow'],['weak','🎯 Weak'],['due','🔄 Due'],['traps',`🪤 Traps (${_trapCount})`],['nbs','🎯 Next Best Step']];
 if(dueN>0)filts.push(['due',`🔄 Due (${dueN})`]);
 filts.forEach(([f,l])=>{
 if(f==='nbs')h+=`<span class="pill ${filt==='nbs'?'on':''}" onclick="startNextBestStep()">${l}</span>`;
@@ -2679,27 +2679,35 @@ function togOck(j){ocks[j]=!ocks[j];render();}
 const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 // topic index → {source:'haz'|'notes', label, action} for deep link
 const TOPIC_REF={
-0:{s:'har',ch:285,l:'Harrison Ch 285-286'},
-1:{s:'har',ch:316,l:'Harrison Ch 316'},
-2:{s:'har',ch:247,l:'Harrison Ch 247'},
-3:{s:'har',ch:133,l:'Harrison Ch 133'},
-4:{s:'har',ch:56,l:'Harrison Ch 56'},
-5:{s:'har',ch:305,l:'Harrison Ch 295-305'},
-6:{s:'har',ch:332,l:'Harrison Ch 332-355'},
+0:{s:'har',ch:285,l:'Harrison Ch 243-286'},
+1:{s:'har',ch:316,l:'Harrison Ch 252-264'},
+2:{s:'har',ch:247,l:'Harrison Ch 247-251'},
+3:{s:'har',ch:133,l:'Harrison Ch 265-277'},
+4:{s:'har',ch:56,l:'Harrison Ch 278-281'},
+5:{s:'har',ch:295,l:'Harrison Ch 282-305'},
+6:{s:'har',ch:332,l:'Harrison Ch 306-370'},
 7:{s:'har',ch:321,l:'Harrison Ch 319-322'},
-8:{s:'har',ch:56,l:'Harrison Ch 56-58'},
-9:{s:'har',ch:388,l:'Harrison Ch 388'},
+8:{s:'har',ch:56,l:'Harrison Ch 55-58'},
+9:{s:'har',ch:388,l:'Harrison Ch 371-407'},
 10:{s:'har',ch:120,l:'Harrison Ch 66-121'},
-11:{s:'har',ch:80,l:'Harrison Ch 79-80'},
-12:{s:'har',ch:315,l:'Harrison Ch 127-147'},
-13:{s:'har',ch:375,l:'Harrison Ch 375-384'},
+11:{s:'har',ch:80,l:'Harrison Ch 73-80'},
+12:{s:'har',ch:315,l:'Harrison Ch 127-192'},
+13:{s:'har',ch:375,l:'Harrison Ch 375-387'},
 14:{s:'har',ch:437,l:'Harrison Ch 433-459'},
 15:{s:'har',ch:314,l:'Harrison Ch 311-317'},
+16:{s:'har',ch:56,l:'Harrison Ch 54-72'},
+17:{s:'har',ch:56,l:'Harrison Ch 342-345'},
+18:{s:'har',ch:56,l:'Harrison Ch 55-58'},
+19:{s:'har',ch:14,l:'Harrison Ch 14-18'},
+20:{s:'har',ch:56,l:'Harrison Ch 311-317'},
+21:{s:'har',ch:56,l:'Harrison Ch 455-460'},
+22:{s:'har',ch:56,l:'Harrison Ch 13-72'},
+23:{s:'har',ch:56,l:'Harrison Ch 278-281'},
 };
 
 function renderExamTrendCard(){
-  const OLD_EX=new Set(['2021','2022','יוני 23']);
-  const NEW_EX=new Set(['ספט 24','יוני 25','2025-א']);
+  const OLD_EX=new Set(['2020','Jun21','Jun22']);
+  const NEW_EX=new Set(['May24','Oct24','Jun25']);
   const TOPICS_L=TOPICS;
   const oldTot=QZ.filter(q=>OLD_EX.has(q.t)).length||1;
   const newTot=QZ.filter(q=>NEW_EX.has(q.t)).length||1;
@@ -2714,7 +2722,7 @@ function renderExamTrendCard(){
   const shrinking=trends.filter(r=>r.delta<-0.5).sort((a,b)=>a.delta-b.delta).slice(0,4);
   
   let h=`<div class="card" style="padding:14px;margin-bottom:10px;border-left:4px solid #7c3aed">
-<div style="font-weight:700;font-size:12px;margin-bottom:4px;color:#7c3aed">📈 Exam Trend — 2021-22 vs ספט24–25-א</div>
+<div style="font-weight:700;font-size:12px;margin-bottom:4px;color:#7c3aed">📈 Exam Trend — 2020-22 vs May24–Jun25</div>
 <div style="font-size:9px;color:#94a3b8;margin-bottom:10px">Where the exam is heading. Study accordingly.</div>`;
   
   h+=`<div style="font-size:10px;font-weight:700;color:#059669;margin-bottom:5px">▲ GROWING — prioritize</div>`;
@@ -3990,13 +3998,13 @@ const sec=(title,icon,color,items)=>`<div style="margin-bottom:14px">
 <div style="font-size:10px;line-height:1.8">${items}</div></div>`;
 ov.innerHTML=`<div style="max-width:420px;margin:0 auto;background:#fff;border-radius:16px;padding:20px;color:#1e293b;font-size:11px;line-height:1.7">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-<div style="font-size:16px;font-weight:800">🩺 Pnimit Mega Mega</div>
+<div style="font-size:16px;font-weight:800">🏥 Pnimit Mega</div>
 <button onclick="this.closest('#help-overlay').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8" aria-label="Close help">✕</button>
 </div>
-<div style="font-size:10px;color:#64748b;margin-bottom:16px">Israeli Geriatrics Board Exam Prep (שלב א׳) · 1434 IMA Questions · Works Offline</div>
+<div style="font-size:10px;color:#64748b;margin-bottom:16px">Israeli Internal Medicine Board Exam Prep (שלב א׳ פנימית) · P0064-2025 · Harrison's 22e · Works Offline</div>
 ${sec('Quiz Filters','📝','#059669',
-'<b>הכל</b> — All 1434 questions, shuffled<br>'+
-'<b>2022–2025</b> — Filter by exam year<br>'+
+'<b>הכל</b> — All questions, shuffled<br>'+
+'<b>2020–Jun25</b> — Filter by exam session<br>'+
 '<b>🔥 Hard</b> — Questions you got wrong, worst-first<br>'+
 '<b>⏱️ Slow</b> — Questions that took you &gt;60s<br>'+
 '<b>🎯 Weak</b> — Your weakest topics<br>'+
@@ -4015,9 +4023,9 @@ ${sec('Study Modes','📚','#dc2626',
 '<b>🙈 Cover Options</b> — Hides choices, forces free recall<br>'+
 '<b>⏱️ Pomodoro</b> — 25min focus / 5min break timer<br>'+
 '<b>📖 Library</b> — Read Harrison chapters in-app (no PDF needed)<br>'+
-'<b>🃏 Flashcards</b> — 159 cards with spaced repetition<br>'+
-'<b>💊 Drugs</b> — Beers/ACB/STOPP lookup for 53 drugs<br>'+
-'<b>🧮 Calculators</b> — CrCl, CHA₂DS₂-VASc, GDS-15, Braden, etc.'
+'<b>🃏 Flashcards</b> — Cards with spaced repetition<br>'+
+'<b>📄 Articles</b> — 10 required NEJM/Lancet articles<br>'+
+'<b>🧮 Calculators</b> — CrCl, CHA₂DS₂-VASc, Wells, MELD, etc.'
 )}
 ${sec('Progress Tracking','📊','#f59e0b',
 '<b>⏱️ Answer Timer</b> — Silently tracks time per question<br>'+
