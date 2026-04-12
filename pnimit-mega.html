@@ -2888,168 +2888,147 @@ function calcEstScore(){
 // ===== HARRISON'S 22e CHAPTER MAPPING =====
 // Maps topic names to {ch: 'Chapter(s)', p: PDF page number}
 // PDF: https://drive.google.com/file/d/1sW0asEfszQJvbeAqd8Lzcf6Q20JPq77r/view
-const HAZ_PDF='https://drive.google.com/file/d/1sW0asEfszQJvbeAqd8Lzcf6Q20JPq77r/view';
-const HAZ_CHAPTERS = {
-  'Delirium': {ch:'58',p:914},
-  'Dementia — Alzheimer\'s': {ch:'59',p:928},
-  'Dementia — Other Types (DLB, FTD, VaD, NPH)': {ch:'60',p:954},
-  'BPSD': {ch:'61',p:970},
-  'Falls & Gait': {ch:'43–44',p:668},
-  'Urinary Incontinence': {ch:'54',p:840},
-  'Pressure Injuries': {ch:'55',p:852},
-  'Depression & Late-Life Mood': {ch:'63',p:1016},
-  'Frailty & Sarcopenia': {ch:'42',p:650},
-  'Clinical Pharmacology': {ch:'22–23',p:336},
-  'CGA': {ch:'14',p:226},
-  'Functional Assessment (FIM)': {ch:'15',p:242},
-  'Cognitive Assessment': {ch:'13',p:214},
-  'Palliative Care': {ch:'31',p:472},
-  'Ethics & Capacity': {ch:'30',p:440},
-  'Pain Management': {ch:'56',p:870},
-  'Malnutrition & Nutritional Assessment': {ch:'46',p:714},
-  'Rehabilitation & FIM': {ch:'29',p:434},
-  'Dysphagia': {ch:'47',p:734},
-  'Osteoporosis': {ch:'78',p:1244},
-  'Diabetes in Elderly': {ch:'72',p:1132},
-  'Thyroid Disease': {ch:'73',p:1150},
-  'Heart Failure': {ch:'68',p:1090},
-  'Hypertension': {ch:'67',p:1080},
-  'Atrial Fibrillation': {ch:'69',p:1106},
-  'Aortic Stenosis / Valvular': {ch:'70',p:1112},
-  'Parkinson\'s & Parkinsonism': {ch:'65',p:1042},
-  'Stroke': {ch:'66',p:1056},
-  'Seizures in Elderly': {ch:'66',p:1056},
-  'Dizziness & Vertigo': {ch:'44',p:678},
-  'Infections in Elderly': {ch:'83–84',p:1312},
-  'Perioperative Care': {ch:'27–28',p:406},
-  'VTE (DVT/PE)': {ch:'71',p:1124},
-  'AKI & CKD': {ch:'74',p:1168},
-  'Constipation': {ch:'48–49',p:754},
-  'GI Bleeding & Hepatobiliary': {ch:'75',p:1184},
-  'Electrolyte Disorders': {ch:'24',p:364},
-  'Sleep Disorders': {ch:'57',p:888},
-  'Substance Use & Alcohol': {ch:'25',p:380},
-  'Anemia': {ch:'76',p:1200},
-  'Cancer & Oncology': {ch:'77',p:1228},
-  'Arthritis (OA, RA, Crystal)': {ch:'79–80',p:1254},
-  'Hip Fracture': {ch:'78',p:1244},
-  'Hearing Loss': {ch:'40',p:628},
-  'Visual Impairment': {ch:'39',p:610},
-  'Dermatologic Conditions': {ch:'41',p:640},
-  'COPD & Respiratory': {ch:'82',p:1302},
-  'Elder Abuse': {ch:'33',p:504},
-  'Long-Term Care': {ch:'21',p:322},
-  'Driving Fitness': {ch:'35',p:538},
-  'Prevention & Immunizations': {ch:'19–20',p:298},
-  'Gerontology Intro': {ch:'1',p:38},
-  'Demography & Epidemiology': {ch:'7–8',p:144},
-  'Social Aspects': {ch:'9',p:168},
-  'Exercise & Physical Activity': {ch:'50',p:776},
-  'Fecal Incontinence': {ch:'49',p:764},
-  'Sexual Health': {ch:'53',p:828},
-  'Emergency Medicine': {ch:'37',p:582},
-  'Home Care': {ch:'11',p:192},
-  'Technology & Aging': {ch:'12',p:206},
-  'Anxiety, Late-Life Psychosis': {ch:'64',p:1032},
+const HAR_CHAPTERS = {
+  'ACS (STEMI/NSTEMI)': {ch:'285–286'},
+  'Heart Failure': {ch:'252'},
+  'Arrhythmias & ECG': {ch:'247'},
+  'Hypertension': {ch:'261'},
+  'Valvular Disease': {ch:'256'},
+  'Sepsis & Septic Shock': {ch:'315'},
+  'Pneumonia & CAP/HAP': {ch:'127'},
+  'Endocarditis': {ch:'133'},
+  'Meningitis & Encephalitis': {ch:'142–143'},
+  'Shock (All Types)': {ch:'314–316'},
+  'Cardiac Arrest & ACLS': {ch:'317'},
+  'Mechanical Ventilation': {ch:'311'},
+  'AKI & CKD': {ch:'321–322'},
+  'Electrolyte Disorders': {ch:'56'},
+  'Acid-Base Disorders': {ch:'58'},
+  'Cirrhosis & Complications': {ch:'355'},
+  'GI Bleeding': {ch:'51'},
+  'Jaundice & Liver Disease': {ch:'52, 347'},
+  'Diarrhea & Constipation': {ch:'49'},
+  'Pulmonary Embolism & VTE': {ch:'295'},
+  'COPD & Asthma': {ch:'295'},
+  'Dyspnea & Hypoxia': {ch:'39, 42'},
+  'Pleural Disease': {ch:'305'},
+  'Anemia (Iron, B12, Chronic)': {ch:'66, 102'},
+  'Bleeding & Coagulation': {ch:'69, 121'},
+  'Thrombocytopenia & Platelet Disorders': {ch:'120'},
+  'Anticoagulation': {ch:'121'},
+  'Ischemic Stroke & ICH': {ch:'438–439'},
+  'Seizures & Epilepsy': {ch:'436'},
+  'Coma & AMS': {ch:'30'},
+  'GBS & Myasthenia Gravis': {ch:'458–459'},
+  'Diabetes & DKA/HHS': {ch:'388'},
+  'Thyroid Disease': {ch:'388'},
+  'Adrenal Disorders': {ch:'388'},
+  'Vasculitis Syndromes': {ch:'375'},
+  'Sarcoidosis': {ch:'379'},
+  'Gout & Crystal Arthropathies': {ch:'384'},
+  'Rheumatoid & MSK': {ch:'382, 387'},
+  'Oncologic Emergencies': {ch:'80'},
+  'Cancer Screening': {ch:'79'},
+  'Infections in Cancer': {ch:'79'},
+  'DIGIT-HF / ECLIPSE / BALANCE': {ch:'Articles 1–3'},
+  'SELECT-GCA / STELLAR / ECST-2': {ch:'Articles 7, 9, 10'},
+  'Baxdrostat / Apixaban VTE / FIRE': {ch:'Articles 4–6, 8'},
+  'Fluids & Volume Management': {ch:'56'},
+  'Pain & Palliative': {ch:'14'},
+  'Perioperative Medicine': {ch:'—'},
+  'Toxicology & Overdose': {ch:'—'},
+  'Dermatology': {ch:'—'},
+  'Allergy & Anaphylaxis': {ch:'—'},
+  'Clinical Approach & DDx': {ch:'15–22'},
+  'Vascular Disease': {ch:'—'},
 };
 
 // ===== STUDY PLAN DATA =====
 const STUDY_PLAN = [
   { tier: 1, label: 'Tier 1 — Know Cold', color: '#dc3545', desc: '~40% of exam', domains: [
-    { name: 'Clinical Syndromes', topics: [
-      { n: 'Delirium', ti: 5, hrs: '4-5h' },
-      { n: 'Dementia — Alzheimer\'s', ti: 6, hrs: '6-8h' },
-      { n: 'Dementia — Other Types (DLB, FTD, VaD, NPH)', ti: 6, hrs: '4-5h' },
-      { n: 'BPSD', ti: 6, hrs: '3h' },
-      { n: 'Falls & Gait', ti: 4, hrs: '4-5h' },
-      { n: 'Urinary Incontinence', ti: 11, hrs: '3-4h' },
-      { n: 'Pressure Injuries', ti: 10, hrs: '2-3h' },
-      { n: 'Depression & Late-Life Mood', ti: 7, hrs: '3-4h' },
-      { n: 'Frailty & Sarcopenia', ti: 3, hrs: '3h' },
+    { name: 'Cardiology', topics: [
+      { n: 'ACS (STEMI/NSTEMI)', ti: 0, hrs: '5-6h' },
+      { n: 'Heart Failure', ti: 1, hrs: '4-5h' },
+      { n: 'Arrhythmias & ECG', ti: 2, hrs: '4-5h' },
+      { n: 'Hypertension', ti: 4, hrs: '3-4h' },
+      { n: 'Valvular Disease', ti: 3, hrs: '3h' },
     ]},
-    { name: 'Pharmacology & Assessment', topics: [
-      { n: 'Clinical Pharmacology', ti: 8, hrs: '5-6h' },
-      { n: 'CGA', ti: 2, hrs: '3-4h' },
-      { n: 'Functional Assessment (FIM)', ti: 36, hrs: '2-3h' },
-      { n: 'Cognitive Assessment', ti: 6, hrs: '2h' },
+    { name: 'Infectious Disease', topics: [
+      { n: 'Sepsis & Septic Shock', ti: 12, hrs: '4-5h' },
+      { n: 'Pneumonia & CAP/HAP', ti: 12, hrs: '3-4h' },
+      { n: 'Endocarditis', ti: 12, hrs: '3h' },
+      { n: 'Meningitis & Encephalitis', ti: 12, hrs: '3h' },
     ]},
-    { name: 'Palliative & Ethics', topics: [
-      { n: 'Palliative Care', ti: 28, hrs: '4-5h' },
-      { n: 'Ethics & Capacity', ti: 29, hrs: '3-4h' },
-      { n: 'Pain Management', ti: 14, hrs: '3h' },
+    { name: 'Critical Care', topics: [
+      { n: 'Shock (All Types)', ti: 15, hrs: '4-5h' },
+      { n: 'Cardiac Arrest & ACLS', ti: 15, hrs: '3h' },
+      { n: 'Mechanical Ventilation', ti: 15, hrs: '2-3h' },
     ]},
-    { name: 'Nutrition & Rehab', topics: [
-      { n: 'Malnutrition & Nutritional Assessment', ti: 9, hrs: '3h' },
-      { n: 'Rehabilitation & FIM', ti: 36, hrs: '3-4h' },
-      { n: 'Dysphagia', ti: 9, hrs: '2h' },
+    { name: 'Nephrology', topics: [
+      { n: 'AKI & CKD', ti: 7, hrs: '4-5h' },
+      { n: 'Electrolyte Disorders', ti: 8, hrs: '4-5h' },
+      { n: 'Acid-Base Disorders', ti: 8, hrs: '3-4h' },
     ]},
   ]},
   { tier: 2, label: 'Tier 2 — High Yield', color: '#fd7e14', desc: '~30% of exam', domains: [
-    { name: 'Endocrine & Metabolic', topics: [
-      { n: 'Osteoporosis', ti: 15, hrs: '4-5h' },
-      { n: 'Diabetes in Elderly', ti: 22, hrs: '3-4h' },
-      { n: 'Thyroid Disease', ti: 23, hrs: '2-3h' },
+    { name: 'GI & Hepatology', topics: [
+      { n: 'Cirrhosis & Complications', ti: 6, hrs: '4h' },
+      { n: 'GI Bleeding', ti: 6, hrs: '3h' },
+      { n: 'Jaundice & Liver Disease', ti: 6, hrs: '2-3h' },
+      { n: 'Diarrhea & Constipation', ti: 6, hrs: '2h' },
     ]},
-    { name: 'Cardiovascular', topics: [
-      { n: 'Heart Failure', ti: 18, hrs: '3-4h' },
-      { n: 'Hypertension', ti: 19, hrs: '2-3h' },
-      { n: 'Atrial Fibrillation', ti: 17, hrs: '2-3h' },
-      { n: 'Aortic Stenosis / Valvular', ti: 17, hrs: '2h' },
+    { name: 'Pulmonology', topics: [
+      { n: 'Pulmonary Embolism & VTE', ti: 5, hrs: '3-4h' },
+      { n: 'COPD & Asthma', ti: 5, hrs: '3h' },
+      { n: 'Dyspnea & Hypoxia', ti: 5, hrs: '2-3h' },
+      { n: 'Pleural Disease', ti: 5, hrs: '2h' },
     ]},
-    { name: 'Neurologic', topics: [
-      { n: 'Parkinson\'s & Parkinsonism', ti: 20, hrs: '4h' },
-      { n: 'Stroke', ti: 20, hrs: '3h' },
-      { n: 'Seizures in Elderly', ti: 20, hrs: '2h' },
-      { n: 'Dizziness & Vertigo', ti: 4, hrs: '2-3h' },
+    { name: 'Hematology', topics: [
+      { n: 'Anemia (Iron, B12, Chronic)', ti: 10, hrs: '3-4h' },
+      { n: 'Bleeding & Coagulation', ti: 10, hrs: '3-4h' },
+      { n: 'Thrombocytopenia & Platelet Disorders', ti: 10, hrs: '2-3h' },
+      { n: 'Anticoagulation', ti: 10, hrs: '2-3h' },
     ]},
-    { name: 'ID & Perioperative', topics: [
-      { n: 'Infections in Elderly', ti: 27, hrs: '4h' },
-      { n: 'Perioperative Care', ti: 38, hrs: '3h' },
-      { n: 'VTE (DVT/PE)', ti: 17, hrs: '2h' },
-    ]},
-    { name: 'Renal & GI', topics: [
-      { n: 'AKI & CKD', ti: 24, hrs: '3h' },
-      { n: 'Constipation', ti: 12, hrs: '2h' },
-      { n: 'GI Bleeding & Hepatobiliary', ti: 12, hrs: '2h' },
-      { n: 'Electrolyte Disorders', ti: 24, hrs: '2-3h' },
-    ]},
-    { name: 'Sleep & Substance', topics: [
-      { n: 'Sleep Disorders', ti: 13, hrs: '2-3h' },
-      { n: 'Substance Use & Alcohol', ti: 8, hrs: '1-2h' },
+    { name: 'Neurology', topics: [
+      { n: 'Ischemic Stroke & ICH', ti: 14, hrs: '4h' },
+      { n: 'Seizures & Epilepsy', ti: 14, hrs: '2-3h' },
+      { n: 'Coma & AMS', ti: 14, hrs: '2-3h' },
+      { n: 'GBS & Myasthenia Gravis', ti: 14, hrs: '2h' },
     ]},
   ]},
   { tier: 3, label: 'Tier 3 — Important', color: '#0D7377', desc: '~20% of exam', domains: [
-    { name: 'Heme/Onc & MSK', topics: [
-      { n: 'Anemia', ti: 25, hrs: '2-3h' },
-      { n: 'Cancer & Oncology', ti: 26, hrs: '3h' },
-      { n: 'Arthritis (OA, RA, Crystal)', ti: 16, hrs: '3h' },
-      { n: 'Hip Fracture', ti: 15, hrs: '2-3h' },
+    { name: 'Endocrinology', topics: [
+      { n: 'Diabetes & DKA/HHS', ti: 9, hrs: '4h' },
+      { n: 'Thyroid Disease', ti: 9, hrs: '2-3h' },
+      { n: 'Adrenal Disorders', ti: 9, hrs: '2h' },
     ]},
-    { name: 'Sensory & Skin', topics: [
-      { n: 'Hearing Loss', ti: 37, hrs: '2h' },
-      { n: 'Visual Impairment', ti: 37, hrs: '2h' },
-      { n: 'Dermatologic Conditions', ti: 37, hrs: '2h' },
+    { name: 'Rheumatology', topics: [
+      { n: 'Vasculitis Syndromes', ti: 13, hrs: '3h' },
+      { n: 'Sarcoidosis', ti: 13, hrs: '2-3h' },
+      { n: 'Gout & Crystal Arthropathies', ti: 13, hrs: '2h' },
+      { n: 'Rheumatoid & MSK', ti: 13, hrs: '2h' },
     ]},
-    { name: 'Pulm & Special', topics: [
-      { n: 'COPD & Respiratory', ti: 21, hrs: '2-3h' },
-      { n: 'Elder Abuse', ti: 30, hrs: '1-2h' },
-      { n: 'Long-Term Care', ti: 35, hrs: '2h' },
-      { n: 'Driving Fitness', ti: 31, hrs: '1-2h' },
-      { n: 'Prevention & Immunizations', ti: 0, hrs: '2h' },
+    { name: 'Oncology', topics: [
+      { n: 'Oncologic Emergencies', ti: 11, hrs: '2-3h' },
+      { n: 'Cancer Screening', ti: 11, hrs: '2h' },
+      { n: 'Infections in Cancer', ti: 11, hrs: '2h' },
+    ]},
+    { name: 'Landmark Trials', topics: [
+      { n: 'DIGIT-HF / ECLIPSE / BALANCE', ti: 22, hrs: '3h' },
+      { n: 'SELECT-GCA / STELLAR / ECST-2', ti: 22, hrs: '3h' },
+      { n: 'Baxdrostat / Apixaban VTE / FIRE', ti: 22, hrs: '2h' },
     ]},
   ]},
   { tier: 4, label: 'Tier 4 — Lower Yield', color: '#6c757d', desc: '~10% of exam', domains: [
-    { name: 'Foundations & Less Common', topics: [
-      { n: 'Gerontology Intro', ti: 0, hrs: '1h' },
-      { n: 'Demography & Epidemiology', ti: 1, hrs: '1-2h' },
-      { n: 'Social Aspects', ti: 35, hrs: '1h' },
-      { n: 'Exercise & Physical Activity', ti: 3, hrs: '1h' },
-      { n: 'Fecal Incontinence', ti: 12, hrs: '1h' },
-      { n: 'Sexual Health', ti: 0, hrs: '1h' },
-      { n: 'Emergency Medicine', ti: 39, hrs: '1-2h' },
-      { n: 'Home Care', ti: 35, hrs: '1h' },
-      { n: 'Technology & Aging', ti: 35, hrs: '1h' },
-      { n: 'Anxiety, Late-Life Psychosis', ti: 7, hrs: '1-2h' },
+    { name: 'Special Topics', topics: [
+      { n: 'Fluids & Volume Management', ti: 18, hrs: '2h' },
+      { n: 'Pain & Palliative', ti: 19, hrs: '2h' },
+      { n: 'Perioperative Medicine', ti: 20, hrs: '2h' },
+      { n: 'Toxicology & Overdose', ti: 21, hrs: '2h' },
+      { n: 'Dermatology', ti: 16, hrs: '1-2h' },
+      { n: 'Allergy & Anaphylaxis', ti: 17, hrs: '1-2h' },
+      { n: 'Clinical Approach & DDx', ti: 22, hrs: '2h' },
+      { n: 'Vascular Disease', ti: 23, hrs: '1-2h' },
     ]},
   ]},
 ];
@@ -3076,7 +3055,7 @@ function renderStudyPlan(){
     <div style="display:flex;align-items:center;gap:8px;flex:1">
       <div style="font-size:16px">📅</div>
       <div style="flex:1">
-        <div style="font-weight:700;font-size:13px;margin-bottom:2px">Study Plan — Harrison's 22e</div>
+        <div style="font-weight:700;font-size:13px;margin-bottom:2px">Study Plan — Internal Medicine</div>
         <div style="font-size:9px;color:#64748b">${checkedTopics}/${totalTopics} topics (${spPct}%)</div>
       </div>
     </div>
@@ -3143,7 +3122,7 @@ function renderStudyPlan(){
             <span style="color:#94a3b8;font-size:9px;white-space:nowrap">${topic.hrs}</span>
             </div>
             <div style="display:flex;gap:4px;padding:0 8px 6px 36px;flex-wrap:wrap">
-            ${HAZ_CHAPTERS[topic.n]?`<button onclick="event.stopPropagation();window.open(HAZ_PDF+'#page='+HAZ_CHAPTERS['${topic.n.replace(/'/g,"\\'")}'].p,'_blank')" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#b45309;cursor:pointer;white-space:nowrap" aria-label="Read Harrison's chapter for ${topic.n.replace(/'/g,'')}">📕 Ch ${HAZ_CHAPTERS[topic.n].ch}</button>`:''}
+            ${HAR_CHAPTERS[topic.n]?`<button onclick="event.stopPropagation();libSec=\"harrison\";tab=\"lib\";render()" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#b45309;cursor:pointer;white-space:nowrap">📕 Ch ${HAR_CHAPTERS[topic.n].ch}</button>`:""}
             <button onclick="event.stopPropagation();openNote=${topic.ti};go('study')" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#0D7377;cursor:pointer;white-space:nowrap" aria-label="Open notes for ${topic.n.replace(/'/g,'')}">📖 Notes</button>
             <button onclick="event.stopPropagation();setTopicFilt(${topic.ti});go('quiz')" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#3b82f6;cursor:pointer;white-space:nowrap" aria-label="Quiz ${topic.n.replace(/'/g,'')}">📝 Quiz</button>
             <button onclick="event.stopPropagation();S.chat=[];go('chat');setTimeout(function(){sendChatStarter('Give me a concise board-review summary of ${topic.n.replace(/'/g,"\\'")} in internal medicine. Cover: key definitions, diagnostic criteria, management pearls, exam traps, and must-know numbers. Format with bold headings.')},100)" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#7c3aed;cursor:pointer;white-space:nowrap" aria-label="AI summary of ${topic.n.replace(/'/g,'')}">🤖 Summarize</button>
@@ -3355,7 +3334,7 @@ var _storedKey=getApiKey();
 h+='<div class="card" style="padding:14px;margin-top:10px;border:2px solid '+(_storedKey?'#bbf7d0':'#fde68a')+'">';
 h+='<div class="sec-t" style="font-size:13px">🔑 Anthropic API Key</div>';
 h+='<div class="sec-s" style="margin-bottom:10px">לשימוש ב-AI Explain ו-Teach-Back · מאוחסן בדפדפן בלבד</div>';
-if(!_storedKey){h+='<div style="padding:8px 10px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:10px;color:#92400e;margin-bottom:10px">💡 הוסף API key כדי לקבל הסברים AI על שאלות. <a href="https://console.anthropic.com/keys" target="_blank" style="color:#d97706;font-weight:700">קבל מפתח ↗</a></div>';}
+if(!_storedKey){h+='<div style="padding:8px 10px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;font-size:10px;color:#065f46;margin-bottom:10px">✅ AI פועל דרך שרת proxy — לא צריך מפתח אישי. אפשר להוסיף כגיבוי. <a href="https://console.anthropic.com/keys" target="_blank" style="color:#d97706;font-weight:700">קבל מפתח ↗</a></div>';}
 if(_storedKey){
   h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
   h+='<div style="flex:1;font-size:11px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;padding:6px 10px;color:#065f46">✅ API key מוגדר (sk-...'+_storedKey.slice(-6)+')</div>';
@@ -3748,6 +3727,7 @@ case'quiz':el.innerHTML=onCallMode?renderOnCall():renderQuiz();break;
 case'study':el.innerHTML=renderStudy();break;
 case'lib':el.innerHTML=renderLibrary();break;
 case'flash':el.innerHTML=renderFlash();break;
+case'articles':libSec='articles';tab='lib';el.innerHTML=renderLibrary();break;
 case'drugs':el.innerHTML=renderDrugs();break;
 case'calc':el.innerHTML=renderCalc();break;
 // OSCE removed v9.9
