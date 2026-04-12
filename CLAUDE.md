@@ -46,6 +46,7 @@ Data is loaded at runtime from `data/*.json` files. The service worker (`sw.js`)
 │   ├── questions.json       # 863 MCQs (primary runtime source)
 │   ├── notes.json           # 8 study topic notes
 │   ├── flashcards.json      # 33 flashcards
+│   ├── drugs.json            # 53 drugs with ACB scores, Beers flags, STOPP interactions
 │   ├── tabs.json            # 9 tab definitions for app navigation
 │   └── topics.json          # 24 topic keyword mappings for auto-tagging
 │
@@ -147,7 +148,7 @@ No build step needed. Edit and refresh.
 
 ### Service Worker Versioning
 - `APP_VERSION` in `pnimit-mega.html` must match the cache version in `sw.js`
-- Currently: app=`9.14`, sw.js cache key=`pnimit-v1.3` (**WARNING: version mismatch**)
+- Currently: app=`9.14`, sw.js cache key=`pnimit-v9.14` (synced)
 - Update both when making changes to ensure users get cache-busted
 
 ---
@@ -308,7 +309,7 @@ GitHub Pages updates within ~60 seconds.
 
 ## Known Issues
 
-- **APP_VERSION / SW cache mismatch**: App is v9.14 but SW cache key is `pnimit-v1.3` — these should be synced
+- ~~APP_VERSION / SW cache mismatch~~ — FIXED: Both synced at v9.14
 - **No tests**: Highest-priority gap — see Testing section for recommended setup
 - **No CI pipeline**: No GitHub Actions workflow — see Testing section
 - **No package.json**: Needed for test runner (vitest)
