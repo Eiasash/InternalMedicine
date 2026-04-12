@@ -25,6 +25,11 @@
     "l": "Articles"
   },
   {
+    "id": "drugs",
+    "ic": "💊",
+    "l": "Drugs"
+  },
+  {
     "id": "calc",
     "ic": "🧮",
     "l": "Calc"

@@ -157,23 +157,39 @@ jobs:
           print(f'OK: Versions match (v{m_app.group(1)})')
           PYEOF
 
-      # ── Topic Coverage ──
-      - name: Check topic distribution
+      # ── Topic Coverage (min 5 per topic) ──
+      - name: Check topic coverage (min 5 questions per topic)
         run: |
           python3 -c "
-          import json
+          import json, sys
           qs = json.load(open('data/questions.json'))
+          TOPICS = [
+              'Cardiology','Heart Failure','Arrhythmias','Valvular Disease',
+              'Hypertension','Pulmonology','Gastroenterology','Nephrology',
+              'Electrolytes/Acid-Base','Endocrinology','Hematology','Oncology',
+              'Infectious Disease','Rheumatology','Neurology','Critical Care/ICU',
+              'Dermatology','Allergy/Immunology','Fluids/Volume','Pain/Palliative',
+              'Perioperative','Toxicology','Clinical Approach','Vascular'
+          ]
           counts = {}
           for q in qs:
               ti = q.get('ti', -1)
               counts[ti] = counts.get(ti, 0) + 1
-          thin = [(ti,c) for ti,c in counts.items() if c < 3 and ti >= 0]
+          thin = []
+          for ti in range(24):
+              c = counts.get(ti, 0)
+              name = TOPICS[ti] if ti < len(TOPICS) else f'Topic {ti}'
+              if c < 5:
+                  thin.append(f'  ti={ti} ({name}): {c} questions')
+          if thin:
+              print(f'ERROR: {len(thin)} topics have fewer than 5 questions:', file=sys.stderr)
+              for t in thin:
+                  print(t, file=sys.stderr)
+              sys.exit(1)
           total = len(qs)
-          with_e = sum(1 for q in qs if q.get('e'))
-          print(f'Distribution: {total} questions, {with_e} with explanations')
-          print(f'Topics with <3 questions: {len(thin)}')
-          for ti,c in sorted(thin):
-              print(f'  ti={ti}: {c} questions')
+          with_expl = sum(1 for q in qs if q.get('e'))
+          print(f'OK: All topics have at least 5 questions')
+          print(f'Coverage: {total} questions, {with_expl} with explanations ({100*with_expl//total}%)')
           "
 
       # ── HTML Parse ──
@@ -181,10 +197,56 @@ jobs:
         run: |
           python3 -c "
           from html.parser import HTMLParser
-          c = HTMLParser()
-          c.feed(open('pnimit-mega.html').read())
-          print('OK: HTML parses')
+          import sys
+          class Checker(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+              def handle_starttag(self, tag, attrs): pass
+              def handle_endtag(self, tag): pass
+          c = Checker()
+          try:
+              c.feed(open('pnimit-mega.html').read())
+              print('OK: HTML parses without errors')
+          except Exception as e:
+              print(f'ERROR: HTML parse error: {e}', file=sys.stderr)
+              sys.exit(1)
           "
+
+      # ── JS Brace Balance ──
+      - name: Check JS brace balance
+        run: |
+          python3 -c "
+          import sys
+          c = open('pnimit-mega.html').read()
+          opens = c.count('{')
+          closes = c.count('}')
+          diff = opens - closes
+          if diff != 0:
+              print(f'ERROR: Brace imbalance — {{ ={opens}, }} ={closes}, diff={diff}', file=sys.stderr)
+              sys.exit(1)
+          print(f'OK: Brace balance ({opens} pairs)')
+          "
+
+      # ── innerHTML Sanitization Audit ──
+      - name: Audit innerHTML for unsanitized interpolation
+        run: |
+          python3 << 'PYEOF'
+          import re, sys
+          html = open('pnimit-mega.html').read()
+          lines = html.split('\n')
+          warnings = []
+          for i, line in enumerate(lines, 1):
+              if '.innerHTML=' in line or '.innerHTML =' in line:
+                  after_eq = line.split('innerHTML')[1]
+                  if ('+' in after_eq or '${' in after_eq) and 'sanitize(' not in after_eq:
+                      warnings.append(f'  Line {i}: {line.strip()[:100]}')
+          if warnings:
+              print(f'WARNING: {len(warnings)} innerHTML assignments with unsanitized interpolation:')
+              for w in warnings:
+                  print(w)
+          else:
+              print('OK: No unsanitized innerHTML interpolation detected')
+          PYEOF
 
       # ── No Hazzard/GRS References ──
       - name: Check no geriatrics-only content in study plan
@@ -210,3 +272,9 @@ jobs:
               sys.exit(1)
           print('OK: Study plan is clean of geriatrics-only content')
           PYEOF
+
+      # ── Vitest Test Suite ──
+      - name: Install test dependencies
+        run: npm ci
+      - name: Run Vitest tests
+        run: npx vitest run
