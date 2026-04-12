@@ -270,5 +270,73 @@
   {
     "f": "Osmolar gap causes",
     "b": "Normal <10. Elevated in: methanol, ethylene glycol, isopropyl alcohol, mannitol, propylene glycol. Key: methanol and ethylene glycol have BOTH elevated osmolar gap AND anion gap (once metabolized). Treatment: fomepizole + dialysis."
+  },
+  {
+    "f": "Hyponatremia correction rate limit",
+    "b": "Max 8-10 mEq/L per 24h. Overcorrection → osmotic demyelination syndrome (central pontine myelinolysis). If overcorrected: D5W + desmopressin to relower sodium."
+  },
+  {
+    "f": "SIADH — diagnostic criteria",
+    "b": "Euvolemic hyponatremia + serum osm <275 + urine osm >100 + urine Na >40 + normal thyroid/adrenal function. Causes: CNS disease, pulmonary disease, drugs (SSRIs, carbamazepine, cyclophosphamide), malignancy (SCLC)."
+  },
+  {
+    "f": "CKD stages by GFR",
+    "b": "G1: ≥90 (normal, but evidence of kidney damage). G2: 60-89. G3a: 45-59. G3b: 30-44. G4: 15-29. G5: <15 (kidney failure). Refer to nephrology at G4, start dialysis planning at G5."
+  },
+  {
+    "f": "ASCVD risk — when to start statin",
+    "b": "LDL ≥190: high-intensity statin regardless. DM age 40-75: moderate-intensity (high-intensity if 10y risk ≥7.5%). 10y ASCVD risk ≥7.5%: moderate-to-high intensity. Risk enhancers: family hx, CRP ≥2, CAC >0, South Asian ancestry."
+  },
+  {
+    "f": "Infective endocarditis — empiric antibiotics",
+    "b": "Native valve: vancomycin + ceftriaxone (or gentamicin). Prosthetic valve: vancomycin + gentamicin + rifampin. Duration: native 4-6 weeks, prosthetic 6+ weeks. Surgery indications: HF, uncontrolled infection, large vegetation (>10mm), embolic events."
+  },
+  {
+    "f": "Acute pancreatitis — etiology mnemonic (I GET SMASHED)",
+    "b": "I: Idiopathic. G: Gallstones (most common). E: Ethanol (2nd most common). T: Trauma. S: Steroids. M: Mumps/Malignancy. A: Autoimmune. S: Scorpion sting. H: Hyperlipidemia/Hypercalcemia/Hypothermia. E: ERCP. D: Drugs (azathioprine, valproic acid, didanosine)."
+  },
+  {
+    "f": "SLE diagnostic criteria — key features",
+    "b": "Malar rash (butterfly), discoid rash, photosensitivity, oral ulcers, arthritis (non-erosive), serositis (pleuritis/pericarditis), renal (proteinuria/casts), neurologic (seizures/psychosis), hematologic (hemolytic anemia, leukopenia, thrombocytopenia), ANA+, anti-dsDNA/anti-Smith."
+  },
+  {
+    "f": "Sarcoidosis — diagnosis and treatment",
+    "b": "Non-caseating granulomas. Bilateral hilar lymphadenopathy on CXR. Elevated ACE (neither sensitive nor specific). Hypercalcemia (1-alpha-hydroxylase in granulomas). Treatment: observation if asymptomatic; prednisone for symptomatic pulmonary/extrapulmonary. FIRE trial (P0064 article): prednisone vs MTX."
+  },
+  {
+    "f": "Iron deficiency anemia — lab findings",
+    "b": "Low ferritin (<30 diagnostic), low serum iron, high TIBC, low transferrin saturation (<20%), microcytic hypochromic RBCs, elevated RDW, low reticulocyte count. Ferritin 30-100 with inflammation: check TSAT."
+  },
+  {
+    "f": "PE risk stratification after diagnosis",
+    "b": "Massive (hemodynamically unstable): systemic thrombolysis. Submassive (stable + RV dysfunction or troponin+): close monitoring ± thrombolysis. Low-risk (stable, no RV dysfunction): anticoagulation alone, consider outpatient treatment (Hestia criteria, sPESI 0)."
+  },
+  {
+    "f": "Acute coronary syndrome — antiplatelet strategy",
+    "b": "All ACS: aspirin 325mg loading → 81mg daily. DAPT: aspirin + P2Y12 inhibitor. STEMI PCI: ticagrelor or prasugrel preferred over clopidogrel. NSTEMI: ticagrelor or clopidogrel. Duration: minimum 12 months post-PCI (may shorten to 3-6 months with high bleeding risk)."
+  },
+  {
+    "f": "Liver function test patterns",
+    "b": "Hepatocellular: ALT/AST >> ALP. Cholestatic: ALP/GGT >> ALT/AST. Mixed: both elevated. AST:ALT >2 → alcoholic hepatitis. Very high ALT (>1000): viral, drug/toxin (acetaminophen), ischemic, autoimmune, Wilson's, Budd-Chiari."
+  },
+  {
+    "f": "Calcium correction formula for hypoalbuminemia",
+    "b": "Corrected Ca = measured Ca + 0.8 × (4.0 - albumin). Or check ionized calcium directly (more accurate). Hypercalcemia (>10.5): dehydration, hyperparathyroidism, malignancy, granulomatous disease, thiazides, immobilization."
+  },
+  {
+    "f": "COPD GOLD classification and treatment steps",
+    "b": "GOLD 1: FEV1 ≥80%. GOLD 2: 50-79%. GOLD 3: 30-49%. GOLD 4: <30%. Group A (few symptoms, low exacerbations): SABA PRN. Group B (more symptoms): LABA or LAMA. Group E (≥2 exacerbations/yr or ≥1 hospitalization): LABA+LAMA ± ICS if eos ≥300."
+  },
+  {
+    "f": "DVT treatment and duration",
+    "b": "Provoked (surgery, immobility): 3 months. Unprovoked first event: 3-6 months then reassess (D-dimer, risk-benefit). Recurrent unprovoked: indefinite. Cancer-associated: LMWH or DOAC (edoxaban, rivaroxaban) for duration of active cancer. Apixaban extended VTE article in syllabus."
+  },
+  {
+    "f": "Transfusion thresholds",
+    "b": "Restrictive (Hb <7): most hospitalized patients, GI bleed (stable), sepsis. Liberal (Hb <8): ACS, symptomatic anemia. Platelets: <10k prophylactic, <50k for procedures, <100k for neurosurgery/eye surgery. FFP: active bleeding with INR >1.5. Cryo: fibrinogen <100-150."
+  },
+  {
+    "f": "Sotatercept mechanism and indication",
+    "b": "Activin signaling inhibitor (ligand trap for activin A). Approved for PAH. STELLAR trial (P0064 article): improved 6-minute walk distance + reduced NT-proBNP + improved WHO FC in PAH patients on background therapy. First-in-class mechanism."
   }
 ]

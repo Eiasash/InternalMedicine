@@ -1,0 +1,212 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # ── JSON Parse Validity ──
+      - name: Validate JSON files parse correctly
+        run: |
+          for f in data/questions.json data/notes.json data/drugs.json data/flashcards.json data/topics.json data/tabs.json; do
+            echo "Checking $f..."
+            python3 -c "import json,sys; json.load(open('$f')); print('  OK')"
+          done
+
+      # ── Question Count ──
+      - name: Check question count (must be > 800)
+        run: |
+          COUNT=$(python3 -c "import json; print(len(json.load(open('data/questions.json'))))")
+          echo "Question count: $COUNT"
+          if [ "$COUNT" -le 800 ]; then
+            echo "ERROR: Expected > 800 questions, got $COUNT"
+            exit 1
+          fi
+          echo "OK: $COUNT questions"
+
+      # ── Question Schema ──
+      - name: Validate question schema integrity
+        run: |
+          python3 -c "
+          import json, sys
+          qs = json.load(open('data/questions.json'))
+          errors = []
+          for i, q in enumerate(qs):
+              if not q.get('q'):
+                  errors.append(f'Q{i}: missing question text')
+              if len(q.get('q', '')) < 10:
+                  errors.append(f'Q{i}: question text suspiciously short')
+              if not isinstance(q.get('o'), list) or len(q.get('o', [])) < 2:
+                  errors.append(f'Q{i}: missing or invalid options')
+              if not isinstance(q.get('c'), int) or q['c'] < 0 or q['c'] >= len(q.get('o', [])):
+                  errors.append(f'Q{i}: invalid correct answer index c={q.get(\"c\")}')
+              if q.get('ti') is None:
+                  errors.append(f'Q{i}: missing topic index ti')
+              elif not isinstance(q.get('ti'), int) or q['ti'] < 0 or q['ti'] > 23:
+                  errors.append(f'Q{i}: topic index ti={q.get(\"ti\")} out of range 0-23')
+              if not q.get('t'):
+                  errors.append(f'Q{i}: missing year field t')
+          if errors:
+              for e in errors:
+                  print(f'ERROR: {e}', file=sys.stderr)
+              sys.exit(1)
+          print(f'OK: All {len(qs)} questions have valid schema')
+          "
+
+      # ── Conflicting Duplicates ──
+      - name: Check for conflicting duplicate questions
+        run: |
+          python3 -c "
+          import json, sys
+          qs = json.load(open('data/questions.json'))
+          seen = {}
+          conflicts = []
+          for i, q in enumerate(qs):
+              key = q['q'].strip()[:80]
+              if key in seen:
+                  j = seen[key]
+                  if qs[i]['o'] == qs[j]['o'] and qs[i]['c'] != qs[j]['c']:
+                      conflicts.append((j, i, key[:60]))
+              else:
+                  seen[key] = i
+          if conflicts:
+              print(f'CRITICAL: {len(conflicts)} duplicate pairs have DIFFERENT correct answers:', file=sys.stderr)
+              for j, i, k in conflicts:
+                  print(f'  Q{j} (c={qs[j][\"c\"]}) vs Q{i} (c={qs[i][\"c\"]}): {k}...', file=sys.stderr)
+              sys.exit(1)
+          print('OK: No conflicting duplicates')
+          "
+
+      # ── Notes Schema ──
+      - name: Validate notes schema
+        run: |
+          python3 -c "
+          import json, sys
+          notes = json.load(open('data/notes.json'))
+          errors = []
+          for i, n in enumerate(notes):
+              if not n.get('topic'):
+                  errors.append(f'Note {i}: missing topic')
+              if not n.get('notes'):
+                  errors.append(f'Note {i}: missing notes content')
+          if errors:
+              for e in errors:
+                  print(f'ERROR: {e}', file=sys.stderr)
+              sys.exit(1)
+          print(f'OK: All {len(notes)} notes valid')
+          "
+
+      # ── Drugs Schema ──
+      - name: Validate drugs schema
+        run: |
+          python3 -c "
+          import json, sys
+          drugs = json.load(open('data/drugs.json'))
+          errors = []
+          required = ['name', 'heb', 'acb', 'beers', 'cat', 'risk']
+          for i, d in enumerate(drugs):
+              for k in required:
+                  if k not in d:
+                      errors.append(f'Drug {i} ({d.get(\"name\",\"?\")}): missing \"{k}\"')
+          if errors:
+              for e in errors:
+                  print(f'ERROR: {e}', file=sys.stderr)
+              sys.exit(1)
+          print(f'OK: All {len(drugs)} drugs valid')
+          "
+
+      # ── Flashcards Schema ──
+      - name: Validate flashcards schema
+        run: |
+          python3 -c "
+          import json, sys
+          fc = json.load(open('data/flashcards.json'))
+          errors = []
+          for i, c in enumerate(fc):
+              if not c.get('f'): errors.append(f'Flashcard {i}: missing front')
+              if not c.get('b'): errors.append(f'Flashcard {i}: missing back')
+          if errors:
+              for e in errors: print(f'ERROR: {e}', file=sys.stderr)
+              sys.exit(1)
+          print(f'OK: All {len(fc)} flashcards valid')
+          "
+
+      # ── Service Worker Version Sync ──
+      - name: Check SW cache version matches APP_VERSION
+        run: |
+          python3 << 'PYEOF'
+          import re, sys
+          html = open('pnimit-mega.html').read()
+          sw = open('sw.js').read()
+          m_app = re.search(r"APP_VERSION\s*=\s*['\"]([^'\"]+)['\"]", html)
+          m_sw = re.search(r"CACHE\s*=\s*['\"]pnimit-v([^'\"]+)['\"]", sw)
+          if not m_app:
+              print('ERROR: APP_VERSION not found', file=sys.stderr); sys.exit(1)
+          if not m_sw:
+              print('ERROR: CACHE version not found in sw.js', file=sys.stderr); sys.exit(1)
+          if m_app.group(1) != m_sw.group(1):
+              print(f'ERROR: Version mismatch — app={m_app.group(1)}, sw={m_sw.group(1)}', file=sys.stderr)
+              sys.exit(1)
+          print(f'OK: Versions match (v{m_app.group(1)})')
+          PYEOF
+
+      # ── Topic Coverage ──
+      - name: Check topic distribution
+        run: |
+          python3 -c "
+          import json
+          qs = json.load(open('data/questions.json'))
+          counts = {}
+          for q in qs:
+              ti = q.get('ti', -1)
+              counts[ti] = counts.get(ti, 0) + 1
+          thin = [(ti,c) for ti,c in counts.items() if c < 3 and ti >= 0]
+          total = len(qs)
+          with_e = sum(1 for q in qs if q.get('e'))
+          print(f'Distribution: {total} questions, {with_e} with explanations')
+          print(f'Topics with <3 questions: {len(thin)}')
+          for ti,c in sorted(thin):
+              print(f'  ti={ti}: {c} questions')
+          "
+
+      # ── HTML Parse ──
+      - name: Validate HTML syntax
+        run: |
+          python3 -c "
+          from html.parser import HTMLParser
+          c = HTMLParser()
+          c.feed(open('pnimit-mega.html').read())
+          print('OK: HTML parses')
+          "
+
+      # ── No Hazzard/GRS References ──
+      - name: Check no geriatrics-only content in study plan
+        run: |
+          python3 << 'PYEOF'
+          import re, sys
+          html = open('pnimit-mega.html').read()
+          # Extract study plan section
+          sp_start = html.find('const STUDY_PLAN')
+          sp_end = html.find('function renderStudyPlan')
+          if sp_start < 0 or sp_end < 0:
+              print('WARNING: Could not find study plan boundaries')
+              sys.exit(0)
+          sp = html[sp_start:sp_end]
+          banned = ['GRS', "Hazzard's", 'CGA', 'Elder Abuse', 'Driving Fitness', 'siud murkav',
+                    'BPSD', 'Dysphagia', 'FIM', 'ייפוי כוח']
+          found = []
+          for term in banned:
+              if term in sp:
+                  found.append(term)
+          if found:
+              print(f'ERROR: Study plan contains geriatrics-only terms: {found}', file=sys.stderr)
+              sys.exit(1)
+          print('OK: Study plan is clean of geriatrics-only content')
+          PYEOF
