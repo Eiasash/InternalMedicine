@@ -1,1 +1,134 @@
-[]
+[
+  {
+    "f": "Digitoxin vs Digoxin in HFrEF — key finding",
+    "b": "DIGIT-HF trial: Digitoxin did NOT reduce composite of HF hospitalization + CV death vs placebo in HFrEF. Unlike DIG trial (digoxin reduced HF hospitalization), digitoxin showed no benefit. Both are cardiac glycosides but digitoxin has longer half-life and hepatic metabolism."
+  },
+  {
+    "f": "Digitoxin — pharmacokinetics vs digoxin",
+    "b": "Digitoxin: hepatic metabolism, T½ 5-7 days, NO renal adjustment. Digoxin: renal clearance, T½ 36-48h, requires dose adjustment in CKD. Both inhibit Na⁺/K⁺-ATPase → ↑intracellular Ca²⁺ → positive inotropy."
+  },
+  {
+    "f": "Shield test (cfDNA) for colorectal cancer screening — sensitivity & specificity",
+    "b": "ECLIPSE trial: cell-free DNA blood test (Shield/Guardant) detected CRC with 83% sensitivity and 90% specificity. For advanced adenomas sensitivity was only ~13%. FDA-approved 2024. Does NOT replace colonoscopy — complementary for patients who decline colonoscopy."
+  },
+  {
+    "f": "CRC screening modalities comparison",
+    "b": "Colonoscopy: gold standard, 10yr intervals. FIT: annual, ~74% CRC sensitivity. Cologuard (stool DNA): 92% CRC sensitivity but lower specificity. cfDNA blood (Shield): 83% CRC sensitivity, 90% specificity. All positive non-colonoscopy tests require follow-up colonoscopy."
+  },
+  {
+    "f": "BALANCE trial — 7 vs 14 days for bloodstream infections",
+    "b": "7 days non-inferior to 14 days for uncomplicated BSI. Primary outcome: 90-day mortality — no difference. Exclusions: endocarditis, undrained abscess, prosthetic joint/valve infection, S. aureus BSI, severely immunocompromised. S. aureus BSI was EXCLUDED — always treat ≥4 weeks."
+  },
+  {
+    "f": "When NOT to shorten antibiotics for BSI (BALANCE exclusions)",
+    "b": "Do NOT use 7-day course for: S. aureus bacteremia (needs 4-6 weeks), endocarditis, undrained deep abscess, prosthetic device infection, severe neutropenia, bone/joint infection. These require prolonged therapy regardless of clinical improvement."
+  },
+  {
+    "f": "Aspirin + OAC in stable coronary disease — AFIRE confirmed",
+    "b": "Patients with chronic coronary syndrome (>1yr post-PCI) on OAC for AFib: adding aspirin INCREASES bleeding without reducing ischemic events. OAC monotherapy (rivaroxaban or DOAC) is preferred. Stop aspirin after 1yr post-PCI if on OAC for AFib."
+  },
+  {
+    "f": "Baxdrostat — mechanism and indication",
+    "b": "Baxdrostat: aldosterone synthase inhibitor (CYP11B2). Novel mechanism for resistant/uncontrolled HTN. Phase 3: significant SBP reduction vs placebo (~10-12 mmHg). Key side effect: hyperkalemia (monitor K⁺). Targets aldosterone pathway without blocking mineralocorticoid receptor."
+  },
+  {
+    "f": "Resistant vs refractory hypertension",
+    "b": "Resistant HTN: BP above goal despite ≥3 drugs (including diuretic) at optimal doses. Refractory HTN: BP above goal despite ≥5 drugs. Before diagnosing: confirm adherence, exclude white-coat effect, exclude secondary causes (RAS, pheo, Cushing, primary aldosteronism)."
+  },
+  {
+    "f": "Apixaban for extended treatment of provoked VTE",
+    "b": "Even provoked VTE (surgery, immobility, hormones) benefits from extended apixaban if risk factors persist. Extended treatment (2.5mg BID after initial 6mo) reduced recurrence ~80% vs placebo. Bleeding risk was low. Challenge: identifying which provoked VTE patients have ongoing risk."
+  },
+  {
+    "f": "Upadacitinib for Giant Cell Arteritis — SELECT-GCA trial",
+    "b": "JAK inhibitor upadacitinib (15mg daily) achieved sustained remission in GCA, enabling faster steroid tapering. Phase 3: ~60% sustained remission vs ~26% placebo at week 52. Allows steroid dose reduction. Monitoring: infections, VTE, malignancy (JAK inhibitor class warnings)."
+  },
+  {
+    "f": "GCA treatment ladder",
+    "b": "First-line: high-dose prednisone 40-60mg + rapid taper. Steroid-sparing: tocilizumab (IL-6 inhibitor, FDA-approved). NEW: upadacitinib (JAK inhibitor). Methotrexate: modest steroid-sparing effect. Never delay steroids — risk of blindness from anterior ischemic optic neuropathy (AION)."
+  },
+  {
+    "f": "First-line treatment of pulmonary sarcoidosis — prednisone vs MTX",
+    "b": "FIRE trial: Methotrexate was non-inferior to prednisone as first-line for pulmonary sarcoidosis. MTX had fewer metabolic side effects (less weight gain, less glucose intolerance). Both improved FVC similarly at 24 weeks. MTX may be preferred first-line given better side-effect profile."
+  },
+  {
+    "f": "Sarcoidosis treatment indications",
+    "b": "Treat when: progressive/symptomatic pulmonary disease, cardiac involvement, neuro involvement, hypercalcemia, eye disease unresponsive to topical therapy. Many patients need NO treatment — up to 2/3 resolve spontaneously. Löfgren syndrome (EN + bilateral hilar LAD + arthritis) has excellent prognosis."
+  },
+  {
+    "f": "Sotatercept for pulmonary arterial hypertension",
+    "b": "STELLAR trial: Sotatercept (activin signaling inhibitor, TGF-β superfamily trap) added to background PAH therapy improved 6MWD, reduced NT-proBNP, improved WHO FC, and reduced clinical worsening events. First-in-class mechanism targeting disease pathobiology beyond vasodilation. Given subcutaneously q3weeks."
+  },
+  {
+    "f": "PAH drug classes",
+    "b": "Endothelin receptor antagonists (bosentan, ambrisentan). PDE5 inhibitors (sildenafil, tadalafil). Prostacyclin pathway (epoprostenol, treprostinil, selexipag). sGC stimulator (riociguat). NEW: Sotatercept (activin trap). Combination therapy is standard. CCB only for vasoreactive patients (~5%)."
+  },
+  {
+    "f": "ECST-2 trial — carotid stenosis: surgery vs medical therapy",
+    "b": "Asymptomatic or low-risk symptomatic carotid stenosis: optimized medical therapy ALONE was as good as medical therapy + revascularization (CEA/CAS) at 2-year interim. Modern medical therapy (statins, BP control, antiplatelets) dramatically reduced stroke risk, challenging routine revascularization."
+  },
+  {
+    "f": "Carotid stenosis management 2025",
+    "b": "Symptomatic >70%: still consider CEA/CAS (per NASCET/ECST). Symptomatic 50-69%: moderate benefit from CEA (NNT ~15). Asymptomatic >60%: ECST-2 suggests optimal medical therapy may suffice. All patients: high-dose statin, BP <130/80, antiplatelet, smoking cessation, diabetes control."
+  },
+  {
+    "f": "SGLT2 inhibitors — 4 major indications",
+    "b": "1) T2DM (glycemic control). 2) HFrEF AND HFpEF (regardless of diabetes). 3) CKD with proteinuria (DAPA-CKD, CREDENCE). 4) Reduce CV events in T2DM with ASCVD. Key side effects: euglycemic DKA, UTI/genital mycotic infections, volume depletion."
+  },
+  {
+    "f": "DOAC reversal agents",
+    "b": "Dabigatran → Idarucizumab (Praxbind). Rivaroxaban/Apixaban/Edoxaban → Andexanet alfa (Andexxa). If no specific agent available: 4-factor PCC. Do NOT use FFP for DOAC reversal (ineffective). Activated charcoal within 2hr of ingestion."
+  },
+  {
+    "f": "Sepsis-3 definition",
+    "b": "Sepsis = life-threatening organ dysfunction caused by dysregulated host response to infection. Organ dysfunction = SOFA score ≥2 points above baseline. qSOFA (screening): ≥2 of: RR≥22, altered mentation (GCS<15), SBP≤100. Septic shock = sepsis + vasopressors needed for MAP≥65 + lactate>2."
+  },
+  {
+    "f": "AKI stages (KDIGO)",
+    "b": "Stage 1: Cr ↑1.5-1.9× baseline OR ↑≥0.3mg/dL in 48h OR UO<0.5mL/kg/h for 6-12h. Stage 2: Cr ↑2.0-2.9× OR UO<0.5mL/kg/h for ≥12h. Stage 3: Cr ↑3× OR Cr≥4.0 OR initiation of RRT OR UO<0.3mL/kg/h for ≥24h OR anuria ≥12h."
+  },
+  {
+    "f": "Wells score — PE",
+    "b": "Clinical signs of DVT: +3. PE most likely diagnosis: +3. HR>100: +1.5. Immobilization/surgery within 4wk: +1.5. Previous DVT/PE: +1.5. Hemoptysis: +1. Malignancy: +1. Score ≤4: PE unlikely → D-dimer. Score >4: PE likely → CTPA."
+  },
+  {
+    "f": "Light's criteria — exudative pleural effusion",
+    "b": "Exudate if ANY: 1) Pleural protein/serum protein >0.5. 2) Pleural LDH/serum LDH >0.6. 3) Pleural LDH >2/3 upper limit of normal serum LDH. All 3 negative = transudate (CHF, cirrhosis, nephrotic). Common trap: diuretic use can make transudates look like exudates."
+  },
+  {
+    "f": "Hepatorenal syndrome — type 1 vs type 2",
+    "b": "Type 1 (AKI-HRS): rapid Cr doubling in <2 weeks, poor prognosis. Type 2: slow, gradual Cr rise with refractory ascites. Both: prerenal physiology without response to volume. Diagnosis: exclude other causes, no improvement after albumin challenge (1g/kg×2d). Treatment: albumin + terlipressin/midodrine+octreotide."
+  },
+  {
+    "f": "DKA vs HHS",
+    "b": "DKA: glucose usually 300-800, pH<7.3, bicarb<18, anion gap >12, ketones positive. Mainly T1DM. HHS: glucose >600 (often >1000), osmolality >320, minimal ketones, pH usually >7.3. Mainly T2DM elderly. Both: volume depletion, K⁺ monitoring critical (total body K⁺ depleted even if serum K⁺ is high)."
+  },
+  {
+    "f": "Hyponatremia workup algorithm",
+    "b": "Step 1: Serum osmolality (exclude pseudo-hyponatremia). Step 2: Urine osmolality (<100 = primary polydipsia). Step 3: Volume status — Hypovolemic (UNa<20: GI/skin loss; UNa>20: diuretics/adrenal). Euvolemic: SIADH, hypothyroid, cortisol deficiency. Hypervolemic: CHF, cirrhosis, nephrotic."
+  },
+  {
+    "f": "SBP prophylaxis and treatment in cirrhosis",
+    "b": "Diagnosis: ascitic fluid PMN≥250/mm³. Treatment: cefotaxime IV (or ceftriaxone). After episode: lifelong secondary prophylaxis with norfloxacin/TMP-SMX. Primary prophylaxis: ascitic protein <1.5 g/dL with renal dysfunction or liver failure. SBP mortality: 20-30% per episode."
+  },
+  {
+    "f": "CURB-65 score",
+    "b": "C: Confusion. U: Urea>7mmol/L (BUN>19). R: RR≥30. B: BP<90systolic or ≤60 diastolic. 65: Age≥65. Score 0-1: outpatient. 2: short hospitalization or close outpatient. 3-5: hospitalization, consider ICU if 4-5."
+  },
+  {
+    "f": "Infective endocarditis — Duke criteria",
+    "b": "Definite: 2 major, 1 major+3 minor, or 5 minor. Major: 1) Positive blood cultures (typical organisms ×2, or persistent). 2) Endocardial involvement (vegetation/abscess/dehiscence on echo, new regurgitant murmur). Minor: predisposition, fever>38°C, vascular phenomena (Janeway), immunologic (Osler, Roth spots, RF+), suggestive micro."
+  },
+  {
+    "f": "Tumor lysis syndrome — prevention and treatment",
+    "b": "Risk: high tumor burden, bulky lymphoma, acute leukemia with high WBC. Prevention: aggressive IV hydration, allopurinol (or rasburicase if high risk). Monitor K⁺, phosphate, uric acid, Ca²⁺, creatinine q6-8h. Treat hyperkalemia urgently. Rasburicase contraindicated in G6PD deficiency."
+  },
+  {
+    "f": "ANCA-associated vasculitis — GPA vs MPA vs EGPA",
+    "b": "GPA (Wegener): c-ANCA/PR3, upper+lower respiratory tract + kidneys, granulomas, saddle nose. MPA: p-ANCA/MPO, kidneys (rapidly progressive GN) + lungs (no granulomas). EGPA (Churg-Strauss): p-ANCA/MPO (40%), asthma + eosinophilia + neuropathy. All: treat with cyclophosphamide/rituximab + steroids."
+  },
+  {
+    "f": "Addisonian crisis — recognition and treatment",
+    "b": "Presentation: hypotension refractory to fluids/vasopressors, hyponatremia, hyperkalemia, hypoglycemia, confusion. Often triggered by infection/stress in undiagnosed adrenal insufficiency. Treatment: dexamethasone 4mg IV (doesn't interfere with cortisol assay) + NS resuscitation. Then confirm with AM cortisol and ACTH stim test."
+  }
+]
