@@ -1149,11 +1149,11 @@ function buildMockExamPool(){
     if(!freq||!byTopic[ti]||!byTopic[ti].length)return;
     const target=Math.max(1,Math.round(freq/total*100));
     // shuffle that topic's questions, take target count
-    const src=[...byTopic[ti]].sort(()=>Math.random()-.5);
+    const src=[...byTopic[ti]];for(let i=src.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[src[i],src[j]]=[src[j],src[i]];}
     for(let k=0;k<Math.min(target,src.length);k++)examPool.push(src[k]);
   });
   // Trim or pad to ~100
-  examPool.sort(()=>Math.random()-.5);
+  for(let i=examPool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[examPool[i],examPool[j]]=[examPool[j],examPool[i]];}
   return examPool.slice(0,100);
 }
 let mockExamResults=null; // stores per-topic breakdown
