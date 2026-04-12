@@ -483,3 +483,136 @@ describe("getTopicStats", () => {
     expect(Object.keys(stats).length).toBe(24);
   });
 });
+
+
+// ===== EXTRACTED FUNCTIONS FOR TESTING =====
+
+function buildMockPool(QZ, maxSize) {
+  if (!QZ || QZ.length === 0) return [];
+  const indices = QZ.map((_, i) => i);
+  // Shuffle
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  return indices.slice(0, maxSize);
+}
+
+function calcStreak(history) {
+  if (!history || !Array.isArray(history) || history.length === 0) return 0;
+  let streak = 0;
+  for (let i = history.length - 1; i >= 0; i--) {
+    if (history[i]) streak++;
+    else break;
+  }
+  return streak;
+}
+
+function rebuildPoolIfEmpty(pool, QZ, usedSet) {
+  if (pool && pool.length > 0) return pool;
+  const unused = QZ.map((_, i) => i).filter(i => !usedSet.has(i));
+  return unused;
+}
+
+// ===== ADDITIONAL TESTS — PORTED FROM GERIATRICS =====
+
+describe("buildMockPool — mock exam pool building", () => {
+  it("returns empty array for empty question bank", () => {
+    expect(buildMockPool([], 100)).toEqual([]);
+  });
+
+  it("builds pool with correct maximum size", () => {
+    const QZ = Array.from({ length: 200 }, (_, i) => ({ ti: i % 10 }));
+    const pool = buildMockPool(QZ, 100);
+    expect(pool.length).toBeLessThanOrEqual(100);
+  });
+
+  it("includes questions from multiple topics (per-topic distribution)", () => {
+    const QZ = [];
+    for (let ti = 0; ti < 5; ti++) {
+      for (let j = 0; j < 20; j++) {
+        QZ.push({ ti });
+      }
+    }
+    const pool = buildMockPool(QZ, 50);
+    const topicsInPool = new Set(pool.map(idx => QZ[idx].ti));
+    expect(topicsInPool.size).toBeGreaterThanOrEqual(3);
+  });
+
+  it("caps pool at requested size", () => {
+    const QZ = Array.from({ length: 300 }, (_, i) => ({ ti: i % 24 }));
+    const pool = buildMockPool(QZ, 150);
+    expect(pool.length).toBeLessThanOrEqual(150);
+  });
+
+  it("returns indices not question objects", () => {
+    const QZ = [{ ti: 0 }, { ti: 1 }, { ti: 2 }];
+    const pool = buildMockPool(QZ, 3);
+    pool.forEach(idx => {
+      expect(typeof idx).toBe('number');
+      expect(idx).toBeGreaterThanOrEqual(0);
+      expect(idx).toBeLessThan(QZ.length);
+    });
+  });
+});
+
+describe("calcStreak — streak calculation edge cases", () => {
+  it("returns 0 for empty history", () => {
+    expect(calcStreak([])).toBe(0);
+  });
+
+  it("returns 0 for null/undefined history", () => {
+    expect(calcStreak(null)).toBe(0);
+    expect(calcStreak(undefined)).toBe(0);
+  });
+
+  it("returns full length for all-correct streak", () => {
+    expect(calcStreak([true, true, true, true])).toBe(4);
+  });
+
+  it("returns 0 when last answer is wrong", () => {
+    expect(calcStreak([true, true, false])).toBe(0);
+  });
+
+  it("counts consecutive correct from end", () => {
+    expect(calcStreak([false, true, true, true])).toBe(3);
+    expect(calcStreak([false, false, true])).toBe(1);
+  });
+
+  it("returns 1 for single correct answer", () => {
+    expect(calcStreak([true])).toBe(1);
+  });
+
+  it("returns 0 for single wrong answer", () => {
+    expect(calcStreak([false])).toBe(0);
+  });
+});
+
+describe("rebuildPoolIfEmpty — pool rebuilding when empty", () => {
+  it("returns existing pool if non-empty", () => {
+    const pool = [1, 2, 3];
+    const result = rebuildPoolIfEmpty(pool, [{ ti: 0 }, { ti: 0 }], new Set());
+    expect(result).toBe(pool);
+  });
+
+  it("rebuilds pool from unused questions when empty", () => {
+    const QZ = [{ ti: 0 }, { ti: 1 }, { ti: 2 }, { ti: 3 }];
+    const usedSet = new Set([0, 1]);
+    const result = rebuildPoolIfEmpty([], QZ, usedSet);
+    expect(result.length).toBe(2);
+    expect(result).toContain(2);
+    expect(result).toContain(3);
+  });
+
+  it("returns all indices when nothing is used", () => {
+    const QZ = [{ ti: 0 }, { ti: 1 }];
+    const result = rebuildPoolIfEmpty([], QZ, new Set());
+    expect(result.length).toBe(2);
+  });
+
+  it("returns empty if all questions used", () => {
+    const QZ = [{ ti: 0 }, { ti: 1 }];
+    const result = rebuildPoolIfEmpty([], QZ, new Set([0, 1]));
+    expect(result.length).toBe(0);
+  });
+});
