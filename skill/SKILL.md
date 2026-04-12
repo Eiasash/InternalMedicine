@@ -18,7 +18,7 @@ description: >
 - **App**: Pnimit Mega (שלב א מגה — רפואה פנימית)
 - **URL**: https://eiasash.github.io/InternalMedicine/
 - **Repo**: github.com/Eiasash/InternalMedicine
-- **Version**: v9.22
+- **Version**: v9.25
 - **Stack**: Single-file HTML PWA, vanilla JS, GitHub Pages
 - **Syllabus**: P0064-2025 (Israeli Internal Medicine Stage A)
 - **Sibling app**: Shlav A Mega (geriatrics) at Eiasash/Geriatrics — same engine, different syllabus & data
@@ -34,8 +34,8 @@ description: >
 | Topics | 24 (IM subspecialties) | 40 (geriatric syndromes) |
 | localStorage key | `pnimit_mega` | `samega` |
 | IndexedDB | `pnimit_mega_db` | `shlav_mega_db` |
-| SW cache | `pnimit-v9.22` | `shlav-a-v9.22` |
-| Questions | 901 | 1,434 |
+| SW cache | `pnimit-v9.25` | `shlav-a-v9.25` |
+| Questions | 913 | 1,470 |
 | Articles | 10 (NEJM/Lancet) | 6 (geriatric) |
 
 ## P0064-2025 Syllabus — Internal Medicine Stage A
@@ -82,16 +82,16 @@ InternalMedicine/
 ├── index.html                  # Redirect → pnimit-mega.html
 ├── pnimit-mega.html            # THE APP (~253KB, single file, all JS/CSS inline)
 ├── manifest.json               # PWA manifest
-├── sw.js                       # Service worker (cache: pnimit-v9.22)
+├── sw.js                       # Service worker (cache: pnimit-v9.25)
 ├── CLAUDE.md                   # Dev instructions for Claude
 ├── README.md
 ├── data/
-│   ├── questions.json          # 863 MCQs with explanations
+│   ├── questions.json          # 913 MCQs with explanations
 │   ├── drugs.json              # 53 drugs (ACB scores, Beers flags, STOPP interactions)
-│   ├── flashcards.json         # 33 flashcards
-│   ├── notes.json              # 8 study notes
+│   ├── flashcards.json         # 100 flashcards
+│   ├── notes.json              # 24 study notes
 │   ├── topics.json             # 24 topic keyword arrays
-│   └── tabs.json               # 9 tab definitions
+│   └── tabs.json               # 10 tab definitions
 ├── articles/                   # 10 required article PDFs
 ├── exams/                      # 7 raw past exams (2020–2025)
 ├── harrison/                   # 69 Harrison's 22e chapter PDFs
@@ -173,7 +173,7 @@ GitHub Pages auto-deploys in ~60s. No build step.
 
 | Content | Count |
 |---------|-------|
-| MCQ questions | 901 (all with explanations) |
+| MCQ questions | 913 (all with explanations) |
 | Questions with images | 73 |
 | Exam images | 128 |
 | Drugs | 53 |
