@@ -130,5 +130,145 @@
   {
     "f": "Addisonian crisis — recognition and treatment",
     "b": "Presentation: hypotension refractory to fluids/vasopressors, hyponatremia, hyperkalemia, hypoglycemia, confusion. Often triggered by infection/stress in undiagnosed adrenal insufficiency. Treatment: dexamethasone 4mg IV (doesn't interfere with cortisol assay) + NS resuscitation. Then confirm with AM cortisol and ACTH stim test."
+  },
+  {
+    "f": "STEMI — door-to-balloon time target",
+    "b": "<90 minutes for primary PCI. If no PCI capability, fibrinolytics within 30 min (door-to-needle). Transfer for PCI if <120 min total."
+  },
+  {
+    "f": "Killip classification for MI",
+    "b": "I: no HF (mortality ~6%). II: crackles, S3, JVP (17%). III: pulmonary edema (38%). IV: cardiogenic shock (81%)."
+  },
+  {
+    "f": "HFrEF guideline-directed medical therapy (4 pillars)",
+    "b": "1. ACEi/ARB/ARNI (sacubitril/valsartan) 2. Beta-blocker (carvedilol/metoprolol succinate/bisoprolol) 3. MRA (spironolactone/eplerenone) 4. SGLT2i (dapagliflozin/empagliflozin). Start all simultaneously when possible."
+  },
+  {
+    "f": "CHA₂DS₂-VASc score components",
+    "b": "C: CHF (1), H: HTN (1), A₂: Age ≥75 (2), D: DM (1), S₂: Stroke/TIA (2), V: Vascular disease (1), A: Age 65-74 (1), Sc: Sex female (1). Max 9."
+  },
+  {
+    "f": "Aortic stenosis — indications for valve replacement",
+    "b": "1. Symptomatic severe AS (angina, syncope, HF) 2. Asymptomatic with LVEF <50% 3. Undergoing other cardiac surgery 4. Very severe (Vmax >5 m/s) with low surgical risk."
+  },
+  {
+    "f": "Wells score for PE — high probability threshold",
+    "b": ">4 points = PE likely → CT-PA. ≤4 = PE unlikely → D-dimer (if negative, PE excluded). Clinical signs DVT (3), PE most likely dx (3), HR >100 (1.5), immobilization/surgery (1.5), prior DVT/PE (1.5), hemoptysis (1), malignancy (1)."
+  },
+  {
+    "f": "CURB-65 score and disposition",
+    "b": "Confusion, Urea >7, RR ≥30, BP <90/60, age ≥65. Score 0-1: outpatient. 2: consider admission. 3-5: ICU consideration."
+  },
+  {
+    "f": "ARDS Berlin criteria and management",
+    "b": "Acute onset + bilateral infiltrates + P/F ≤300 + not HF. Mild 200-300, Moderate 100-200, Severe <100. Low Vt (6 mL/kg IBW), Pplat <30, prone if P/F <150, conservative fluids."
+  },
+  {
+    "f": "Massive PE treatment algorithm",
+    "b": "Hemodynamically unstable → systemic thrombolysis (alteplase 100mg over 2h) or surgical/catheter embolectomy. Submassive (RV strain + stable): anticoagulation ± thrombolysis based on bleeding risk."
+  },
+  {
+    "f": "Child-Pugh score components",
+    "b": "5 variables, each scored 1-3: Total bilirubin, Albumin, INR/PT, Ascites, Hepatic encephalopathy. A: 5-6 (good prognosis), B: 7-9 (moderate), C: 10-15 (poor, consider transplant)."
+  },
+  {
+    "f": "SBP diagnosis and treatment",
+    "b": "Ascitic fluid PMN >250/mm³. Empiric ceftriaxone 2g IV + albumin (1.5 g/kg day 1, 1 g/kg day 3). Norfloxacin prophylaxis after first episode or if ascitic protein <1.5 g/dL."
+  },
+  {
+    "f": "Variceal bleed management",
+    "b": "1. Resuscitate (restrictive transfusion Hb >7) 2. Octreotide IV drip 3. Ceftriaxone prophylaxis 4. Emergent endoscopy with band ligation 5. If refractory → TIPS."
+  },
+  {
+    "f": "Acute pancreatitis — Ranson's criteria and treatment",
+    "b": "At admission: age >55, WBC >16k, glucose >200, LDH >350, AST >250. At 48h: Hct drop >10%, BUN rise >5, Ca <8, PaO2 <60, base deficit >4, fluid sequestration >6L. Treatment: aggressive fluids (LR preferred), pain control, NPO→advance diet as tolerated."
+  },
+  {
+    "f": "AKI — KDIGO staging",
+    "b": "Stage 1: Cr rise ≥0.3 or 1.5-1.9x baseline or UO <0.5 mL/kg/h for 6-12h. Stage 2: Cr 2-2.9x baseline or UO <0.5 for ≥12h. Stage 3: Cr ≥3x or Cr ≥4 or anuria ≥12h or dialysis initiation."
+  },
+  {
+    "f": "FENa interpretation for AKI",
+    "b": "FENa <1%: prerenal (volume depletion, HF, hepatorenal). FENa >2%: intrinsic renal (ATN). Exceptions: contrast nephropathy and rhabdomyolysis can have low FENa. Use FEUrea (<35% prerenal) if on diuretics."
+  },
+  {
+    "f": "Indications for emergent dialysis (AEIOU)",
+    "b": "A: Acidosis (refractory metabolic). E: Electrolytes (refractory hyperkalemia). I: Ingestion (methanol, ethylene glycol, lithium, salicylates). O: Overload (refractory pulmonary edema). U: Uremia (encephalopathy, pericarditis, bleeding)."
+  },
+  {
+    "f": "Hyperkalemia emergency management",
+    "b": "1. Cardiac membrane stabilization: calcium gluconate 10% IV (onset 1-3 min) 2. Shift K intracellularly: insulin 10U + D50 (onset 15-30 min), albuterol nebulized 3. Remove K: kayexalate, patiromer, furosemide, dialysis."
+  },
+  {
+    "f": "Sepsis-3 definition and Hour-1 bundle",
+    "b": "Sepsis: suspected infection + SOFA ≥2. Septic shock: sepsis + vasopressor + lactate >2. Hour-1: measure lactate, blood cultures before abx, broad-spectrum abx, 30 mL/kg crystalloid if hypotensive, vasopressors for MAP ≥65."
+  },
+  {
+    "f": "Endocarditis — Duke criteria (modified)",
+    "b": "Definite: 2 major, or 1 major + 3 minor, or 5 minor. Major: positive blood cultures (typical organism x2 or persistent), endocardial involvement (vegetation/abscess on echo). Minor: predisposing condition, fever, vascular phenomena (Janeway), immunologic (Osler nodes, Roth spots), microbiologic evidence."
+  },
+  {
+    "f": "Meningitis — CSF findings",
+    "b": "Bacterial: high WBC (PMN predominant), high protein, low glucose (<40), positive Gram stain. Viral: moderate WBC (lymphocyte predominant), normal/mildly elevated protein, normal glucose. TB/fungal: lymphocyte predominant, very high protein, very low glucose."
+  },
+  {
+    "f": "TTP vs HUS — classic pentad and treatment",
+    "b": "TTP: thrombocytopenia, MAHA (schistocytes), neurologic symptoms, renal dysfunction, fever. ADAMTS13 activity <10%. Treatment: plasma exchange (NOT platelet transfusion). HUS: similar but predominantly renal. Typical (STEC/Shiga toxin): supportive. Atypical (complement-mediated): eculizumab."
+  },
+  {
+    "f": "HIT — diagnosis and management",
+    "b": "Platelet drop >50% 5-10 days after heparin exposure (or <1 day if prior exposure). 4T score for pretest probability. Confirm with anti-PF4/heparin ELISA + serotonin release assay. Stop ALL heparin. Start non-heparin anticoagulant (argatroban, bivalirudin). Do NOT give warfarin until platelets >150k (risk of venous limb gangrene)."
+  },
+  {
+    "f": "DIC — diagnosis and treatment",
+    "b": "Low platelets + low fibrinogen + elevated D-dimer + prolonged PT/PTT + schistocytes on smear. Treat underlying cause. Supportive: platelets if <10k or bleeding, cryoprecipitate if fibrinogen <100, FFP if actively bleeding with prolonged PT/PTT."
+  },
+  {
+    "f": "tPA for ischemic stroke — criteria",
+    "b": "Within 4.5h of symptom onset (or last known well). CT shows no hemorrhage. Exclusions: BP >185/110 unresponsive to treatment, platelets <100k, INR >1.7, recent surgery/trauma. Extended window (4.5-9h): if perfusion mismatch on CT/MRI (EXTEND trial)."
+  },
+  {
+    "f": "Status epilepticus treatment ladder",
+    "b": "1st line: lorazepam 4mg IV (repeat x1). 2nd line: levetiracetam 60mg/kg IV OR fosphenytoin 20mg PE/kg. 3rd line (refractory): midazolam or propofol drip + intubation + continuous EEG. Define: ≥5 min continuous seizure or ≥2 without recovery."
+  },
+  {
+    "f": "GBS vs MG — key differentiators",
+    "b": "GBS: ascending weakness, areflexia, post-infectious, CSF albuminocytologic dissociation, IVIG/PLEX (no steroids). MG: fluctuating weakness worse with activity, ocular onset, AChR/MuSK antibodies, thymoma, pyridostigmine + immunosuppression."
+  },
+  {
+    "f": "DKA vs HHS — key differences",
+    "b": "DKA: glucose >250, pH <7.3, bicarb <18, AG elevated, ketones+. Usually T1DM. HHS: glucose >600, serum osm >320, minimal ketosis, severe dehydration. Usually T2DM elderly. Both: IV fluids + insulin + K monitoring."
+  },
+  {
+    "f": "Thyroid storm vs myxedema coma",
+    "b": "Storm: tachycardia, fever, agitation, HF, AF. Burch-Wartofsky score >45. Rx: PTU → iodine (1h later) → propranolol → hydrocortisone → cooling. Myxedema: hypothermia, bradycardia, AMS, hyponatremia. Rx: IV levothyroxine + hydrocortisone (before ruling out adrenal insufficiency)."
+  },
+  {
+    "f": "Adrenal crisis — triggers and treatment",
+    "b": "Triggers: abrupt steroid withdrawal, acute illness/surgery in patients on chronic steroids, adrenal hemorrhage (Waterhouse-Friderichsen). Treatment: hydrocortisone 100mg IV bolus → 50mg q8h + aggressive NS resuscitation. No mineralocorticoid needed acutely (hydrocortisone provides sufficient)."
+  },
+  {
+    "f": "ANCA-associated vasculitis types",
+    "b": "GPA (Wegener's): c-ANCA/PR3, upper+lower respiratory+renal. MPA: p-ANCA/MPO, renal+pulmonary (no granulomas). EGPA (Churg-Strauss): p-ANCA/MPO, asthma+eosinophilia+vasculitis. Treatment: cyclophosphamide or rituximab + glucocorticoids. Maintenance: azathioprine or rituximab."
+  },
+  {
+    "f": "Gout vs pseudogout — crystals and treatment",
+    "b": "Gout: negatively birefringent needle-shaped MSU crystals. Acute: colchicine, NSAIDs, or steroids. ULT: allopurinol (target urate <6), febuxostat if allopurinol intolerant. Pseudogout (CPPD): positively birefringent rhomboid crystals. Acute: similar. No equivalent of ULT."
+  },
+  {
+    "f": "Vasopressor selection in shock",
+    "b": "Septic: norepinephrine 1st line → add vasopressin 0.03 U/min → add epinephrine if refractory. Cardiogenic: norepinephrine + dobutamine (or milrinone). Anaphylactic: epinephrine IM 0.3-0.5mg q5-15min. Neurogenic: norepinephrine or phenylephrine."
+  },
+  {
+    "f": "Ventilator settings — ARDSNet protocol",
+    "b": "Mode: volume-controlled. Vt: 6 mL/kg IBW. RR: 12-35 to maintain pH >7.30. PEEP: per FiO₂-PEEP table. Pplat goal: <30 cmH₂O. If Pplat >30 → decrease Vt to 5 or 4 mL/kg. pH <7.15 → increase RR or consider bicarb."
+  },
+  {
+    "f": "Anion gap mnemonic (MUDPILES)",
+    "b": "M: Methanol. U: Uremia. D: DKA. P: Propylene glycol/Paraldehyde. I: INH/Iron. L: Lactic acidosis. E: Ethylene glycol. S: Salicylates."
+  },
+  {
+    "f": "Osmolar gap causes",
+    "b": "Normal <10. Elevated in: methanol, ethylene glycol, isopropyl alcohol, mannitol, propylene glycol. Key: methanol and ethylene glycol have BOTH elevated osmolar gap AND anion gap (once metabolized). Treatment: fomepizole + dialysis."
   }
 ]
