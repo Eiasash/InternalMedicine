@@ -385,7 +385,7 @@ await idbSet('pnimit_mega',JSON.parse(lsData));
 // Keep user_id for Supabase, clear the rest
 const uid=null/*user_id removed*/;
 localStorage.removeItem(LS);
-if(uid)//localStorage.setItem('user_id',uid);
+// user_id removed — no longer needed
 }else{
 await idbSet('pnimit_mega',S);
 }
@@ -3578,7 +3578,7 @@ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=
 
 
 // ===== FEEDBACK & DIAGNOSTICS =====
-const APP_VERSION='9.25';
+const APP_VERSION='9.25.1';
 {const hv=document.getElementById('headerVer');if(hv)hv.textContent='v'+APP_VERSION;}
 // Prevent accidental navigation during mock exam
 window.addEventListener('beforeunload',function(e){
