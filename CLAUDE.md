@@ -6,7 +6,7 @@
 
 - **Live URL**: https://eiasash.github.io/InternalMedicine/
 - **Main file**: `pnimit-mega.html` (~253 KB, ~4,100 lines, self-contained HTML/CSS/JS)
-- **App version**: v9.30
+- **App version**: v9.31
 - **Data**: JSON files in `data/` directory, loaded lazily at runtime
 - **Deployment**: Push to `main` → GitHub Pages live
 - **Sibling app**: Shlav A Mega (geriatrics) at Eiasash/Geriatrics — same engine, separate data
@@ -37,15 +37,15 @@ Data is loaded at runtime from `data/*.json` files. The service worker (`sw.js`)
 
 ```
 /
-├── pnimit-mega.html        # Main app (THE file — all HTML/CSS/JS, v9.30)
+├── pnimit-mega.html        # Main app (THE file — all HTML/CSS/JS, v9.31)
 ├── index.html               # GitHub Pages redirect → pnimit-mega.html
-├── sw.js                    # Service worker (offline caching, cache: pnimit-v9.30)
+├── sw.js                    # Service worker (offline caching, cache: pnimit-v9.31)
 ├── manifest.json            # PWA manifest
 │
 ├── data/                    # Lazy-loaded JSON data — single source of truth
-│   ├── questions.json       # 913 MCQs (primary runtime source)
+│   ├── questions.json       # 1169 MCQs (primary runtime source)
 │   ├── notes.json           # 24 study topic notes
-│   ├── flashcards.json      # 100 flashcards
+│   ├── flashcards.json      # 155 flashcards
 │   ├── drugs.json            # 53 drugs with ACB scores, Beers flags, STOPP interactions
 │   ├── tabs.json            # 10 tab definitions for app navigation
 │   └── topics.json          # 24 topic keyword mappings for auto-tagging
@@ -148,22 +148,24 @@ No build step needed. Edit and refresh.
 
 ### Service Worker Versioning
 - `APP_VERSION` in `pnimit-mega.html` must match the cache version in `sw.js`
-- Currently: app=`9.25`, sw.js cache key=`pnimit-v9.30` (synced)
+- Currently: app=`9.30`, sw.js cache key=`pnimit-v9.31` (synced)
 - Update both when making changes to ensure users get cache-busted
 
 ---
 
 ## Testing
 
-**Status: 48 tests across 3 files** — CI via GitHub Actions (15 checks).
+**Status: 186 tests across 5 files** — CI via GitHub Actions (10 checks).
 
 ### Test suite
 
 | File | Tests | Description |
 |------|-------|-------------|
-| `tests/dataIntegrity.test.js` | ~25 | Question schema, duplicates, topic coverage, notes, flashcards, topics cross-referential integrity |
-| `tests/appIntegrity.test.js` | ~13 | HTML structure (RTL, viewport, PWA), SW version sync, security checks (eval, innerHTML), manifest |
-| `tests/serviceWorker.test.js` | ~10 | SW cache config, URL lists, file existence |
+| `tests/dataIntegrity.test.js` | ~80 | Question schema, duplicates, topic coverage, notes, flashcards, drugs, topics cross-referential integrity |
+| `tests/appIntegrity.test.js` | ~15 | HTML structure (RTL, viewport, PWA), SW version sync, security checks (eval, innerHTML), manifest |
+| `tests/serviceWorker.test.js` | ~12 | SW cache config, URL lists, file existence |
+| `tests/examData.test.js` | ~40 | Past exam validation, image map integrity, year tag consistency |
+| `tests/aiQuestions.test.js` | ~39 | AI-generated question quality, explanation length, topic distribution |
 
 ### Data validation tests (must cover)
 
@@ -172,7 +174,7 @@ No build step needed. Edit and refresh.
 | JSON parse validity | questions, notes, flashcards, topics, tabs |
 | Question count | Must be > 800 |
 | Question schema | `q` (string), `o` (array >= 2), `c` (valid index), `ti` (int 0–23) |
-| All 913 questions have explanations | `e` field present |
+| All 1169 questions have explanations | `e` field present |
 | Notes schema | `topic` and `notes` fields present |
 | Flashcards schema | `f` and `b` fields present |
 | Duplicate detection | First 80 chars of question text (conflicting answers flagged) |
@@ -190,7 +192,7 @@ Every feature, improvement, or bug fix MUST include new or updated tests:
 - After adding tests, update the test count in this section
 
 ### CI Pipeline
-GitHub Actions workflow runs on push to `main` and all PRs (15 checks):
+GitHub Actions workflow runs on push to `main` and all PRs (10 checks):
 1. JSON parse validity for all data files
 2. Question schema validation
 3. Duplicate detection (conflicting answers = fatal, same answers = warning)
@@ -212,10 +214,10 @@ GitHub Actions workflow runs on push to `main` and all PRs (15 checks):
 | May 2024 | 98 | `May24` |
 | October 2024 | 98 | `Oct24` |
 | June 2025 | 149 | `Jun25` |
-| Harrison (AI) | 50+ | `Harrison` |
-| **Total** | **913** | |
+| Harrison (AI) | 306 | `Harrison` |
+| **Total** | **1169** | |
 
-All 913 questions have AI-generated explanations (`e` field).
+All 1169 questions have AI-generated explanations (`e` field).
 
 ---
 
@@ -286,25 +288,27 @@ GitHub Pages updates within ~60 seconds.
 | Metric | Value |
 |--------|-------|
 | Main app LOC | ~4,100 |
-| Questions | 1011 (all with explanations) |
+| Questions | 1169 (all with explanations) |
+| AI-generated | 306 (tagged `Harrison`) |
 | Topics | 24 |
 | Notes | 24 |
 | Flashcards | 155 |
+| Drugs | 53 |
 | Question images | 128 |
 | Past exams | 7 sessions (2020–2025) |
 | Harrison chapters | ~69 PDFs |
 | Articles | 10 |
 | Test files | 5 |
 | Tests | 186 |
-| CI pipeline | GitHub Actions (15 checks) |
+| CI pipeline | GitHub Actions (10 checks) |
 
 ---
 
 ## Known Issues
 
-- ~~APP_VERSION / SW cache mismatch~~ — FIXED: Both synced at v9.30
-- ~~No tests~~ — FIXED: 48 tests across 3 files
-- ~~No CI pipeline~~ — FIXED: GitHub Actions (15 checks)
+- ~~APP_VERSION / SW cache mismatch~~ — FIXED: Both synced at v9.31
+- ~~No tests~~ — FIXED: 186 tests across 5 files
+- ~~No CI pipeline~~ — FIXED: GitHub Actions (10 checks)
 - ~~No package.json~~ — FIXED: vitest configured
 - **Topic auto-tagging**: Topic distribution validated by CI; all 24 topics have >= 5 questions
 
