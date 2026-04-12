@@ -18,7 +18,7 @@ description: >
 - **App**: Pnimit Mega (שלב א מגה — רפואה פנימית)
 - **URL**: https://eiasash.github.io/InternalMedicine/
 - **Repo**: github.com/Eiasash/InternalMedicine
-- **Version**: v9.14
+- **Version**: v9.17
 - **Stack**: Single-file HTML PWA, vanilla JS, GitHub Pages
 - **Syllabus**: P0064-2025 (Israeli Internal Medicine Stage A)
 - **Sibling app**: Shlav A Mega (geriatrics) at Eiasash/Geriatrics — same engine, different syllabus & data
@@ -34,7 +34,7 @@ description: >
 | Topics | 24 (IM subspecialties) | 40 (geriatric syndromes) |
 | localStorage key | `pnimit_mega` | `samega` |
 | IndexedDB | `pnimit_mega_db` | `shlav_mega_db` |
-| SW cache | `pnimit-v9.14` | `shlav-a-v9.14` |
+| SW cache | `pnimit-v9.17` | `shlav-a-v9.17` |
 | Questions | 863 | 1,434 |
 | Articles | 10 (NEJM/Lancet) | 6 (geriatric) |
 
@@ -82,7 +82,7 @@ InternalMedicine/
 ├── index.html                  # Redirect → pnimit-mega.html
 ├── pnimit-mega.html            # THE APP (~253KB, single file, all JS/CSS inline)
 ├── manifest.json               # PWA manifest
-├── sw.js                       # Service worker (cache: pnimit-v9.14)
+├── sw.js                       # Service worker (cache: pnimit-v9.17)
 ├── CLAUDE.md                   # Dev instructions for Claude
 ├── README.md
 ├── data/
@@ -177,8 +177,8 @@ GitHub Pages auto-deploys in ~60s. No build step.
 | Questions with images | 73 |
 | Exam images | 128 |
 | Drugs | 53 |
-| Flashcards | 33 |
-| Study notes | 8 |
+| Flashcards | 68 |
+| Study notes | 19 |
 | Article PDFs | 10 |
 | Harrison chapter PDFs | 69 |
 | Past exams (raw) | 7 sessions (2020–2025) |

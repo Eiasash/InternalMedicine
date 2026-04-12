@@ -6,7 +6,7 @@
 
 - **Live URL**: https://eiasash.github.io/InternalMedicine/
 - **Main file**: `pnimit-mega.html` (~253 KB, ~4,100 lines, self-contained HTML/CSS/JS)
-- **App version**: v9.14
+- **App version**: v9.17
 - **Data**: JSON files in `data/` directory, loaded lazily at runtime
 - **Deployment**: Push to `main` → GitHub Pages live
 - **Sibling app**: Shlav A Mega (geriatrics) at Eiasash/Geriatrics — same engine, separate data
@@ -37,7 +37,7 @@ Data is loaded at runtime from `data/*.json` files. The service worker (`sw.js`)
 
 ```
 /
-├── pnimit-mega.html        # Main app (THE file — all HTML/CSS/JS, v9.14)
+├── pnimit-mega.html        # Main app (THE file — all HTML/CSS/JS, v9.17)
 ├── index.html               # GitHub Pages redirect → pnimit-mega.html
 ├── sw.js                    # Service worker (offline caching, cache: pnimit-v1.3)
 ├── manifest.json            # PWA manifest
@@ -148,7 +148,7 @@ No build step needed. Edit and refresh.
 
 ### Service Worker Versioning
 - `APP_VERSION` in `pnimit-mega.html` must match the cache version in `sw.js`
-- Currently: app=`9.14`, sw.js cache key=`pnimit-v9.14` (synced)
+- Currently: app=`9.14`, sw.js cache key=`pnimit-v9.17` (synced)
 - Update both when making changes to ensure users get cache-busted
 
 ---
@@ -295,8 +295,8 @@ GitHub Pages updates within ~60 seconds.
 | Main app LOC | ~4,100 |
 | Questions | 863 (all with explanations) |
 | Topics | 24 |
-| Notes | 8 |
-| Flashcards | 33 |
+| Notes | 19 |
+| Flashcards | 68 |
 | Question images | 128 |
 | Past exams | 7 sessions (2020–2025) |
 | Harrison chapters | ~69 PDFs |
@@ -309,7 +309,7 @@ GitHub Pages updates within ~60 seconds.
 
 ## Known Issues
 
-- ~~APP_VERSION / SW cache mismatch~~ — FIXED: Both synced at v9.14
+- ~~APP_VERSION / SW cache mismatch~~ — FIXED: Both synced at v9.17
 - **No tests**: Highest-priority gap — see Testing section for recommended setup
 - **No CI pipeline**: No GitHub Actions workflow — see Testing section
 - **No package.json**: Needed for test runner (vitest)
