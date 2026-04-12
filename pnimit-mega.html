@@ -3443,58 +3443,7 @@ return h;
 }
 
 // ===== EOL / CAPACITY DECISION TREE =====
-function renderEOLTree(){
-let h=`<div class="sec-t">🕊️ EOL / Capacity Decision Tree</div>
-<div class="sec-s" dir="auto">Interactive checklist — Israeli law (חוק החולה הנוטה למות, ייפוי כוח מתמשך)</div>`;
-// Decision nodes
-h+=`<div class="dt-node ${eolState.competent===true?'active':eolState.competent===false?'inactive':''}" onclick="setEol('competent',true)">
-<div style="font-weight:700;margin-bottom:4px">1. Is the patient competent (כשיר)?</div>
-<div style="font-size:10px;color:#64748b">Can understand, appreciate, reason, and communicate a decision</div>
-<div style="display:flex;gap:6px;margin-top:8px">
-<button class="btn ${eolState.competent===true?'btn-g':'btn-o'}" style="font-size:10px;padding:4px 12px" onclick="event.stopPropagation();setEol('competent',true)" aria-label="Patient is competent">Yes — Competent</button>
-<button class="btn ${eolState.competent===false?'btn-g':'btn-o'}" style="font-size:10px;padding:4px 12px" onclick="event.stopPropagation();setEol('competent',false)" aria-label="Patient is not competent">No — Incompetent</button>
-</div></div>`;
 
-h+=`<div class="dt-node ${eolState.terminal===true?'active':eolState.terminal===false?'inactive':''}" onclick="setEol('terminal',true)">
-<div style="font-weight:700;margin-bottom:4px">2. Terminal prognosis <6 months?</div>
-<div style="font-size:10px;color:#64748b" dir="auto">חוק החולה הנוטה למות 2005 applies if terminal</div>
-<div style="display:flex;gap:6px;margin-top:8px">
-<button class="btn ${eolState.terminal===true?'btn-g':'btn-o'}" style="font-size:10px;padding:4px 12px" onclick="event.stopPropagation();setEol('terminal',true)" aria-label="Terminal prognosis">Yes — Terminal</button>
-<button class="btn ${eolState.terminal===false?'btn-g':'btn-o'}" style="font-size:10px;padding:4px 12px" onclick="event.stopPropagation();setEol('terminal',false)" aria-label="Not terminal">No</button>
-</div></div>`;
-
-if(eolState.competent===false){
-h+=`<div class="dt-node ${eolState.directive===true?'active':''}" onclick="setEol('directive',true)">
-<div style="font-weight:700;margin-bottom:4px" dir="auto">3. Advance directive exists (ייפוי כוח מתמשך)?</div>
-<div style="display:flex;gap:6px;margin-top:8px">
-<button class="btn ${eolState.directive===true?'btn-g':'btn-o'}" style="font-size:10px;padding:4px 12px" onclick="event.stopPropagation();setEol('directive',true)" aria-label="Has advance directive">Yes</button>
-<button class="btn ${eolState.directive===false?'btn-g':'btn-o'}" style="font-size:10px;padding:4px 12px" onclick="event.stopPropagation();setEol('directive',false)" aria-label="No advance directive">No</button>
-</div></div>`;
-
-if(eolState.directive===false){
-h+=`<div class="dt-node ${eolState.proxy===true?'active':''}" onclick="setEol('proxy',true)">
-<div style="font-weight:700;margin-bottom:4px" dir="auto">4. Is there a proxy / surrogate (מקבל החלטות)?</div>
-<div style="display:flex;gap:6px;margin-top:8px">
-<button class="btn ${eolState.proxy===true?'btn-g':'btn-o'}" style="font-size:10px;padding:4px 12px" onclick="event.stopPropagation();setEol('proxy',true)" aria-label="Has proxy decision maker">Yes</button>
-<button class="btn ${eolState.proxy===false?'btn-g':'btn-o'}" style="font-size:10px;padding:4px 12px" onclick="event.stopPropagation();setEol('proxy',false)" aria-label="No proxy decision maker">No</button>
-</div></div>`;
-}
-}
-
-const result=getEolResult();
-if(result){
-h+=`<div class="dt-result" dir="auto" style="margin-top:12px">
-<div style="font-weight:700;margin-bottom:8px">📋 Legal Standing</div>
-<div style="margin-bottom:8px">${result.standing}</div>
-<div style="font-weight:700;margin-bottom:4px">📄 Required Forms:</div>
-<ul style="margin:0 0 8px 16px;font-size:11px">${result.forms.map(f=>`<li>${f}</li>`).join('')}</ul>
-<div style="font-weight:700;margin-bottom:4px">⚡ Actions:</div>
-<ul style="margin:0 0 0 16px;font-size:11px">${result.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
-</div>`;
-h+=`<button onclick="eolState={competent:null,terminal:null,directive:null,proxy:null};render()" class="btn btn-o" style="margin-top:8px;font-size:10px" aria-label="Reset decision tree">🔄 Reset</button>`;
-}
-return h;
-}
 
 // ===== LAB OVERLAY & BAYESIAN SLIDER =====
 let frailtyLevel=3;
@@ -3545,37 +3494,7 @@ return h;
 
 // ===== NORMAL AGING VS PATHOLOGY CHEAT SHEET =====
 let agingSearch='';
-function renderAgingSheet(){
-const data=[
-{system:'Cardiovascular',normal:'↑ Aortic stiffness, ↑ SBP, LV wall thickening, ↓ max HR, ↓ diastolic relaxation',path:'HFpEF, aortic stenosis (calcific), atrial fibrillation, orthostatic hypotension'},
-{system:'Pulmonary',normal:'↓ FEV1 (30mL/yr), ↓ chest wall compliance, ↓ PaO2 (normal: 80-age/4), ↑ residual volume',path:'COPD, pulmonary fibrosis, sleep apnea (OSA prevalence ↑ with age)'},
-{system:'Renal',normal:'↓ GFR ~1 mL/min/yr after 40, ↓ concentrating ability, ↓ renin/aldosterone, ↓ tubular function',path:'CKD, AKI (lower threshold for nephrotoxins), hyponatremia (↑ ADH sensitivity)'},
-{system:'Neurological',normal:'↓ Processing speed, ↓ working memory, mild word-finding difficulty, ↓ sleep efficiency, ↓ deep sleep',path:'Dementia (progressive ADL loss), delirium (acute), Parkinson disease, stroke'},
-{system:'Musculoskeletal',normal:'↓ Bone density (0.5-1%/yr post-menopause), ↓ muscle mass (sarcopenia 3-8%/decade after 30), ↑ body fat',path:'Osteoporosis (fracture), severe sarcopenia (disability), polymyalgia rheumatica'},
-{system:'GI',normal:'↓ Esophageal motility, ↓ gastric acid, ↓ hepatic blood flow/mass, slower transit time',path:'Dysphagia, GERD, C. difficile (especially post-antibiotics), constipation (severe/fecal impaction)'},
-{system:'Endocrine',normal:'↓ Testosterone, ↑ insulin resistance, ↓ vitamin D synthesis, ↓ thyroid hormone clearance',path:'DM2 (new-onset), hypothyroidism, adrenal insufficiency, hyperosmolar state (HHS)'},
-{system:'Immune',normal:'Immunosenescence: ↓ naive T cells, ↓ vaccine response, ↑ autoantibodies, ↑ inflammatory cytokines (inflammaging)',path:'Reactivation (herpes zoster, TB), severe infections without fever, poor vaccine response'},
-{system:'Sensory',normal:'Presbyopia (lens stiffness ~50yo), presbycusis (high-frequency loss), ↓ taste/smell, ↓ proprioception',path:'Cataracts (opacification), glaucoma, AMD, sudden hearing loss'},
-{system:'Skin',normal:'↓ Collagen, ↓ subcutaneous fat, ↓ wound healing, senile purpura, xerosis',path:'Pressure injuries, skin cancer (BCC/SCC/melanoma), bullous pemphigoid'},
-{system:'Urogenital',normal:'↓ Bladder capacity, ↑ residual volume, ↓ detrusor contractility, BPH (men), vaginal atrophy (women)',path:'Urinary incontinence (urge/overflow/functional), recurrent UTI, urinary retention'},
-{system:'Hematologic',normal:'↓ Bone marrow cellularity, ↓ stem cell reserve, normal CBC unless stressed',path:'Anemia of chronic disease, MDS, VTE (↑ risk with age), clonal hematopoiesis (CHIP)'}
-];
-let h=`<div class="sec-t">👴 Normal Aging vs. Pathology</div>
-<div class="sec-s">Physiological changes vs. disease — know the difference</div>`;
-h+=`<input class="search-box" placeholder="Search system or term..." oninput="agingSearch=this.value.toLowerCase();render()" value="${agingSearch}">`;
-h+=`<div style="border-radius:12px;overflow:hidden;border:1px solid #e2e8f0">
-<div class="aging-row" style="font-weight:700;font-size:11px;background:#f8fafc">
-<div class="cell" style="color:#166534">✅ Normal Aging</div>
-<div class="cell" style="color:#991b1b">❌ Pathology</div></div>`;
-data.filter(d=>!agingSearch||d.system.toLowerCase().includes(agingSearch)||d.normal.toLowerCase().includes(agingSearch)||d.path.toLowerCase().includes(agingSearch)).forEach(d=>{
-h+=`<div style="padding:6px 10px;font-weight:700;font-size:11px;background:#eff6ff;color:#1d4ed8">${d.system}</div>`;
-h+=`<div class="aging-row">
-<div class="cell normal-cell">${d.normal}</div>
-<div class="cell path-cell">${d.path}</div></div>`;
-});
-h+=`</div>`;
-return h;
-}
+
 
 // ===== RENDER =====
 let lastTab=null;
@@ -3740,10 +3659,6 @@ case'track':
   el.innerHTML=renderTrack();break;
 case'search':el.innerHTML=renderSearch();break;
 case'chat':el.innerHTML=renderChat();break;
-case'law':el.innerHTML=renderEOLTree();break;
-case'labs':el.innerHTML=renderLabOverlay();break;
-case'aging':el.innerHTML=renderAgingSheet();break;
-case'basket':el.innerHTML=renderMedBasket();break;
 case'book':case'syl':tab='lib';el.innerHTML=renderLibrary();break;
 default:tab='quiz';el.innerHTML=renderQuiz();break;
 }
@@ -3805,7 +3720,7 @@ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=
 
 
 // ===== FEEDBACK & DIAGNOSTICS =====
-const APP_VERSION='9.21';
+const APP_VERSION='9.22';
 {const hv=document.getElementById('headerVer');if(hv)hv.textContent='v'+APP_VERSION;}
 // Prevent accidental navigation during mock exam
 window.addEventListener('beforeunload',function(e){
