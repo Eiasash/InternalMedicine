@@ -148,7 +148,7 @@ No build step needed. Edit and refresh.
 
 ### Service Worker Versioning
 - `APP_VERSION` in `pnimit-mega.html` must match the cache version in `sw.js`
-- Currently: app=`9.30`, sw.js cache key=`pnimit-v9.31` (synced)
+- Currently: app=`9.31`, sw.js cache key=`pnimit-v9.31` (synced)
 - Update both when making changes to ensure users get cache-busted
 
 ---
