@@ -112,5 +112,35 @@
     "topic": "Toxicology — Key Syndromes",
     "ch": "Harrison's 22e",
     "notes": "▸ Acetaminophen Overdose\nMost common cause of acute liver failure. Toxic dose >150 mg/kg. Rumack-Matthew nomogram (4-24h post-ingestion). Treatment: N-acetylcysteine (NAC) — 72h oral or 21h IV protocol. Start empirically if presentation >8h even before level. King's College Criteria for transplant.\n\n▸ Toxidromes\nAnticholinergic: hot, dry, red, blind, mad — atropine-like drugs. Treatment: physostigmine. Cholinergic (SLUDGE): salivation, lacrimation, urination, diarrhea, GI cramps, emesis. Organophosphates. Treatment: atropine + pralidoxime. Sympathomimetic: hypertension, tachycardia, hyperthermia, diaphoresis, mydriasis. Cocaine, amphetamines. Treatment: benzodiazepines. Opioid: miosis, respiratory depression, CNS depression. Treatment: naloxone.\n\n▸ Specific Antidotes\nBenzodiazepines → flumazenil (caution in chronic use — seizures). Methanol/ethylene glycol → fomepizole (ADH inhibitor) + dialysis. Digoxin → digoxin-specific Fab. Iron → deferoxamine. Cyanide → hydroxocobalamin. Beta-blocker → glucagon. CCB → high-dose insulin + calcium. Isoniazid → pyridoxine (B6). Warfarin → vitamin K + PCC/FFP.\n\n▸ Alcohol Withdrawal\nOnset 6-24h after last drink. Timeline: tremor/anxiety (6-12h), seizures (12-48h), delirium tremens (48-96h — 5% mortality). CIWA-Ar protocol: symptom-triggered benzodiazepines (diazepam or chlordiazepoxide). Thiamine before glucose. Refractory: phenobarbital or propofol."
+  },
+  {
+    "id": 19,
+    "topic": "Dermatology — Board Essentials",
+    "ch": "Harrison's 22e",
+    "notes": "▸ Drug Eruptions\nMorbilliform (most common): onset 7-14 days, diffuse maculopapular. Urticaria: IgE-mediated, minutes to hours. Fixed drug eruption: same site each time. SJS/TEN: mucocutaneous emergency — <10% BSA = SJS, >30% = TEN. Triggers: allopurinol, carbamazepine, sulfonamides, lamotrigine. Treatment: stop offending drug, supportive care, burn unit for TEN. SCORTEN for prognosis.\n\n▸ Skin Findings in Systemic Disease\nErythema nodosum: tender nodules on shins — sarcoidosis, IBD, strep, TB. Pyoderma gangrenosum: painful ulcers — IBD, RA, hematologic malignancy. Acanthosis nigricans: velvety hyperpigmentation — insulin resistance, GI malignancy. Dermatitis herpetiformis: pruritic vesicles on extensors — celiac disease. Sweet syndrome: acute febrile neutrophilic dermatosis — AML, infections."
+  },
+  {
+    "id": 20,
+    "topic": "Allergy & Immunology",
+    "ch": "Harrison's 22e",
+    "notes": "▸ Anaphylaxis\nIgE-mediated systemic reaction: urticaria/angioedema + hypotension + bronchospasm + GI symptoms. Most common triggers: foods (peanuts, tree nuts), drugs (penicillins, NSAIDs), hymenoptera stings. Treatment: IM epinephrine 0.3-0.5 mg (anterolateral thigh) — repeat q5-15min. Adjuncts: IV fluids, H1/H2 blockers, steroids (prevent biphasic). Observation 4-6h minimum. Discharge with EpiPen prescription.\n\n▸ Drug Allergy\nPenicillin allergy: only 10% are truly allergic on testing. Cross-reactivity with cephalosporins <2%. Skin testing available. NSAID intolerance: aspirin-exacerbated respiratory disease (AERD) — asthma + nasal polyps + aspirin sensitivity. COX-2 selective (celecoxib) usually safe."
+  },
+  {
+    "id": 21,
+    "topic": "Fluids & Volume Management",
+    "ch": "Harrison's 22e Ch 56",
+    "notes": "▸ IV Fluid Selection\nNS (0.9% NaCl): isotonic, 154 mEq Na. Use: resuscitation, hyponatremia correction. Risk: hyperchloremic metabolic acidosis with large volumes. LR (Lactated Ringer's): more physiologic (130 Na, 4 K, 28 lactate). Preferred in sepsis/surgery (SMART trial). D5W: free water — use for hypernatremia correction. Half-NS (0.45%): maintenance + free water replacement.\n\n▸ Hyponatremia\nHypertonic (<120 or symptomatic): 3% NaCl 100-150 mL bolus over 10-20 min, repeat x2 if needed. Correct max 8-10 mEq/L per 24h (risk of osmotic demyelination). Euvolemic (SIADH): fluid restriction 1-1.5L/day, salt tabs, vaptans (tolvaptan) if refractory. Hypovolemic: NS resuscitation.\n\n▸ Hypernatremia\nFree water deficit = TBW × (Na/140 - 1). Replace 50% in first 24h, rest over 48-72h. Max correction 10-12 mEq/L per 24h. Use D5W or half-NS. Identify and treat cause (insensible losses, diabetes insipidus, osmotic diuresis)."
+  },
+  {
+    "id": 22,
+    "topic": "Pain Management & Palliative Care",
+    "ch": "Harrison's 22e Ch 14",
+    "notes": "▸ WHO Pain Ladder\nStep 1: non-opioid (acetaminophen, NSAIDs). Step 2: weak opioid (tramadol, codeine) ± non-opioid. Step 3: strong opioid (morphine, oxycodone, fentanyl) ± non-opioid ± adjuvant. Adjuvants: gabapentin/pregabalin for neuropathic pain, duloxetine, TCAs, steroids for bone pain/inflammation.\n\n▸ Opioid Prescribing\nStart low, titrate slow. Morphine equivalent dose (MED) for conversions. Constipation: always co-prescribe stimulant laxative. Respiratory depression: naloxone 0.04-0.4 mg IV (titrate to respiratory rate, not consciousness). PCA: patient-controlled analgesia for acute pain.\n\n▸ Palliative Symptom Management\nDyspnea: opioids (low-dose morphine), fan to face, supplemental O2 if hypoxic. Nausea: identify cause — metoclopramide (gastroparesis), ondansetron (CTZ), dexamethasone (raised ICP). Terminal secretions: glycopyrrolate or scopolamine. Agitation/delirium: haloperidol 0.5-1mg. Avoid benzodiazepines unless seizures or alcohol withdrawal."
+  },
+  {
+    "id": 23,
+    "topic": "Vascular Disease",
+    "ch": "Harrison's 22e",
+    "notes": "▸ Aortic Dissection\nStanford A (ascending): surgical emergency. Stanford B (descending): medical management unless complicated. Presentation: sudden tearing chest/back pain, BP differential between arms, wide mediastinum on CXR. CT-A gold standard. Treatment: IV esmolol (HR <60) + nitroprusside (SBP <120). Type A: emergent surgery.\n\n▸ Abdominal Aortic Aneurysm\nScreening: one-time US for men 65-75 who have ever smoked (USPSTF). Elective repair if ≥5.5 cm or growth >0.5 cm/6mo. Ruptured: triad of hypotension + pulsatile abdominal mass + back pain — emergent surgery.\n\n▸ Peripheral Arterial Disease\nAnkle-brachial index (ABI) <0.9 diagnostic. Claudication → supervised exercise program + cilostazol. Critical limb ischemia (rest pain, ulcers, gangrene) → revascularization. Risk factor modification: statin, antiplatelet, smoking cessation, DM/HTN control.\n\n▸ Carotid Stenosis\nSymptomatic ≥70%: CEA (NASCET) or CAS. ECST-2 article in syllabus: revised approach to moderate stenosis. Asymptomatic ≥70%: CEA if surgical risk low, otherwise optimal medical therapy."
   }
 ]
