@@ -1,6 +1,6 @@
-const CACHE='pnimit-v9.24';
+const CACHE='pnimit-v9.25';
 const HTML_URLS=['pnimit-mega.html','manifest.json'];
-const JSON_DATA_URLS=['data/questions.json','data/topics.json','data/notes.json','data/drugs.json','data/flashcards.json','data/tabs.json'];
+const JSON_DATA_URLS=['data/questions.json','data/topics.json','data/notes.json','data/drugs.json','data/flashcards.json','data/tabs.json','harrison_chapters.json'];
 const ALL_URLS=[...HTML_URLS,...JSON_DATA_URLS];
 
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ALL_URLS)).then(()=>self.skipWaiting())));

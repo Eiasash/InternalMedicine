@@ -168,15 +168,6 @@ body.dark .med-chip{background:#1e3a5f;color:#93c5fd;border-color:#1e40af}
 .acb-meter{height:10px;border-radius:5px;background:#e2e8f0;overflow:hidden;margin:6px 0}
 .acb-meter .acb-fill{height:100%;border-radius:5px;transition:width .3s}
 
-/* ===== DECISION TREE ===== */
-.dt-node{padding:12px;border-radius:12px;border:2px solid #e2e8f0;margin-bottom:8px;cursor:pointer;transition:.15s;font-size:12px}
-.dt-node:hover{border-color:rgb(var(--sky))}
-.dt-node.active{border-color:rgb(var(--em));background:#ecfdf5}
-.dt-node.inactive{opacity:.4}
-body.dark .dt-node{border-color:#334155}
-body.dark .dt-node.active{border-color:#059669;background:#064e3b}
-.dt-result{padding:14px;border-radius:12px;border:2px solid rgb(var(--em));background:#ecfdf5;font-size:12px;line-height:1.7}
-body.dark .dt-result{background:#064e3b;border-color:#059669;color:#a7f3d0}
 
 /* ===== LAB OVERLAY ===== */
 .lab-modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
@@ -284,7 +275,7 @@ upd();setInterval(upd,30000);
 
 <a href="#main-content" class="skip-link">Skip to content</a>
 <div class="hdr" style="position:relative">
-<h1>Pnimit Mega <span id="headerVer" style="font-size:9px;font-weight:400;color:#64748b;vertical-align:middle"></span></h1>
+<h1>Pnimit Mega <span style="font-size:9px;font-weight:600;color:#3b82f6;vertical-align:middle;background:#eff6ff;padding:2px 6px;border-radius:6px;margin-right:4px">Internal Medicine</span> <span id="headerVer" style="font-size:9px;font-weight:400;color:#64748b;vertical-align:middle"></span></h1>
 <button class="dm-btn" onclick="toggleStudyMode()" title="Night/Study Mode" aria-label="Toggle night mode" style="right:44px">🕯️</button><button class="dm-btn" onclick="toggleDark()" title="Dark Mode" aria-label="Toggle dark mode">🌓</button><button class="dm-btn" onclick="showHelp()" title="Help" aria-label="Help" style="right:82px;font-size:11px">❓</button>
 <p id="hdr-sub">Loading...</p>
 </div>
@@ -589,47 +580,8 @@ rec.onend=()=>{voiceListening=false;render();};
 rec.start();
 }
 
-// ===== EOL DECISION TREE STATE =====
-let eolState={competent:null,terminal:null,directive:null,proxy:null};
-function setEol(k,v){eolState[k]=v;render();}
-function getEolResult(){
-const s=eolState;
-if(s.competent===null)return null;
-let result={standing:'',forms:[],actions:[]};
-if(s.competent===true){
-result.standing='Patient is competent — their autonomous wishes govern all decisions.';
-result.actions.push('Document capacity assessment','Respect current expressed wishes even if contradicting prior AD');
-result.forms.push('Informed consent form','Living will update (optional)');
-if(s.terminal===true){
-result.actions.push('Discuss goals of care','Offer palliative care consultation');
-result.forms.push('POLST / DNR form if patient consents','Hospice referral form');
-}
-}else{
-if(s.directive===true){
-result.standing='Patient incompetent with advance directive — follow documented wishes via proxy.';
-result.forms.push('Activate existing advance directive','Verify proxy identity (ייפוי כוח מתמשך)');
-result.actions.push('Proxy decides per substituted judgment','Ethics consult if proxy deviates from AD');
-}else{
-if(s.proxy===true){
-result.standing='No AD but proxy appointed — proxy uses substituted judgment or best interest.';
-result.forms.push('מינוי מקבל החלטות זמני (Emergency Surrogate)','Court appointment if proxy unavailable');
-result.actions.push('Proxy decides in best interest','Document proxy decisions thoroughly');
-}else{
-result.standing='No AD, no proxy — need court-appointed guardian (אפוטרופוס) or emergency surrogate.';
-result.forms.push('Application for אפוטרופוס via court','מקבל החלטות חלופי form (for urgent medical decisions)');
-result.actions.push('Contact social worker for guardianship process','For emergency: 2 physicians + social worker can approve');
-}
-}
-if(s.terminal===true){
-result.standing+=' Terminal status applies — חוק החולה הנוטה למות 2005.';
-result.forms.push('טופס הנוטה למות — status declaration');
-result.actions.push('May withhold/withdraw cyclical treatments per law','Continuous treatments require specific conditions to withdraw','Pain relief and dignity measures mandated by law');
-}
-}
-return result;
-}
 
-// ===== IMA SYLLABUS WEIGHTS (approximate % from P005-2026) =====
+// ===== IMA SYLLABUS WEIGHTS (approximate % from P0064-2025) =====
 const IMA_WEIGHTS=[8,7,6,5,7,10,8,7,6,8,7,6,9,6,7,5,3,3,4,4,3,3,5,4];
 
 // ===== SPACED REP =====
@@ -972,7 +924,7 @@ async function runExplainOnCall(qIdx){
   try{
     const txt=await callAI([{role:'user',content:'ANSWER KEY: The correct answer is DEFINITIVELY "'+correct+'".\n\nהסבר בעברית (3-4 משפטים) למה זו התשובה הנכונה. עגן בתשובה הנכונה. שאלה: '+q.q+'\nתשובה נכונה: '+correct}],400,'sonnet');
     _exCache[qIdx]=txt;try{localStorage.setItem('pnimit_ex',JSON.stringify(_exCache));}catch(e){}
-    box.innerHTML='<div style="font-size:12px;color:#475569;line-height:1.7;direction:rtl;text-align:right;margin-top:8px">'+txt+'</div>';
+    box.innerHTML='<div style="font-size:12px;color:#475569;line-height:1.7;direction:rtl;text-align:right;margin-top:8px">'+sanitize(txt)+'</div>';
     btn.remove();
   }catch(e){btn.textContent='🤖 הסבר AI';btn.disabled=false;}
 }
@@ -3398,106 +3350,8 @@ return h;
 
 // ===== WARD MODE RENDER =====
 
-// ===== MED BASKET RENDER =====
-function renderMedBasket(){
-let h=`<div class="sec-t">🧺 Med Basket — Polypharmacy Clash Engine</div>
-<div class="sec-s">Select drugs to check cumulative ACB + STOPP interactions</div>`;
-h+=`<input class="search-box" placeholder="Search drug to add..." oninput="filterMedList(this.value)" id="mbsrch">`;
-h+=`<div style="display:none;max-height:200px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:10px" id="mblist">`;
-DRUGS.forEach(d=>{
-const inBasket=medBasket.includes(d.name);
-h+=`<div class="mb-item" style="padding:8px 12px;border-bottom:1px solid #f1f5f9;cursor:pointer;font-size:11px;display:flex;justify-content:space-between;align-items:center;${inBasket?'background:#ecfdf5':''}" onclick="toggleMedBasket('${d.name.replace(/'/g,"\\'")}');render()" data-drug="${d.name.toLowerCase()} ${d.heb}" role="option" aria-selected="${inBasket?'true':'false'}">
-<span>${d.name} ${d.heb?'('+d.heb+')':''}</span>
-<span>${inBasket?'✅':'+'} ${d.acb?'ACB:'+d.acb:''} ${d.beers?'BEERS':''}</span></div>`;
-});
-h+=`</div>`;
-// Basket chips
-if(medBasket.length){
-h+=`<div style="margin-bottom:12px">`;
-medBasket.forEach(name=>{
-const d=DRUGS.find(x=>x.name===name);
-h+=`<span class="med-chip">${name} ${d&&d.acb?'(ACB:'+d.acb+')':''}<span class="x" onclick="event.stopPropagation();toggleMedBasket('${name}');render()">×</span></span>`;
-});
-h+=`</div>`;
-// ACB Score
-const acbTotal=calcACBTotal();
-const acbClr=acbTotal>=3?'#dc2626':acbTotal>=2?'#d97706':'#059669';
-h+=`<div class="card" style="padding:14px">
-<div style="font-weight:700;font-size:12px;margin-bottom:6px">Anticholinergic Burden (ACB)</div>
-<div class="acb-meter"><div class="acb-fill" style="width:${Math.min(acbTotal/6*100,100)}%;background:${acbClr}"></div></div>
-<div style="text-align:center;font-size:22px;font-weight:700;color:${acbClr}">${acbTotal}</div>
-<div style="text-align:center;font-size:10px;color:#64748b">${acbTotal>=3?'HIGH burden — cognitive decline, delirium, falls risk':acbTotal>=1?'Moderate burden — monitor closely':'Low anticholinergic burden'}</div>
-</div>`;
-// STOPP Warnings
-const warnings=getSTOPPWarnings();
-if(warnings.length){
-h+=`<div class="card" style="padding:14px;margin-top:10px">
-<div style="font-weight:700;font-size:12px;margin-bottom:8px">⚠️ Interaction Warnings (${warnings.length})</div>`;
-warnings.forEach(w=>{
-const clr=w.level==='high'?'#dc2626':w.level==='med'?'#d97706':'#2563eb';
-h+=`<div style="padding:8px 10px;border-radius:10px;border:1px solid ${clr}30;background:${clr}08;margin-bottom:6px;font-size:11px;line-height:1.5">
-<span style="font-weight:700;color:${clr}">${w.level==='high'?'🔴 HIGH':w.level==='med'?'🟡 MODERATE':'🔵 LOW'}</span> ${w.text}</div>`;
-});
-h+=`</div>`;}
-}else{
-h+=`<div style="text-align:center;padding:24px;color:#94a3b8;font-size:12px">Add drugs above to analyze interactions</div>`;
-}
-h+=`<!-- med list filter handled by filterMedList() -->`;
-return h;
-}
-
-// ===== EOL / CAPACITY DECISION TREE =====
 
 
-// ===== LAB OVERLAY & BAYESIAN SLIDER =====
-let frailtyLevel=3;
-function renderLabOverlay(){
-const labs=[
-{name:'Hemoglobin',unit:'g/dL',young:[12,17.5],old:[11,15.5],note:'Lower Hgb thresholds acceptable in elderly; WHO criteria may over-diagnose anemia'},
-{name:'Creatinine',unit:'mg/dL',young:[0.6,1.2],old:[0.5,1.5],note:'Reduced muscle mass → lower Cr despite reduced GFR; eGFR more reliable'},
-{name:'D-dimer',unit:'ng/mL',young:[0,500],old:[0,null],note:'Age-adjusted cutoff: age×10 ng/mL. Standard 500 has poor specificity in elderly'},
-{name:'TSH',unit:'mIU/L',young:[0.4,4.0],old:[0.4,7.0],note:'Mild TSH elevation (4-7) may be normal in >70yo; avoid over-treating subclinical hypothyroidism'},
-{name:'Albumin',unit:'g/dL',young:[3.5,5.0],old:[3.0,4.5],note:'Acute phase reactant; drops in inflammation/illness, not just nutrition'},
-{name:'BNP',unit:'pg/mL',young:[0,100],old:[0,300],note:'Rises with age, renal impairment; higher cutoffs needed in elderly for HF diagnosis'},
-{name:'ESR',unit:'mm/hr',young:[0,20],old:[0,null],note:'Age-adjusted: (age+10)/2 for women, age/2 for men. Nonspecific in elderly'},
-{name:'WBC',unit:'×10³/µL',young:[4.5,11],old:[3.5,11],note:'Blunted immune response may prevent leukocytosis in severe infection'},
-{name:'Sodium',unit:'mmol/L',young:[136,145],old:[133,145],note:'Hyponatremia common; drug-induced (SSRIs, diuretics, carbamazepine) is most common cause'},
-{name:'B12',unit:'pg/mL',young:[200,900],old:[300,900],note:'Low-normal (200-300) may be functionally deficient in elderly; check methylmalonic acid'}
-];
-let h=`<div class="sec-t">🔬 Lab Reference</div>
-<div class="sec-s">Age-adjusted ranges + Frailty impact on test interpretation</div>`;
-// Frailty slider
-h+=`<div class="card" style="padding:14px;margin-bottom:10px">
-<div style="font-weight:700;font-size:12px;margin-bottom:8px">Frailty Level (CFS): ${frailtyLevel}/9</div>
-<input type="range" min="1" max="9" value="${frailtyLevel}" class="frailty-slider" oninput="frailtyLevel=parseInt(this.value);render()">
-<div style="display:flex;justify-content:space-between;font-size:9px;color:#64748b;margin-top:4px">
-<span>1 — Very Fit</span><span>5 — Mildly Frail</span><span>9 — Terminal</span></div>
-<div style="margin-top:8px;padding:8px 10px;background:${frailtyLevel>=7?'#fef2f2':frailtyLevel>=5?'#fffbeb':'#ecfdf5'};border-radius:8px;font-size:10px;color:${frailtyLevel>=7?'#991b1b':frailtyLevel>=5?'#92400e':'#166534'};line-height:1.5">
-${frailtyLevel>=7?'⚠️ Severely frail: Standard lab cutoffs have reduced PPV. Many "abnormal" values are baseline. Focus on clinical significance, not numbers.':
-frailtyLevel>=5?'⚡ Frail: Age-adjusted ranges should be used. Higher false-positive rate with standard cutoffs. Consider pre-test probability carefully.':
-'✅ Fit: Standard age-adjusted ranges apply. Most screening tests retain reasonable test characteristics.'}</div>
-</div>`;
-// Lab cards
-labs.forEach(l=>{
-const ddimer=l.name==='D-dimer';
-const esr=l.name==='ESR';
-const oldHi=ddimer?75*10:esr?40:l.old[1];
-h+=`<div class="card" style="padding:12px;margin-bottom:8px">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-<span style="font-weight:700;font-size:12px">${l.name}</span>
-<span style="font-size:10px;color:#64748b">${l.unit}</span></div>
-<div style="display:flex;gap:12px;font-size:10px;margin-bottom:6px">
-<span style="color:#2563eb">Young: ${l.young[0]}–${l.young[1]}</span>
-<span style="color:#d97706">Elderly: ${l.old[0]}–${oldHi||'age×10'}${ddimer?' (age-adjusted)':''}</span></div>
-<div style="font-size:10px;line-height:1.5;color:#475569;padding:6px 8px;background:#f8fafc;border-radius:8px">${l.note}</div>
-${frailtyLevel>=5?`<div style="font-size:9px;color:#d97706;margin-top:4px">⚡ In frail patients: PPV of abnormal ${l.name} is reduced. Clinical correlation essential.</div>`:''}
-</div>`;
-});
-return h;
-}
-
-// ===== NORMAL AGING VS PATHOLOGY CHEAT SHEET =====
-let agingSearch='';
 
 
 // ===== RENDER =====
@@ -3703,7 +3557,7 @@ else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>{const b
 }
 function shareApp(){
 const url=location.href;
-if(navigator.share){navigator.share({title:'Pnimit Mega — Internal Medicine Board Prep',text:'Internal Medicine Board Prep — Harrison\'s 22e + Required Articlesulators + Spaced Repetition',url:url}).catch(()=>{});}
+if(navigator.share){navigator.share({title:'Pnimit Mega — Internal Medicine Board Prep',text:'Internal Medicine Board Prep — Harrison\'s 22e + Required Articles + Calculators + Spaced Repetition',url:url}).catch(()=>{});}
 else if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>alert('✅ Link copied!'));}
 }
 
@@ -3724,7 +3578,7 @@ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=
 
 
 // ===== FEEDBACK & DIAGNOSTICS =====
-const APP_VERSION='9.24';
+const APP_VERSION='9.25';
 {const hv=document.getElementById('headerVer');if(hv)hv.textContent='v'+APP_VERSION;}
 // Prevent accidental navigation during mock exam
 window.addEventListener('beforeunload',function(e){
@@ -3873,7 +3727,7 @@ const aiText=await callAI([{role:'user',content:`Internal medicine board exam. A
 const isWrong=aiText.startsWith('VERDICT: WRONG');
 const aiBox=document.getElementById('aiVerifyResult');
 if(aiBox){
-aiBox.innerHTML=`<div style="font-weight:700;margin-bottom:4px;color:${isWrong?'#dc2626':'#059669'}">${isWrong?'⚠️ AI agrees — answer key may be wrong':'✅ AI: answer key is correct'}</div><div>${aiText.replace(/VERDICT: (CORRECT|WRONG)/,'').trim()}</div>`;
+aiBox.innerHTML=`<div style="font-weight:700;margin-bottom:4px;color:${isWrong?'#dc2626':'#059669'}">${isWrong?'⚠️ AI agrees — answer key may be wrong':'✅ AI: answer key is correct'}</div><div>${sanitize(aiText.replace(/VERDICT: (CORRECT|WRONG)/,'').trim())}</div>`;
 aiBox.style.display='block';aiBox.style.background=isWrong?'#fef2f2':'#f0fdf4';aiBox.style.border=`1px solid ${isWrong?'#fecaca':'#bbf7d0'}`;
 }
 if(st){st.textContent=isWrong?'⚠️ AI confirmed error':'✅ AI: answer key OK';st.style.color=isWrong?'#dc2626':'#059669';}
@@ -3904,16 +3758,15 @@ ov.innerHTML=`<div style="max-width:420px;margin:0 auto;background:#fff;border-r
 </div>
 <div style="font-size:10px;color:#64748b;margin-bottom:16px">Israeli Internal Medicine Board Exam Prep (שלב א׳ פנימית) · P0064-2025 · Harrison's 22e · Works Offline</div>
 <div style="padding:10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;margin-bottom:14px">
-<div style="font-weight:700;font-size:11px;margin-bottom:6px;color:#1d4ed8">🆕 What's New in v9.18</div>
+<div style="font-weight:700;font-size:11px;margin-bottom:6px;color:#1d4ed8">🆕 What's New in v9.25</div>
 <div style="font-size:10px;line-height:1.7;color:#1e40af">
-<b>📊 Topic Tagging</b> — All 863 questions now tagged by subspecialty. Topic filters, weak-spot tracking, and study plan progress all work.<br>
-<b>📝 24 Study Notes</b> — Comprehensive notes for every IM topic: Cards, Pulm, GI, Nephro, Neuro, Heme, ID, Endo, Rheum, ICU, Onc, Tox, Periop, Derm, Allergy, Fluids, Pain, Vascular.<br>
-<b>🃏 85 Flashcards</b> — High-yield cards across all subspecialties + landmark trials.<br>
-<b>💊 Drug Checker</b> — 53 drugs with ACB scores, Beers flags, and STOPP interactions.<br>
-<b>📋 IM Study Plan</b> — 4-tier study plan organized by internal medicine subspecialties with Harrison's chapter refs.<br>
-<b>📄 Articles Tab</b> — Direct access to 10 required NEJM/Lancet articles.<br>
+<b>📊 901 שאלות</b> — All questions tagged by 24 subspecialties. 100 flashcards, 24 notes, 53 drugs.<br>
+<b>💊 Drugs Tab</b> — Drug checker with ACB scores, Beers flags, and STOPP interactions now in nav bar.<br>
+<b>🔒 Security</b> — AI response sanitization for XSS protection.<br>
+<b>🧹 Dead Code Cleanup</b> — Removed geriatrics-specific code (EOL tree, lab overlay).<br>
+<b>📄 Articles</b> — 10 required NEJM/Lancet articles with direct access.<br>
 <b>✅ AI Proxy</b> — All AI features work without a personal API key.<br>
-<b>🔧 CI Pipeline</b> — 10 automated checks on every push.
+<b>🧪 48 Tests</b> — Vitest test suite with data integrity, app integrity, and SW checks.
 </div></div>
 ${sec('Quiz Filters','📝','#059669',
 '<b>הכל</b> — All questions, shuffled<br>'+

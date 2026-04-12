@@ -6,7 +6,7 @@
 
 - **Live URL**: https://eiasash.github.io/InternalMedicine/
 - **Main file**: `pnimit-mega.html` (~253 KB, ~4,100 lines, self-contained HTML/CSS/JS)
-- **App version**: v9.22
+- **App version**: v9.25
 - **Data**: JSON files in `data/` directory, loaded lazily at runtime
 - **Deployment**: Push to `main` → GitHub Pages live
 - **Sibling app**: Shlav A Mega (geriatrics) at Eiasash/Geriatrics — same engine, separate data
@@ -37,17 +37,17 @@ Data is loaded at runtime from `data/*.json` files. The service worker (`sw.js`)
 
 ```
 /
-├── pnimit-mega.html        # Main app (THE file — all HTML/CSS/JS, v9.22)
+├── pnimit-mega.html        # Main app (THE file — all HTML/CSS/JS, v9.25)
 ├── index.html               # GitHub Pages redirect → pnimit-mega.html
-├── sw.js                    # Service worker (offline caching, cache: pnimit-v1.3)
+├── sw.js                    # Service worker (offline caching, cache: pnimit-v9.25)
 ├── manifest.json            # PWA manifest
 │
 ├── data/                    # Lazy-loaded JSON data — single source of truth
-│   ├── questions.json       # 863 MCQs (primary runtime source)
-│   ├── notes.json           # 8 study topic notes
-│   ├── flashcards.json      # 33 flashcards
+│   ├── questions.json       # 913 MCQs (primary runtime source)
+│   ├── notes.json           # 24 study topic notes
+│   ├── flashcards.json      # 100 flashcards
 │   ├── drugs.json            # 53 drugs with ACB scores, Beers flags, STOPP interactions
-│   ├── tabs.json            # 9 tab definitions for app navigation
+│   ├── tabs.json            # 10 tab definitions for app navigation
 │   └── topics.json          # 24 topic keyword mappings for auto-tagging
 │
 ├── questions/               # Question images for exams with figures
@@ -148,29 +148,21 @@ No build step needed. Edit and refresh.
 
 ### Service Worker Versioning
 - `APP_VERSION` in `pnimit-mega.html` must match the cache version in `sw.js`
-- Currently: app=`9.14`, sw.js cache key=`pnimit-v9.22` (synced)
+- Currently: app=`9.25`, sw.js cache key=`pnimit-v9.25` (synced)
 - Update both when making changes to ensure users get cache-busted
 
 ---
 
 ## Testing
 
-**Status: NO TESTS EXIST** — this is the highest-priority gap.
+**Status: 48 tests across 3 files** — CI via GitHub Actions (15 checks).
 
-### Recommended test setup (model after Geriatrics sibling)
+### Test suite
 
-```bash
-npm init -y
-npm install -D vitest
-# Add "test": "vitest run" to package.json scripts
-```
-
-### Minimum test suite to create
-
-| File | Tests Needed | Description |
-|------|-------------|-------------|
+| File | Tests | Description |
+|------|-------|-------------|
 | `tests/dataIntegrity.test.js` | ~25 | Question schema, duplicates, topic coverage, notes, flashcards, topics cross-referential integrity |
-| `tests/appIntegrity.test.js` | ~10 | HTML structure (RTL, viewport, PWA), SW version sync, security checks (eval, innerHTML), manifest |
+| `tests/appIntegrity.test.js` | ~13 | HTML structure (RTL, viewport, PWA), SW version sync, security checks (eval, innerHTML), manifest |
 | `tests/serviceWorker.test.js` | ~10 | SW cache config, URL lists, file existence |
 
 ### Data validation tests (must cover)
@@ -180,7 +172,7 @@ npm install -D vitest
 | JSON parse validity | questions, notes, flashcards, topics, tabs |
 | Question count | Must be > 800 |
 | Question schema | `q` (string), `o` (array >= 2), `c` (valid index), `ti` (int 0–23) |
-| All 863 questions have explanations | `e` field present |
+| All 913 questions have explanations | `e` field present |
 | Notes schema | `topic` and `notes` fields present |
 | Flashcards schema | `f` and `b` fields present |
 | Duplicate detection | First 80 chars of question text (conflicting answers flagged) |
@@ -197,8 +189,8 @@ Every feature, improvement, or bug fix MUST include new or updated tests:
 - New app feature → integrity test for the feature's HTML/JS structure
 - After adding tests, update the test count in this section
 
-### CI Pipeline (to create)
-Model after Geriatrics `.github/workflows/ci.yml` — should run on push to `main` and all PRs:
+### CI Pipeline
+GitHub Actions workflow runs on push to `main` and all PRs (15 checks):
 1. JSON parse validity for all data files
 2. Question schema validation
 3. Duplicate detection (conflicting answers = fatal, same answers = warning)
@@ -220,9 +212,10 @@ Model after Geriatrics `.github/workflows/ci.yml` — should run on push to `mai
 | May 2024 | 98 | `May24` |
 | October 2024 | 98 | `Oct24` |
 | June 2025 | 149 | `Jun25` |
-| **Total** | **863** | |
+| Harrison (AI) | 50+ | `Harrison` |
+| **Total** | **913** | |
 
-All 863 questions have AI-generated explanations (`e` field).
+All 913 questions have AI-generated explanations (`e` field).
 
 ---
 
@@ -293,7 +286,7 @@ GitHub Pages updates within ~60 seconds.
 | Metric | Value |
 |--------|-------|
 | Main app LOC | ~4,100 |
-| Questions | 901 (all with explanations) |
+| Questions | 913 (all with explanations) |
 | Topics | 24 |
 | Notes | 24 |
 | Flashcards | 100 |
@@ -301,19 +294,19 @@ GitHub Pages updates within ~60 seconds.
 | Past exams | 7 sessions (2020–2025) |
 | Harrison chapters | ~69 PDFs |
 | Articles | 10 |
-| Test files | 0 (gap) |
-| Tests | 0 (gap) |
-| CI pipeline | None (gap) |
+| Test files | 3 |
+| Tests | 48 |
+| CI pipeline | GitHub Actions (15 checks) |
 
 ---
 
 ## Known Issues
 
-- ~~APP_VERSION / SW cache mismatch~~ — FIXED: Both synced at v9.22
-- **No tests**: Highest-priority gap — see Testing section for recommended setup
-- **No CI pipeline**: No GitHub Actions workflow — see Testing section
-- **No package.json**: Needed for test runner (vitest)
-- **Topic auto-tagging**: All questions currently have `ti` field but topic distribution is unknown until tests validate
+- ~~APP_VERSION / SW cache mismatch~~ — FIXED: Both synced at v9.25
+- ~~No tests~~ — FIXED: 48 tests across 3 files
+- ~~No CI pipeline~~ — FIXED: GitHub Actions (15 checks)
+- ~~No package.json~~ — FIXED: vitest configured
+- **Topic auto-tagging**: Topic distribution validated by CI; all 24 topics have >= 5 questions
 
 ---
 
