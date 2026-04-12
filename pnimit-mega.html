@@ -680,6 +680,7 @@ _sessionOk+=correct?1:0;_sessionNo+=correct?0:1;
 if(correct&&QZ[qIdx])_sessionBest[QZ[qIdx].ti]=((_sessionBest[QZ[qIdx].ti]||0)+1);
 if(!correct&&QZ[qIdx])_sessionWorse[QZ[qIdx].ti]=((_sessionWorse[QZ[qIdx].ti]||0)+1);
 qStartTime=Date.now();
+trackDailyActivity();
 save();
 }
 function isChronicFail(qIdx){
@@ -692,6 +693,60 @@ return lowAccuracy||highDifficulty;
 function getDueQuestions(){
 const now=Date.now();
 return Object.entries(S.sr).filter(([k,v])=>v.next<=now).map(([k])=>parseInt(k)).slice(0,20);
+}
+// ===== RESCUE DRILL =====
+function getWeakTopics(n=3){
+const stats=getTopicStats();
+const scored=stats.map((s,ti)=>({ti,pct:s.tot?Math.round(s.ok/s.tot*100):null,tot:s.tot,ok:s.ok}))
+  .filter(s=>s.tot>=3)
+  .sort((a,b)=>a.pct-b.pct);
+return scored.slice(0,n);
+}
+function buildRescuePool(){
+const weak=getWeakTopics(3);
+if(!weak.length){alert('Not enough data yet \u2014 answer more questions first');return;}
+const rescueQs=[];
+weak.forEach(w=>{
+  const topicQs=QZ.map((q,i)=>({i,q})).filter(x=>x.q.ti===w.ti);
+  topicQs.sort((a,b)=>{
+    const sa=S.sr[a.i],sb=S.sr[b.i];
+    const pa=sa&&sa.tot?(sa.ok/sa.tot):0.5;
+    const pb=sb&&sb.tot?(sb.ok/sb.tot):0.5;
+    return pa-pb;
+  });
+  rescueQs.push(...topicQs.slice(0,7).map(x=>x.i));
+});
+for(let i=rescueQs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rescueQs[i],rescueQs[j]]=[rescueQs[j],rescueQs[i]];}
+pool=rescueQs;qi=0;sel=null;ans=false;
+filt='rescue';render();
+}
+// ===== ACTIVITY TRACKING =====
+function trackDailyActivity(){
+if(!S.dailyAct)S.dailyAct={};
+const today=new Date().toISOString().slice(0,10);
+if(!S.dailyAct[today])S.dailyAct[today]={q:0,ok:0};
+S.dailyAct[today].q++;
+const keys=Object.keys(S.dailyAct).sort();
+while(keys.length>90){delete S.dailyAct[keys.shift()];}
+}
+// ===== SPACED READING TRACKER =====
+function trackChapterRead(source,ch){
+if(!S.chReads)S.chReads={};
+const key=source+'_'+ch;
+S.chReads[key]=Date.now();
+save();
+}
+function getChaptersDueForReading(source,dayThreshold=30){
+if(!S.chReads)return[];
+const now=Date.now();
+const due=[];
+Object.entries(S.chReads).forEach(([key,ts])=>{
+  if(!key.startsWith(source+'_'))return;
+  const ch=key.split('_')[1];
+  const daysSince=Math.floor((now-ts)/86400000);
+  if(daysSince>=dayThreshold)due.push({ch,daysSince,ts});
+});
+return due.sort((a,b)=>b.daysSince-a.daysSince);
 }
 
 const HARRISON_PDF_MAP={"14":"harrison/Ch14_Pain_Pathophysiology_and_Management.pdf","15":"harrison/Ch15_Chest_Discomfort.pdf","16":"harrison/Ch16_Abdominal_Pain.pdf","17":"harrison/Ch17_Headache.pdf","18":"harrison/Ch18_Low_back_pain.pdf","20":"harrison/Ch20_Fever.pdf","22":"harrison/Ch22_Fever_of_Unknown_Origin.pdf","26":"harrison/Ch026_Neurologic_Causes_of_Weakness_and_Paralysis.pdf","30":"harrison/Ch30_Coma.pdf","39":"harrison/Ch39_Dyspnea.pdf","40":"harrison/Ch40_Cough.pdf","41":"harrison/Ch41_Hemoptysis.pdf","42":"harrison/Ch42_Hypoxia_and_Cyanosis.pdf","43":"harrison/Ch43_Edema.pdf","48":"harrison/Ch48_Nausea_Vomiting_and_Indigestion.pdf","49":"harrison/Ch49_Diarrhea_and_Constipation.pdf","50":"harrison/Ch50_Unintentional_Weight_Loss.pdf","51":"harrison/Ch51_Gastrointestinal_Bleeding.pdf","52":"harrison/Ch52_Jaundice.pdf","53":"harrison/Ch53_Abdominal_Swelling_and_Ascites.pdf","55":"harrison/Ch55_Azotemia_and_Urinary_Abnormalities.pdf","56":"harrison/Ch56_Fluid_and_Electrolyte_Disturbances.pdf","57":"harrison/Ch57_Hypercalcemia_and_Hypocalcemia.pdf","58":"harrison/Ch58_Acidosis_and_Alkalosis.pdf","66":"harrison/Ch66_Anemia_and_Polycythemia.pdf","67":"harrison/Ch67_Disorders_of_Granulocytes_and_Monocytes.pdf","69":"harrison/Ch69_Bleeding_and_Thrombosis.pdf","70":"harrison/Ch70_Enlargement_of_Lymph_Nodes_and_Spleen.pdf","79":"harrison/Ch79_Infections_in_Patients_with_Cancer.pdf","80":"harrison/Ch80_Oncologic_Emergencies.pdf","102":"harrison/Ch102_Iron_Deficiency_and_Other_Hypoproliferat.pdf","120":"harrison/Ch120_Disorders_of_Platelets_and_Vessel_Wall.pdf","121":"harrison/Ch121_Coagulation_Disorders.pdf","127":"harrison/Ch127_Approach_to_the_Acutely_Ill_Infected_Febrile_.pdf","133":"harrison/Ch133_Infective_Endocarditis.pdf","136":"harrison/Ch136_Osteomyelitis.pdf","142":"harrison/Ch142_Encephalitis.pdf","143":"harrison/Ch143_Acute_Meningitis.pdf","147":"harrison/Ch147_Infections_Acquired_in_Health_Care_Facilities.pdf","243":"harrison/Ch243_Approach_to_the_Patient_with_Possible_Cardiov.pdf","247":"harrison/Ch247_Electrocardiography.pdf","285":"harrison/Ch285_Non-ST-Segment_Elevation_Acute_Coronary_Syndr.pdf","286":"harrison/Ch286_ST-Segment_Elevation_Myocardial_Infarction.pdf","295":"harrison/Ch295_Approach_to_the_Patient_with_Disease_of_the_R.pdf","305":"harrison/Ch305_Disorders_of_the_Pleura.pdf","311":"harrison/Ch311_Approach_to_the_Patient_with_Critical_Illness.pdf","314":"harrison/Ch314_Approach_to_the_Patient_with_Shock.pdf","315":"harrison/Ch315_Sepsis_and_Septic_Shock.pdf","316":"harrison/Ch316_Cardiogenic_Shock_and_Pulmonary_Edema.pdf","317":"harrison/Ch317_Cardiovascular_Collapse,_Cardiac_Arrest,_and_.pdf","319":"harrison/Ch319_Approach_to_the_Patient_with_Renal_Disease_or.pdf","321":"harrison/Ch321_Acute_Kidney_Injury.pdf","322":"harrison/Ch322_Chronic_Kidney_Disease.pdf","332":"harrison/Ch332_Approach_to_the_Patient_with_Gastrointestinal.pdf","347":"harrison/Ch347_Approach_to_the_Patient_with_Liver_Disease.pdf","355":"harrison/Ch355_Cirrhosis_and_Its_Complications.pdf","375":"harrison/Ch375_The_Vasculitis_Syndromes.pdf","379":"harrison/Ch379_Sarcoidosis.pdf","382":"harrison/Ch382_Approach_to_Articular_and_Musculoskeletal_Dis.pdf","384":"harrison/Ch384_Gout_and_Other_Crystal-Associated_Arthropathi.pdf","387":"harrison/Ch387_Periarticular_Disorders_of_the_Extremities.pdf","388":"harrison/Ch388_Approach_to_the_Patient_with_Endocrine_Disord.pdf","433":"harrison/Ch433_Approach_to_the_Patient_with_Neurologic_Disea.pdf","436":"harrison/Ch436_Seizures_and_Epilepsy.pdf","437":"harrison/Ch437_Introduction_to_Cerebrovascular_Diseases.pdf","438":"harrison/Ch438_Ischemic_Stroke.pdf","439":"harrison/Ch439_Intracerebral_Hemorrhage.pdf","458":"harrison/Ch458_Guillain-Barr%23U00e9_Syndrome_and_Other_Immune.pdf","459":"harrison/Ch459_Myasthenia_Gravis_and_Other_Diseases_of_the_N.pdf"};
@@ -738,13 +793,15 @@ const _dataPromise = (async function loadDataArrays() {
     var ct = document.getElementById('ct');
     if (ct) ct.innerHTML = '<div style="padding:20px;color:red;text-align:center">' +
       '<b>Error loading data</b><br>Please refresh the page or clear cache.' +
-      '<br><small>' + error.message + '</small></div>';
+      '<br><small>' + sanitize(error.message) + '</small></div>';
     throw error;
   }
 })();
 // ===== END DATA LOADER =====
 
 let tab='quiz';
+let learnSub='study';
+let moreSub='calc';
 let libSec='harrison';
 let harChOpen=null,_harData=null,_harLoading=false;
 function renderTabs(){
@@ -782,6 +839,7 @@ pool=QZ.map((_,i)=>i).filter(i=>isExamTrap(i));
 for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
 qi=0;sel=null;ans=false;return;
 }
+if(filt==='rescue'){return;} // rescue pool already built by buildRescuePool()
 if(filt==='weak'){
 const ts=getTopicStats();
 const weakTopics=TOPICS.map((_,i)=>({i,s:ts[i]||{ok:0,no:0,tot:0}})).filter(p=>p.s.tot>=3).sort((a,b)=>{const pa=a.s.tot?a.s.ok/a.s.tot:0,pb=b.s.tot?b.s.ok/b.s.tot:0;return pa-pb;}).slice(0,10).map(p=>p.i);
@@ -1038,7 +1096,7 @@ const formatted=txt.replace(/✗/g,'<b style="color:#dc2626">✗</b>')
 _exCache[_apKey]=formatted;
 localStorage.setItem('pnimit_ex',JSON.stringify(_exCache));
 }catch(e){
-_exCache[_apKey]='<span style="color:#dc2626">Error: '+e.message.substring(0,40)+'</span>';
+_exCache[_apKey]='<span style="color:#dc2626">Error: '+sanitize(e.message).substring(0,40)+'</span>';
 }
 render();
 }
@@ -1088,7 +1146,7 @@ function toggleBk(){S.bk[pool[qi]]=!S.bk[pool[qi]];save();render();}
 
 // ===== EXAM MODE =====
 // Historical topic frequency weights (from 9 real exams, recency-weighted 2× for last 2)
-const EXAM_FREQ=[0,34,30,28,36,43,178,39,63,36,20,27,19,22,50,40,22,94,70,78,18,80,43,21,46,27,29,52,10,11,7,0,6,9,26,19,23,9,17,0];
+const EXAM_FREQ=[50,45,40,30,45,60,50,40,35,50,45,35,55,35,40,30,15,15,20,20,15,15,25,20];
 // target 100q: proportional + floor(1) for evergreen topics
 function buildMockExamPool(){
   const total=EXAM_FREQ.reduce((a,b)=>a+b,0);
@@ -1395,9 +1453,13 @@ h+=`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">`;
 const _trapCount=QZ.filter((_,i)=>isExamTrap(i)).length;
 const _aiCount=QZ.filter(q=>q.t==='Harrison').length;
 const filts=[['all',`הכל (${QZ.length})`],['2020','20'],['Jun21','Jun21'],['Jun22','Jun22'],['Jun23','Jun23'],['May24','May24'],['Oct24','Oct24'],['Jun25','Jun25'],['Harrison',`🤖 AI (${_aiCount})`],['hard','🔥 Hard'],['slow','⏱️ Slow'],['weak','🎯 Weak'],['due','🔄 Due'],['traps',`🪤 Traps (${_trapCount})`],['nbs','🎯 Next Best Step']];
+// Rescue Drill pill
+const _weakForPill=getWeakTopics(3);
+if(_weakForPill.length&&_weakForPill[0].pct!==null&&_weakForPill[0].pct<65)filts.push(['rescue','🚨 Rescue']);
 if(dueN>0)filts.push(['due',`🔄 Due (${dueN})`]);
 filts.forEach(([f,l])=>{
-if(f==='nbs')h+=`<span class="pill ${filt==='nbs'?'on':''}" onclick="startNextBestStep()">${l}</span>`;
+if(f==='rescue')h+=`<span class="pill ${filt==='rescue'?'on':''}" onclick="buildRescuePool()">${l}</span>`;
+else if(f==='nbs')h+=`<span class="pill ${filt==='nbs'?'on':''}" onclick="startNextBestStep()">${l}</span>`;
 else h+=`<span class="pill ${filt===f&&filt!=='topic'?'on':''}" onclick="setFilt('${f}')">${l}</span>`;
 });
 h+=`</div>`;
@@ -1827,10 +1889,6 @@ h+=`<div style="text-align:center;margin-top:12px;font-size:9px;color:#94a3b8">
 return h;
 }
 
-// ===== TEXTBOOK PDFs =====
-const HAZZARD_PARTS=[];
-// ===== Annotated PDFs =====
-const HAZZARD_MARKED_PARTS=[];
 // ===== TOPIC PRIORITY MATRIX (added to Track tab) =====
 function renderPriorityMatrix(){
   const TOPICS_L=TOPICS;
@@ -1952,7 +2010,7 @@ Answer in HEBREW (4-6 sentences). Cite the relevant Harrison chapter if known. F
     const txt=await callAI([{role:'user',content:prompt}],600,'sonnet');
     ans.innerHTML=sanitize(txt);
     document.getElementById('harrison-ai-q').value='';
-  }catch(e){ans.innerHTML='⚠️ Failed: '+e.message;}
+  }catch(e){ans.innerHTML='⚠️ Failed: '+sanitize(e.message);}
 }
 async function aiSummarizeChapter(chNum,chTitle){
   const box=document.getElementById('quiz-me-box');
@@ -1980,7 +2038,7 @@ Format as clean bullet points. Be concise and high-yield.`;
 <div style="font-weight:700;font-size:12px;color:#065f46;margin-bottom:8px">📝 Board Summary — Ch ${chNum}: ${chTitle}</div>
 <div style="font-size:11px;line-height:1.8;direction:rtl;text-align:right;white-space:pre-wrap">${sanitize(txt)}</div>
 </div>`;
-  }catch(e){box.innerHTML='<div style="color:#dc2626;font-size:11px;padding:8px">⚠️ Failed: '+e.message+'</div>';}
+  }catch(e){box.innerHTML='<div style="color:#dc2626;font-size:11px;padding:8px">⚠️ Failed: '+sanitize(e.message)+'</div>';}
 }
 function toggleAskAI(){
   const box=document.getElementById('ask-ai-box');
@@ -2013,7 +2071,7 @@ Answer concisely in HEBREW (3-5 sentences). Focus on board exam relevance. If th
     const txt=await callAI([{role:'user',content:prompt}],500,'sonnet');
     ansBox.innerHTML=sanitize(txt);
     inp.value='';
-  }catch(e){ansBox.innerHTML='⚠️ Failed: '+e.message;}
+  }catch(e){ansBox.innerHTML='⚠️ Failed: '+sanitize(e.message);}
 }
 async function quizMeOnChapter(chNum,chTitle){
   // Show loading state in Library
@@ -2065,7 +2123,7 @@ c = 0-based index of correct answer. No markdown, no preamble.`;
     h+='</div>';
     if(el)el.innerHTML=h;
   }catch(e){
-    if(el)el.innerHTML='<div style="color:#dc2626;font-size:11px;padding:8px">⚠️ Failed to generate: '+e.message+'</div>';
+    if(el)el.innerHTML='<div style="color:#dc2626;font-size:11px;padding:8px">⚠️ Failed to generate: '+sanitize(e.message)+'</div>';
   }
 }
 function addChapterQsToBank(jsonStr){
@@ -2091,25 +2149,6 @@ libTabs.forEach(t=>{
 h+=`<span class="pill ${libSec===t.id?'on':''}" style="white-space:nowrap;font-size:10px" onclick="libSec='${t.id}';render()">${t.l}</span>`;
 });
 h+=`</div>`;
-
-// ===== HAZZARD ALL PDFs =====
-if(libSec==='haz-pdf'){
-HAZZARD_MARKED_PARTS.forEach((p,i)=>{
-h+=`<a href="${p.file}" target="_blank" style="text-decoration:none;display:block">
-<div class="card" style="padding:12px;cursor:pointer;border-left:4px solid ${p.color}">
-<div style="display:flex;align-items:flex-start;gap:10px">
-<div style="width:32px;height:32px;border-radius:8px;background:${p.color}15;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-<span style="font-size:14px;font-weight:700;color:${p.color}">${i+1}</span></div>
-<div style="flex:1;min-width:0">
-<div style="font-size:11px;font-weight:700">${p.title}</div>
-<div style="font-size:9px;color:rgb(var(--sky));font-weight:600;margin-top:2px">${p.ch}</div>
-<div style="font-size:9px;color:#64748b;margin-top:2px">${p.desc}</div>
-${p.exam?`<div style="font-size:9px;color:${p.exam&&p.exam.includes('מוחרג')?'#dc2626':'#f59e0b'};font-weight:700;margin-top:3px">${p.exam}</div>`:''}
-</div>
-<span style="font-size:14px;color:#94a3b8;align-self:center">›</span>
-</div></div></a>`;
-});
-}
 
 // ===== HARRISON IN-APP READER =====
 if(libSec==='harrison'){
@@ -2230,6 +2269,7 @@ return h;
 
 async function openHarrisonChapter(ch){
 harChOpen=ch;
+trackChapterRead('har',ch);
 if(_harData){render();return;}
 if(_harLoading)return;
 _harLoading=true;
@@ -3139,6 +3179,54 @@ if(S.examDate||localStorage.getItem('pnimit_exam_date')){
 h+=`<div style="text-align:center;margin-bottom:10px"><button onclick="setExamDate()" style="font-size:9px;color:#94a3b8;background:none;border:none;cursor:pointer;text-decoration:underline">📅 Change exam date</button></div>`;
 }
 h+=renderExamTrendCard();
+// Rescue Drill CTA
+const _weakTopics=getWeakTopics(3);
+if(_weakTopics.length&&_weakTopics[0].pct!==null&&_weakTopics[0].pct<65){
+h+=`<div class="card" style="padding:14px;margin-bottom:10px;background:linear-gradient(135deg,#fef2f2,#fffbeb);border:1px solid #fecaca">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-size:24px">🚨</span>
+<div style="flex:1">
+<div style="font-weight:700;font-size:12px;color:#dc2626">Rescue Drill</div>
+<div style="font-size:10px;color:#64748b">${_weakTopics.map(w=>TOPICS[w.ti]+' ('+w.pct+'%)').join(' \u00b7 ')}</div>
+</div>
+<button onclick="buildRescuePool();tab='quiz';render()" class="btn" style="font-size:11px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:10px;font-weight:700">GO</button>
+</div></div>`;
+}
+// Activity Calendar (30 days)
+h+=`<div class="card" style="padding:14px;margin-bottom:10px">
+<div style="font-size:12px;font-weight:700;margin-bottom:8px">📅 Activity (last 30 days)</div>
+<div style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px">`;
+for(let _i=29;_i>=0;_i--){
+const _d=new Date();_d.setDate(_d.getDate()-_i);
+const _dk=_d.toISOString().slice(0,10);
+const _act=S.dailyAct&&S.dailyAct[_dk];
+const _qc=_act?_act.q:0;
+const _int=_qc===0?0:_qc<5?1:_qc<15?2:_qc<30?3:4;
+const _cols=['#f1f5f9','#dcfce7','#86efac','#22c55e','#15803d'];
+h+=`<div style="aspect-ratio:1;border-radius:3px;background:${_cols[_int]}" title="${_dk}: ${_qc} Qs"></div>`;
+}
+h+=`</div></div>`;
+// Spaced Reading Due
+const _harDue=getChaptersDueForReading('har',30);
+if(_harDue.length){
+h+=`<div class="card" style="padding:14px;margin-bottom:10px">
+<div style="font-size:12px;font-weight:700;margin-bottom:8px">📖 Chapters Due for Re-Reading</div>`;
+_harDue.slice(0,5).forEach(c=>{
+  const _chData=_harData&&_harData[c.ch];
+  const _title=_chData?_chData.title:'Ch '+c.ch;
+  h+=`<div onclick="tab='lib';libSec='harrison';openHarrisonChapter(${c.ch})" style="font-size:10px;padding:4px 0;cursor:pointer;color:#64748b;border-bottom:1px solid #f8fafc">📗 Ch ${c.ch}: ${_title} <span style="color:#7c3aed;font-weight:700">(${c.daysSince}d ago)</span></div>`;
+});
+h+=`</div>`;
+}
+// Leaderboard
+h+=`<div class="card" style="padding:14px;margin-bottom:10px">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+<span style="font-size:14px">🏆</span>
+<div style="font-size:12px;font-weight:700;flex:1">Leaderboard</div>
+<button onclick="showLeaderboard()" style="font-size:9px;padding:4px 10px;background:#f59e0b;color:#fff;border:none;border-radius:6px;cursor:pointer">Refresh</button>
+</div>
+<div id="leaderboard-box" style="font-size:10px;color:#94a3b8;text-align:center">Tap refresh to load</div>
+</div>`;
 h+=`<div class="sec-t">Progress</div><div class="sec-s">Syllabus · Bookmarks · Spaced Repetition</div>`;
 if(S.streak>0)h+=`<div style="text-align:center;margin-bottom:12px"><span class="streak-badge">🔥 ${S.streak} day${S.streak>1?'s':''} streak</span></div>`;
 const estScore=calcEstScore();
@@ -3437,7 +3525,7 @@ S.chat.push({role:'assistant',text:data.content[0].text});
 }catch(e){
 const offline=!navigator.onLine||e.message.includes('Failed to fetch');
 const timedOut=e.name==='AbortError';
-S.chat.push({role:'error',text:offline?'📡 אין חיבור לאינטרנט':timedOut?'⏱️ תם הזמן':'⚠️ '+e.message});
+S.chat.push({role:'error',text:offline?'📡 אין חיבור לאינטרנט':timedOut?'⏱️ תם הזמן':'⚠️ '+sanitize(e.message)});
 }
 chatLoading=false;save();render();
 setTimeout(function(){const el=document.getElementById('chat-msgs');if(el)el.scrollTop=el.scrollHeight;},50);
@@ -3447,6 +3535,113 @@ function sendChatStarter(text){const input=document.getElementById('chat-input')
 function clearChat(){S.chat=[];chatLoading=false;save();render();}
 
 // ===== SUPABASE CLOUD SYNC =====
+// ===== FEATURE: LEADERBOARD =====
+async function submitLeaderboardScore(){
+const totalAnswered=Object.values(S.sr||{}).reduce((a,s)=>a+(s.tot||0),0);
+const totalCorrect=Object.values(S.sr||{}).reduce((a,s)=>a+(s.ok||0),0);
+const streak=S.streak||0;
+const readiness=calcEstScore()||0;
+let uid=localStorage.getItem('pnimit_uid');
+if(!uid){uid='u'+Math.random().toString(36).slice(2,10);localStorage.setItem('pnimit_uid',uid);}
+const payload={uid,answered:totalAnswered,correct:totalCorrect,streak,readiness,ts:new Date().toISOString()};
+try{
+  await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Prefer':'resolution=merge-duplicates'},
+    body:JSON.stringify(payload)
+  });
+}catch(e){console.warn('Leaderboard submit failed',e);}
+}
+async function fetchLeaderboard(){
+try{
+  const res=await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard?select=uid,answered,correct,streak,readiness,ts&order=readiness.desc&limit=20',{
+    headers:{'apikey':SUPA_ANON}
+  });
+  return await res.json();
+}catch(e){console.warn('Leaderboard fetch failed',e);return[];}
+}
+let _leaderboardData=null;
+async function showLeaderboard(){
+const box=document.getElementById('leaderboard-box');
+if(!box)return;
+await submitLeaderboardScore();
+box.innerHTML='<div style="text-align:center;padding:8px;font-size:10px;color:#64748b">Loading...</div>';
+const data=await fetchLeaderboard();
+_leaderboardData=data;
+const myUid=localStorage.getItem('pnimit_uid')||'';
+let html='';
+if(!data.length){html='<div style="font-size:10px;color:#94a3b8;text-align:center">No data yet</div>';}
+else{
+data.forEach((r,i)=>{
+  const isMe=r.uid===myUid;
+  html+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9;${isMe?'background:#eff6ff;border-radius:8px;padding:6px 8px;margin:-2px -8px':''}">
+  <span style="font-size:12px;font-weight:800;color:${i<3?['#f59e0b','#94a3b8','#d97706'][i]:'#64748b'};min-width:20px">${i+1}</span>
+  <div style="flex:1;font-size:10px;font-weight:${isMe?'700':'400'}">${isMe?'You \u2b50':'User '+r.uid.slice(0,4)}</div>
+  <span style="font-size:10px;color:#64748b">${r.answered} Qs</span>
+  <span style="font-size:10px;font-weight:700;color:${r.readiness>=60?'#059669':'#d97706'}">${r.readiness}%</span>
+  <span style="font-size:10px">\U0001f525${r.streak}d</span>
+  </div>`;
+});
+}
+box.innerHTML=html;
+}
+// ===== FEATURE: FEEDBACK SYSTEM =====
+function renderFeedback(){
+let h='<div class="sec-t">\U0001f4a1 Feedback & Feature Requests</div>';
+h+='<div class="sec-s">Help improve Pnimit Mega for everyone. AI reviews every submission.</div>';
+h+='<div class="card" style="padding:16px;margin-bottom:12px">';
+h+='<div style="font-size:12px;font-weight:700;margin-bottom:8px">Submit Feedback</div>';
+h+='<select id="fb-type" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;margin-bottom:8px;background:#f8fafc">';
+h+='<option value="bug">\U0001f41b Bug Report</option>';
+h+='<option value="feature">\u2728 Feature Request</option>';
+h+='<option value="content">\U0001f4dd Content Fix (wrong answer/explanation)</option>';
+h+='<option value="ux">\U0001f3a8 UX/Design Improvement</option>';
+h+='<option value="other">\U0001f4ac Other</option>';
+h+='</select>';
+h+='<textarea id="fb-text" dir="auto" placeholder="Describe your feedback in detail..." style="width:100%;min-height:100px;padding:10px;border:1px solid #e2e8f0;border-radius:10px;font-size:12px;font-family:inherit;resize:vertical;margin-bottom:8px"></textarea>';
+h+='<button onclick="submitFeedbackForm()" class="btn" style="width:100%;padding:10px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer">\U0001f4e4 Submit Feedback</button>';
+h+='</div>';
+let fb=[];try{fb=JSON.parse(localStorage.getItem('pnimit_fb_sent')||'[]');}catch(e){}
+if(fb.length){
+h+='<div class="card" style="padding:14px">';
+h+='<div style="font-size:12px;font-weight:700;margin-bottom:8px">\U0001f4cb Your Submissions ('+fb.length+')</div>';
+fb.slice(-5).reverse().forEach(f=>{
+  h+='<div style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:10px">';
+  h+='<span style="font-weight:600">'+({bug:'\U0001f41b',feature:'\u2728',content:'\U0001f4dd',ux:'\U0001f3a8',other:'\U0001f4ac'}[f.type]||'\U0001f4ac')+' '+f.type+'</span>';
+  h+=' \u00b7 <span style="color:#64748b">'+new Date(f.ts).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'</span>';
+  h+='<div style="color:#475569;margin-top:2px;line-height:1.5">'+sanitize(f.text).slice(0,120)+(f.text.length>120?'...':'')+'</div>';
+  if(f.aiResponse){h+='<div style="color:#7c3aed;margin-top:4px;padding:6px 8px;background:#f5f3ff;border-radius:6px;font-size:9px;line-height:1.5">\U0001f916 '+sanitize(f.aiResponse)+'</div>';}
+  h+='</div>';
+});
+h+='</div>';
+}
+return h;
+}
+async function submitFeedbackForm(){
+const type=document.getElementById('fb-type')?.value||'other';
+const text=document.getElementById('fb-text')?.value?.trim();
+if(!text){alert('Please describe your feedback');return;}
+const entry={type,text,ts:Date.now(),version:APP_VERSION,uid:localStorage.getItem('pnimit_uid')||'anon'};
+let fb=[];try{fb=JSON.parse(localStorage.getItem('pnimit_fb_sent')||'[]');}catch(e){}
+fb.push(entry);
+localStorage.setItem('pnimit_fb_sent',JSON.stringify(fb));
+try{
+  await fetch(SUPA_URL+'/rest/v1/pnimit_feedback',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Prefer':'return=minimal'},
+    body:JSON.stringify({message:text,type,app_version:APP_VERSION})
+  });
+}catch(e){console.warn('Feedback submit failed',e);}
+try{
+  const aiText=await callAI([{role:'user',content:'A user submitted this feedback for a medical study app. Briefly acknowledge it and assess feasibility in 1-2 sentences. Type: '+type+'. Feedback: '+text}],300);
+  if(aiText){
+    fb[fb.length-1].aiResponse=aiText.slice(0,300);
+    localStorage.setItem('pnimit_fb_sent',JSON.stringify(fb));
+  }
+}catch(e){}
+render();
+}
+// ===== END FEEDBACK =====
 const _SB_URL='https://krmlzwwelqvlfslwltol.supabase.co';
 const _SB_KEY=SUPA_ANON;
 function _sbDeviceId(){let id=localStorage.getItem('pnimit_devid');if(!id){id='dev_'+Math.random().toString(36).slice(2,12);localStorage.setItem('pnimit_devid',id);}return id;}
@@ -3502,21 +3697,41 @@ const sv={srchi:document.getElementById('srchi')?.value,nfilt:document.getElemen
 if(tab!==lastTab){el.classList.remove('fade-in');void el.offsetWidth;el.classList.add('fade-in');window.scrollTo({top:0});lastTab=tab;}
 switch(tab){
 case'quiz':el.innerHTML=onCallMode?renderOnCall():renderQuiz();break;
-case'study':el.innerHTML=renderStudy();break;
+case'learn':
+  {const _subBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
+  [{id:'study',ic:'\U0001f4da',l:'Study'},{id:'flash',ic:'\U0001f0cf',l:'Cards'},{id:'drugs',ic:'\U0001f48a',l:'Drugs'}].map(s=>
+    '<button onclick="learnSub=\''+s.id+'\';render()" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(learnSub===s.id?'700':'400')+';cursor:pointer;background:'+(learnSub===s.id?'#fff':'transparent')+';color:'+(learnSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(learnSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
+  ).join('')+'</div>';
+  let _body='';
+  if(learnSub==='study')_body=renderStudy();
+  else if(learnSub==='flash')_body=renderFlash();
+  else if(learnSub==='drugs')_body=renderDrugs();
+  el.innerHTML=_subBar+_body;}break;
+case'study':tab='learn';learnSub='study';el.innerHTML='';render();break;
+case'flash':tab='learn';learnSub='flash';el.innerHTML='';render();break;
+case'drugs':tab='learn';learnSub='drugs';el.innerHTML='';render();break;
 case'lib':el.innerHTML=renderLibrary();break;
-case'flash':el.innerHTML=renderFlash();break;
 case'articles':libSec='articles';tab='lib';el.innerHTML=renderLibrary();break;
-case'drugs':el.innerHTML=renderDrugs();break;
-case'calc':el.innerHTML=renderCalc();break;
 // OSCE removed v9.9
 case'track':
-  // Save session summary when switching to track tab
   if(!_sessionSaved&&(_sessionOk+_sessionNo)>=5){
     saveSessionSummary();_sessionSaved=true;
   }
   el.innerHTML=renderTrack();break;
-case'search':el.innerHTML=renderSearch();break;
-case'chat':el.innerHTML=renderChat();break;
+case'more':
+  {const _moreBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
+  [{id:'calc',ic:'\U0001f9ee',l:'Calc'},{id:'search',ic:'\U0001f50d',l:'Search'},{id:'chat',ic:'\U0001f4ac',l:'Chat'},{id:'feedback',ic:'\U0001f4a1',l:'Feedback'}].map(s=>
+    '<button onclick="moreSub=\''+s.id+'\';render()" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(moreSub===s.id?'700':'400')+';cursor:pointer;background:'+(moreSub===s.id?'#fff':'transparent')+';color:'+(moreSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(moreSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
+  ).join('')+'</div>';
+  let _mBody='';
+  if(moreSub==='calc')_mBody=renderCalc();
+  else if(moreSub==='search')_mBody=renderSearch();
+  else if(moreSub==='chat')_mBody=renderChat();
+  else if(moreSub==='feedback')_mBody=renderFeedback();
+  el.innerHTML=_moreBar+_mBody;}break;
+case'calc':tab='more';moreSub='calc';el.innerHTML='';render();break;
+case'search':tab='more';moreSub='search';el.innerHTML='';render();break;
+case'chat':tab='more';moreSub='chat';el.innerHTML='';render();break;
 case'book':case'syl':tab='lib';el.innerHTML=renderLibrary();break;
 default:tab='quiz';el.innerHTML=renderQuiz();break;
 }
@@ -3578,7 +3793,25 @@ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=
 
 
 // ===== FEEDBACK & DIAGNOSTICS =====
-const APP_VERSION='9.31';
+const APP_VERSION='9.32';
+const CHANGELOG={
+'9.31':[
+'\U0001f4ca 1,169 \u05e9\u05d0\u05dc\u05d5\u05ea \u2014 All questions tagged by 24 subspecialties',
+'\U0001f48a Drugs Tab \u2014 Drug checker with ACB scores, Beers flags, STOPP interactions',
+'\U0001f512 Security \u2014 AI response sanitization for XSS protection',
+'\U0001f4c4 Articles \u2014 10 required NEJM/Lancet articles',
+'\u2705 AI Proxy \u2014 All AI features work without a personal API key'
+],
+'9.32':[
+'\U0001f6a8 Rescue Drill \u2014 Focused practice on your 3 weakest topics',
+'\U0001f4c5 Activity Calendar \u2014 30-day question activity heatmap',
+'\U0001f4d6 Spaced Reading \u2014 Track chapter reads + 30-day re-read reminders',
+'\U0001f3c6 Leaderboard \u2014 Anonymous global rankings via Supabase',
+'\U0001f4a1 Feedback System \u2014 Submit feedback with AI acknowledgment',
+'\U0001f5c2\ufe0f Tab Consolidation \u2014 10 \u2192 5 tabs: Quiz, Learn, Library, Track, More',
+'\U0001f4cb Dynamic Changelog \u2014 Version history in help overlay'
+]
+};
 const SYLLABUS_VERSION='P0064-2025';
 const SYLLABUS_DATE='2025-01-01';
 {const hv=document.getElementById('headerVer');if(hv)hv.textContent='v'+APP_VERSION;}
@@ -3760,16 +3993,10 @@ ov.innerHTML=`<div style="max-width:420px;margin:0 auto;background:#fff;border-r
 <button onclick="this.closest('#help-overlay').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8" aria-label="Close help">✕</button>
 </div>
 <div style="font-size:10px;color:#64748b;margin-bottom:16px">Israeli Internal Medicine Board Exam Prep (שלב א׳ פנימית) · P0064-2025 · Harrison's 22e · Works Offline</div>
-<div style="padding:10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;margin-bottom:14px">
-<div style="font-weight:700;font-size:11px;margin-bottom:6px;color:#1d4ed8">🆕 What's New in v9.31</div>
-<div style="font-size:10px;line-height:1.7;color:#1e40af">
-<b>📊 1,169 שאלות</b> — All questions tagged by 24 subspecialties. 155 flashcards, 24 notes, 53 drugs.<br>
-<b>💊 Drugs Tab</b> — Drug checker with ACB scores, Beers flags, and STOPP interactions now in nav bar.<br>
-<b>🔒 Security</b> — AI response sanitization for XSS protection.<br>
-<b>🧹 Dead Code Cleanup</b> — Removed geriatrics-specific code (EOL tree, lab overlay).<br>
-<b>📄 Articles</b> — 10 required NEJM/Lancet articles with direct access.<br>
-<b>✅ AI Proxy</b> — All AI features work without a personal API key.<br>
-<b>🧪 48 Tests</b> — Vitest test suite with data integrity, app integrity, and SW checks.
+<div style="padding:10px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:10px;margin-bottom:14px">
+<div style="font-weight:700;font-size:11px;margin-bottom:6px;color:#065f46">🆕 What's New in v\${APP_VERSION}</div>
+<div style="font-size:10px;line-height:1.7;color:#047857">
+\${(CHANGELOG[APP_VERSION]||CHANGELOG[Object.keys(CHANGELOG).sort().pop()]||['No changelog available']).map(c=>'<b>'+c.split(' — ')[0]+'</b>'+(c.includes(' — ')?' — '+c.split(' — ').slice(1).join(' — '):'')).join('<br>')}
 </div></div>
 ${sec('Quiz Filters','📝','#059669',
 '<b>הכל</b> — All questions, shuffled<br>'+

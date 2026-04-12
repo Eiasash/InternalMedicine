@@ -5,9 +5,9 @@
     "l": "Quiz"
   },
   {
-    "id": "study",
+    "id": "learn",
     "ic": "📚",
-    "l": "Study"
+    "l": "Learn"
   },
   {
     "id": "lib",
@@ -15,38 +15,13 @@
     "l": "Library"
   },
   {
-    "id": "flash",
-    "ic": "🃏",
-    "l": "Cards"
-  },
-  {
-    "id": "articles",
-    "ic": "📄",
-    "l": "Articles"
-  },
-  {
-    "id": "drugs",
-    "ic": "💊",
-    "l": "Drugs"
-  },
-  {
-    "id": "calc",
-    "ic": "🧮",
-    "l": "Calc"
-  },
-  {
     "id": "track",
-    "ic": "📊",
+    "ic": "���",
     "l": "Track"
   },
   {
-    "id": "search",
-    "ic": "🔍",
-    "l": "Search"
-  },
-  {
-    "id": "chat",
-    "ic": "💬",
-    "l": "Chat"
+    "id": "more",
+    "ic": "⚙️",
+    "l": "More"
   }
 ]
