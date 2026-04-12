@@ -398,5 +398,225 @@
   {
     "f": "Upadacitinib for giant cell arteritis (SELECT-GCA)",
     "b": "P0064 Article: JAK inhibitor upadacitinib showed sustained remission in GCA, allowing glucocorticoid tapering. Novel steroid-sparing option for relapsing/refractory GCA."
+  },
+  {
+    "f": "What are the diagnostic criteria for STEMI on ECG?",
+    "b": "≥1mm ST elevation in 2 contiguous limb leads OR ≥2mm ST elevation in 2 contiguous precordial leads OR new LBBB"
+  },
+  {
+    "f": "What troponin threshold indicates high-risk NSTEMI requiring urgent catheterization?",
+    "b": ">5x upper limit of normal (ULN) or dynamic rise >50% baseline"
+  },
+  {
+    "f": "What are the Light's criteria for exudative pleural effusion?",
+    "b": "Pleural/serum protein >0.5 OR pleural/serum LDH >0.6 OR pleural LDH >2/3 upper normal serum LDH"
+  },
+  {
+    "f": "What PaO2/FiO2 ratio defines severe ARDS?",
+    "b": "PaO2/FiO2 <100 mmHg with PEEP ≥5 cmH2O"
+  },
+  {
+    "f": "What Child-Pugh score indicates decompensated cirrhosis?",
+    "b": "Class B (7-9 points) or Class C (10-15 points)"
+  },
+  {
+    "f": "What MELD score threshold prioritizes liver transplant evaluation?",
+    "b": "MELD ≥15 (3-month mortality >6%)"
+  },
+  {
+    "f": "What eGFR defines stage 4 CKD requiring nephrology referral?",
+    "b": "eGFR 15-29 mL/min/1.73m²"
+  },
+  {
+    "f": "What urinary albumin level defines macroalbuminuria in diabetics?",
+    "b": "Albumin-to-creatinine ratio >300 mg/g"
+  },
+  {
+    "f": "What hemoglobin threshold defines severe anemia requiring urgent evaluation?",
+    "b": "Hgb <7 g/dL or acute drop >2 g/dL"
+  },
+  {
+    "f": "What platelet count indicates severe thrombocytopenia with bleeding risk?",
+    "b": "Platelets <10,000/μL (spontaneous bleeding risk)"
+  },
+  {
+    "f": "What fever pattern suggests bacterial vs viral infection in neutropenic patients?",
+    "b": "Single temperature ≥38.3°C OR sustained ≥38°C for >1 hour indicates neutropenic fever"
+  },
+  {
+    "f": "What procalcitonin level strongly suggests bacterial infection?",
+    "b": "Procalcitonin >0.5 ng/mL (>2.0 ng/mL indicates severe sepsis)"
+  },
+  {
+    "f": "What Glasgow Coma Scale score indicates severe brain injury?",
+    "b": "GCS ≤8 (requires intubation and ICP monitoring)"
+  },
+  {
+    "f": "What NIH Stroke Scale score indicates large vessel occlusion requiring thrombectomy?",
+    "b": "NIHSS ≥6 (sensitivity 66% for LVO)"
+  },
+  {
+    "f": "What HbA1c target is recommended for most diabetic adults?",
+    "b": "HbA1c <7% (53 mmol/mol) for most adults"
+  },
+  {
+    "f": "What TSH level indicates subclinical hypothyroidism?",
+    "b": "TSH 4.5-10 mIU/L with normal free T4"
+  },
+  {
+    "f": "What ejection fraction threshold defines HFrEF requiring ACE inhibitor?",
+    "b": "LVEF ≤40% with optimal medical therapy"
+  },
+  {
+    "f": "What NT-proBNP level rules out heart failure in acute setting?",
+    "b": "NT-proBNP <300 pg/mL (age <50) or <450 pg/mL (age 50-75) or <900 pg/mL (age >75)"
+  },
+  {
+    "f": "What FEV1/FVC ratio confirms COPD diagnosis?",
+    "b": "Post-bronchodilator FEV1/FVC <0.70"
+  },
+  {
+    "f": "What D-dimer threshold has high NPV for PE in low-risk patients?",
+    "b": "D-dimer <500 ng/mL with Wells score <4 or PE unlikely"
+  },
+  {
+    "f": "What ALT elevation indicates drug-induced liver injury requiring discontinuation?",
+    "b": "ALT >3x ULN with symptoms OR ALT >5x ULN asymptomatic"
+  },
+  {
+    "f": "What serum creatinine rise defines acute kidney injury?",
+    "b": "≥0.3 mg/dL increase within 48h OR ≥1.5x baseline within 7 days OR urine <0.5 mL/kg/h for 6h"
+  },
+  {
+    "f": "What INR threshold requires vitamin K reversal in major bleeding?",
+    "b": "INR >1.5 with major bleeding OR INR >10 without bleeding"
+  },
+  {
+    "f": "What lactate level indicates tissue hypoperfusion in sepsis?",
+    "b": "Serum lactate >2 mmol/L (18 mg/dL)"
+  },
+  {
+    "f": "What glucose level defines severe hypoglycemia requiring IV dextrose?",
+    "b": "Blood glucose <54 mg/dL (3.0 mmol/L) with altered mental status"
+  },
+  {
+    "f": "What are the classic findings and ANCA pattern associated with Granulomatosis with Polyangiitis (GPA)?",
+    "b": "Upper/lower respiratory tract involvement, glomerulonephritis, and systemic necrotizing vasculitis. c-ANCA (anti-PR3) positive in 90% of generalized disease, 60% in limited disease."
+  },
+  {
+    "f": "What are the SLE criteria that constitute neurologic involvement?",
+    "b": "Seizures (without other cause), psychosis (without other cause), mononeuritis multiplex, myelitis, peripheral neuropathy, or confusional state."
+  },
+  {
+    "f": "What are the indications for uric acid lowering therapy in gout?",
+    "b": "≥2 attacks per year, tophi, CKD stage 2 or worse, or history of nephrolithiasis. Target uric acid <6 mg/dL (<5 mg/dL if tophi present)."
+  },
+  {
+    "f": "What are the laboratory criteria for tumor lysis syndrome?",
+    "b": "≥2 of: uric acid ≥8 mg/dL or 25% increase, potassium ≥6 mEq/L or 25% increase, phosphate ≥4.5 mg/dL or 25% increase, calcium ≤7 mg/dL or 25% decrease."
+  },
+  {
+    "f": "What defines high-risk febrile neutropenia requiring inpatient management?",
+    "b": "ANC <500, prolonged neutropenia expected (>7 days), significant comorbidities, MASCC score <21, or hemodynamic instability."
+  },
+  {
+    "f": "What are the classic clinical findings of superior vena cava syndrome?",
+    "b": "Facial/upper extremity edema, dyspnea, cough, chest pain, headache, and distended neck/chest veins. Most commonly caused by lung cancer or lymphoma."
+  },
+  {
+    "f": "What are the hemodynamic parameters that distinguish cardiogenic from distributive shock?",
+    "b": "Cardiogenic: Low CO, high SVR, high PCWP. Distributive: High CO, low SVR, low/normal PCWP. Both have low MAP."
+  },
+  {
+    "f": "What are the Berlin criteria for moderate ARDS?",
+    "b": "PaO2/FiO2 100-200 mmHg, bilateral opacities on chest imaging, respiratory failure not fully explained by cardiac failure, PEEP ≥5 cmH2O."
+  },
+  {
+    "f": "What is the initial ventilator strategy for ARDS?",
+    "b": "Low tidal volume (6 mL/kg ideal body weight), plateau pressure <30 cmH2O, PEEP ≥5 cmH2O, FiO2 to maintain SpO2 88-95%."
+  },
+  {
+    "f": "What is the antidote for acetaminophen poisoning and when should it be given?",
+    "b": "N-acetylcysteine (NAC). Give if: toxic level on nomogram, >150 mg/kg ingested, or any hepatotoxicity. Most effective within 8 hours but beneficial up to 48 hours."
+  },
+  {
+    "f": "What are the classic features of anticholinergic toxidrome?",
+    "b": "Hot as a hare (hyperthermia), blind as a bat (mydriasis), dry as a bone (anhidrosis), red as a beet (flushing), mad as a hatter (delirium)."
+  },
+  {
+    "f": "What antidote is used for beta-blocker overdose and what is the mechanism?",
+    "b": "High-dose insulin with dextrose (hyperinsulinemia-euglycemia therapy). Insulin enhances cardiac myocyte glucose uptake and contractility, overcoming beta-blockade."
+  },
+  {
+    "f": "What are the components and scoring of the Revised Cardiac Risk Index (RCRI)?",
+    "b": "1 point each: high-risk surgery, CAD, CHF, CVA/TIA, diabetes on insulin, creatinine >2 mg/dL. 0 points = 0.4% risk, 1 point = 1% risk, 2 points = 2.4% risk, ≥3 points = 5.4% risk."
+  },
+  {
+    "f": "Which cardiac medications should be continued perioperatively?",
+    "b": "Beta-blockers (if chronic), ACE inhibitors/ARBs (continue vs hold controversial), statins (continue), aspirin (continue for secondary prevention unless high bleeding risk)."
+  },
+  {
+    "f": "What are the perioperative management recommendations for diabetes medications?",
+    "b": "Hold metformin 48h before (GFR <30) or day of surgery (GFR >30), continue basal insulin at 75-80% dose, hold sulfonylureas day of surgery, hold SGLT2 inhibitors 3 days before."
+  },
+  {
+    "f": "What is the key difference in mortality between SJS and TEN, and what scoring system predicts TEN mortality?",
+    "b": "SJS has <5% mortality while TEN has 25-35% mortality. SCORTEN score predicts TEN mortality based on 7 factors: age >40, malignancy, tachycardia >120, initial detachment >10%, serum urea >10mmol/L, serum glucose >14mmol/L, and bicarbonate <20mmol/L."
+  },
+  {
+    "f": "What are the most common drugs causing SJS/TEN and what is the typical onset timing?",
+    "b": "Most common: allopurinol, anticonvulsants (phenytoin, carbamazepine), sulfonamides, NSAIDs, and antibiotics (especially beta-lactams). Typical onset is 1-3 weeks after drug initiation, but can occur within days for previously exposed patients."
+  },
+  {
+    "f": "What are the criteria for anaphylaxis diagnosis according to current guidelines?",
+    "b": "1) Acute onset with skin/mucosa symptoms PLUS respiratory compromise or hypotension, OR 2) ≥2 systems involved after likely allergen exposure (skin, respiratory, GI, cardiovascular), OR 3) Hypotension after known allergen exposure."
+  },
+  {
+    "f": "What is the proper epinephrine dosing for anaphylaxis and when should it be repeated?",
+    "b": "Adults: 0.3-0.5mg IM (1:1000) in anterolateral thigh. Children: 0.01mg/kg (max 0.3mg). Repeat every 5-15 minutes if no improvement. IV epinephrine (1:10,000) only for cardiovascular collapse with intensive monitoring."
+  },
+  {
+    "f": "How do you differentiate hereditary angioedema from allergic angioedema?",
+    "b": "Hereditary angioedema: no urticaria, asymmetric swelling, family history, C1 esterase inhibitor deficiency, doesn't respond to antihistamines/steroids. Allergic: associated urticaria, responds to antihistamines, elevated tryptase acutely."
+  },
+  {
+    "f": "What are the classic risk factors and presentation of acute aortic dissection?",
+    "b": "Risk factors: hypertension, connective tissue disorders (Marfan), bicuspid aortic valve, cocaine use. Presentation: sudden onset 'tearing' chest/back pain, pulse deficits, blood pressure differentials >20mmHg between arms, new aortic regurgitation murmur."
+  },
+  {
+    "f": "What is the size threshold for elective AAA repair and what are the surveillance intervals?",
+    "b": "Elective repair: >5.5cm in men, >5.0cm in women, or expansion >1cm/year. Surveillance: <3cm every 2-3 years, 3.0-3.9cm yearly, 4.0-5.4cm every 6 months."
+  },
+  {
+    "f": "What is the maximum rate of sodium correction in hyponatremia and what are the risks of overcorrection?",
+    "b": "Maximum correction: 6-8 mEq/L in first 24 hours, 18 mEq/L in 48 hours. Risk of overcorrection: osmotic demyelination syndrome (central pontine myelinolysis) causing quadriplegia, pseudobulbar palsy, and altered consciousness."
+  },
+  {
+    "f": "What are the diagnostic criteria for SIADH?",
+    "b": "1) Hyponatremia with hypoosmolality (serum osm <280), 2) Urine osmolality >100-150 mOsm/kg, 3) Euvolemic state, 4) Normal kidney, adrenal, and thyroid function, 5) No recent diuretic use."
+  },
+  {
+    "f": "Describe the WHO analgesic ladder and when to use each step.",
+    "b": "Step 1: Non-opioids (acetaminophen, NSAIDs) for mild pain (1-3/10). Step 2: Weak opioids (codeine, tramadol) + non-opioids for moderate pain (4-6/10). Step 3: Strong opioids (morphine, oxycodone) + non-opioids for severe pain (7-10/10)."
+  },
+  {
+    "f": "What is the morphine equivalent conversion ratio for oxycodone and fentanyl?",
+    "b": "Oxycodone to morphine: 1.5:1 ratio (10mg oxycodone = 15mg morphine). Fentanyl patch: 1mcg/hr = 2mg oral morphine per day (50mcg/hr patch = 100mg oral morphine daily). Always reduce by 25-50% when switching opioids."
+  },
+  {
+    "f": "What were the key findings of the DIGIT-HF trial regarding digoxin in heart failure?",
+    "b": "DIGIT-HF showed no mortality benefit from digoxin in heart failure patients in sinus rhythm, but modest improvement in symptoms and reduced hospitalizations. Benefit was greatest in patients with severe symptoms and EF <25%."
+  },
+  {
+    "f": "What did the ECLIPSE trial demonstrate about early vs. delayed anticoagulation in atrial fibrillation after stroke?",
+    "b": "ECLIPSE trial showed that early anticoagulation (within 4 days) after minor stroke in AF patients was safe and effective, with no significant increase in symptomatic intracranial hemorrhage compared to delayed initiation."
+  },
+  {
+    "f": "What were the primary outcomes of the BALANCE trial comparing dual vs. triple therapy?",
+    "b": "BALANCE trial demonstrated that dual antiplatelet therapy (aspirin + P2Y12 inhibitor) was superior to triple therapy (dual antiplatelet + anticoagulant) in reducing bleeding complications without significantly increasing thrombotic events in high-risk patients."
+  },
+  {
+    "f": "What mechanism of action and primary endpoint did Baxdrostat target in hypertension trials?",
+    "b": "Baxdrostat is a selective aldosterone synthase inhibitor that reduces aldosterone production. Clinical trials showed significant blood pressure reduction in resistant hypertension patients, particularly those with elevated aldosterone levels, with good tolerability profile."
   }
 ]
