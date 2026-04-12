@@ -6,7 +6,8 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "vitest": "^4.1.4",
-    "@vitest/coverage-v8": "^4.1.4"
+    "@vitest/coverage-v8": "^4.1.4",
+    "acorn": "^8.16.0",
+    "vitest": "^4.1.4"
   }
 }
