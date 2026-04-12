@@ -338,5 +338,65 @@
   {
     "f": "Sotatercept mechanism and indication",
     "b": "Activin signaling inhibitor (ligand trap for activin A). Approved for PAH. STELLAR trial (P0064 article): improved 6-minute walk distance + reduced NT-proBNP + improved WHO FC in PAH patients on background therapy. First-in-class mechanism."
+  },
+  {
+    "f": "Empiric antibiotics — community-acquired pneumonia (inpatient)",
+    "b": "Non-ICU: ceftriaxone + azithromycin (or respiratory fluoroquinolone alone). ICU: ceftriaxone + azithromycin (add vanc+pip-tazo if MRSA/Pseudomonas risk). Atypical coverage always needed (Legionella, Mycoplasma, Chlamydophila)."
+  },
+  {
+    "f": "Empiric antibiotics — spontaneous bacterial peritonitis",
+    "b": "Ceftriaxone 2g IV (or cefotaxime). Add albumin 1.5 g/kg day 1, 1 g/kg day 3 (reduces hepatorenal syndrome and mortality). Diagnosed by ascitic PMN >250/mm³."
+  },
+  {
+    "f": "Empiric antibiotics — bacterial meningitis (adult)",
+    "b": "Vancomycin + ceftriaxone + ampicillin (if >50y or immunocompromised, for Listeria). Dexamethasone 0.15 mg/kg q6h × 4 days — give BEFORE or WITH first antibiotic dose (reduces mortality in pneumococcal meningitis)."
+  },
+  {
+    "f": "Heart failure — NYHA classification",
+    "b": "I: no symptoms with ordinary activity. II: symptoms with ordinary activity (slight limitation). III: symptoms with less-than-ordinary activity (marked limitation). IV: symptoms at rest."
+  },
+  {
+    "f": "Shock — hemodynamic profiles",
+    "b": "Distributive: ↓SVR, ↑CO, ↓PCWP. Cardiogenic: ↑SVR, ↓CO, ↑PCWP. Hypovolemic: ↑SVR, ↓CO, ↓PCWP. Obstructive: ↑SVR, ↓CO, variable PCWP (↑ in tamponade, ↓ in PE)."
+  },
+  {
+    "f": "Hepatorenal syndrome — types and treatment",
+    "b": "Type 1: rapid (doubling of Cr in <2 wks), median survival 2 wks without treatment. Type 2: gradual, refractory ascites. Treatment: terlipressin + albumin (or norepinephrine + albumin, or midodrine + octreotide + albumin). Definitive: liver transplant."
+  },
+  {
+    "f": "Acute MI — complications timeline",
+    "b": "Day 0-1: arrhythmia (VF/VT), cardiogenic shock. Day 1-3: pericarditis (early). Day 3-5: free wall rupture, VSD, papillary muscle rupture. Day 5-14: mural thrombus. Weeks: Dressler syndrome (late pericarditis). Months: ventricular aneurysm."
+  },
+  {
+    "f": "Warfarin — drug interactions",
+    "b": "Increase INR: amiodarone, fluconazole, metronidazole, TMP-SMX, ciprofloxacin, cranberry. Decrease INR: rifampin, carbamazepine, phenytoin, St. John's wort. Vitamin K-rich foods (greens) decrease effect."
+  },
+  {
+    "f": "Nephrotic vs nephritic syndrome",
+    "b": "Nephrotic: proteinuria >3.5g/day, hypoalbuminemia, edema, hyperlipidemia, lipiduria, oval fat bodies. Causes: minimal change, FSGS, membranous, diabetic. Nephritic: hematuria (RBC casts), HTN, mild proteinuria, oliguria. Causes: IgA, post-strep, RPGN, lupus, ANCA."
+  },
+  {
+    "f": "Pleural effusion — Light's criteria (exudate if ANY met)",
+    "b": "1. Pleural/serum protein >0.5. 2. Pleural/serum LDH >0.6. 3. Pleural LDH >2/3 upper limit of normal serum LDH. Transudates: HF, cirrhosis, nephrotic. Exudates: infection, malignancy, PE, TB, pancreatitis."
+  },
+  {
+    "f": "Status epilepticus — definition and mortality",
+    "b": "≥5 min continuous seizure OR ≥2 seizures without return to baseline. Mortality 10-20% (higher with refractory SE). Convulsive SE is a medical emergency — brain damage begins at 30 min. Non-convulsive SE: subtle, diagnose with EEG."
+  },
+  {
+    "f": "Tumor lysis syndrome — metabolic abnormalities",
+    "b": "↑Uric acid, ↑Potassium, ↑Phosphate, ↓Calcium (secondary to hyperphosphatemia → calcium-phosphate precipitation). Risk: high tumor burden, high proliferation (Burkitt lymphoma, ALL, large-cell). Prevention: hydration + allopurinol or rasburicase."
+  },
+  {
+    "f": "MELD score components and use",
+    "b": "Bilirubin + Creatinine + INR (log scale). Range 6-40. Used for liver transplant allocation — higher MELD = higher priority. MELD >15: transplant evaluation. MELD >21: survival benefit from transplant exceeds waiting."
+  },
+  {
+    "f": "Aspirin with OAC in chronic coronary syndrome",
+    "b": "P0064 Article: In stable CCS patients already on OAC for AF, adding aspirin increases bleeding without reducing ischemic events. Monotherapy with OAC alone preferred after initial dual therapy period."
+  },
+  {
+    "f": "Upadacitinib for giant cell arteritis (SELECT-GCA)",
+    "b": "P0064 Article: JAK inhibitor upadacitinib showed sustained remission in GCA, allowing glucocorticoid tapering. Novel steroid-sparing option for relapsing/refractory GCA."
   }
 ]
