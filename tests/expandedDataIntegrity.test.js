@@ -228,8 +228,8 @@ describe("flashcards.json — content quality", () => {
 // ─── Tabs — navigation ──────────────────────────────────────────────────────
 
 describe("tabs.json — app navigation", () => {
-  it("has at least 9 tabs", () => {
-    expect(tabs.length).toBeGreaterThanOrEqual(9);
+  it("has at least 5 tabs (consolidated)", () => {
+    expect(tabs.length).toBeGreaterThanOrEqual(5);
   });
 
   it("every tab has id, ic, and l fields", () => {
@@ -251,7 +251,7 @@ describe("tabs.json — app navigation", () => {
 
   it("tab IDs include expected core tabs", () => {
     const ids = tabs.map(t => t.id);
-    const expected = ["quiz", "study", "lib", "flash", "calc", "track", "search", "chat"];
+    const expected = ["quiz", "learn", "lib", "track", "more"];
     expected.forEach(tabId => {
       expect(ids, `Missing expected tab: ${tabId}`).toContain(tabId);
     });
@@ -411,8 +411,8 @@ describe("data file sizes — sanity checks", () => {
     expect(drugs.length).toBeGreaterThanOrEqual(50);
   });
 
-  it("tabs.json has exactly 10 tabs", () => {
-    expect(tabs.length).toBe(10);
+  it("tabs.json has exactly 5 tabs (consolidated)", () => {
+    expect(tabs.length).toBe(5);
   });
 });
 
