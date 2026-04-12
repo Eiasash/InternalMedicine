@@ -43,8 +43,8 @@ jobs:
                   errors.append(f'Q{i}: missing question text')
               if len(q.get('q', '')) < 10:
                   errors.append(f'Q{i}: question text suspiciously short')
-              if not isinstance(q.get('o'), list) or len(q.get('o', [])) < 2:
-                  errors.append(f'Q{i}: missing or invalid options')
+              if not isinstance(q.get('o'), list) or len(q.get('o', [])) != 4:
+                  errors.append(f'Q{i}: expected 4 options, got {len(q.get(\"o\", []))}')
               if not isinstance(q.get('c'), int) or q['c'] < 0 or q['c'] >= len(q.get('o', [])):
                   errors.append(f'Q{i}: invalid correct answer index c={q.get(\"c\")}')
               if q.get('ti') is None:
