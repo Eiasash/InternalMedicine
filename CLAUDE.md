@@ -6,7 +6,7 @@
 
 - **Live URL**: https://eiasash.github.io/InternalMedicine/
 - **Main file**: `pnimit-mega.html` (~253 KB, ~4,100 lines, self-contained HTML/CSS/JS)
-- **App version**: v9.31
+- **App version**: v9.32
 - **Data**: JSON files in `data/` directory, loaded lazily at runtime
 - **Deployment**: Push to `main` → GitHub Pages live
 - **Sibling app**: Shlav A Mega (geriatrics) at Eiasash/Geriatrics — same engine, separate data
@@ -37,9 +37,9 @@ Data is loaded at runtime from `data/*.json` files. The service worker (`sw.js`)
 
 ```
 /
-├── pnimit-mega.html        # Main app (THE file — all HTML/CSS/JS, v9.31)
+├── pnimit-mega.html        # Main app (THE file — all HTML/CSS/JS, v9.32)
 ├── index.html               # GitHub Pages redirect → pnimit-mega.html
-├── sw.js                    # Service worker (offline caching, cache: pnimit-v9.31)
+├── sw.js                    # Service worker (offline caching, cache: pnimit-v9.32)
 ├── manifest.json            # PWA manifest
 │
 ├── data/                    # Lazy-loaded JSON data — single source of truth
@@ -47,7 +47,7 @@ Data is loaded at runtime from `data/*.json` files. The service worker (`sw.js`)
 │   ├── notes.json           # 24 study topic notes
 │   ├── flashcards.json      # 155 flashcards
 │   ├── drugs.json            # 53 drugs with ACB scores, Beers flags, STOPP interactions
-│   ├── tabs.json            # 10 tab definitions for app navigation
+│   ├── tabs.json            # 5 tab definitions (consolidated from 10)
 │   └── topics.json          # 24 topic keyword mappings for auto-tagging
 │
 ├── questions/               # Question images for exams with figures
@@ -148,7 +148,7 @@ No build step needed. Edit and refresh.
 
 ### Service Worker Versioning
 - `APP_VERSION` in `pnimit-mega.html` must match the cache version in `sw.js`
-- Currently: app=`9.31`, sw.js cache key=`pnimit-v9.31` (synced)
+- Currently: app=`9.32`, sw.js cache key=`pnimit-v9.32` (synced)
 - Update both when making changes to ensure users get cache-busted
 
 ---
@@ -310,6 +310,7 @@ GitHub Pages updates within ~60 seconds.
 - ~~No tests~~ — FIXED: 186 tests across 5 files
 - ~~No CI pipeline~~ — FIXED: GitHub Actions (10 checks)
 - ~~No package.json~~ — FIXED: vitest configured
+- **Tab consolidation**: 10 tabs consolidated to 5 (Quiz, Learn, Library, Track, More) with sub-tab selectors
 - **Topic auto-tagging**: Topic distribution validated by CI; all 24 topics have >= 5 questions
 
 ---
