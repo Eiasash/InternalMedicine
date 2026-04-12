@@ -1,4 +1,4 @@
-const CACHE='pnimit-v9.15';
+const CACHE='pnimit-v9.16';
 const HTML_URLS=['pnimit-mega.html','manifest.json'];
 const JSON_DATA_URLS=['data/questions.json','data/topics.json','data/notes.json','data/drugs.json','data/flashcards.json','data/tabs.json'];
 const ALL_URLS=[...HTML_URLS,...JSON_DATA_URLS];
