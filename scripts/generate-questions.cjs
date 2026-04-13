@@ -372,18 +372,22 @@ function loadExistingQuestions(opts) {
 function buildPrompt(chapter, topicName, count, appName) {
   const isGeri = appName === 'geriatrics';
   const examContext = isGeri
-    ? 'Israeli Geriatrics Board Exam (Shlav Alef, P005-2026). Focus on geriatric-specific clinical scenarios: elderly patients (65+), age-related pharmacokinetics, Beers criteria, functional assessment, goals of care, delirium vs dementia, polypharmacy, falls risk, frailty.'
-    : 'Israeli Internal Medicine Board Exam (Shlav Alef, P0064-2025). Focus on clinical reasoning, pathophysiology, diagnostic workup, treatment algorithms, and evidence-based management.';
+    ? `Israeli Geriatrics Board Exam (Shlav Alef, P005-2026). Focus on geriatric-specific clinical scenarios.`
+    : `Israeli Internal Medicine Board Exam (Shlav Alef, P0064-2025).
+Key themes that MUST appear in your questions:
+- Pathophysiology-based reasoning (mechanism → diagnosis → treatment)
+- Diagnostic workup sequences (what to order first and why)
+- Evidence-based treatment (landmark trials: DIGIT-HF, ECLIPSE, BALANCE, SELECT-GCA, FIRE, STELLAR)
+- Acute management priorities (ABCs, time-sensitive interventions)
+- Drug interactions and contraindications
+- Interpretation of labs, imaging, ECG in clinical context`;
 
-  // Truncate chapter text to ~6000 chars to stay within context
   let text = chapter.text;
-  if (text.length > 6000) {
-    text = text.substring(0, 6000) + '\n\n[... chapter continues ...]';
+  if (text.length > 15000) {
+    text = text.substring(0, 15000) + '\n\n[... chapter continues ...]';
   }
 
-  return `You are a medical exam question writer for the ${examContext}
-
-Based on the following textbook chapter content, generate exactly ${count} high-quality multiple-choice questions.
+  return `You are a senior medical exam question writer creating board-level MCQs for the ${examContext}
 
 CHAPTER: ${chapter.title} (${chapter.source}, Chapter ${chapter.chapter})
 TOPIC: ${topicName} (topic index: ${chapter.topicIndex})
@@ -391,17 +395,26 @@ TOPIC: ${topicName} (topic index: ${chapter.topicIndex})
 CHAPTER CONTENT:
 ${text}
 
+EXAMPLE of a board-quality question with an effective trap:
+
+{
+  "q": "A 58-year-old man with a history of alcoholic cirrhosis (Child-Pugh B) presents to the ED with massive hematemesis. His BP is 82/50, HR 124. After initial fluid resuscitation and intubation for airway protection, his hemoglobin is 6.2 g/dL. Upper endoscopy reveals actively bleeding esophageal varices. IV octreotide is started and band ligation is performed with hemostasis achieved. Which additional intervention is most important to initiate within 24 hours?",
+  "o": ["IV pantoprazole 80mg bolus then 8mg/hr drip", "Prophylactic antibiotics with IV ceftriaxone", "Emergent TIPS procedure", "Start propranolol 20mg BID for secondary prophylaxis"],
+  "c": 1,
+  "e": "Prophylactic antibiotics (ceftriaxone 1g/day IV × 7 days) are the most important intervention. Bacterial infections occur in 25-50% of cirrhotics with GI bleeding and are an independent predictor of rebleeding and mortality. Multiple RCTs show antibiotics reduce mortality by ~10%.\n\nOption A (PPI drip) is the classic TRAP — PPIs are standard for peptic ulcer bleeding but have NO proven benefit in variceal bleeding. Variceal bleeding is from portal hypertension, not acid. Many trainees reflexively order PPI drips for any upper GI bleed.\n\nOption C (TIPS) is reserved for refractory bleeding unresponsive to endoscopic therapy. This patient achieved hemostasis with banding — TIPS is premature.\n\nOption D (propranolol) is correct for secondary prophylaxis but should NOT be started during acute bleeding — beta-blockers worsen hypotension and mask tachycardia, which you need as a monitoring parameter.\n\nClinical Pearl: In variceal bleeding, the triad is: (1) vasoactive drug (octreotide/terlipressin), (2) endoscopic therapy (banding), (3) antibiotics. All three within 12 hours. PPIs add nothing."
+}
+
+Notice: the best wrong answer (PPI drip) is what most non-GI physicians would instinctively order. EVERY question you write must have one distractor this tempting.
+
 REQUIREMENTS:
-1. Each question must be a clinical vignette (patient scenario with age, presenting complaint, relevant history)
-2. Exactly 4 answer options per question
-3. One correct answer (0-indexed: 0, 1, 2, or 3)
-4. Detailed explanation (200-400 words) covering:
-   - Why the correct answer is correct (with mechanism/evidence)
-   - Why each wrong answer is wrong (1-2 sentences each, labeled as Option A/B/C/D)
-   - A "Clinical Pearl" at the end
-5. Questions should test clinical reasoning, not just recall
-6. Vary difficulty: ~30% easy, ~50% medium, ~20% hard
-7. Include "exam traps" — questions where a common wrong answer is tempting
+1. Each question MUST be a clinical vignette with specific patient details (age, sex, comorbidities, medications, labs, vitals). No abstract "which of the following" questions.
+2. Exactly 4 answer options. One correct (0-indexed: 0-3). Randomize which position is correct.
+3. The BEST DISTRACTOR must be something a competent but non-specialist physician would pick. Explain why it's tempting but wrong.
+4. Explanation (250-500 words): why correct is right (with mechanism), why EACH wrong answer is wrong (2-3 sentences each, labeled Option A/B/C/D), which is the "exam trap" and why, Clinical Pearl at end.
+5. Every question must connect pathophysiology to the clinical decision — not just "what do you do" but "why this and not that".
+6. All questions should be HARD. No gimmes. Target 65-75% correct rate for a well-prepared candidate.
+7. Vary clinical settings: ED, ward, ICU, outpatient, post-operative.
+8. Include relevant lab values, imaging findings, ECG descriptions, or medication lists where they add to reasoning.
 
 OUTPUT FORMAT — respond with ONLY a JSON array, no markdown fences, no preamble:
 [
@@ -411,7 +424,7 @@ OUTPUT FORMAT — respond with ONLY a JSON array, no markdown fences, no preambl
     "c": 0,
     "t": "${chapter.source}",
     "ti": ${chapter.topicIndex},
-    "e": "Detailed explanation with Option A/B/C/D analysis and Clinical Pearl."
+    "e": "Detailed explanation with trap analysis and Clinical Pearl."
   }
 ]
 
@@ -424,8 +437,8 @@ async function callClaude(prompt, apiKey, useProxy) {
     : 'https://api.anthropic.com/v1/messages';
 
   const body = {
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 4096,
+    model: 'claude-opus-4-20250514',
+    max_tokens: 8192,
     messages: [{ role: 'user', content: prompt }],
   };
 
@@ -624,7 +637,7 @@ async function main() {
       console.log(`  ✅ ${chValid} valid, ${chDupes} dupes, ${chInvalid} invalid`);
       
       // Rate limiting — 1.5s between calls
-      await new Promise(r => setTimeout(r, 1500));
+      await new Promise(r => setTimeout(r, 5000));
       
     } catch (err) {
       console.error(`  ✗ Error: ${err.message}`);
