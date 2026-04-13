@@ -697,7 +697,11 @@ return Object.entries(S.sr).filter(([k,v])=>v.next<=now).map(([k])=>parseInt(k))
 // ===== RESCUE DRILL =====
 function getWeakTopics(n=3){
 const stats=getTopicStats();
-const scored=Object.entries(stats).map(([ti,s])=>({ti:Number(ti),pct:s.tot?Math.round(s.ok/s.tot*100):null,tot:s.tot,ok:s.ok}
+const scored=Object.entries(stats).map(([ti,s])=>({ti:Number(ti),pct:s.tot?Math.round(s.ok/s.tot*100):null,tot:s.tot,ok:s.ok}))
+  .filter(s=>s.tot>=3)
+  .sort((a,b)=>a.pct-b.pct);
+return scored.slice(0,n);
+}
 function getStudyStreak(){
 if(!S.dailyAct)return S.streak||0;
 let streak=0;
@@ -709,10 +713,6 @@ for(let i=0;i<365;i++){
   d.setDate(d.getDate()-1);
 }
 return streak;
-}))
-  .filter(s=>s.tot>=3)
-  .sort((a,b)=>a.pct-b.pct);
-return scored.slice(0,n);
 }
 function buildRescuePool(){
 const weak=getWeakTopics(3);
@@ -3619,8 +3619,9 @@ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=
 
 
 // ===== FEEDBACK & DIAGNOSTICS =====
-const APP_VERSION='9.35';
+const APP_VERSION='9.36';
 const CHANGELOG={
+'9.36':['🚨 Fix syntax error in getWeakTopics — app was stuck loading'],
 '9.35':['🚨 Critical fix: restore data loader — app was showing blank screen','🔄 Revert accidental deletion of boot sequence, version check, background sync'],
 '9.34':['🐛 Fix: calcEstScore was using 40-topic Geriatrics FREQ array instead of 24-topic EXAM_FREQ — scores now accurate','📊 Analytics key metrics row (Est. Score, Streak, Answered, Accuracy) at top of Track tab','🗺️ Topic Mastery Heatmap — clickable tiles showing per-topic accuracy','📈 SRS due alert with quick-review button','🔧 Added getStudyStreak() for accurate streak from dailyAct'],
 '9.33':[
