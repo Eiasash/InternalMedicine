@@ -5,7 +5,7 @@
 **Pnimit Mega** is a Progressive Web App (PWA) for Israeli internal medicine board exam preparation (שלב א פנימית, P0064-2025). It is a single-file, no-build-step application deployed via GitHub Pages.
 
 - **Live URL**: https://eiasash.github.io/InternalMedicine/
-- **Main file**: `pnimit-mega.html` (~216 KB, ~3,721 lines, self-contained HTML/CSS/JS)
+- **Main file**: `pnimit-mega.html` (~253 KB, ~4,157 lines, self-contained HTML/CSS/JS)
 - **App version**: v9.34
 - **Data**: JSON files in `data/` directory, loaded lazily at runtime
 - **Deployment**: Push to `main` → GitHub Pages live
