@@ -1,1 +1,4 @@
 node_modules/
+-e 
+generated-*.json
+*.progress.json
