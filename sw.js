@@ -1,4 +1,4 @@
-const CACHE='pnimit-v9.37';
+const CACHE='pnimit-v9.38';
 const HTML_URLS=['pnimit-mega.html','manifest.json','shared/fsrs.js'];
 const JSON_DATA_URLS=['data/questions.json','data/topics.json','data/notes.json','data/drugs.json','data/flashcards.json','data/tabs.json','harrison_chapters.json'];
 const ALL_URLS=[...HTML_URLS,...JSON_DATA_URLS];
@@ -10,33 +10,29 @@ function shouldUseCacheFirst(url){
   return JSON_DATA_URLS.some(pattern=>url.endsWith(pattern));
 }
 
+// Fetch: navigate→HTML fallback, data→cache-first, assets→cache-first
 self.addEventListener('fetch',e=>{
+  if(e.request.method!=='GET')return;
+  if(!e.request.url.startsWith(self.location.origin))return;
   const url=new URL(e.request.url).pathname;
-
-  if(shouldUseCacheFirst(url)){
-    e.respondWith(
-      caches.match(e.request)
-        .then(r=>r||fetch(e.request).then(res=>{
-          if(res.ok){
-            const c=res.clone();
-            caches.open(CACHE).then(cache=>cache.put(e.request,c));
-          }
-          return res;
-        }))
-        .catch(()=>caches.match('data/questions.json'))
-    );
+  if(e.request.mode==='navigate'){
+    e.respondWith(fetch(e.request).then(res=>{
+      if(res.ok){const c=res.clone();caches.open(CACHE).then(cache=>cache.put(e.request,c));}
+      return res;
+    }).catch(()=>caches.match('pnimit-mega.html')));
+  }else if(shouldUseCacheFirst(url)){
+    e.respondWith(caches.match(e.request).then(r=>{
+      const nf=fetch(e.request).then(res=>{
+        if(res.ok){const c=res.clone();caches.open(CACHE).then(cache=>cache.put(e.request,c));}
+        return res;
+      });
+      return r||nf;
+    }).catch(()=>caches.match(e.request)));
   }else{
-    e.respondWith(
-      fetch(e.request)
-        .then(res=>{
-          if(res.ok){
-            const c=res.clone();
-            caches.open(CACHE).then(cache=>cache.put(e.request,c));
-          }
-          return res;
-        })
-        .catch(()=>caches.match(e.request).then(r=>r||caches.match('pnimit-mega.html')))
-    );
+    e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{
+      if(res.ok){const c=res.clone();caches.open(CACHE).then(cache=>cache.put(e.request,c));}
+      return res;
+    })));
   }
 });
 
