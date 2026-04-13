@@ -5,8 +5,8 @@
 **Pnimit Mega** is a Progressive Web App (PWA) for Israeli internal medicine board exam preparation (שלב א פנימית, P0064-2025). It is a single-file, no-build-step application deployed via GitHub Pages.
 
 - **Live URL**: https://eiasash.github.io/InternalMedicine/
-- **Main file**: `pnimit-mega.html` (~253 KB, ~4,100 lines, self-contained HTML/CSS/JS)
-- **App version**: v9.32
+- **Main file**: `pnimit-mega.html` (~253 KB, ~4,157 lines, self-contained HTML/CSS/JS)
+- **App version**: v9.33
 - **Data**: JSON files in `data/` directory, loaded lazily at runtime
 - **Deployment**: Push to `main` → GitHub Pages live
 - **Sibling app**: Shlav A Mega (geriatrics) at Eiasash/Geriatrics — same engine, separate data
@@ -37,16 +37,16 @@ Data is loaded at runtime from `data/*.json` files. The service worker (`sw.js`)
 
 ```
 /
-├── pnimit-mega.html        # Main app (THE file — all HTML/CSS/JS, v9.32)
+├── pnimit-mega.html         # Main app (THE file — all HTML/CSS/JS, v9.33)
 ├── index.html               # GitHub Pages redirect → pnimit-mega.html
-├── sw.js                    # Service worker (offline caching, cache: pnimit-v9.32)
+├── sw.js                    # Service worker (offline caching, cache: pnimit-v9.33)
 ├── manifest.json            # PWA manifest
 │
 ├── data/                    # Lazy-loaded JSON data — single source of truth
 │   ├── questions.json       # 1169 MCQs (primary runtime source)
 │   ├── notes.json           # 24 study topic notes
 │   ├── flashcards.json      # 155 flashcards
-│   ├── drugs.json            # 53 drugs with ACB scores, Beers flags, STOPP interactions
+│   ├── drugs.json           # 53 drugs with ACB scores, Beers flags, STOPP interactions
 │   ├── tabs.json            # 5 tab definitions (consolidated from 10)
 │   └── topics.json          # 24 topic keyword mappings for auto-tagging
 │
@@ -61,26 +61,16 @@ Data is loaded at runtime from `data/*.json` files. The service worker (`sw.js`)
 │
 ├── exams/                   # Past exam PDFs (2020–2025, 7 exam sessions)
 │   ├── 2020_questions.pdf, 2020_answers.pdf, 2020_images.pdf
-│   ├── 2021_jun_*.pdf
-│   ├── 2022_jun_*.pdf
-│   ├── 2023_jun_*.pdf
-│   ├── 2024_may_*.pdf
-│   ├── 2024_oct_*.pdf
+│   ├── 2021_jun_*.pdf, 2022_jun_*.pdf, 2023_jun_*.pdf
+│   ├── 2024_may_*.pdf, 2024_oct_*.pdf
 │   └── 2025_jun_*.pdf
 │
 ├── articles/                # 10 required NEJM/Lancet articles (2024–2025)
-│
 ├── harrison/                # Harrison's 22e chapter PDFs (~69 chapters)
-│
 ├── syllabus/
 │   └── P0064-2025.pdf       # Official IMA syllabus
-│
 └── README.md
 ```
-
-### Data Architecture
-
-All runtime data lives in `data/`. The app and service worker load exclusively from `data/*.json`. There are no root-level JSON duplicates — `data/` is the single source of truth.
 
 ---
 
@@ -91,29 +81,21 @@ All runtime data lives in `data/`. The app and service worker load exclusively f
 {
   "q": "Question text (Hebrew)",
   "o": ["Option A", "Option B", "Option C", "Option D"],
-  "c": 2,       // correct answer index (0–3, integer)
-  "t": "Jun23",  // exam year/session string
-  "ti": 5,      // topic index (0–23, see TOPICS below)
-  "e": "..."    // AI-generated explanation (Hebrew)
+  "c": 2,
+  "t": "Jun23",
+  "ti": 5,
+  "e": "AI-generated explanation (Hebrew)"
 }
 ```
 
 ### notes.json
 ```json
-{
-  "id": 0,
-  "topic": "Cardiology",
-  "ch": "Harrison's Ch X",
-  "notes": "Study notes text"
-}
+{ "id": 0, "topic": "Cardiology", "ch": "Harrison's Ch X", "notes": "Study notes text" }
 ```
 
 ### flashcards.json
 ```json
-{
-  "f": "Front (question/prompt)",
-  "b": "Back (answer)"
-}
+{ "f": "Front (question/prompt)", "b": "Back (answer)" }
 ```
 
 ---
@@ -136,70 +118,29 @@ All runtime data lives in `data/`. The app and service worker load exclusively f
 ### Local Dev Server
 ```bash
 python -m http.server 3737
-# Then open http://localhost:3737/pnimit-mega.html
+# Open http://localhost:3737/pnimit-mega.html
 ```
-No build step needed. Edit and refresh.
-
-### Making Changes
-1. Edit `pnimit-mega.html` for app logic, UI, or features
-2. Edit JSON files in `data/` for content changes
-3. Run local server to test
-4. Commit and push to `main` — Pages deploys
 
 ### Service Worker Versioning
 - `APP_VERSION` in `pnimit-mega.html` must match the cache version in `sw.js`
-- Currently: app=`9.32`, sw.js cache key=`pnimit-v9.32` (synced)
-- Update both when making changes to ensure users get cache-busted
+- Currently: app=`9.33`, sw.js cache key=`pnimit-v9.33` (synced)
 
 ---
 
 ## Testing
 
-**Status: 186 tests across 5 files** — CI via GitHub Actions (10 checks).
-
-### Test suite
+**186 tests across 5 files** — CI via GitHub Actions (10 checks).
 
 | File | Tests | Description |
 |------|-------|-------------|
-| `tests/dataIntegrity.test.js` | ~80 | Question schema, duplicates, topic coverage, notes, flashcards, drugs, topics cross-referential integrity |
-| `tests/appIntegrity.test.js` | ~15 | HTML structure (RTL, viewport, PWA), SW version sync, security checks (eval, innerHTML), manifest |
+| `tests/dataIntegrity.test.js` | ~80 | Question schema, duplicates, topic coverage, notes, flashcards, drugs |
+| `tests/appIntegrity.test.js` | ~15 | HTML structure, SW version sync, security checks |
 | `tests/serviceWorker.test.js` | ~12 | SW cache config, URL lists, file existence |
-| `tests/examData.test.js` | ~40 | Past exam validation, image map integrity, year tag consistency |
-| `tests/aiQuestions.test.js` | ~39 | AI-generated question quality, explanation length, topic distribution |
-
-### Data validation tests (must cover)
-
-| Check | Threshold |
-|-------|-----------|
-| JSON parse validity | questions, notes, flashcards, topics, tabs |
-| Question count | Must be > 800 |
-| Question schema | `q` (string), `o` (array >= 2), `c` (valid index), `ti` (int 0–23) |
-| All 1169 questions have explanations | `e` field present |
-| Notes schema | `topic` and `notes` fields present |
-| Flashcards schema | `f` and `b` fields present |
-| Duplicate detection | First 80 chars of question text (conflicting answers flagged) |
-| Topic coverage | >= 5 questions per topic (all 24 topics) |
-| Image map integrity | All referenced images exist in `questions/images/` |
-| HTML syntax | Valid HTML doctype, RTL direction, viewport meta |
-| Service worker version sync | APP_VERSION matches sw.js CACHE version |
-| innerHTML sanitization | Audit for unsanitized innerHTML usage |
+| `tests/examData.test.js` | ~40 | Past exam validation, image map integrity |
+| `tests/aiQuestions.test.js` | ~39 | AI-generated question quality, explanation length |
 
 ### Auto-expand rule
-Every feature, improvement, or bug fix MUST include new or updated tests:
-- New data file or field → schema validation test
-- Bug fix → regression test that reproduces the bug before the fix
-- New app feature → integrity test for the feature's HTML/JS structure
-- After adding tests, update the test count in this section
-
-### CI Pipeline
-GitHub Actions workflow runs on push to `main` and all PRs (10 checks):
-1. JSON parse validity for all data files
-2. Question schema validation
-3. Duplicate detection (conflicting answers = fatal, same answers = warning)
-4. Topic coverage check
-5. HTML syntax validation
-6. SW version sync check
-7. Vitest test suite
+Every feature or bug fix MUST include new or updated tests.
 
 ---
 
@@ -226,60 +167,33 @@ All 1169 questions have AI-generated explanations (`e` field).
 ### Content Integrity
 - Textbook: Harrison's Principles of Internal Medicine, 22nd Edition
 - Syllabus: P0064-2025 (NOT P005-2026 which is geriatrics)
-- Question `ti` must be an integer 0–23 from the topic list above
-- `c` (correct answer index) must be 0-based and valid (< length of `o` array)
+- Question `ti` must be an integer 0–23
 
 ### Code Style
 - Vanilla JavaScript ES6+ — no transpilation, no framework
-- Functional style with module-like structure
 - CamelCase for functions, UPPERCASE for constants
 - CSS custom properties: `--sky`, `--em`, `--sl8`, `--red`, `--amb`
 
 ### Localization
-- App supports Hebrew (RTL) and English
-- Hebrew text uses `dir="rtl"` and `unicode-bidi: plaintext` CSS
-- Fonts: Inter (English), Heebo (Hebrew) via Google Fonts
-- Do not break RTL layout when adding new UI elements
+- Hebrew (RTL) and English; Fonts: Inter + Heebo via Google Fonts
 
 ### Accessibility / Mobile
-- Touch targets must be >= 44px
-- Dark mode and study mode must both be tested for new UI
+- Touch targets >= 44px; dark + study mode support
 - Mobile-first responsive design (max-width: 640px container)
-
----
-
-## Adding New Questions — Checklist
-
-1. Read `data/questions.json` to understand existing format
-2. Check topic index from the TOPICS list above — pick the most specific `ti` (0–23)
-3. Validate: exactly 4 options, `c` index in 0–3, valid `t` year string
-4. Fuzzy-check for near-duplicates (first 80 chars)
-5. Append to the JSON array (do not sort or reorder existing entries)
-6. Run tests (when available) to validate schema and detect duplicates
 
 ---
 
 ## Modifying the Main App (pnimit-mega.html)
 
-- The file is intentionally a single monolith — do not split it
-- CSS is at the top, JS is at the bottom before `</body>`
-- All localStorage operations must use established keys
-- Data loads lazily from `data/*.json` — do not inline large data back into HTML
-- `data/` is the single source of truth for all JSON data
+- Single monolith — do not split
+- CSS at top, JS before `</body>`
+- Data loads lazily from `data/*.json` — never inline large data
 
 ---
 
 ## Deployment
 
-```bash
-git add <files>
-git commit -m "descriptive message"
-git push origin main
-```
-
-GitHub Pages updates within ~60 seconds.
-
-**No manual deployment steps needed.**
+Push to `main` → GitHub Pages updates in ~60 seconds. No manual steps.
 
 ---
 
@@ -287,7 +201,7 @@ GitHub Pages updates within ~60 seconds.
 
 | Metric | Value |
 |--------|-------|
-| Main app LOC | ~4,100 |
+| Main app LOC | ~4,157 |
 | Questions | 1169 (all with explanations) |
 | AI-generated | 306 (tagged `Harrison`) |
 | Topics | 24 |
@@ -300,23 +214,66 @@ GitHub Pages updates within ~60 seconds.
 | Articles | 10 |
 | Test files | 5 |
 | Tests | 186 |
-| CI pipeline | GitHub Actions (10 checks) |
 
 ---
 
-## Known Issues
+## Test Coverage Recommendations
 
-- ~~APP_VERSION / SW cache mismatch~~ — FIXED: Both synced at v9.31
-- ~~No tests~~ — FIXED: 186 tests across 5 files
-- ~~No CI pipeline~~ — FIXED: GitHub Actions (10 checks)
-- ~~No package.json~~ — FIXED: vitest configured
-- **Tab consolidation**: 10 tabs consolidated to 5 (Quiz, Learn, Library, Track, More) with sub-tab selectors
-- **Topic auto-tagging**: Topic distribution validated by CI; all 24 topics have >= 5 questions
+### Current Coverage Summary
+
+| Area | Status | Tests |
+|------|--------|-------|
+| Question schema & duplicates | Strong | ~80 |
+| HTML structure & PWA | Good | ~15 |
+| Exam data & images | Good | ~40 |
+| AI question quality | Good | ~39 |
+| Service worker config | Good | ~12 |
+
+### Recommended Additions (Priority Order)
+
+1. **FSRS spaced repetition logic** — Port from Geriatrics (91 tests cover fsrsR, fsrsInterval, fsrsInitNew, fsrsUpdate)
+2. **Quiz engine unit tests** — answer selection, scoring, exam modes
+3. **Sanitization function** — `sanitize(s)` HTML entity escaping + XSS payloads
+4. **ACB/STOPP calculator tests** — `calcACBTotal`, `getSTOPPWarnings` with known drug combos
+5. **Chronic fail / exam trap detection** — `isChronicFail`, `isExamTrap` with mock study records
+6. **Topic distribution balance** — each of 24 topics >= 5 questions, no single topic > 15%
+7. **Harrison chapter JSON** — validate structure, chapter numbering, non-empty content
+8. **Explanation completeness** — all 1169 `e` fields non-empty, >= 50 chars, no raw HTML
+9. **Image map bidirectional integrity** — every image referenced and exists
+10. **Service worker fetch strategy** — network-first for HTML, cache-first for JSON
+
+### Long-Term Goal
+Reach **300+ tests** with FSRS, quiz engine, calculators, and all pure functions tested.
+
+---
+
+## TODO / Improvement Roadmap
+
+### High Priority
+- [ ] **Add FSRS test coverage** — critical engine untested here (Geriatrics has 91 tests)
+- [ ] **Expand test suite to 250+** — See Test Coverage Recommendations
+- [ ] **Add test:coverage thresholds** — 50% lines, 40% branches
+
+### Medium Priority
+- [ ] **Add `.claude/` directory** — port slash commands from Geriatrics
+- [ ] **Harrison AI question expansion** — continue from 306 AI-generated
+- [ ] **Drug interaction tests** — STOPP/START logic exists; add comprehensive tests
+- [ ] **Add explanations_cache.json** — pre-generate and cache all explanations
+
+### Low Priority
+- [ ] **Supabase cloud sync** — optional progress backup
+- [ ] **Push notifications** — daily review reminders
+- [ ] **PWA install prompt** — beforeinstallprompt handler
+
+### Content Roadmap
+- [ ] **Next exam session** — parse and add when available
+- [ ] **Flashcard expansion** — target 200+ (currently 155)
+- [ ] **Question image coverage** — add figures for more questions
 
 ---
 
 ## Branch Policy
 
-- `main` — production branch, auto-deployed to GitHub Pages
+- `main` — production, auto-deployed to GitHub Pages
 - Feature branches: `claude/<description>-<id>` convention
 - All PRs target `main`
