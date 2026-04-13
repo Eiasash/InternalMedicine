@@ -273,7 +273,7 @@ upd();setInterval(upd,30000);
 </head>
 <body>
 
-<a href="#main-content" class="skip-link">Skip to content</a>
+<a href="#ct" class="skip-link">Skip to content</a>
 <div class="hdr" style="position:relative">
 <h1>Pnimit Mega <span style="font-size:9px;font-weight:600;color:#3b82f6;vertical-align:middle;background:#eff6ff;padding:2px 6px;border-radius:6px;margin-right:4px">Internal Medicine</span> <span id="headerVer" style="font-size:9px;font-weight:400;color:#64748b;vertical-align:middle"></span></h1>
 <button class="dm-btn" onclick="toggleStudyMode()" title="Night/Study Mode" aria-label="Toggle night mode" style="right:44px">🕯️</button><button class="dm-btn" onclick="toggleDark()" title="Dark Mode" aria-label="Toggle dark mode">🌓</button><button class="dm-btn" onclick="showHelp()" title="Help" aria-label="Help" style="right:82px;font-size:11px">❓</button>
@@ -967,7 +967,7 @@ else{S.qNo++;
   srScore(pool[qi],false);
   // Feature 1: store wrong reason later via onclick
   const _apk='autopsy_'+pool[qi];
-  if(!localStorage.getItem(_apk)){setTimeout(()=>aiAutopsy(pool[qi]),400);}
+  if(!_exCache[_apk]){setTimeout(()=>aiAutopsy(pool[qi]),400);}
 }
 save();render();
 }
@@ -1016,7 +1016,7 @@ async function explainWithAI(qIdx){
   try{
     // Feature 8: Detect language — bilingual if question has English terms
     var _qLang=(q.q.match(/[a-zA-Z]/g)||[]).length/q.q.length>0.25?'en':'he';
-    var _langInstr=_qLang==='en'?'Explain in English (3-4 sentences) why this is the correct answer. Be concise and exam-focused.':'הסבר בעברית (3-4 משפטים) למה זו התשובה הנכונה לשאלה הבאה מתחום הגריאטריה. עגן תמיד בתשובה הנכונה הנל.';
+    var _langInstr=_qLang==='en'?'Explain in English (3-4 sentences) why this is the correct answer. Be concise and exam-focused.':'הסבר בעברית (3-4 משפטים) למה זו התשובה הנכונה לשאלה הבאה מתחום הרפואה הפנימית. עגן תמיד בתשובה הנכונה הנל.';
     var txt=await callAI([{role:'user',content:'ANSWER KEY: The correct answer is DEFINITIVELY "'+correct+'".\n\n'+_langInstr+'\n\nשאלה: '+q.q+'\nאפשרויות: '+q.o.join(' / ')+'\nתשובה נכונה: '+correct}],400,'sonnet');
     _exCache[qIdx]={text:txt};
     localStorage.setItem('pnimit_ex',JSON.stringify(_exCache));
@@ -1044,8 +1044,9 @@ Format each as:
 ✗ [option] — Wrong because: [reason]. Would be correct if: [scenario].
 
 Be concise. Use English for medical terms, Hebrew for context if relevant.`}],500);
-// Format nicely
-const formatted=txt.replace(/✗/g,'<b style="color:#dc2626">✗</b>')
+// Sanitize AI output first, then format
+const safeTxt=sanitize(txt);
+const formatted=safeTxt.replace(/✗/g,'<b style="color:#dc2626">✗</b>')
   .replace(/Wrong because:/g,'<span style="color:#b91c1c">Wrong because:</span>')
   .replace(/Would be correct if:/g,'<span style="color:#059669">Would be correct if:</span>')
   .replace(/\n/g,'<br>');
@@ -1497,7 +1498,7 @@ h+=`<div style="margin-bottom:8px">
 // Feature 4: Cross-link to chapter after wrong answer
 if(!examMode&&sel!==q.c&&q.ti>=0){
 const _chRef=TOPIC_REF[q.ti];
-if(_chRef&&_chRef.s==='haz'){
+if(_chRef&&_chRef.s==='har'){
 h+=`<button class="btn" onclick="tab='lib';libSec='harrison';render()" style="font-size:10px;padding:5px 12px;background:#ede9fe;color:#7c3aed;margin-bottom:6px;width:100%">📖 Read: ${_chRef.l} — you're weak here</button>`;
 }
 }
@@ -2127,7 +2128,7 @@ ${nextCh?`<button onclick="openHarrisonChapter(${nextCh})" style="font-size:10px
 <div id="quiz-me-box"></div>
 <div class="card" style="padding:16px">`;
 // Feature 4: Show question stats for this topic in chapter reader
-const _relTopics=Object.entries(TOPIC_REF).filter(([ti,ref])=>ref.s==='haz').map(([ti])=>+ti);
+const _relTopics=Object.entries(TOPIC_REF).filter(([ti,ref])=>ref.s==='har').map(([ti])=>+ti);
 const _chTopicIdx=_relTopics.find(ti=>{const ref=TOPIC_REF[ti];return ref&&String(ref.ch)===String(harChOpen);});
 if(_chTopicIdx!==undefined){
 const _ts=getTopicStats()[_chTopicIdx]||{ok:0,no:0,tot:0};
@@ -3233,7 +3234,7 @@ save();render();
 const CHAT_STARTERS=[
 'מה ההבדל בין דמנציה לדליריום?',
 'תסביר על תסמונת השברירות (frailty)',
-'מה כולל הערכה גריאטרית מקיפה?',
+'מה הגישה האבחנתית לאנמיה נורמוציטית?',
 'תרופות שיש להימנע מהן בקשישים (Beers)',
 'מה הגישה לנפילות בקשיש?',
 ];
@@ -3260,7 +3261,7 @@ if(chatLoading){h+='<div class="chat-msg-ai" style="padding:6px 12px"><div class
 }
 h+='</div>';
 h+='<div class="chat-input-row">';
-h+='<textarea id="chat-input" placeholder="שאל שאלה גריאטרית..." rows="2" aria-label="Chat input" style="flex:1;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px;font-size:12px;resize:none;font-family:Heebo,sans-serif;direction:rtl;text-align:right;background:inherit;color:inherit" onkeydown="if(event.key===&apos;Enter&apos;&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>';
+h+='<textarea id="chat-input" placeholder="שאל שאלה ברפואה פנימית..." rows="2" aria-label="Chat input" style="flex:1;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px;font-size:12px;resize:none;font-family:Heebo,sans-serif;direction:rtl;text-align:right;background:inherit;color:inherit" onkeydown="if(event.key===&apos;Enter&apos;&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>';
 h+='<button class="btn btn-p" onclick="sendChat()" '+(chatLoading?'disabled':'')+' style="align-self:flex-end;min-width:52px" aria-label="Send">שלח</button>';
 h+='</div>';
 h+='</div>';
