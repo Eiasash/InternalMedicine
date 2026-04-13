@@ -1926,7 +1926,7 @@ function renderPriorityMatrix(){
       </div>
     </div>`;
   });
-  h+=`<div onclick="var el=document.getElementById('pmFull');el.style.display=el.style.display==='none'?'block':'none'" style="font-size:10px;color:rgb(var(--sky));cursor:pointer;margin-top:6px">Show all 40 topics ▾</div>`;
+  h+=`<div onclick="var el=document.getElementById('pmFull');el.style.display=el.style.display==='none'?'block':'none'" style="font-size:10px;color:rgb(var(--sky));cursor:pointer;margin-top:6px">Show all 24 topics ▾</div>`;
   h+=`<div id="pmFull" style="display:none">`;
   rows.slice(15).forEach((r,rank)=>{
     const accStr=r.acc===null?'untested':`${Math.round(r.acc*100)}%`;
@@ -2342,7 +2342,7 @@ return h;
 let calcVals={};
 function calcUp(k,v){calcVals[k]=parseFloat(v)||0;render();}
 function renderCalc(){
-let h=`<div class="sec-t">🧮 Clinical Calculators</div><div class="sec-s">CrCl · CHA₂DS₂-VASc · CURB-65 · Wells · PADUA · Braden · Norton</div>`;
+let h=`<div class="sec-t">🧮 Clinical Calculators</div><div class="sec-s">CrCl · CHA₂DS₂-VASc · CURB-65 · Wells · PADUA</div>`;
 
 // CrCl
 const age=calcVals.age||75,wt=calcVals.wt||55,cr=calcVals.cr||1.0,fem=calcVals.fem===undefined?0.85:calcVals.fem;
@@ -2395,47 +2395,6 @@ h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10
 <p style="font-size:10px;color:#64748b;margin-top:2px">${curbRisk}</p>
 </div></div>`;
 
-// GDS-15 Quick Score
-const gds=Object.entries(calcVals).filter(([k])=>k.startsWith('gds_')).reduce((s,[k,v])=>s+v,0);
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">GDS-15 (Depression Screen)</h3>`;
-['Satisfied with life? (No=1)','Dropped activities? (Yes=1)','Feel life is empty? (Yes=1)','Often bored? (Yes=1)','Good spirits most of time? (No=1)',
-'Afraid something bad? (Yes=1)','Feel happy most of time? (No=1)','Often feel helpless? (Yes=1)','Stay home rather than go out? (Yes=1)','More memory problems? (Yes=1)',
-'Wonderful to be alive? (No=1)','Feel worthless? (Yes=1)','Feel full of energy? (No=1)','Feel hopeless? (Yes=1)','Others better off? (Yes=1)'].forEach((l,i)=>{
-const k='gds_'+i,on=calcVals[k]||0;
-h+=`<label style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #f8fafc;font-size:10px;cursor:pointer">
-<span>${l}</span><input type="checkbox" ${on?'checked':''} onchange="calcUp('${k}',this.checked?1:0)" style="width:14px;height:14px"></label>`;
-});
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center">
-<span style="font-size:22px;font-weight:700;color:${gds>=5?'#dc2626':'#059669'}">${gds}/15</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${gds>=10?'Severe depression — refer':gds>=5?'Positive screen — evaluate further':'Normal'}</p>
-<button id="copy-gds" onclick="copyReport('gds')" class="btn btn-o" style="margin-top:8px;font-size:10px;padding:4px 10px" aria-label="Copy GDS report">📋 העתק דוח</button>
-</div></div>`;
-
-// Braden Scale
-const bradenSubs=[
-['brad_sens','Sensory Perception',['Completely Limited (1)','Very Limited (2)','Slightly Limited (3)','No Impairment (4)']],
-['brad_moist','Moisture',['Constantly Moist (1)','Very Moist (2)','Occasionally Moist (3)','Rarely Moist (4)']],
-['brad_act','Activity',['Bedfast (1)','Chairfast (2)','Walks Occasionally (3)','Walks Frequently (4)']],
-['brad_mob','Mobility',['Completely Immobile (1)','Very Limited (2)','Slightly Limited (3)','No Limitation (4)']],
-['brad_nut','Nutrition',['Very Poor (1)','Probably Inadequate (2)','Adequate (3)','Excellent (4)']],
-['brad_fric','Friction/Shear',['Problem (1)','Potential Problem (2)','No Apparent Problem (3)']]
-];
-const bradenScore=bradenSubs.reduce((s,[k])=>s+(calcVals[k]||1),0);
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">Braden Scale (Pressure Injury Risk)</h3>`;
-bradenSubs.forEach(([k,label,opts])=>{
-const v=calcVals[k]||1;
-h+=`<div style="margin-bottom:8px"><label style="font-size:10px;color:#64748b;font-weight:600">${label}</label>
-<select class="calc-in" style="font-size:11px" onchange="calcUp('${k}',this.selectedIndex+1)">`;
-opts.forEach((o,i)=>{h+=`<option value="${i+1}"${v===i+1?' selected':''}>${o}</option>`;});
-h+=`</select></div>`;
-});
-const bradenRisk=bradenScore<=12?'High Risk':bradenScore<=14?'Moderate Risk':bradenScore<=18?'Mild Risk':'No Risk';
-const bradenClr=bradenScore<=12?'#dc2626':bradenScore<=14?'#d97706':bradenScore<=18?'#2563eb':'#059669';
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center" class="calc-result">
-<span style="font-size:22px;font-weight:700;color:${bradenClr}">${bradenScore}/23</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${bradenRisk}${bradenScore<=18?' — Implement prevention protocol':''}</p>
-<button id="copy-braden" onclick="copyReport('braden')" class="btn btn-o" style="margin-top:8px;font-size:10px;padding:4px 10px" aria-label="Copy Braden report">📋 העתק דוח</button>
-</div></div>`;
 
 // PADUA VTE Score
 const paduaItems=[
@@ -2459,200 +2418,12 @@ h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10
 </div></div>`;
 
 
-// Katz ADL Index
-const katzItems=['Bathing','Dressing','Toileting','Transferring','Continence','Feeding'];
-const katzScore=katzItems.reduce((s,_,i)=>s+(calcVals['katz_'+i]||0),0);
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">Katz ADL Index</h3>`;
-katzItems.forEach((l,i)=>{const k='katz_'+i,on=calcVals[k]||0;
-h+=`<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:11px;cursor:pointer">
-<span>${l} (Independent=1)</span><input type="checkbox" ${on?'checked':''} onchange="calcUp('${k}',this.checked?1:0)" style="width:16px;height:16px"></label>`;});
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center" class="calc-result">
-<span style="font-size:22px;font-weight:700;color:${katzScore>=5?'#059669':katzScore>=3?'#d97706':'#dc2626'}">${katzScore}/6</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${katzScore===6?'Full independence':katzScore>=4?'Moderate dependence':katzScore>=2?'Severe dependence':'Total dependence'}</p>
-<button id="copy-katz" onclick="copyReport('katz')" class="btn btn-o" style="margin-top:8px;font-size:10px;padding:4px 10px" aria-label="Copy Katz ADL report">📋 העתק דוח</button>
-</div></div>`;
 
-// Lawton IADL Scale
-const lawtonItems=['Phone use','Shopping','Food prep','Housekeeping','Laundry','Transport','Medications','Finances'];
-const lawtonScore=lawtonItems.reduce((s,_,i)=>s+(calcVals['law_'+i]||0),0);
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">Lawton IADL Scale</h3>`;
-lawtonItems.forEach((l,i)=>{const k='law_'+i,on=calcVals[k]||0;
-h+=`<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:11px;cursor:pointer">
-<span>${l} (Independent=1)</span><input type="checkbox" ${on?'checked':''} onchange="calcUp('${k}',this.checked?1:0)" style="width:16px;height:16px"></label>`;});
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center" class="calc-result">
-<span style="font-size:22px;font-weight:700;color:${lawtonScore>=6?'#059669':lawtonScore>=4?'#d97706':'#dc2626'}">${lawtonScore}/8</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${lawtonScore===8?'Fully independent':lawtonScore>=5?'Partially dependent':'Significantly dependent'} in IADLs</p>
-</div></div>`;
 
-// 4AT Rapid Delirium Screen
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">4AT (Rapid Delirium Screen)</h3>`;
-const at4_1=[['Normal (0)','0'],['Mild sleepiness <10s (0)','0'],['Clearly abnormal (4)','4']];
-h+=`<div style="margin-bottom:8px"><label style="font-size:10px;color:#64748b;font-weight:600">1. Alertness</label>
-<select class="calc-in" style="font-size:11px" onchange="calcUp('at4_1',this.value)">`;
-at4_1.forEach(([l,v])=>{h+=`<option value="${v}"${String(calcVals.at4_1||0)===v?' selected':''}>${l}</option>`;});
-h+=`</select></div>`;
-const at4_2=[['No mistakes (0)','0'],['1 mistake (1)','1'],['2+ mistakes or untestable (2)','2']];
-h+=`<div style="margin-bottom:8px"><label style="font-size:10px;color:#64748b;font-weight:600">2. AMT4 (age, DOB, place, year)</label>
-<select class="calc-in" style="font-size:11px" onchange="calcUp('at4_2',this.value)">`;
-at4_2.forEach(([l,v])=>{h+=`<option value="${v}"${String(calcVals.at4_2||0)===v?' selected':''}>${l}</option>`;});
-h+=`</select></div>`;
-const at4_3=[['Achieves 7+ months correctly (0)','0'],['Starts but <7 / refuses (1)','1'],['Untestable (2)','2']];
-h+=`<div style="margin-bottom:8px"><label style="font-size:10px;color:#64748b;font-weight:600">3. Attention (months backwards)</label>
-<select class="calc-in" style="font-size:11px" onchange="calcUp('at4_3',this.value)">`;
-at4_3.forEach(([l,v])=>{h+=`<option value="${v}"${String(calcVals.at4_3||0)===v?' selected':''}>${l}</option>`;});
-h+=`</select></div>`;
-const at4_4=[['No (0)','0'],['Yes (4)','4']];
-h+=`<div style="margin-bottom:8px"><label style="font-size:10px;color:#64748b;font-weight:600">4. Acute change or fluctuating course</label>
-<select class="calc-in" style="font-size:11px" onchange="calcUp('at4_4',this.value)">`;
-at4_4.forEach(([l,v])=>{h+=`<option value="${v}"${String(calcVals.at4_4||0)===v?' selected':''}>${l}</option>`;});
-h+=`</select></div>`;
-const at4Score=(parseFloat(calcVals.at4_1)||0)+(parseFloat(calcVals.at4_2)||0)+(parseFloat(calcVals.at4_3)||0)+(parseFloat(calcVals.at4_4)||0);
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center" class="calc-result">
-<span style="font-size:22px;font-weight:700;color:${at4Score>=4?'#dc2626':at4Score>=1?'#d97706':'#059669'}">${at4Score}</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${at4Score>=4?'Possible delirium ± cognitive impairment':at4Score>=1?'Possible cognitive impairment':'No delirium or cognitive impairment detected'}</p>
-<button id="copy-4at" onclick="copyReport('4at')" class="btn btn-o" style="margin-top:8px;font-size:10px;padding:4px 10px" aria-label="Copy 4AT delirium report">📋 העתק דוח</button>
-</div></div>`;
-
-// MNA-SF (Mini Nutritional Assessment - Short Form)
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">MNA-SF (Nutritional Screen)</h3>`;
-const mna_items=[
-['mna_a','Food intake decline (3mo)',['Severe decrease (0)','Moderate decrease (1)','No decrease (2)']],
-['mna_b','Weight loss (3mo)',['Loss >3kg (0)','Unknown (1)','Loss 1-3kg (2)','No loss (3)']],
-['mna_c','Mobility',['Bed/chair bound (0)','Gets out but not outdoors (1)','Goes out (2)']],
-['mna_d','Psychological stress / acute disease (3mo)',['Yes (0)','No (2)']],
-['mna_e','Neuropsychological problems',['Severe dementia/depression (0)','Mild (1)','No problems (2)']],
-['mna_f','BMI or Calf circumference',['BMI<19 / CC<31 (0)','BMI 19-21 / CC 31+ (1)','BMI 21-23 (2)','BMI≥23 (3)']]
-];
-mna_items.forEach(([k,label,opts])=>{
-const v=String(calcVals[k]||0);
-h+=`<div style="margin-bottom:8px"><label style="font-size:10px;color:#64748b;font-weight:600">${label}</label>
-<select class="calc-in" style="font-size:11px" onchange="calcUp('${k}',this.value)">`;
-opts.forEach(o=>{const val=o.match(/\((\d+)\)/)[1];h+=`<option value="${val}"${v===val?' selected':''}>${o}</option>`;});
-h+=`</select></div>`;});
-const mnaScore=mna_items.reduce((s,[k])=>s+(parseFloat(calcVals[k])||0),0);
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center" class="calc-result">
-<span style="font-size:22px;font-weight:700;color:${mnaScore<=7?'#dc2626':mnaScore<=11?'#d97706':'#059669'}">${mnaScore}/14</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${mnaScore>=12?'Normal nutritional status':mnaScore>=8?'At risk of malnutrition':'Malnourished'}</p>
-</div></div>`;
-
-// Clinical Frailty Scale
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">Clinical Frailty Scale (CFS)</h3>`;
-const cfsOpts=['1 — Very Fit (robust, active, energetic)','2 — Well (no active disease, less fit)','3 — Managing Well (medical problems well-controlled)','4 — Vulnerable (not dependent, but slowed)','5 — Mildly Frail (limited IADLs)','6 — Moderately Frail (needs help with ADLs+IADLs)','7 — Severely Frail (completely dependent, approaching EOL)','8 — Very Severely Frail (bed-bound, may not recover from minor illness)','9 — Terminally Ill (<6mo prognosis)'];
-const cfsV=calcVals.cfs||1;
-h+=`<select class="calc-in" style="font-size:11px" onchange="calcUp('cfs',this.value)">`;
-cfsOpts.forEach((o,i)=>{h+=`<option value="${i+1}"${cfsV==i+1?' selected':''}>${o}</option>`;});
-h+=`</select>`;
-const cfsClr=cfsV>=7?'#dc2626':cfsV>=5?'#d97706':cfsV>=4?'#2563eb':'#059669';
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center" class="calc-result">
-<span style="font-size:22px;font-weight:700;color:${cfsClr}">${cfsV}/9</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${cfsV>=7?'Severely frail — high mortality, consider goals of care':cfsV>=5?'Frail — increased vulnerability to adverse outcomes':cfsV>=4?'Pre-frail / vulnerable':'Fit / not frail'}</p>
-</div></div>`;
-
-// Norton Scale (Pressure Injury)
-const nortonSubs=[
-['nrt_phys','Physical Condition',['Very Bad (1)','Poor (2)','Fair (3)','Good (4)']],
-['nrt_ment','Mental Condition',['Stuporous (1)','Confused (2)','Apathetic (3)','Alert (4)']],
-['nrt_act','Activity',['Bedfast (1)','Chairbound (2)','Walks with Help (3)','Ambulatory (4)']],
-['nrt_mob','Mobility',['Immobile (1)','Very Limited (2)','Slightly Limited (3)','Full (4)']],
-['nrt_inc','Incontinence',['Doubly (1)','Usually Urinary (2)','Occasional (3)','None (4)']]
-];
-const nortonScore=nortonSubs.reduce((s,[k])=>s+(calcVals[k]||1),0);
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">Norton Scale (Pressure Injury Risk)</h3>`;
-nortonSubs.forEach(([k,label,opts])=>{
-const v=calcVals[k]||1;
-h+=`<div style="margin-bottom:8px"><label style="font-size:10px;color:#64748b;font-weight:600">${label}</label>
-<select class="calc-in" style="font-size:11px" onchange="calcUp('${k}',this.selectedIndex+1)">`;
-opts.forEach((o,i)=>{h+=`<option value="${i+1}"${v===i+1?' selected':''}>${o}</option>`;});
-h+=`</select></div>`;});
-const nortonClr=nortonScore<=12?'#dc2626':nortonScore<=14?'#d97706':'#059669';
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center" class="calc-result">
-<span style="font-size:22px;font-weight:700;color:${nortonClr}">${nortonScore}/20</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${nortonScore<=12?'High risk — implement prevention':'Norton ≤14 moderate risk, >14 lower risk'}${nortonScore<=14?' — Turn schedule + skin assessment':''}</p>
-<button id="copy-norton" onclick="copyReport('norton')" class="btn btn-o" style="margin-top:8px;font-size:10px;padding:4px 10px" aria-label="Copy Norton report">📋 העתק דוח</button>
-</div></div>`;
-
-// Morse Fall Scale
-const morseItems=[
-['mor_hist','History of falling (last 3mo)',25],['mor_diag','Secondary diagnosis (≥2)',15],
-['mor_amb','Ambulatory aid',['None/bedrest/wheelchair (0)','Crutches/cane/walker (15)','Furniture (30)']],
-['mor_iv','IV/heparin lock',20],['mor_gait','Gait',['Normal/bedrest/immobile (0)','Weak (10)','Impaired (20)']],
-['mor_ment','Mental status',['Oriented to own ability (0)','Overestimates / forgets limitations (15)']]
-];
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">Morse Fall Scale</h3>`;
-morseItems.forEach(([k,l,pts])=>{
-if(Array.isArray(pts)){
-const v=String(calcVals[k]||0);
-h+=`<div style="margin-bottom:8px"><label style="font-size:10px;color:#64748b;font-weight:600">${l}</label>
-<select class="calc-in" style="font-size:11px" onchange="calcUp('${k}',this.value)">`;
-pts.forEach(o=>{const val=o.match(/\((\d+)\)/)[1];h+=`<option value="${val}"${v===val?' selected':''}>${o}</option>`;});
-h+=`</select></div>`;
-}else{
-const on=calcVals[k]||0;
-h+=`<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:11px;cursor:pointer">
-<span>${l} (+${pts})</span><input type="checkbox" ${on?'checked':''} onchange="calcUp('${k}',this.checked?${pts}:0)" style="width:16px;height:16px"></label>`;
-}});
-const morseScore=morseItems.reduce((s,[k,,pts])=>{if(Array.isArray(pts))return s+(parseFloat(calcVals[k])||0);return s+(calcVals[k]||0);},0);
-const morseClr=morseScore>=45?'#dc2626':morseScore>=25?'#d97706':'#059669';
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center" class="calc-result">
-<span style="font-size:22px;font-weight:700;color:${morseClr}">${morseScore}</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${morseScore>=45?'High fall risk — implement fall bundle':morseScore>=25?'Moderate risk — standard interventions':'Low risk'}</p>
-<button id="copy-morse" onclick="copyReport('morse')" class="btn btn-o" style="margin-top:8px;font-size:10px;padding:4px 10px" aria-label="Copy Morse Falls report">📋 העתק דוח</button>
-</div></div>`;
 
 return h;
 }
 
-// ===== RTL MEDICOLEGAL TEXT GENERATOR =====
-function copyReport(type){
-let text='';const d=new Date().toLocaleDateString('he-IL');
-if(type==='katz'){
-const items=['רחצה','הלבשה','שימוש בשירותים','העברה','שליטה על סוגרים','אכילה'];
-const score=items.reduce((s,_,i)=>s+(calcVals['katz_'+i]||0),0);
-const deps=items.filter((_,i)=>!calcVals['katz_'+i]);
-text=`הערכת תפקוד יומיומי (Katz ADL) — ${d}\n`;
-text+=`ציון כולל: ${score}/6. `;
-text+=score===6?'המטופל/ת עצמאי/ת בכל פעולות היומיום הבסיסיות.':
-`המטופל/ת תלוי/ה בפעולות: ${deps.join(', ')}. רמת תלות: ${score>=4?'קלה':score>=2?'בינונית':'חמורה'}.`;
-}else if(type==='norton'){
-const labels=['מצב גופני','מצב נפשי','פעילות','ניידות','שליטה על סוגרים'];
-const vals=['nrt_phys','nrt_ment','nrt_act','nrt_mob','nrt_inc'];
-const score=vals.reduce((s,k)=>s+(calcVals[k]||1),0);
-text=`הערכת סיכון לפצעי לחץ (Norton) — ${d}\n`;
-text+=`ציון כולל: ${score}/20. `;
-text+=`רמת סיכון: ${score<=12?'גבוהה':score<=14?'בינונית':'נמוכה'}. `;
-text+=score<=14?'יש להפעיל פרוטוקול מניעת פצעי לחץ.':'סיכון נמוך, המשך ניטור.';
-}else if(type==='4at'){
-const score=(parseFloat(calcVals.at4_1)||0)+(parseFloat(calcVals.at4_2)||0)+(parseFloat(calcVals.at4_3)||0)+(parseFloat(calcVals.at4_4)||0);
-text=`סקירת דליריום (4AT) — ${d}\n`;
-text+=`ציון כולל: ${score}. `;
-text+=score>=4?'ממצא מחשיד לדליריום ± פגיעה קוגניטיבית. יש להמשיך בירור ולטפל בגורם.':
-score>=1?'ממצא מחשיד לפגיעה קוגניטיבית. יש לשקול הערכה נוספת.':'ללא דליריום או פגיעה קוגניטיבית.';
-}else if(type==='braden'){
-const score=['brad_sens','brad_moist','brad_act','brad_mob','brad_nut','brad_fric'].reduce((s,k)=>s+(calcVals[k]||1),0);
-text=`הערכת סיכון לפצעי לחץ (Braden) — ${d}\n`;
-text+=`ציון כולל: ${score}/23. `;
-text+=`רמת סיכון: ${score<=12?'גבוהה':score<=14?'בינונית':score<=18?'קלה':'ללא סיכון'}. `;
-text+=score<=18?'יש להפעיל פרוטוקול מניעה.':'';
-}else if(type==='morse'){
-const morseScore=[['mor_hist',25],['mor_diag',15],['mor_iv',20]].reduce((s,[k,p])=>s+(calcVals[k]||0),0)+
-['mor_amb','mor_gait','mor_ment'].reduce((s,k)=>s+(parseFloat(calcVals[k])||0),0);
-text=`הערכת סיכון נפילות (Morse) — ${d}\n`;
-text+=`ציון כולל: ${morseScore}. `;
-text+=`רמת סיכון: ${morseScore>=45?'גבוהה':morseScore>=25?'בינונית':'נמוכה'}. `;
-text+=morseScore>=25?'יש להפעיל פרוטוקול מניעת נפילות.':'';
-}else if(type==='gds'){
-const score=Array.from({length:15},(_, i)=>calcVals['gds_'+i]||0).reduce((a,b)=>a+b,0);
-text=`סקירת דיכאון (GDS-15) — ${d}\n`;
-text+=`ציון כולל: ${score}/15. `;
-text+=score>=10?'חשד לדיכאון חמור — יש להפנות להערכה פסיכיאטרית.':score>=5?'סקירה חיובית — יש להמשיך בירור ולשקול טיפול.':'תקין — ללא חשד לדיכאון.';
-}
-if(text&&navigator.clipboard){
-navigator.clipboard.writeText(text).then(()=>{
-const btn=document.getElementById('copy-'+type);
-if(btn){btn.textContent='✅ הועתק';setTimeout(()=>btn.textContent='📋 העתק דוח',1500);}
-});
-}
-}
 
 // ===== OSCE =====
 
@@ -3231,7 +3002,7 @@ h+=`<div class="sec-t">Progress</div><div class="sec-s">Syllabus · Bookmarks ·
 if(S.streak>0)h+=`<div style="text-align:center;margin-bottom:12px"><span class="streak-badge">🔥 ${S.streak} day${S.streak>1?'s':''} streak</span></div>`;
 const estScore=calcEstScore();
 h+=`<div class="stats">
-<div class="stat"><div class="n" style="color:rgb(var(--em))">${done}/40</div><div class="l">Topics</div></div>
+<div class="stat"><div class="n" style="color:rgb(var(--em))">${done}/${TOPICS.length}</div><div class="l">Topics</div></div>
 <div class="stat"><div class="n" style="color:rgb(var(--sky))">${pct}</div><div class="l">Quiz</div></div>
 <div class="stat"><span class="tt-wrap"><div class="n" style="color:${estScore===null?'#94a3b8':estScore>=70?'#059669':estScore>=60?'#d97706':'#dc2626'}">${estScore!==null?estScore+'%':'—'}</div><div class="l">Est. Score <button class="tt-icon" tabindex="0">ⓘ</button></div><div class="tt-box" style="left:0;transform:none">Rolling exam score estimate: topic accuracy × exam frequency weight. Penalizes overdue SR cards. Needs 3+ answers per topic for accuracy. Pass = 60%.</div></span></div>
 <div class="stat"><span class="tt-wrap"><div class="n" style="color:rgb(var(--amb))">${dueN}</div><div class="l">Due (SR) <button class="tt-icon" tabindex="0">ⓘ</button></div><div class="tt-box" style="left:0;transform:none">Spaced repetition cards due for review. Based on your past performance.</div></span></div>
@@ -3268,7 +3039,7 @@ h+=`</div>`;
 }
 }
 // Syllabus
-h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:10px">📋 Syllabus (${done}/40)</div>`;
+h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:10px">📋 Syllabus (${done}/${TOPICS.length})</div>`;
 // Per-topic accuracy bars
 const tSt=getTopicStats();
 const ranked=TOPICS.map((t,i)=>({name:t,i,s:tSt[i]||{ok:0,no:0,tot:0}})).filter(p=>p.s.tot>0);
@@ -3301,7 +3072,7 @@ row.cells.push({yr,pct:answered.length?Math.round(correct.length/answered.length
 if(row.cells.some(c=>c.n>0))heatData.push(row);
 });
 if(heatData.length>0){
-h+=`<div class="card" style="padding:14px;margin-bottom:10px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">\U0001f5fa\ufe0f Weak Spots Map</div>`;
+h+=`<div class="card" style="padding:14px;margin-bottom:10px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">🗺️ Weak Spots Map</div>`;
 h+=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:9px"><thead><tr><th style="text-align:right;padding:3px;font-size:8px">Topic</th>`;
 years.forEach(y=>{h+=`<th style="padding:3px;text-align:center;font-size:7px;white-space:nowrap">${y.length>4?y.slice(-2):y}</th>`;});
 h+=`</tr></thead><tbody>`;
@@ -3579,7 +3350,7 @@ data.forEach((r,i)=>{
   <div style="flex:1;font-size:10px;font-weight:${isMe?'700':'400'}">${isMe?'You \u2b50':'User '+r.uid.slice(0,4)}</div>
   <span style="font-size:10px;color:#64748b">${r.answered} Qs</span>
   <span style="font-size:10px;font-weight:700;color:${r.readiness>=60?'#059669':'#d97706'}">${r.readiness}%</span>
-  <span style="font-size:10px">\U0001f525${r.streak}d</span>
+  <span style="font-size:10px">🔥${r.streak}d</span>
   </div>`;
 });
 }
@@ -3587,30 +3358,30 @@ box.innerHTML=html;
 }
 // ===== FEATURE: FEEDBACK SYSTEM =====
 function renderFeedback(){
-let h='<div class="sec-t">\U0001f4a1 Feedback & Feature Requests</div>';
+let h='<div class="sec-t">💡 Feedback & Feature Requests</div>';
 h+='<div class="sec-s">Help improve Pnimit Mega for everyone. AI reviews every submission.</div>';
 h+='<div class="card" style="padding:16px;margin-bottom:12px">';
 h+='<div style="font-size:12px;font-weight:700;margin-bottom:8px">Submit Feedback</div>';
 h+='<select id="fb-type" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;margin-bottom:8px;background:#f8fafc">';
-h+='<option value="bug">\U0001f41b Bug Report</option>';
-h+='<option value="feature">\u2728 Feature Request</option>';
-h+='<option value="content">\U0001f4dd Content Fix (wrong answer/explanation)</option>';
-h+='<option value="ux">\U0001f3a8 UX/Design Improvement</option>';
-h+='<option value="other">\U0001f4ac Other</option>';
+h+='<option value="bug">🐛 Bug Report</option>';
+h+='<option value="feature">✨ Feature Request</option>';
+h+='<option value="content">📝 Content Fix (wrong answer/explanation)</option>';
+h+='<option value="ux">🎨 UX/Design Improvement</option>';
+h+='<option value="other">💬 Other</option>';
 h+='</select>';
 h+='<textarea id="fb-text" dir="auto" placeholder="Describe your feedback in detail..." style="width:100%;min-height:100px;padding:10px;border:1px solid #e2e8f0;border-radius:10px;font-size:12px;font-family:inherit;resize:vertical;margin-bottom:8px"></textarea>';
-h+='<button onclick="submitFeedbackForm()" class="btn" style="width:100%;padding:10px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer">\U0001f4e4 Submit Feedback</button>';
+h+='<button onclick="submitFeedbackForm()" class="btn" style="width:100%;padding:10px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer">📤 Submit Feedback</button>';
 h+='</div>';
 let fb=[];try{fb=JSON.parse(localStorage.getItem('pnimit_fb_sent')||'[]');}catch(e){}
 if(fb.length){
 h+='<div class="card" style="padding:14px">';
-h+='<div style="font-size:12px;font-weight:700;margin-bottom:8px">\U0001f4cb Your Submissions ('+fb.length+')</div>';
+h+='<div style="font-size:12px;font-weight:700;margin-bottom:8px">📋 Your Submissions ('+fb.length+')</div>';
 fb.slice(-5).reverse().forEach(f=>{
   h+='<div style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:10px">';
-  h+='<span style="font-weight:600">'+({bug:'\U0001f41b',feature:'\u2728',content:'\U0001f4dd',ux:'\U0001f3a8',other:'\U0001f4ac'}[f.type]||'\U0001f4ac')+' '+f.type+'</span>';
+  h+='<span style="font-weight:600">'+({bug:'🐛',feature:'✨',content:'📝',ux:'🎨',other:'💬'}[f.type]||'💬')+' '+f.type+'</span>';
   h+=' \u00b7 <span style="color:#64748b">'+new Date(f.ts).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'</span>';
   h+='<div style="color:#475569;margin-top:2px;line-height:1.5">'+sanitize(f.text).slice(0,120)+(f.text.length>120?'...':'')+'</div>';
-  if(f.aiResponse){h+='<div style="color:#7c3aed;margin-top:4px;padding:6px 8px;background:#f5f3ff;border-radius:6px;font-size:9px;line-height:1.5">\U0001f916 '+sanitize(f.aiResponse)+'</div>';}
+  if(f.aiResponse){h+='<div style="color:#7c3aed;margin-top:4px;padding:6px 8px;background:#f5f3ff;border-radius:6px;font-size:9px;line-height:1.5">🤖 '+sanitize(f.aiResponse)+'</div>';}
   h+='</div>';
 });
 h+='</div>';
@@ -3699,7 +3470,7 @@ switch(tab){
 case'quiz':el.innerHTML=onCallMode?renderOnCall():renderQuiz();break;
 case'learn':
   {const _subBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
-  [{id:'study',ic:'\U0001f4da',l:'Study'},{id:'flash',ic:'\U0001f0cf',l:'Cards'},{id:'drugs',ic:'\U0001f48a',l:'Drugs'}].map(s=>
+  [{id:'study',ic:'📚',l:'Study'},{id:'flash',ic:'🃏',l:'Cards'},{id:'drugs',ic:'💊',l:'Drugs'}].map(s=>
     '<button onclick="learnSub=\''+s.id+'\';render()" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(learnSub===s.id?'700':'400')+';cursor:pointer;background:'+(learnSub===s.id?'#fff':'transparent')+';color:'+(learnSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(learnSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
   let _body='';
@@ -3720,7 +3491,7 @@ case'track':
   el.innerHTML=renderTrack();break;
 case'more':
   {const _moreBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
-  [{id:'calc',ic:'\U0001f9ee',l:'Calc'},{id:'search',ic:'\U0001f50d',l:'Search'},{id:'chat',ic:'\U0001f4ac',l:'Chat'},{id:'feedback',ic:'\U0001f4a1',l:'Feedback'}].map(s=>
+  [{id:'calc',ic:'🧮',l:'Calc'},{id:'search',ic:'🔍',l:'Search'},{id:'chat',ic:'💬',l:'Chat'},{id:'feedback',ic:'💡',l:'Feedback'}].map(s=>
     '<button onclick="moreSub=\''+s.id+'\';render()" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(moreSub===s.id?'700':'400')+';cursor:pointer;background:'+(moreSub===s.id?'#fff':'transparent')+';color:'+(moreSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(moreSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
   let _mBody='';
@@ -3796,25 +3567,25 @@ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=
 const APP_VERSION='9.33';
 const CHANGELOG={
 '9.33':[
-'\U0001f41b Changelog Fix — תצוגת changelog תקינה במקום קוד גולמי',
-'\U0001f41b Quiz Fix — תיקון stats.map crash שגרם לשגיאות בכפתורים',
-'\U0001f41b IDB Init Fix — תיקון _dataPromise hoisting error'
+'🐛 Changelog Fix — תצוגת changelog תקינה במקום קוד גולמי',
+'🐛 Quiz Fix — תיקון stats.map crash שגרם לשגיאות בכפתורים',
+'🐛 IDB Init Fix — תיקון _dataPromise hoisting error'
 ],
 '9.31':[
-'\U0001f4ca 1,169 \u05e9\u05d0\u05dc\u05d5\u05ea \u2014 All questions tagged by 24 subspecialties',
-'\U0001f48a Drugs Tab \u2014 Drug checker with ACB scores, Beers flags, STOPP interactions',
-'\U0001f512 Security \u2014 AI response sanitization for XSS protection',
-'\U0001f4c4 Articles \u2014 10 required NEJM/Lancet articles',
+'📊 1,169 \u05e9\u05d0\u05dc\u05d5\u05ea \u2014 All questions tagged by 24 subspecialties',
+'💊 Drugs Tab \u2014 Drug checker with ACB scores, Beers flags, STOPP interactions',
+'🔒 Security \u2014 AI response sanitization for XSS protection',
+'📄 Articles \u2014 10 required NEJM/Lancet articles',
 '\u2705 AI Proxy \u2014 All AI features work without a personal API key'
 ],
 '9.32':[
-'\U0001f6a8 Rescue Drill \u2014 Focused practice on your 3 weakest topics',
-'\U0001f4c5 Activity Calendar \u2014 30-day question activity heatmap',
-'\U0001f4d6 Spaced Reading \u2014 Track chapter reads + 30-day re-read reminders',
-'\U0001f3c6 Leaderboard \u2014 Anonymous global rankings via Supabase',
-'\U0001f4a1 Feedback System \u2014 Submit feedback with AI acknowledgment',
-'\U0001f5c2\ufe0f Tab Consolidation \u2014 10 \u2192 5 tabs: Quiz, Learn, Library, Track, More',
-'\U0001f4cb Dynamic Changelog \u2014 Version history in help overlay'
+'🚨 Rescue Drill \u2014 Focused practice on your 3 weakest topics',
+'📅 Activity Calendar \u2014 30-day question activity heatmap',
+'📖 Spaced Reading \u2014 Track chapter reads + 30-day re-read reminders',
+'🏆 Leaderboard \u2014 Anonymous global rankings via Supabase',
+'💡 Feedback System \u2014 Submit feedback with AI acknowledgment',
+'🗂️ Tab Consolidation \u2014 10 \u2192 5 tabs: Quiz, Learn, Library, Track, More',
+'📋 Dynamic Changelog \u2014 Version history in help overlay'
 ]
 };
 const SYLLABUS_VERSION='P0064-2025';
@@ -3843,7 +3614,7 @@ function takeWeeklySnapshot(){
     if(snapshots[weekKey])return; // already taken this week
     const tSt=S&&S.ts?S.ts:{};
     const snap={};
-    for(let i=0;i<40;i++){const s=tSt[i]||{ok:0,no:0,tot:0};snap[i]=s.tot>0?Math.round(s.ok/s.tot*100):null;}
+    for(let i=0;i<TOPICS.length;i++){const s=tSt[i]||{ok:0,no:0,tot:0};snap[i]=s.tot>0?Math.round(s.ok/s.tot*100):null;}
     snapshots[weekKey]={date:now.toISOString(),acc:snap};
     const keys=Object.keys(snapshots).sort();
     if(keys.length>52)delete snapshots[keys[0]];
@@ -3915,7 +3686,7 @@ return `Pnimit Mega v${APP_VERSION}\n`+
 `---\n`+
 `Questions: ${QZ.length} · Answered: ${tot} · Correct: ${S.qOk} (${tot?Math.round(S.qOk/tot*100):0}%)\n`+
 `SR: ${srEntries.length} tracked · ${srDue} due · ${srHard} hard (EF<2.0) · ${srMastered} mastered\n`+
-`Topics done: ${Object.values(S.ck).filter(Boolean).length}/40\n`+
+`Topics done: ${Object.values(S.ck).filter(Boolean).length}/${TOPICS.length}\n`+
 `Bookmarks: ${Object.values(S.bk).filter(Boolean).length}\n`+
 `Streak: ${S.streak||0} days\n`+
 `---\n`+
@@ -4026,7 +3797,7 @@ ${sec('Study Modes','📚','#dc2626',
 '<b>📖 Library</b> — Read Harrison chapters in-app (no PDF needed)<br>'+
 '<b>🃏 Flashcards</b> — Cards with spaced repetition<br>'+
 '<b>📄 Articles</b> — 10 required NEJM/Lancet articles<br>'+
-'<b>🧮 Calculators</b> — CrCl, CHA₂DS₂-VASc, Wells, MELD, etc.'
+'<b>🧮 Calculators</b> — CrCl, CHA₂DS₂-VASc, CURB-65, Wells, PADUA'
 )}
 ${sec('Progress Tracking','📊','#f59e0b',
 '<b>⏱️ Answer Timer</b> — Silently tracks time per question<br>'+
