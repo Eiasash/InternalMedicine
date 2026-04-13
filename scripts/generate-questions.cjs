@@ -20,6 +20,8 @@
  *   --output     output file (default: generated-questions-{timestamp}.json)
  *   --api-key    Anthropic API key (or set ANTHROPIC_API_KEY env var)
  *   --proxy      use toranot proxy instead of direct API (default: false)
+ *   --concurrency  parallel API calls per batch (default: 5)
+ *   --resume     resume from previous run (loads existing output + skips done chapters)
  */
 
 const fs = require('fs');
@@ -136,6 +138,9 @@ const HAZ_CH_TO_TOPIC = {
   107: 27, // Infections
   108: 27, // Viruses → Infections
 };
+
+// Hazzard chapters EXCLUDED from P005-2026 syllabus
+const HAZ_EXCLUDED = new Set([2, 3, 4, 5, 6, 34, 62]);
 
 // Harrison chapter → pnimit topic index mapping
 const HAR_CH_TO_PNIMIT = {
@@ -254,6 +259,8 @@ function parseArgs() {
     output: null,
     apiKey: process.env.ANTHROPIC_API_KEY || null,
     proxy: false,
+    concurrency: 5,
+    resume: false,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -266,6 +273,8 @@ function parseArgs() {
       case '--output': opts.output = args[++i]; break;
       case '--api-key': opts.apiKey = args[++i]; break;
       case '--proxy': opts.proxy = true; break;
+      case '--concurrency': opts.concurrency = parseInt(args[++i]); break;
+      case '--resume': opts.resume = true; break;
     }
   }
 
@@ -307,7 +316,7 @@ function loadChapters(opts) {
           title: data.title,
           wordCount: data.wordCount,
           text: assembleSectionText(data.sections),
-          topicIndex: HAZ_CH_TO_TOPIC[parseInt(ch)],
+          topicIndex: HAZ_EXCLUDED.has(parseInt(ch)) ? undefined : HAZ_CH_TO_TOPIC[parseInt(ch)],
         };
       }
     }
@@ -372,7 +381,16 @@ function loadExistingQuestions(opts) {
 function buildPrompt(chapter, topicName, count, appName) {
   const isGeri = appName === 'geriatrics';
   const examContext = isGeri
-    ? `Israeli Geriatrics Board Exam (Shlav Alef, P005-2026). Focus on geriatric-specific clinical scenarios.`
+    ? `Israeli Geriatrics Board Exam (Shlav Alef, P005-2026).
+Key themes that MUST appear in your questions:
+- Renal dosing adjustments (CrCl-based, Cockroft-Gault in elderly)
+- Beers 2023 / STOPP-START v3 criteria (name specific drugs)
+- Functional status impact (ADL/IADL decline as presenting sign)
+- Goals-of-care tension (aggressive tx vs comfort, DNR ≠ no treatment)
+- Delirium vs dementia (acute vs chronic, CAM criteria, reversible causes)
+- Polypharmacy (drug-drug, drug-disease interactions in 65+)
+- Falls risk (orthostatic hypotension, medications, environmental)
+- Frailty (Fried criteria, CFS, sarcopenia EWGSOP2)`
     : `Israeli Internal Medicine Board Exam (Shlav Alef, P0064-2025).
 Key themes that MUST appear in your questions:
 - Pathophysiology-based reasoning (mechanism → diagnosis → treatment)
@@ -398,23 +416,23 @@ ${text}
 EXAMPLE of a board-quality question with an effective trap:
 
 {
-  "q": "A 58-year-old man with a history of alcoholic cirrhosis (Child-Pugh B) presents to the ED with massive hematemesis. His BP is 82/50, HR 124. After initial fluid resuscitation and intubation for airway protection, his hemoglobin is 6.2 g/dL. Upper endoscopy reveals actively bleeding esophageal varices. IV octreotide is started and band ligation is performed with hemostasis achieved. Which additional intervention is most important to initiate within 24 hours?",
-  "o": ["IV pantoprazole 80mg bolus then 8mg/hr drip", "Prophylactic antibiotics with IV ceftriaxone", "Emergent TIPS procedure", "Start propranolol 20mg BID for secondary prophylaxis"],
-  "c": 1,
-  "e": "Prophylactic antibiotics (ceftriaxone 1g/day IV × 7 days) are the most important intervention. Bacterial infections occur in 25-50% of cirrhotics with GI bleeding and are an independent predictor of rebleeding and mortality. Multiple RCTs show antibiotics reduce mortality by ~10%.\n\nOption A (PPI drip) is the classic TRAP — PPIs are standard for peptic ulcer bleeding but have NO proven benefit in variceal bleeding. Variceal bleeding is from portal hypertension, not acid. Many trainees reflexively order PPI drips for any upper GI bleed.\n\nOption C (TIPS) is reserved for refractory bleeding unresponsive to endoscopic therapy. This patient achieved hemostasis with banding — TIPS is premature.\n\nOption D (propranolol) is correct for secondary prophylaxis but should NOT be started during acute bleeding — beta-blockers worsen hypotension and mask tachycardia, which you need as a monitoring parameter.\n\nClinical Pearl: In variceal bleeding, the triad is: (1) vasoactive drug (octreotide/terlipressin), (2) endoscopic therapy (banding), (3) antibiotics. All three within 12 hours. PPIs add nothing."
+  "q": "An 82-year-old woman with moderate Alzheimer's disease (MMSE 16) and CKD stage 3b (eGFR 38) is admitted with a UTI. She becomes acutely agitated, pulling at her IV and trying to climb out of bed. Her family reports this is new behavior. Vital signs: T 38.2°C, HR 96, BP 110/70. Her nurse asks for a medication order. Which is the most appropriate initial pharmacological intervention?",
+  "o": ["Haloperidol 0.5 mg IV", "Lorazepam 1 mg IM", "Quetiapine 25 mg PO", "Physical restraints and observation"],
+  "c": 0,
+  "e": "This patient has hyperactive delirium superimposed on dementia, triggered by infection. The correct answer is low-dose haloperidol (0.5 mg), the first-line antipsychotic for acute delirium per most guidelines including NICE and APA.\n\nOption B (lorazepam) is the classic TRAP — benzodiazepines worsen delirium in elderly patients by increasing confusion and sedation. They are ONLY indicated for delirium tremens or seizure-related agitation. Many trainees reflexively reach for benzos for agitation, making this the most commonly chosen wrong answer.\n\nOption C (quetiapine) is reasonable for delirium but is second-line and takes 1-2 hours for onset via PO route — not appropriate for acute dangerous agitation where the patient is pulling lines.\n\nOption D (restraints) is never first-line and associated with increased mortality, injury, and worsening agitation in elderly delirious patients.\n\nClinical Pearl: In geriatric delirium, treat the CAUSE (antibiotics for UTI), use non-pharmacological measures first (reorientation, lighting, family presence), and reserve antipsychotics for dangerous agitation. Always check QTc before haloperidol. Dose-adjust for renal function."
 }
 
-Notice: the best wrong answer (PPI drip) is what most non-GI physicians would instinctively order. EVERY question you write must have one distractor this tempting.
+Notice: the best wrong answer (lorazepam) is what a non-geriatrician would instinctively choose. EVERY question you write must have one distractor this tempting.
 
 REQUIREMENTS:
-1. Each question MUST be a clinical vignette with specific patient details (age, sex, comorbidities, medications, labs, vitals). No abstract "which of the following" questions.
+1. Each question MUST be a clinical vignette with specific patient details (age, sex, comorbidities, medications, labs). No abstract "which of the following" questions.
 2. Exactly 4 answer options. One correct (0-indexed: 0-3). Randomize which position is correct.
-3. The BEST DISTRACTOR must be something a competent but non-specialist physician would pick. Explain why it's tempting but wrong.
-4. Explanation (250-500 words): why correct is right (with mechanism), why EACH wrong answer is wrong (2-3 sentences each, labeled Option A/B/C/D), which is the "exam trap" and why, Clinical Pearl at end.
-5. Every question must connect pathophysiology to the clinical decision — not just "what do you do" but "why this and not that".
-6. All questions should be HARD. No gimmes. Target 65-75% correct rate for a well-prepared candidate.
-7. Vary clinical settings: ED, ward, ICU, outpatient, post-operative.
-8. Include relevant lab values, imaging findings, ECG descriptions, or medication lists where they add to reasoning.
+3. The BEST DISTRACTOR must be something a competent but non-specialist physician would pick. Explain in the explanation why it's tempting but wrong.
+4. Explanation (250-500 words): why correct answer is right (with mechanism), why EACH wrong answer is wrong (2-3 sentences each, labeled Option A/B/C/D), which option is the "exam trap" and why, and a Clinical Pearl.
+5. ${isGeri ? 'Every geriatrics question must include at least ONE of: renal dosing concern, Beers-listed drug, functional status detail, goals-of-care element, or age-specific threshold (e.g., BP target, HbA1c target in elderly).' : 'Every question must connect pathophysiology to the clinical decision — not just "what do you do" but "why this and not that".'}
+6. All questions should be HARD. No gimmes. Target the level where a well-prepared candidate gets 65-75% right.
+7. Vary the clinical settings: outpatient clinic, ED, ward, ICU, rehabilitation, nursing home, home visit.
+8. Include relevant lab values, imaging findings, or medication lists where they add to the reasoning.
 
 OUTPUT FORMAT — respond with ONLY a JSON array, no markdown fences, no preamble:
 [
@@ -585,78 +603,122 @@ async function main() {
   const existingQs = loadExistingQuestions(opts);
   console.log(`📋 Existing questions: ${existingQs.length}`);
 
-  const allGenerated = [];
+  const outFile = opts.output || `generated-questions-${Date.now()}.json`;
+  const outPath = path.resolve(outFile);
+  const progressPath = outPath.replace('.json', '.progress.json');
+
+  // Resume: load existing progress
+  let allGenerated = [];
+  let completedKeys = new Set();
+  if (opts.resume && fs.existsSync(outPath)) {
+    allGenerated = JSON.parse(fs.readFileSync(outPath, 'utf-8'));
+    console.log(`♻️  Resuming: loaded ${allGenerated.length} existing questions from ${outFile}`);
+  }
+  if (opts.resume && fs.existsSync(progressPath)) {
+    const prog = JSON.parse(fs.readFileSync(progressPath, 'utf-8'));
+    completedKeys = new Set(prog);
+    console.log(`♻️  Skipping ${completedKeys.size} already-completed chapters`);
+  }
+
+  // Filter out completed chapters
+  const remaining = targetChapters.filter(([key, ch]) => {
+    if (completedKeys.has(key)) return false;
+    if (ch.text.length < 200) return false;
+    return true;
+  });
+  console.log(`\n⏳ ${remaining.length} chapters to process (${opts.concurrency} parallel)\n`);
+
   let totalValid = 0, totalDupes = 0, totalInvalid = 0;
 
-  for (const [key, chapter] of targetChapters) {
+  // Process a single chapter — returns { valid, dupes, invalid, questions, key }
+  async function processChapter(key, chapter) {
     const topicName = TOPICS[chapter.topicIndex];
-    console.log(`\n📖 ${chapter.source} Ch ${chapter.chapter}: "${chapter.title.substring(0, 40)}" → ${topicName}`);
-
-    if (chapter.text.length < 200) {
-      console.log('  ⏭ Skipping — chapter text too short');
-      continue;
-    }
-
+    const label = `${chapter.source} Ch ${chapter.chapter}`;
     try {
       const prompt = buildPrompt(chapter, topicName, opts.count, opts.app);
-      console.log(`  🤖 Calling Claude (${Math.round(prompt.length / 4)} tokens est.)...`);
+      console.log(`  🤖 ${label}: "${chapter.title.substring(0, 35)}" → ${topicName} (${Math.round(prompt.length / 4)} tok)...`);
       
       const response = await callClaude(prompt, opts.apiKey, opts.proxy);
       const questions = parseGeneratedQuestions(response);
       
       if (!questions.length) {
-        console.log('  ✗ No questions parsed from response');
-        continue;
+        console.log(`  ✗ ${label}: No questions parsed`);
+        return { valid: 0, dupes: 0, invalid: 0, questions: [], key };
       }
 
-      let chValid = 0, chDupes = 0, chInvalid = 0;
+      let valid = 0, dupes = 0, invalid = 0;
+      const goodQs = [];
       
       for (const q of questions) {
-        // Force correct source and topic
         q.t = chapter.source;
         q.ti = chapter.topicIndex;
         
         const errors = validateQuestion(q, TOPICS.length);
-        if (errors.length) {
-          chInvalid++;
-          continue;
-        }
+        if (errors.length) { invalid++; continue; }
+        if (isDuplicate(q, [...existingQs, ...allGenerated, ...goodQs])) { dupes++; continue; }
         
-        if (isDuplicate(q, [...existingQs, ...allGenerated])) {
-          chDupes++;
-          continue;
-        }
-        
-        allGenerated.push(q);
-        chValid++;
+        goodQs.push(q);
+        valid++;
       }
       
-      totalValid += chValid;
-      totalDupes += chDupes;
-      totalInvalid += chInvalid;
-      console.log(`  ✅ ${chValid} valid, ${chDupes} dupes, ${chInvalid} invalid`);
-      
-      // Rate limiting — 1.5s between calls
-      await new Promise(r => setTimeout(r, 5000));
-      
+      console.log(`  ✅ ${label}: ${valid} valid, ${dupes} dupes, ${invalid} invalid`);
+      return { valid, dupes, invalid, questions: goodQs, key };
     } catch (err) {
-      console.error(`  ✗ Error: ${err.message}`);
+      console.error(`  ✗ ${label}: ${err.message.substring(0, 100)}`);
+      return { valid: 0, dupes: 0, invalid: 0, questions: [], key };
     }
   }
 
-  // Save output
-  const outFile = opts.output || `generated-questions-${Date.now()}.json`;
-  const outPath = path.resolve(outFile);
-  fs.writeFileSync(outPath, JSON.stringify(allGenerated, null, 2), 'utf-8');
+  // Process in parallel batches
+  const BATCH = opts.concurrency;
+  for (let i = 0; i < remaining.length; i += BATCH) {
+    const batch = remaining.slice(i, i + BATCH);
+    const batchNum = Math.floor(i / BATCH) + 1;
+    const totalBatches = Math.ceil(remaining.length / BATCH);
+    console.log(`\n── Batch ${batchNum}/${totalBatches} (${batch.length} chapters) ──`);
+    
+    const results = await Promise.allSettled(
+      batch.map(([key, ch]) => processChapter(key, ch))
+    );
+
+    for (const r of results) {
+      if (r.status === 'fulfilled' && r.value) {
+        totalValid += r.value.valid;
+        totalDupes += r.value.dupes;
+        totalInvalid += r.value.invalid;
+        allGenerated.push(...r.value.questions);
+        completedKeys.add(r.value.key);
+      }
+    }
+
+    // Incremental save after each batch
+    fs.writeFileSync(outPath, JSON.stringify(allGenerated, null, 2), 'utf-8');
+    fs.writeFileSync(progressPath, JSON.stringify([...completedKeys]), 'utf-8');
+    console.log(`  💾 Saved: ${allGenerated.length} total questions (${completedKeys.size}/${targetChapters.length} chapters done)`);
+
+    // Rate limit between batches (not between individual calls within a batch)
+    if (i + BATCH < remaining.length) {
+      await new Promise(r => setTimeout(r, 2000));
+    }
+  }
 
   console.log(`\n${'='.repeat(60)}`);
-  console.log(`✅ Generated: ${totalValid} questions`);
+  console.log(`✅ Generated: ${totalValid} questions (this run)`);
+  console.log(`📦 Total in file: ${allGenerated.length} questions`);
   console.log(`🔄 Duplicates skipped: ${totalDupes}`);
   console.log(`❌ Invalid skipped: ${totalInvalid}`);
   console.log(`📁 Saved to: ${outPath}`);
   console.log(`\nTo merge into questions.json:`);
   console.log(`  node scripts/merge-questions.js ${outFile}`);
+  if (totalValid < remaining.length * opts.count * 0.5) {
+    console.log(`\n💡 Some chapters failed. Re-run with --resume to retry them:`);
+    console.log(`  node scripts/generate-questions.cjs --app ${opts.app} --all --count ${opts.count} --output ${outFile} --resume`);
+  }
   console.log(`${'='.repeat(60)}\n`);
+  // Clean up progress file on full completion
+  if (completedKeys.size >= targetChapters.length && fs.existsSync(progressPath)) {
+    fs.unlinkSync(progressPath);
+  }
 }
 
 main().catch(err => {
