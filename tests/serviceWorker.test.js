@@ -95,8 +95,16 @@ describe('service worker (sw.js)', () => {
     expect(sw).toContain('pnimit-mega.html');
   });
 
-  test('has fallback to questions.json for data fetch failures', () => {
-    expect(sw).toContain('data/questions.json');
+  test('does NOT fall back to questions.json for arbitrary failures', () => {
+    expect(sw).not.toMatch(/catch.*caches\.match.*questions\.json/s);
+  });
+
+  test('skips non-GET requests', () => {
+    expect(sw).toMatch(/request\.method\s*!==\s*'GET'/);
+  });
+
+  test('uses navigate mode for HTML fallback', () => {
+    expect(sw).toMatch(/request\.mode\s*===\s*'navigate'/);
   });
 
   test('has sync event listener for supabase-backup', () => {
