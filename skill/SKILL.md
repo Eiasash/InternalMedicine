@@ -18,7 +18,7 @@ description: >
 - **App**: Pnimit Mega (שלב א מגה — רפואה פנימית)
 - **URL**: https://eiasash.github.io/InternalMedicine/
 - **Repo**: github.com/Eiasash/InternalMedicine
-- **Version**: v9.30
+- **Version**: v9.36
 - **Stack**: Single-file HTML PWA, vanilla JS, GitHub Pages
 - **Syllabus**: P0064-2025 (Israeli Internal Medicine Stage A)
 - **Sibling app**: Shlav A Mega (geriatrics) at Eiasash/Geriatrics — same engine, different syllabus & data

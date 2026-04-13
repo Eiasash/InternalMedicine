@@ -6,7 +6,7 @@
 
 - **Live URL**: https://eiasash.github.io/InternalMedicine/
 - **Main file**: `pnimit-mega.html` (~253 KB, ~4,157 lines, self-contained HTML/CSS/JS)
-- **App version**: v9.34
+- **App version**: v9.36
 - **Data**: JSON files in `data/` directory, loaded lazily at runtime
 - **Deployment**: Push to `main` → GitHub Pages live
 - **Sibling app**: Shlav A Mega (geriatrics) at Eiasash/Geriatrics — same engine, separate data
@@ -37,9 +37,9 @@ Data is loaded at runtime from `data/*.json` files. The service worker (`sw.js`)
 
 ```
 /
-├── pnimit-mega.html         # Main app (THE file — all HTML/CSS/JS, v9.34)
+├── pnimit-mega.html         # Main app (THE file — all HTML/CSS/JS, v9.36)
 ├── index.html               # GitHub Pages redirect → pnimit-mega.html
-├── sw.js                    # Service worker (offline caching, cache: pnimit-v9.34)
+├── sw.js                    # Service worker (offline caching, cache: pnimit-v9.36)
 ├── manifest.json            # PWA manifest
 │
 ├── data/                    # Lazy-loaded JSON data — single source of truth
@@ -123,7 +123,7 @@ python -m http.server 3737
 
 ### Service Worker Versioning
 - `APP_VERSION` in `pnimit-mega.html` must match the cache version in `sw.js`
-- Currently: app=`9.34`, sw.js cache key=`pnimit-v9.34` (synced)
+- Currently: app=`9.36`, sw.js cache key=`pnimit-v9.36` (synced)
 
 ---
 
