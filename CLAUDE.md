@@ -6,7 +6,7 @@
 
 - **Live URL**: https://eiasash.github.io/InternalMedicine/
 - **Main file**: `pnimit-mega.html` (~253 KB, ~4,157 lines, self-contained HTML/CSS/JS)
-- **App version**: v9.33
+- **App version**: v9.34
 - **Data**: JSON files in `data/` directory, loaded lazily at runtime
 - **Deployment**: Push to `main` → GitHub Pages live
 - **Sibling app**: Shlav A Mega (geriatrics) at Eiasash/Geriatrics — same engine, separate data
@@ -37,9 +37,9 @@ Data is loaded at runtime from `data/*.json` files. The service worker (`sw.js`)
 
 ```
 /
-├── pnimit-mega.html         # Main app (THE file — all HTML/CSS/JS, v9.33)
+├── pnimit-mega.html         # Main app (THE file — all HTML/CSS/JS, v9.34)
 ├── index.html               # GitHub Pages redirect → pnimit-mega.html
-├── sw.js                    # Service worker (offline caching, cache: pnimit-v9.33)
+├── sw.js                    # Service worker (offline caching, cache: pnimit-v9.34)
 ├── manifest.json            # PWA manifest
 │
 ├── data/                    # Lazy-loaded JSON data — single source of truth
@@ -123,13 +123,13 @@ python -m http.server 3737
 
 ### Service Worker Versioning
 - `APP_VERSION` in `pnimit-mega.html` must match the cache version in `sw.js`
-- Currently: app=`9.33`, sw.js cache key=`pnimit-v9.33` (synced)
+- Currently: app=`9.34`, sw.js cache key=`pnimit-v9.34` (synced)
 
 ---
 
 ## Testing
 
-**186 tests across 5 files** — CI via GitHub Actions (10 checks).
+**240 tests across 5 files** — CI via GitHub Actions (10 checks).
 
 | File | Tests | Description |
 |------|-------|-------------|
@@ -231,7 +231,7 @@ Push to `main` → GitHub Pages updates in ~60 seconds. No manual steps.
 
 ### Recommended Additions (Priority Order)
 
-1. **FSRS spaced repetition logic** — Port from Geriatrics (91 tests cover fsrsR, fsrsInterval, fsrsInitNew, fsrsUpdate)
+1. ~~FSRS spaced repetition logic~~ — **DONE** (ported in v9.32). Next: expand FSRS test coverage
 2. **Quiz engine unit tests** — answer selection, scoring, exam modes
 3. **Sanitization function** — `sanitize(s)` HTML entity escaping + XSS payloads
 4. **ACB/STOPP calculator tests** — `calcACBTotal`, `getSTOPPWarnings` with known drug combos
