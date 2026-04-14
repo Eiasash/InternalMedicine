@@ -24,7 +24,7 @@ G.save=function(){clearTimeout(G._saveTimer);G._saveTimer=setTimeout(()=>{
       localStorage.removeItem('pnimit_weekly');
     }
   }catch(e){}
-  },150)}
+  },150)};
 (function updateStreak(){
 const today=new Date().toISOString().slice(0,10);
 if(G.S.lastDay===today)return;
