@@ -154,17 +154,6 @@ export function takeWeeklySnapshot(){
     localStorage.setItem('pnimit_weekly',JSON.stringify(snapshots));
   }catch(e){}
 }
-export function getTopicTrend(ti){
-  try{
-    const snapshots=JSON.parse(localStorage.getItem('pnimit_weekly')||'{}');
-    const keys=Object.keys(snapshots).sort();
-    if(keys.length<2)return null;
-    const prev=snapshots[keys[keys.length-2]].acc[ti];
-    const curr=snapshots[keys[keys.length-1]].acc[ti];
-    if(prev===null||curr===null)return null;
-    return curr-prev; // positive = improving
-  }catch(e){return null;}
-}
 
 // ===== SHARED AI PROXY =====
 
@@ -375,7 +364,8 @@ _w.setApiKey = setApiKey;
 _w.toggleDark = toggleDark; _w.toggleStudyMode = toggleStudyMode;
 _w.showHelp = showHelp; _w.applyUpdate = applyUpdate;
 _w.importProgress = importProgress; _w.exportProgress = exportProgress;
-_w.shareQ = shareQ; _w.shareApp = shareApp;
+_w.shareQ = shareQ;
+_w._storeDiff = _storeDiff; _w.shareApp = shareApp;
 _w.uploadQImage = uploadQImage; _w.removeQImage = removeQImage; _w.viewImg = viewImg;
 _w.saveAnswerReport = saveAnswerReport;
 _w.takeWeeklySnapshot = takeWeeklySnapshot;

@@ -5,6 +5,20 @@ import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, isExamTr
 import { isChronicFail } from '../sr/fsrs-bridge.js';
 import { renderWrongAnswerLog } from './library-view.js';
 
+function getTopicTrend(ti){
+  try{
+    const snapshots=JSON.parse(localStorage.getItem('pnimit_weekly')||'{}');
+    const keys=Object.keys(snapshots).sort();
+    if(keys.length<2)return null;
+    const prev=snapshots[keys[keys.length-2]].acc[ti];
+    const curr=snapshots[keys[keys.length-1]].acc[ti];
+    if(prev===null||curr===null)return null;
+    return curr-prev;
+  }catch(e){return null;}
+}
+
+
+
 export function renderPriorityMatrix(){
   const TOPICS_L=TOPICS;
   const EF_FREQ=[50,45,40,30,45,60,50,40,35,50,45,35,55,35,40,30,15,15,20,20,15,15,25,20];
