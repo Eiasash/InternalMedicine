@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { TOPICS, EXAM_FREQ, IMA_WEIGHTS, APP_VERSION, HARRISON_PDF_MAP } from '../core/constants.js';
-import { sanitize, fmtT, safeJSONParse } from '../core/utils.js';
+import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey } from '../core/utils.js';
 import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, isExamTrap, getChaptersDueForReading } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
 import { renderWrongAnswerLog } from './library-view.js';
