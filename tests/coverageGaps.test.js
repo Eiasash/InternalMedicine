@@ -2,6 +2,15 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
 
 const html = readFileSync('pnimit-mega.html', 'utf-8');
+const srcFiles = [
+  'src/core/globals.js', 'src/core/constants.js', 'src/core/utils.js', 'src/core/state.js', 'src/core/data-loader.js',
+  'src/sr/fsrs-bridge.js', 'src/sr/spaced-repetition.js', 'src/quiz/engine.js', 'src/quiz/modes.js',
+  'src/ai/client.js', 'src/ai/explain.js', 'src/features/cloud.js',
+  'src/ui/quiz-view.js', 'src/ui/learn-view.js', 'src/ui/library-view.js',
+  'src/ui/track-view.js', 'src/ui/more-view.js', 'src/ui/app.js',
+];
+const allSource = [html, ...srcFiles.map(f => readFileSync(f, 'utf-8'))].join('\n');
+// Combined source: HTML + external JS for constant/function lookups
 
 // Extract JS between first <script> and last </script>
 const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/);
@@ -9,15 +18,15 @@ const jsCode = scriptMatch ? scriptMatch[1] : '';
 
 describe('AI Proxy Routing', () => {
   it('has AI_PROXY constant pointing to toranot proxy', () => {
-    expect(html).toContain("const AI_PROXY='https://toranot.netlify.app/api/claude'");
+    expect(allSource).toContain("const AI_PROXY='https://toranot.netlify.app/api/claude'");
   });
 
   it('has AI_SECRET for proxy authentication', () => {
-    expect(html).toMatch(/const AI_SECRET='[^']+'/);
+    expect(allSource).toMatch(/const AI_SECRET='[^']+'/);
   });
 
   it('callAI tries proxy first before direct API', () => {
-    const callAIBlock = html.slice(html.indexOf('async function callAI('), html.indexOf('async function callAI(') + 2000);
+    const callAIBlock = allSource.slice(allSource.indexOf('async function callAI('), allSource.indexOf('async function callAI(') + 2000);
     // Proxy fetch comes before direct API fetch
     const proxyIdx = callAIBlock.indexOf('AI_PROXY');
     const directIdx = callAIBlock.indexOf('api.anthropic.com');
@@ -27,44 +36,44 @@ describe('AI Proxy Routing', () => {
   });
 
   it('sends x-api-secret header to proxy', () => {
-    expect(html).toContain("'x-api-secret':AI_SECRET");
+    expect(allSource).toContain("'x-api-secret':AI_SECRET");
   });
 
   it('callAI falls back to user API key when proxy fails', () => {
-    const callAIBlock = html.slice(html.indexOf('async function callAI('), html.indexOf('async function callAI(') + 2000);
+    const callAIBlock = allSource.slice(allSource.indexOf('async function callAI('), allSource.indexOf('async function callAI(') + 2000);
     expect(callAIBlock).toContain('getApiKey()');
     expect(callAIBlock).toContain("throw new Error('no_key')");
   });
 
   it('supports abort controller for in-flight request cancellation', () => {
-    expect(html).toContain('_aiAbortController');
-    expect(html).toContain('AbortController');
+    expect(allSource).toContain('_aiAbortController');
+    expect(allSource).toContain('AbortController');
   });
 
   it('uses model alias map for direct API (sonnet→claude-sonnet-4-6)', () => {
-    expect(html).toContain("sonnet:'claude-sonnet-4-6'");
+    expect(allSource).toContain("sonnet:'claude-sonnet-4-6'");
   });
 
   it('sends anthropic-version header on direct calls', () => {
-    expect(html).toContain("'anthropic-version':'2023-06-01'");
+    expect(allSource).toContain("'anthropic-version':'2023-06-01'");
   });
 
   it('sends anthropic-dangerous-direct-browser-access header', () => {
-    expect(html).toContain("'anthropic-dangerous-direct-browser-access':'true'");
+    expect(allSource).toContain("'anthropic-dangerous-direct-browser-access':'true'");
   });
 
   it('extracts text from Claude response correctly (content[0].text)', () => {
-    expect(html).toContain("d.content?.[0]?.text||''");
+    expect(allSource).toContain("d.content?.[0]?.text||''");
   });
 });
 
 describe('Sanitization', () => {
-  // Extract sanitize function for testing
-  const sanitizeMatch = html.match(/function sanitize\(s\)\{([^}]+)\}/);
+  // Extract sanitize function for testing (may be in HTML or external utils.js)
+  const sanitizeMatch = allSource.match(/function sanitize\(s\)\{([^}]+)\}/);
   const sanitizeBody = sanitizeMatch ? sanitizeMatch[1] : '';
 
   it('sanitize function exists', () => {
-    expect(html).toContain('function sanitize(');
+    expect(allSource).toContain('function sanitize(');
   });
 
   it('escapes & to &amp;', () => {
@@ -93,7 +102,7 @@ describe('Sanitization', () => {
 
   it('sanitize is applied to user-visible content in innerHTML assignments', () => {
     // Check that question text is sanitized before innerHTML
-    const sanitizeCallCount = (html.match(/sanitize\(/g) || []).length;
+    const sanitizeCallCount = (allSource.match(/sanitize\(/g) || []).length;
     expect(sanitizeCallCount).toBeGreaterThan(20); // used extensively
   });
 
@@ -127,27 +136,27 @@ describe('SRS / FSRS Edge Cases', () => {
   });
 
   it('SRS state saved to localStorage under correct key', () => {
-    expect(html).toContain("const LS='pnimit_mega'");
+    expect(allSource).toContain("const LS='pnimit_mega'");
   });
 
   it('SRS handles missing/corrupted sr object gracefully', () => {
     // S.sr should be initialized safely
-    expect(html).toMatch(/S\.sr\s*\|\|\s*\{/);
+    expect(allSource).toMatch(/S\.sr\s*\|\|\s*\{/);
   });
 
   it('SRS due calculation uses Date.now()', () => {
     // Due cards: sr.next <= Date.now()
-    expect(html).toContain('.next<=Date.now()');
+    expect(allSource).toContain('.next<=Date.now()');
   });
 
   it('confidence rating maps to FSRS ratings', () => {
     // Should have rating values for Again/Hard/Good/Easy
-    expect(html).toMatch(/fsrsRating|rating.*[1234]/);
+    expect(allSource).toMatch(/fsrsRating|rating.*[1234]/);
   });
 
   it('streak calculation uses dailyAct data', () => {
-    expect(html).toContain('dailyAct');
-    expect(html).toMatch(/streak/i);
+    expect(allSource).toContain('dailyAct');
+    expect(allSource).toMatch(/streak/i);
   });
 
   it('backup includes SRS data', () => {

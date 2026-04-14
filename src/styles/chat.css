@@ -1,0 +1,22 @@
+/* === Chat Messages === */
+.chat-msgs { flex: 1; overflow-y: auto; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px }
+.chat-msg-user { background: #eff6ff; border-radius: 12px 12px 2px 12px; padding: 8px 12px; font-size: 12px; align-self: flex-end; max-width: 85% }
+.chat-msg-ai { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px 12px 12px 2px; padding: 8px 12px; font-size: 12px; align-self: flex-start; max-width: 90%; white-space: pre-wrap; line-height: 1.6 }
+.chat-msg-err { background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 8px 12px; font-size: 11px; color: #dc2626 }
+
+/* === Chat Input === */
+.chat-input-row { display: flex; gap: 6px; padding: 8px 10px; border-top: 1px solid #e2e8f0 }
+
+/* === Chat Starters === */
+.chat-starter { display: block; width: 100%; text-align: right; padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 11px; margin-bottom: 5px; background: #fff; cursor: pointer; font-family: 'Heebo', sans-serif }
+.chat-starter:hover { background: #eff6ff; border-color: #bae6fd }
+
+/* === Disclaimer === */
+.chat-disclaimer { font-size: 10px; color: #d97706; padding: 5px 8px; background: #fffbeb; border-radius: 8px; border: 1px solid #fde68a }
+
+/* === Typing Indicator === */
+.typing-dots { display: flex; gap: 4px; align-items: center; padding: 2px 0 }
+.typing-dots span { width: 6px; height: 6px; border-radius: 50%; background: #94a3b8; animation: tdot 1.2s infinite }
+.typing-dots span:nth-child(2) { animation-delay: .2s }
+.typing-dots span:nth-child(3) { animation-delay: .4s }
+@keyframes tdot { 0%,60%,100% { transform: translateY(0) } 30% { transform: translateY(-4px) } }

@@ -3,11 +3,24 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "vitest run"
+    "dev": "vite",
+    "build": "bash scripts/build.sh",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src/ shared/ tests/",
+    "format": "prettier --write 'src/**/*.{js,css}' 'shared/**/*.js' 'tests/**/*.js'",
+    "format:check": "prettier --check 'src/**/*.{js,css}' 'shared/**/*.js' 'tests/**/*.js'",
+    "build:vite": "vite build"
   },
   "devDependencies": {
+    "@eslint/js": "^9.28.0",
     "@vitest/coverage-v8": "^4.1.4",
     "acorn": "^8.16.0",
+    "eslint": "^9.28.0",
+    "globals": "^16.2.0",
+    "prettier": "^3.5.3",
+    "vite": "^6.3.5",
     "vitest": "^4.1.4"
   }
 }

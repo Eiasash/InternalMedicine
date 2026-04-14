@@ -31,7 +31,8 @@ describe('pnimit-mega.html', () => {
   });
 
   test('has APP_VERSION constant', () => {
-    expect(html).toMatch(/const\s+APP_VERSION\s*=\s*['"][^'"]+['"]/);
+    const constants = readFile('src/core/constants.js');
+    expect(constants).toMatch(/const\s+APP_VERSION\s*=\s*['"][^'"]+['"]/);
   });
 
   test('references manifest.json', () => {
@@ -39,7 +40,8 @@ describe('pnimit-mega.html', () => {
   });
 
   test('registers service worker (sw.js)', () => {
-    expect(html).toMatch(/sw\.js/);
+    const appJs = readFile('src/ui/app.js');
+    expect(appJs).toMatch(/sw\.js/);
   });
 });
 
@@ -70,11 +72,11 @@ describe('manifest.json', () => {
 });
 
 describe('version synchronization', () => {
-  test('APP_VERSION in HTML matches cache version in sw.js', () => {
-    const html = readFile('pnimit-mega.html');
+  test('APP_VERSION in constants.js matches cache version in sw.js', () => {
+    const constants = readFile('src/core/constants.js');
     const sw = readFile('sw.js');
 
-    const appMatch = html.match(/APP_VERSION\s*=\s*['"]([^'"]+)['"]/);
+    const appMatch = constants.match(/APP_VERSION\s*=\s*['"]([^'"]+)['"]/);
     const swMatch = sw.match(/CACHE\s*=\s*['"]pnimit-v([^'"]+)['"]/);
 
     expect(appMatch).not.toBeNull();
