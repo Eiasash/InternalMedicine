@@ -19,7 +19,7 @@ import { submitLeaderboardScore, fetchLeaderboard, showLeaderboard, renderFeedba
          submitFeedbackForm, cloudBackup, cloudRestore, getDiagnostics, submitReport,
          saveAnswerReport, _sbDeviceId } from '../features/cloud.js';
 import { renderQuiz, toggleBk, uploadQImage, removeQImage, viewImg, pauseTimed,
-         startTimedQ, stopTimedMode, sdCheck, sdNext } from './quiz-view.js';
+         startTimedQ, stopTimedMode, sdCheck, sdNext, initQuizEvents } from './quiz-view.js';
 import { renderStudy, toggleNote, filterNotes, renderFlash, renderDrugs, initLearnEvents } from './learn-view.js';
 import { renderLibrary, openHarrisonChapter,
          toggleHarrisonAI, submitHarrisonAI, aiSummarizeChapter, quizMeOnChapter,
@@ -36,7 +36,6 @@ document.getElementById('tb').innerHTML=G.TABS.map(t=>
 ).join('');
 }
 export function go(t){G.tab=t;renderTabs();render()}
-
 
 export function render(){
 const el=document.getElementById('ct');
@@ -91,7 +90,6 @@ if(sv.dsrch!==undefined&&document.getElementById('dsrch'))document.getElementByI
 if(focused){const fe=document.getElementById(focused);if(fe){fe.focus();if(fe.value)fe.setSelectionRange(fe.value.length,fe.value.length);}}
 }
 
-
 // ===== DARK MODE =====
 export function toggleDark(){document.body.classList.toggle('dark');G.S.dark=document.body.classList.contains('dark');if(G.S.dark&&document.body.classList.contains('study')){document.body.classList.remove('study');G.S.studyMode=false;}G.save();}
 export function toggleStudyMode(){document.body.classList.toggle('study');G.S.studyMode=document.body.classList.contains('study');if(G.S.studyMode&&document.body.classList.contains('dark')){document.body.classList.remove('dark');G.S.dark=false;}G.save();}
@@ -130,7 +128,6 @@ const blob=new Blob([data],{type:'application/json'});
 const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='pnimit-progress.json';a.click();
 }
 
-
 export function takeWeeklySnapshot(){
   try{
     const now=new Date();
@@ -148,8 +145,6 @@ export function takeWeeklySnapshot(){
 }
 
 // ===== SHARED AI PROXY =====
-
-
 
 export function showHelp(){
 const ov=document.createElement('div');
@@ -230,18 +225,6 @@ setTimeout(showUpdateBanner,1000);
 }catch(e){}
 })();
 
-
-
-
-
-
-
-
-
-
-
-
-
 export function showUpdateBanner(){
 const existing=document.getElementById('update-banner');
 if(existing)return;
@@ -319,28 +302,15 @@ const _w = window;
 // Core navigation
 _w.go = go; _w.render = render; _w.renderTabs = renderTabs;
 // Quiz
-_w.pick = pick; _w.check = check; _w.next = next; _w.toggleBk = toggleBk;
-_w.setFilt = setFilt; _w.setTopicFilt = setTopicFilt; _w.buildPool = buildPool;
-_w.startExam = startExam; _w.startMockExam = startMockExam;
-_w.startTopicMiniExam = startTopicMiniExam;
-_w.startOnCallMode = startOnCallMode; _w.exitOnCallMode = exitOnCallMode;
-_w.flipCard = flipCard; _w.onCallPick = onCallPick;
-_w.runExplainOnCall = runExplainOnCall;
-_w.sdCheck = sdCheck; _w.sdNext = sdNext;
-_w.startSuddenDeath = startSuddenDeath; _w.endSuddenDeath = endSuddenDeath;
-_w.startNextBestStep = startNextBestStep;
-_w.speakQuestion = speakQuestion; _w.startVoiceParser = startVoiceParser;
-_w.startPomodoro = startPomodoro; _w.stopPomodoro = stopPomodoro;
-_w.pauseTimed = pauseTimed; _w.startTimedQ = startTimedQ; _w.stopTimedMode = stopTimedMode;
-_w.buildRescuePool = buildRescuePool;
+
+ _w.setTopicFilt = setTopicFilt;
+
 // AI
-_w.explainWithAI = explainWithAI; _w.aiAutopsy = aiAutopsy; _w.gradeTeachBack = gradeTeachBack;
-_w.toggleFlagExplain = toggleFlagExplain; _w.startVoiceTeachBack = startVoiceTeachBack;
-_w.callAI = callAI;
+
 // Library
-_w.openHarrisonChapter = openHarrisonChapter; _w.toggleHarrisonAI = toggleHarrisonAI;
-_w.submitHarrisonAI = submitHarrisonAI; // aiSummarizeChapter: now handled by library-view delegation
-_w.quizMeOnChapter = quizMeOnChapter; _w.addChapterQsToBank = addChapterQsToBank;
+_w.openHarrisonChapter = openHarrisonChapter;
+ // aiSummarizeChapter: now handled by library-view delegation
+
 // Learn
 // toggleNote, filterNotes, fcRate: now handled by learn-view delegation
 // Track
@@ -348,27 +318,26 @@ _w.quizMeOnChapter = quizMeOnChapter; _w.addChapterQsToBank = addChapterQsToBank
 // setExamDate: track-view delegation
 // exportCheatSheet: track-view delegation
 // Cloud & social
-_w.showLeaderboard = showLeaderboard; _w.submitFeedbackForm = submitFeedbackForm;
+_w.showLeaderboard = showLeaderboard;
 _w.cloudBackup = cloudBackup; _w.cloudRestore = cloudRestore;
-_w.submitReport = submitReport; _w.showAnswerHardFail = showAnswerHardFail;
+
 // More
-_w.sendChatStarter = sendChatStarter; // still needed by track-view onclick
-_w.setApiKey = setApiKey;
+ // still needed by track-view onclick
+
 // Settings
 _w.toggleDark = toggleDark; _w.toggleStudyMode = toggleStudyMode;
 _w.showHelp = showHelp; _w.applyUpdate = applyUpdate;
 _w.importProgress = importProgress; _w.exportProgress = exportProgress;
 _w.shareQ = shareQ;
-_w._storeDiff = _storeDiff; _w.shareApp = shareApp;
-_w.uploadQImage = uploadQImage; _w.removeQImage = removeQImage; _w.viewImg = viewImg;
-_w.saveAnswerReport = saveAnswerReport;
-_w.takeWeeklySnapshot = takeWeeklySnapshot;
+ _w.shareApp = shareApp;
+_w.sendChatStarter = sendChatStarter;
 
 // === Event delegation (set up once, survives innerHTML changes) ===
 initMoreEvents(document.getElementById('ct'));
 initLibraryEvents(document.getElementById('ct'));
 initLearnEvents(document.getElementById('ct'));
 initTrackEvents(document.getElementById('ct'));
+initQuizEvents(document.getElementById('ct'));
 
 // === Boot ===
 // Wake lock

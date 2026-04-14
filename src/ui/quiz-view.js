@@ -150,7 +150,7 @@ if(G.sdQi>=G.sdPool.length)G.sdQi=0;
 const q=G.QZ[G.sdPool[G.sdQi]];
 let h=`<div class="sudden-death-banner"><span style="font-weight:700;font-size:13px">💀 Sudden Death</span>
 <span style="font-size:16px;font-weight:700">🔥 ${G.sdStreak}</span>
-<button class="btn" style="background:rgba(255,255,255,.2);color:#fff;font-size:10px;padding:4px 10px" onclick="endSuddenDeath()" aria-label="Quit sudden death mode">Quit</button></div>`;
+<button class="btn" style="background:rgba(255,255,255,.2);color:#fff;font-size:10px;padding:4px 10px" data-action="quit-sd" aria-label="Quit sudden death mode">Quit</button></div>`;
 h+=`<div class="card" style="padding:16px">`;
 if(G.timedMode&&!G.ans){
   h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
@@ -158,21 +158,21 @@ if(G.timedMode&&!G.ans){
 <div style="flex:1;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden">
   <div id="timed-bar" style="height:100%;width:${Math.round(G.timedSec/90*100)}%;background:${G.timedSec>45?'#10b981':G.timedSec>22?'#f59e0b':'#ef4444'};border-radius:3px;transition:width .9s linear"></div>
 </div>
-<button onclick="pauseTimed()" style="font-size:9px;padding:2px 7px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;white-space:nowrap" aria-label="${timedPaused?'Resume timer':'Pause timer'}">${timedPaused?'▶ המשך':'⏸ עצור'}</button>
+<button data-action="pause-timed" style="font-size:9px;padding:2px 7px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;white-space:nowrap" aria-label="${timedPaused?'Resume timer':'Pause timer'}">${timedPaused?'▶ המשך':'⏸ עצור'}</button>
 </div>`;
 }
 const _isFlagQ=(G.S.flagged||{})[G.pool[G.qi]];
 h+=`<p class="heb" style="font-size:13px;font-weight:700;line-height:1.7;margin-bottom:${q.img?'10':'16'}px">${_isFlagQ?'<span style="color:#dc2626;font-size:11px" title="Explanation flagged — verify">⚑ </span>':''  }${q.q}</p>`;
-if(q.img){h+=`<div style="margin-bottom:14px;text-align:center;position:relative"><img src="${q.img}" alt="Question image" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer" onclick="viewImg(this.src)" loading="lazy"><button onclick="event.stopPropagation();removeQImage(${G.pool[G.qi]})" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:12px;cursor:pointer">✕</button></div>`;}
-if(!q.img&&!G.examMode){h+=`<div style="margin-bottom:10px"><button onclick="uploadQImage(${G.pool[G.qi]})" style="font-size:10px;padding:4px 12px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">📷 Attach Image</button><span id="img-status-${G.pool[G.qi]}" style="font-size:10px;color:#94a3b8;margin-left:6px"></span></div>`;}
+if(q.img){h+=`<div style="margin-bottom:14px;text-align:center;position:relative"><img src="${q.img}" alt="Question image" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer" data-action="view-img" loading="lazy"><button data-action="remove-img" data-idx="${G.pool[G.qi]}" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:12px;cursor:pointer">✕</button></div>`;}
+if(!q.img&&!G.examMode){h+=`<div style="margin-bottom:10px"><button data-action="upload-img" data-idx="${G.pool[G.qi]}" style="font-size:10px;padding:4px 12px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">📷 Attach Image</button><span id="img-status-${G.pool[G.qi]}" style="font-size:10px;color:#94a3b8;margin-left:6px"></span></div>`;}
 q.o.forEach((o,i)=>{
 let cls='qo';
 if(G.ans){cls+=' lk';if(i===q.c)cls+=' ok';else if(i===G.sel)cls+=' no';else cls+=' dim';}
 else if(i===G.sel)cls+=' G.sel';
-h+=`<button class="${cls}" onclick="pick(${i})" aria-label="Option ${i+1}: ${o}">${o}</button>`;
+h+=`<button class="${cls}" data-action="pick" data-i="${i}" aria-label="Option ${i+1}: ${o}">${o}</button>`;
 });
-if(!G.ans)h+=`<button class="btn btn-p" onclick="sdCheck()"${G.sel===null?' disabled':''} aria-label="Check answer">בדוק</button>`;
-else h+=`<button class="btn btn-d" onclick="sdNext()" aria-label="Next question">הבאה ←</button>`;
+if(!G.ans)h+=`<button class="btn btn-p" data-action="sd-check"${G.sel===null?' disabled':''} aria-label="Check answer">בדוק</button>`;
+else h+=`<button class="btn btn-d" data-action="sd-next" aria-label="Next question">הבאה ←</button>`;
 h+=`</div>`;
 // Leaderboard
 if(G.sdLeaderboard.length){
@@ -191,7 +191,7 @@ const dueN=getDueQuestions().length;
 let h=G.pomoActive?`<div class="pomo-bar"><div class="pomo-fill" id="pomo-fill" style="width:${(3000-G.pomoSec)/3000*100}%"></div></div>
 <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 12px;background:#ecfdf5;border-radius:10px;margin-bottom:10px;font-size:11px">
 <span>⏱️ Pomodoro</span><span class="timer" id="pomo-time" style="font-weight:700">${fmtT(G.pomoSec)}</span>
-<button onclick="stopPomodoro()" style="font-size:10px;color:#dc2626;font-weight:600" aria-label="Stop pomodoro timer">Stop</button></div>`:'';
+<button data-action="stop-pomo" style="font-size:10px;color:#dc2626;font-weight:600" aria-label="Stop pomodoro timer">Stop</button></div>`:'';
 h+=G.examMode?(()=>{
   const answered=G.S.qOk+G.S.qNo;
   const isMock=!!G.mockExamResults;
@@ -209,9 +209,9 @@ if(!G.examMode){
 h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
 <div class="sec-t">Quiz</div>
 <div style="display:flex;gap:4px;flex-wrap:wrap">
-<button onclick="startExam()" class="btn btn-d" style="font-size:10px;padding:5px 12px" aria-label="Start exam with 150 questions">📋 Exam (150q)</button><button onclick="startMockExam()" class="btn btn-d" style="font-size:10px;padding:5px 12px;background:#7c3aed;color:#fff" aria-label="Start mock exam with 100 questions">🎯 Mock (100q)</button>
-<span class="tt-wrap"><button onclick="startSuddenDeath()" class="btn" style="font-size:10px;padding:5px 12px;background:#fef2f2;color:#dc2626" aria-label="Start sudden death mode">💀 Sudden Death</button><button onclick="startOnCallMode()" class="btn" style="font-size:10px;padding:5px 12px;background:#0f172a;color:#7dd3fc" aria-label="Start on-call mode">🌙 On-call</button><button class="tt-icon" tabindex="0" aria-label="Info about sudden death mode">ⓘ</button><div class="tt-box">One wrong answer ends the session. Builds high-stakes exam pressure.</div></span>
-${!G.pomoActive?'<span class="tt-wrap"><button onclick="startPomodoro()" class="btn" style="font-size:10px;padding:5px 12px;background:#ecfdf5;color:#059669" aria-label="Start pomodoro timer">⏱️ Pomodoro</button><button class="tt-icon" tabindex="0" aria-label="Info about pomodoro timer">ⓘ</button><div class="tt-box">25min focus / 5min break study timer. Helps maintain concentration.</div></span>':''}
+<button data-action="start-exam" class="btn btn-d" style="font-size:10px;padding:5px 12px" aria-label="Start exam with 150 questions">📋 Exam (150q)</button><button data-action="start-mock" class="btn btn-d" style="font-size:10px;padding:5px 12px;background:#7c3aed;color:#fff" aria-label="Start mock exam with 100 questions">🎯 Mock (100q)</button>
+<span class="tt-wrap"><button data-action="start-sd" class="btn" style="font-size:10px;padding:5px 12px;background:#fef2f2;color:#dc2626" aria-label="Start sudden death mode">💀 Sudden Death</button><button data-action="start-oncall" class="btn" style="font-size:10px;padding:5px 12px;background:#0f172a;color:#7dd3fc" aria-label="Start on-call mode">🌙 On-call</button><button class="tt-icon" tabindex="0" aria-label="Info about sudden death mode">ⓘ</button><div class="tt-box">One wrong answer ends the session. Builds high-stakes exam pressure.</div></span>
+${!G.pomoActive?'<span class="tt-wrap"><button data-action="start-pomo" class="btn" style="font-size:10px;padding:5px 12px;background:#ecfdf5;color:#059669" aria-label="Start pomodoro timer">⏱️ Pomodoro</button><button class="tt-icon" tabindex="0" aria-label="Info about pomodoro timer">ⓘ</button><div class="tt-box">25min focus / 5min break study timer. Helps maintain concentration.</div></span>':''}
 </div>
 </div>`;
 h+=`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">`;
@@ -223,25 +223,25 @@ const _weakForPill=getWeakTopics(3);
 if(_weakForPill.length&&_weakForPill[0].pct!==null&&_weakForPill[0].pct<65)filts.push(['rescue','🚨 Rescue']);
 if(dueN>0)filts.push(['due',`🔄 Due (${dueN})`]);
 filts.forEach(([f,l])=>{
-if(f==='rescue')h+=`<span class="pill ${G.filt==='rescue'?'on':''}" onclick="buildRescuePool()">${l}</span>`;
-else if(f==='nbs')h+=`<span class="pill ${G.filt==='nbs'?'on':''}" onclick="startNextBestStep()">${l}</span>`;
-else h+=`<span class="pill ${G.filt===f&&G.filt!=='topic'?'on':''}" onclick="setFilt('${f}')">${l}</span>`;
+if(f==='rescue')h+=`<span class="pill ${G.filt==='rescue'?'on':''}" data-action="filter-rescue">${l}</span>`;
+else if(f==='nbs')h+=`<span class="pill ${G.filt==='nbs'?'on':''}" data-action="filter-nbs">${l}</span>`;
+else h+=`<span class="pill ${G.filt===f&&G.filt!=='topic'?'on':''}" data-action="filter" data-f="${f}">${l}</span>`;
 });
 h+=`</div>`;
 // Blind recall & Distractor Autopsy toggles
 h+=`<div style="display:flex;gap:8px;margin-bottom:10px;font-size:10px">
-<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.blindRecall?'checked':''} onchange="G.blindRecall=this.checked;G.render()"> 🙈 Cover Options</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">Hides answer choices — forces you to recall the answer before seeing options.</div></span>
-<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.autopsyMode?'checked':''} onchange="G.autopsyMode=this.checked;G.render()"> 🔬 Distractor Autopsy</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">After answering, explains WHY each wrong option is wrong — builds distractor recognition skill.</div></span>
-<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.timedMode?'checked':''} onchange="G.timedMode=this.checked;if(G.timedMode){clearInterval(G.timedInt);G.timedSec=90;G.render();setTimeout(startTimedQ,50);}else{stopTimedMode();}"> ⏱ Timed (90s)</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">90-second countdown per question. Auto-advances when time runs out — marks as wrong. Builds exam-condition reflexes.</div></span>
+<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.blindRecall?'checked':''} data-action="toggle-blind"> 🙈 Cover Options</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">Hides answer choices — forces you to recall the answer before seeing options.</div></span>
+<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.autopsyMode?'checked':''} data-action="toggle-autopsy"> 🔬 Distractor Autopsy</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">After answering, explains WHY each wrong option is wrong — builds distractor recognition skill.</div></span>
+<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.timedMode?'checked':''} data-action="toggle-timed"> ⏱ Timed (90s)</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">90-second countdown per question. Auto-advances when time runs out — marks as wrong. Builds exam-condition reflexes.</div></span>
 </div>`;
-h+=`<div style="display:flex;gap:6px;margin-bottom:10px"><select class="calc-in" style="font-size:11px;padding:6px 10px;flex:1" onchange="this.value===-1?setFilt('all'):setTopicFilt(parseInt(this.value))">
+h+=`<div style="display:flex;gap:6px;margin-bottom:10px"><select class="calc-in" style="font-size:11px;padding:6px 10px;flex:1" data-action="topic-select">
 <option value="-1"${G.filt!=='topic'?' selected':''}>📂 Filter by topic…</option>`;
 TOPICS.forEach((t,i)=>{h+=`<option value="${i}"${G.filt==='topic'&&G.topicFilt===i?' selected':''}>${t}</option>`;});
 h+=`</select>`;
 // Feature 2: Topic mini-exam button
 if(G.filt==='topic'&&G.topicFilt>=0){
 const _tqCount=G.QZ.filter(q=>q.ti===G.topicFilt).length;
-h+=`<button class="btn btn-d" style="font-size:10px;padding:6px 12px;white-space:nowrap" onclick="startTopicMiniExam(${G.topicFilt})" aria-label="Start topic mini-exam">🎯 Mini Exam (${Math.min(_tqCount,20)}q)</button>`;
+h+=`<button class="btn btn-d" style="font-size:10px;padding:6px 12px;white-space:nowrap" data-action="start-mini-exam" data-ti="${G.topicFilt}" aria-label="Start topic mini-exam">🎯 Mini Exam (${Math.min(_tqCount,20)}q)</button>`;
 }
 h+=`</div>`;
 }
@@ -254,7 +254,7 @@ if(G.timedMode&&!G.ans){
 <div style="flex:1;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden">
   <div id="timed-bar" style="height:100%;width:${Math.round(G.timedSec/90*100)}%;background:${G.timedSec>45?'#10b981':G.timedSec>22?'#f59e0b':'#ef4444'};border-radius:3px;transition:width .9s linear"></div>
 </div>
-<button onclick="pauseTimed()" style="font-size:9px;padding:2px 7px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;white-space:nowrap" aria-label="${timedPaused?'Resume timer':'Pause timer'}">${timedPaused?'▶ המשך':'⏸ עצור'}</button>
+<button data-action="pause-timed" style="font-size:9px;padding:2px 7px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;white-space:nowrap" aria-label="${timedPaused?'Resume timer':'Pause timer'}">${timedPaused?'▶ המשך':'⏸ עצור'}</button>
 </div>`;
 }
 const topicName=q.ti>=0&&TOPICS[q.ti]?TOPICS[q.ti]:'';
@@ -262,12 +262,12 @@ const _cf=isChronicFail(G.S.sr[G.pool[G.qi]]);
 h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
 <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">${_cf?'<span title="Chronic difficulty — read the chapter instead of drilling" style="font-size:14px;cursor:default">🔴</span>':''}${isExamTrap(G.pool[G.qi])?'<span title="Exam trap — many people pick the same wrong answer" style="font-size:12px;cursor:default">🪤</span>':''}<span class="tag-year" style="background:${q.t==='Harrison'?'#faf5ff':'#eff6ff'};color:${q.t==='Harrison'?'#7c3aed':'#1d4ed8'};font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px">${q.t==='Harrison'?'🤖 AI — Harrison\'s':'📝 '+q.t}</span>${topicName?`<span class="tag-topic" style="background:#f0fdf4;color:#166534;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px">${topicName}</span>`:''}${(()=>{const ref=TOPIC_REF[q.ti];if(!ref)return '';return '';})()}</div>
 <div style="display:flex;align-items:center;gap:8px">
-<button onclick="speakQuestion()" class="speech-btn${G.isSpeaking?' speaking':''}" title="Read aloud" aria-label="Read question aloud">🔊</button>
-<button onclick="shareQ()" id="shbtn" class="share-btn" title="Share" aria-label="Share question">📋 שתף</button><button onclick="toggleBk()" style="font-size:16px;opacity:${bk?.7:.3};min-height:44px" title="Bookmark" aria-label="${bk?'Remove bookmark':'Bookmark question'}">${bk?'🔖':'🏷️'}</button>
+<button data-action="speak-q" class="speech-btn${G.isSpeaking?' speaking':''}" title="Read aloud" aria-label="Read question aloud">🔊</button>
+<button data-action="share-q" id="shbtn" class="share-btn" title="Share" aria-label="Share question">📋 שתף</button><button data-action="toggle-bk" style="font-size:16px;opacity:${bk?.7:.3};min-height:44px" title="Bookmark" aria-label="${bk?'Remove bookmark':'Bookmark question'}">${bk?'🔖':'🏷️'}</button>
 <span style="color:#94a3b8;font-size:10px">${G.qi+1}/${G.pool.length}</span>
 </div></div>`;
 h+=`<p class="heb" style="font-size:13px;font-weight:700;line-height:1.7;margin-bottom:${q.img?'10':'16'}px" dir="auto">${q.q}</p>`;
-if(q.img){h+=`<div style="margin-bottom:14px;text-align:center"><img src="${q.img}" alt="Question image" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer" onclick="viewImg(this.src)" loading="lazy"></div>`;}
+if(q.img){h+=`<div style="margin-bottom:14px;text-align:center"><img src="${q.img}" alt="Question image" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer" data-action="view-img" loading="lazy"></div>`;}
 const _shuf=getOptShuffle(G.pool[G.qi],q);
 _shuf.forEach((origI,dispJ)=>{
 const o=q.o[origI];
@@ -276,7 +276,7 @@ if(G.ans){cls+=' lk';if(origI===q.c)cls+=' ok';else if(origI===G.sel)cls+=' no';
 else if(origI===G.sel)cls+=' G.sel';
 const blurCls=G.blindRecall&&!G.ans&&origI!==G.sel?' qo-blur':'';
 const autopsyCls=(G.autopsyMode&&G.ans&&origI!==q.c&&origI===G.autopsyDistractor)?' distractor-highlight':'';
-h+=`<button class="${cls}${blurCls}${autopsyCls}" onclick="${G.blindRecall&&!G.ans&&origI!==G.sel?'this.classList.remove(\"qo-blur\");':''}pick(${origI})" aria-label="Option ${origI+1}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
+h+=`<button class="${cls}${blurCls}${autopsyCls}" data-action="pick" data-i="${origI}" aria-label="Option ${origI+1}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
 });
 h+=`<div style="display:flex;gap:6px;margin-top:14px">`;
 if(!G.ans){
@@ -284,44 +284,44 @@ if(!G.examMode&&G.sel!==null&&G._confidence===null){
 // Feature 9: Confidence before reveal
 h+=`<div style="margin-bottom:8px;font-size:10px;color:#64748b;font-weight:600">How sure are you?</div>
 <div style="display:flex;gap:6px;margin-bottom:10px">
-<button class="btn" style="flex:1;background:#fef2f2;color:#dc2626;font-size:13px;padding:8px" onclick="G._confidence=0;G.render()">😬</button>
-<button class="btn" style="flex:1;background:#fffbeb;color:#d97706;font-size:13px;padding:8px" onclick="G._confidence=1;G.render()">🤔</button>
-<button class="btn" style="flex:1;background:#f0fdf4;color:#059669;font-size:13px;padding:8px" onclick="G._confidence=2;G.render()">😎</button>
+<button class="btn" style="flex:1;background:#fef2f2;color:#dc2626;font-size:13px;padding:8px" data-action="confidence" data-c="0">😬</button>
+<button class="btn" style="flex:1;background:#fffbeb;color:#d97706;font-size:13px;padding:8px" data-action="confidence" data-c="1">🤔</button>
+<button class="btn" style="flex:1;background:#f0fdf4;color:#059669;font-size:13px;padding:8px" data-action="confidence" data-c="2">😎</button>
 </div>`;
 }
 const _confLabel=G._confidence===0?'😬':G._confidence===1?'🤔':G._confidence===2?'😎':'';
-h+=`<button class="btn btn-p" onclick="check()"${G.sel===null||(!G.examMode&&G._confidence===null)?' disabled':''} aria-label="Check answer">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" onclick="showAnswerHardFail()" style="background:#fff3e0;color:#d97706;font-size:11px;padding:6px 14px;margin-left:6px" aria-label="Show answer">👁 לא יודע</button>`;}
+h+=`<button class="btn btn-p" data-action="check-answer"${G.sel===null||(!G.examMode&&G._confidence===null)?' disabled':''} aria-label="Check answer">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" data-action="give-up" style="background:#fff3e0;color:#d97706;font-size:11px;padding:6px 14px;margin-left:6px" aria-label="Show answer">👁 לא יודע</button>`;}
 else{
 // Feature 1: Why-wrong classification (required after wrong, non-exam)
 if(!G.examMode&&G.sel!==q.c&&!G._wrongReason){
 h+=`<div style="margin-bottom:8px">
 <div style="font-size:10px;font-weight:700;color:#dc2626;margin-bottom:6px">Why did you get it wrong?</div>
 <div style="display:flex;gap:4px;flex-wrap:wrap">
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#fef2f2;color:#991b1b" onclick="G._wrongReason='no_knowledge';G.save();G.render()">📚 Didn't know</button>
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#fffbeb;color:#92400e" onclick="G._wrongReason='misread';G.save();G.render()">👓 Misread</button>
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#eff6ff;color:#1e40af" onclick="G._wrongReason='between_2';G.save();G.render()">⚖️ Between 2</button>
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#f5f3ff;color:#6d28d9" onclick="G._wrongReason='silly';G.save();G.render()">🤦 Silly mistake</button>
+<button class="btn" style="font-size:10px;padding:6px 10px;background:#fef2f2;color:#991b1b" data-action="wrong-reason" data-r="no_knowledge">📚 Didn't know</button>
+<button class="btn" style="font-size:10px;padding:6px 10px;background:#fffbeb;color:#92400e" data-action="wrong-reason" data-r="misread">👓 Misread</button>
+<button class="btn" style="font-size:10px;padding:6px 10px;background:#eff6ff;color:#1e40af" data-action="wrong-reason" data-r="between_2">⚖️ Between 2</button>
+<button class="btn" style="font-size:10px;padding:6px 10px;background:#f5f3ff;color:#6d28d9" data-action="wrong-reason" data-r="silly">🤦 Silly mistake</button>
 </div></div>`;
 }
 // Feature 4: Cross-link to chapter after wrong answer
 if(!G.examMode&&G.sel!==q.c&&q.ti>=0){
 const _chRef=TOPIC_REF[q.ti];
 if(_chRef&&_chRef.s==='har'){
-h+=`<button class="btn" onclick="G.tab='lib';G.libSec='harrison';G.render()" style="font-size:10px;padding:5px 12px;background:#ede9fe;color:#7c3aed;margin-bottom:6px;width:100%">📖 Read: ${_chRef.l} — you're weak here</button>`;
+h+=`<button class="btn" data-action="read-chapter" style="font-size:10px;padding:5px 12px;background:#ede9fe;color:#7c3aed;margin-bottom:6px;width:100%">📖 Read: ${_chRef.l} — you're weak here</button>`;
 }
 }
 // Feature 7: Optional difficulty rating
 if(!G.examMode){
 h+=`<div style="display:flex;gap:4px;margin-bottom:8px;align-items:center">
 <span style="font-size:9px;color:#94a3b8">Difficulty:</span>
-<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='easy'?'background:#dcfce7;color:#166534':'background:#f8fafc;color:#94a3b8'}" onclick="_diffRating='easy';_storeDiff(G.pool[G.qi],'easy')">Easy</button>
-<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='med'?'background:#fef9c3;color:#854d0e':'background:#f8fafc;color:#94a3b8'}" onclick="_diffRating='med';_storeDiff(G.pool[G.qi],'med')">Medium</button>
-<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='hard'?'background:#fecaca;color:#991b1b':'background:#f8fafc;color:#94a3b8'}" onclick="_diffRating='hard';_storeDiff(G.pool[G.qi],'hard')">Hard</button>
+<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='easy'?'background:#dcfce7;color:#166534':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="easy">Easy</button>
+<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='med'?'background:#fef9c3;color:#854d0e':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="med">Medium</button>
+<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='hard'?'background:#fecaca;color:#991b1b':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="hard">Hard</button>
 </div>`;
 }
 // Next button — blocked if wrong + no classification (non-exam)
 const _blocked=!G.examMode&&G.sel!==q.c&&!G._wrongReason;
-h+=`<button class="btn btn-d" onclick="next()"${_blocked?' disabled':''} aria-label="${G.examMode&&G.qi+1>=150?'Finish exam':'Next question'}">${G.examMode&&G.qi+1>=150?'סיים':'הבאה ←'}</button>`;
+h+=`<button class="btn btn-d" data-action="next-q"${_blocked?' disabled':''} aria-label="${G.examMode&&G.qi+1>=150?'Finish exam':'Next question'}">${G.examMode&&G.qi+1>=150?'סיים':'הבאה ←'}</button>`;
 }
 h+=`</div>`;
 
@@ -329,11 +329,11 @@ h+=`</div>`;
 if(G.ans&&!G.examMode&&G.sel===q.c){
 if(!G.teachBackState){
 h+='<div style="margin-top:12px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:12px">';
-h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:#065f46;direction:rtl">🎓 Teach-Back: הסבר מדוע זו התשובה הנכונה</span><button onclick="startVoiceTeachBack()" id="tb-mic-btn" style="font-size:16px;padding:4px 8px;background:#ecfdf5;border:none;border-radius:8px;cursor:pointer" title="הקלט קולי" aria-label="Record voice teach-back">🎙️</button></div>';
+h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:#065f46;direction:rtl">🎓 Teach-Back: הסבר מדוע זו התשובה הנכונה</span><button data-action="voice-teachback" id="tb-mic-btn" style="font-size:16px;padding:4px 8px;background:#ecfdf5;border:none;border-radius:8px;cursor:pointer" title="הקלט קולי" aria-label="Record voice teach-back">🎙️</button></div>';
 h+='<textarea id="tbInput" dir="rtl" style="width:100%;min-height:60px;resize:vertical;font-family:Heebo,sans-serif;border:1px solid #a7f3d0;border-radius:8px;padding:8px;font-size:12px" placeholder="הקלד את ההסבר שלך..." aria-label="Teach-back explanation"></textarea>';
 h+='<div style="display:flex;gap:8px;margin-top:8px">';
-h+='<button class="btn btn-g" style="flex:1;font-size:11px" onclick="var v=document.getElementById(\'tbInput\')?.value?.trim();if(v){gradeTeachBack(G.pool[G.qi],v);}else{G.teachBackState=\'skip\';G.render();}" aria-label="Grade teach-back with AI">🤖 Grade it</button>';
-h+='<button class="btn btn-o" style="font-size:11px" onclick="G.teachBackState=\'skip\';G.render()" aria-label="Skip teach-back">דלג</button>';
+h+='<button class="btn btn-g" style="flex:1;font-size:11px" data-action="grade-teachback" aria-label="Grade teach-back with AI">🤖 Grade it</button>';
+h+='<button class="btn btn-o" style="font-size:11px" data-action="skip-teachback" aria-label="Skip teach-back">דלג</button>';
 h+='</div></div>';
 }else if(G.teachBackState==='grading'){
 h+='<div style="margin-top:12px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:12px;text-align:center"><div style="font-size:12px;color:#065f46">⏳ Grading...</div></div>';
@@ -382,7 +382,7 @@ if(G.ans&&!G.examMode){
   if(G._exCache[_aiIdx]&&!G._exCache[_aiIdx].err){
     setTimeout(function(){renderExplainBox(_aiIdx);},0);
   } else {
-    h+='<button class="btn btn-g" style="width:100%;margin-top:4px;font-size:11px" onclick="explainWithAI('+_aiIdx+')'+'">🤖 הסבר AI ('+(G._exCache[_aiIdx]?'נסה שוב':'קלוד אופוס')+')</button>';
+    h+='<button class="btn btn-g" style="width:100%;margin-top:4px;font-size:11px" data-action="ai-explain" data-idx="'+_aiIdx+'">🤖 הסבר AI ('+(G._exCache[_aiIdx]?'נסה שוב':'קלוד אופוס')+')</button>';
   }
 }
 // Distractor Autopsy — AI-powered explanation of ALL wrong options
@@ -401,7 +401,7 @@ wrongIdxs.forEach(wi=>{
 h+=`<div style="margin-bottom:6px"><b style="color:#dc2626">✗ ${q.o[wi]}</b> — <span style="color:#64748b">why wrong here?</span></div>`;
 });
 h+=`</div>`;
-h+=`<button class="btn" style="font-size:10px;background:#fef3c7;color:#92400e;margin-top:6px;width:100%" onclick="aiAutopsy(${G.pool[G.qi]})">🤖 AI: Explain why each is wrong</button>`;
+h+=`<button class="btn" style="font-size:10px;background:#fef3c7;color:#92400e;margin-top:6px;width:100%" data-action="ai-autopsy">🤖 AI: Explain why each is wrong</button>`;
 }
 h+=`</div>`;
 }
@@ -415,3 +415,100 @@ export function sdCheck(){if(sel===null)return;ans=true;const q=G.QZ[sdPool[sdQi
 export function sdNext(){sdQi++;if(sdQi>=sdPool.length)sdQi=0;sel=null;ans=false;autopsyDistractor=-1;G.render();}
 
 
+
+// Event delegation for Quiz tab — set up once on #ct container
+export function initQuizEvents(container) {
+  container.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    const action = el.dataset.action;
+
+    // === Pre-answer ===
+    if (action === 'pick') {
+      const i = parseInt(el.dataset.i, 10);
+      if (G.blindRecall && !G.ans && i !== G.sel) el.classList.remove('qo-blur');
+      pick(i);
+    }
+    else if (action === 'confidence') {
+      G._confidence = parseInt(el.dataset.c, 10); G.render();
+    }
+    else if (action === 'check-answer') { check(); }
+    else if (action === 'give-up') { showAnswerHardFail(); }
+    else if (action === 'sd-check') { sdCheck(); }
+    else if (action === 'sd-next') { sdNext(); }
+
+    // === Post-answer ===
+    else if (action === 'next-q') { next(); }
+    else if (action === 'wrong-reason') {
+      G._wrongReason = el.dataset.r; G.save(); G.render();
+    }
+    else if (action === 'diff-rating') {
+      const d = el.dataset.d;
+      G._diffRating = d; _storeDiff(G.pool[G.qi], d);
+    }
+    else if (action === 'read-chapter') {
+      G.tab = 'lib'; G.libSec = 'harrison'; G.render();
+    }
+    else if (action === 'skip-teachback') {
+      G.teachBackState = 'skip'; G.render();
+    }
+    else if (action === 'grade-teachback') {
+      const v = document.getElementById('tbInput')?.value?.trim();
+      if (v) { gradeTeachBack(G.pool[G.qi], v); }
+      else { G.teachBackState = 'skip'; G.render(); }
+    }
+    else if (action === 'voice-teachback') { startVoiceTeachBack(); }
+    else if (action === 'ai-explain') {
+      explainWithAI(parseInt(el.dataset.idx, 10));
+    }
+    else if (action === 'ai-autopsy') { aiAutopsy(G.pool[G.qi]); }
+
+    // === Mode controls ===
+    else if (action === 'quit-sd') { endSuddenDeath(); }
+    else if (action === 'pause-timed') { pauseTimed(); }
+    else if (action === 'stop-pomo') { stopPomodoro(); }
+    else if (action === 'start-exam') { startExam(); }
+    else if (action === 'start-mock') { startMockExam(); }
+    else if (action === 'start-sd') { startSuddenDeath(); }
+    else if (action === 'start-oncall') { startOnCallMode(); }
+    else if (action === 'start-pomo') { startPomodoro(); }
+    else if (action === 'start-mini-exam') {
+      startTopicMiniExam(parseInt(el.dataset.ti, 10));
+    }
+
+    // === Filters ===
+    else if (action === 'filter') { setFilt(el.dataset.f); }
+    else if (action === 'filter-rescue') { buildRescuePool(); }
+    else if (action === 'filter-nbs') { startNextBestStep(); }
+
+    // === Toggles ===
+    else if (action === 'toggle-bk') { toggleBk(); }
+
+    // === Image/Media ===
+    else if (action === 'view-img') {
+      const img = el.tagName === 'IMG' ? el : el.querySelector('img');
+      if (img) viewImg(img.src);
+    }
+    else if (action === 'remove-img') { removeQImage(parseInt(el.dataset.idx, 10)); }
+    else if (action === 'upload-img') { uploadQImage(parseInt(el.dataset.idx, 10)); }
+    else if (action === 'speak-q') { speakQuestion(); }
+    else if (action === 'share-q') { window.shareQ(); }
+    else if (action === 'dismiss') { el.parentElement.style.display = 'none'; }
+  });
+
+  container.addEventListener('change', (e) => {
+    const action = e.target.dataset?.action;
+    if (action === 'toggle-blind') { G.blindRecall = e.target.checked; G.render(); }
+    else if (action === 'toggle-autopsy') { G.autopsyMode = e.target.checked; G.render(); }
+    else if (action === 'toggle-timed') {
+      G.timedMode = e.target.checked;
+      if (G.timedMode) { clearInterval(G.timedInt); G.timedSec = 90; G.render(); setTimeout(startTimedQ, 50); }
+      else { stopTimedMode(); }
+    }
+    else if (action === 'topic-select') {
+      const v = parseInt(e.target.value, 10);
+      if (v === -1 || isNaN(v)) setFilt('all');
+      else setTopicFilt(v);
+    }
+  });
+}
