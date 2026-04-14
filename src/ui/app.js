@@ -23,7 +23,7 @@ import { renderQuiz, toggleBk, uploadQImage, removeQImage, viewImg, pauseTimed,
 import { renderStudy, toggleNote, filterNotes, renderFlash, renderDrugs } from './learn-view.js';
 import { renderLibrary, openHarrisonChapter,
          toggleHarrisonAI, submitHarrisonAI, aiSummarizeChapter, quizMeOnChapter,
-         addChapterQsToBank, renderWrongAnswerLog } from './library-view.js';
+         addChapterQsToBank, renderWrongAnswerLog, initLibraryEvents } from './library-view.js';
 import { renderTrack, renderCalc, calcUp, calcEstScore, renderStudyPlan, renderExamTrendCard, renderPriorityMatrix,
          renderDailyPlan, renderSessionCard, setExamDate, exportCheatSheet,
          saveSessionSummary } from './track-view.js';
@@ -347,7 +347,7 @@ _w.toggleFlagExplain = toggleFlagExplain; _w.startVoiceTeachBack = startVoiceTea
 _w.callAI = callAI;
 // Library
 _w.openHarrisonChapter = openHarrisonChapter; _w.toggleHarrisonAI = toggleHarrisonAI;
-_w.submitHarrisonAI = submitHarrisonAI; _w.aiSummarizeChapter = aiSummarizeChapter;
+_w.submitHarrisonAI = submitHarrisonAI; // aiSummarizeChapter: now handled by library-view delegation
 _w.quizMeOnChapter = quizMeOnChapter; _w.addChapterQsToBank = addChapterQsToBank;
 // Learn
 _w.toggleNote = toggleNote; _w.filterNotes = filterNotes; _w.fcRate = fcRate;
@@ -372,6 +372,7 @@ _w.takeWeeklySnapshot = takeWeeklySnapshot;
 
 // === Event delegation (set up once, survives innerHTML changes) ===
 initMoreEvents(document.getElementById('ct'));
+initLibraryEvents(document.getElementById('ct'));
 
 // === Boot ===
 // Wake lock
