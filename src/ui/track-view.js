@@ -4,7 +4,7 @@ import { sanitize, fmtT, safeJSONParse } from '../core/utils.js';
 import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, isExamTrap } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
 
-function renderPriorityMatrix(){
+export function renderPriorityMatrix(){
   const TOPICS_L=TOPICS;
   const EF_FREQ=[50,45,40,30,45,60,50,40,35,50,45,35,55,35,40,30,15,15,20,20,15,15,25,20];
   const maxFreq=Math.max(...EF_FREQ);
