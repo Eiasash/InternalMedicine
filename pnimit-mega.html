@@ -62,6 +62,11 @@ upd();setInterval(upd,30000);
 <script src="src/ai/client.js"></script>
 <script src="src/ai/explain.js"></script>
 <script src="src/features/cloud.js"></script>
+<script src="src/ui/quiz-view.js"></script>
+<script src="src/ui/learn-view.js"></script>
+<script src="src/ui/library-view.js"></script>
+<script src="src/ui/track-view.js"></script>
+<script src="src/ui/more-view.js"></script>
 <script>
 // [data arrays moved to src/core/data-loader.js]
 
@@ -821,8 +826,8 @@ function go(t){tab=t;renderTabs();render()}
 
 
 
-}
-function toggleBk(){S.bk[pool[qi]]=!S.bk[pool[qi]];save();render();}
+// [moved to src/ui/quiz-view.js]
+
 
 // [moved to src/quiz/engine.js]
 
@@ -938,90 +943,90 @@ function toggleBk(){S.bk[pool[qi]]=!S.bk[pool[qi]];save();render();}
 
 // ===== QUESTION IMAGE UPLOAD =====
 // [moved to src/core/constants.js]
+// [moved to src/ui/quiz-view.js]
 
-async function uploadQImage(qIdx){
-const input=document.createElement('input');
-input.type='file';input.accept='image/*';input.capture='environment';
-input.onchange=async function(){
-const file=input.files[0];if(!file)return;
-const ext=file.name.split('.').pop()||'png';
-const fname='q'+qIdx+'_'+Date.now()+'.'+ext;
-const statusEl=document.getElementById('img-status-'+qIdx);
-if(statusEl)statusEl.textContent='⏳ Uploading...';
-try{
-const res=await fetch(SUPA_URL+'/storage/v1/object/question-images/'+fname,{
-method:'POST',headers:{'Authorization':'Bearer '+SUPA_ANON,'Content-Type':file.type},body:file});
-if(!res.ok)throw new Error('Upload failed: '+res.status);
-const imgUrl=SUPA_URL+'/storage/v1/object/public/question-images/'+fname;
-QZ[qIdx].img=imgUrl;
-// Save to localStorage
-const imgMap=safeJSONParse('pnimit_q_images',{});
-imgMap[qIdx]=imgUrl;
-localStorage.setItem('pnimit_q_images',JSON.stringify(imgMap));
-if(statusEl)statusEl.textContent='✅ Image attached';
-setTimeout(()=>render(),500);
-}catch(e){if(statusEl)statusEl.textContent='❌ '+e.message;}
-};
-input.click();
-}
-function removeQImage(qIdx){
-QZ[qIdx].img=null;
-const imgMap=safeJSONParse('pnimit_q_images',{});
-delete imgMap[qIdx];
-localStorage.setItem('pnimit_q_images',JSON.stringify(imgMap));
-render();
-}
-// Load saved images on startup
-(function(){
-const imgMap=safeJSONParse('pnimit_q_images',{});
-Object.entries(imgMap).forEach(([idx,url])=>{if(QZ[parseInt(idx)])QZ[parseInt(idx)].img=url;});
-})();
-function viewImg(src){
-const ov=document.createElement('div');
-ov.className='img-overlay';
-ov.innerHTML='<img src="'+sanitize(src)+'" alt="Zoomed">';
-ov.onclick=function(){ov.remove();};
-document.body.appendChild(ov);
-}
-function pauseTimed(){
-  timedPaused=!timedPaused;
-  if(timedPaused){clearInterval(timedInt);}
-  else{startTimedQ();}
-  render();
-}
-function startTimedQ(){
-  clearInterval(timedInt);
-  timedSec=90;
-  timedInt=setInterval(()=>{
-    timedSec--;
-    const el=document.getElementById('timed-bar');
-    if(el){
-      const pct=Math.round(timedSec/90*100);
-      const col=pct>50?'#10b981':pct>25?'#f59e0b':'#ef4444';
-      el.style.width=pct+'%';
-      el.style.background=col;
-      el.parentElement.previousElementSibling&&(el.parentElement.previousElementSibling.textContent=timedSec+'s');
-    }
-    if(timedSec<=0){
-      clearInterval(timedInt);
-      // Auto-advance: show correct answer briefly then next
-      if(!ans){
-        sel=QZ[pool[qi]]?.c??0;
-        checkMockIntercept();
-        ans=true;
-        const q=QZ[pool[qi]];
-        if(q){S.qNo++;srScore(pool[qi],false);}
-        save();render();
-      }
-      setTimeout(()=>{if(timedMode)next();},1800);
-    }
-  },1000);
-}
-function stopTimedMode(){
-  timedMode=false;
-  clearInterval(timedInt);
-  render();
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // [moved to src/core/utils.js]
 
 
@@ -1072,1842 +1077,1842 @@ function stopTimedMode(){
 
 
 
-function renderQuiz(){
-// ===== SUDDEN DEATH RENDERING =====
-if(sdMode){
-if(sdQi>=sdPool.length)sdQi=0;
-const q=QZ[sdPool[sdQi]];
-let h=`<div class="sudden-death-banner"><span style="font-weight:700;font-size:13px">💀 Sudden Death</span>
-<span style="font-size:16px;font-weight:700">🔥 ${sdStreak}</span>
-<button class="btn" style="background:rgba(255,255,255,.2);color:#fff;font-size:10px;padding:4px 10px" onclick="endSuddenDeath()" aria-label="Quit sudden death mode">Quit</button></div>`;
-h+=`<div class="card" style="padding:16px">`;
-if(timedMode&&!ans){
-  h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-<span id="timed-count" style="font-size:11px;font-weight:700;color:#64748b;min-width:24px">${timedSec}s</span>
-<div style="flex:1;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden">
-  <div id="timed-bar" style="height:100%;width:${Math.round(timedSec/90*100)}%;background:${timedSec>45?'#10b981':timedSec>22?'#f59e0b':'#ef4444'};border-radius:3px;transition:width .9s linear"></div>
-</div>
-<button onclick="pauseTimed()" style="font-size:9px;padding:2px 7px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;white-space:nowrap" aria-label="${timedPaused?'Resume timer':'Pause timer'}">${timedPaused?'▶ המשך':'⏸ עצור'}</button>
-</div>`;
-}
-const _isFlagQ=(S.flagged||{})[pool[qi]];
-h+=`<p class="heb" style="font-size:13px;font-weight:700;line-height:1.7;margin-bottom:${q.img?'10':'16'}px">${_isFlagQ?'<span style="color:#dc2626;font-size:11px" title="Explanation flagged — verify">⚑ </span>':''  }${q.q}</p>`;
-if(q.img){h+=`<div style="margin-bottom:14px;text-align:center;position:relative"><img src="${q.img}" alt="Question image" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer" onclick="viewImg(this.src)" loading="lazy"><button onclick="event.stopPropagation();removeQImage(${pool[qi]})" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:12px;cursor:pointer">✕</button></div>`;}
-if(!q.img&&!examMode){h+=`<div style="margin-bottom:10px"><button onclick="uploadQImage(${pool[qi]})" style="font-size:10px;padding:4px 12px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">📷 Attach Image</button><span id="img-status-${pool[qi]}" style="font-size:10px;color:#94a3b8;margin-left:6px"></span></div>`;}
-q.o.forEach((o,i)=>{
-let cls='qo';
-if(ans){cls+=' lk';if(i===q.c)cls+=' ok';else if(i===sel)cls+=' no';else cls+=' dim';}
-else if(i===sel)cls+=' sel';
-h+=`<button class="${cls}" onclick="pick(${i})" aria-label="Option ${i+1}: ${o}">${o}</button>`;
-});
-if(!ans)h+=`<button class="btn btn-p" onclick="sdCheck()"${sel===null?' disabled':''} aria-label="Check answer">בדוק</button>`;
-else h+=`<button class="btn btn-d" onclick="sdNext()" aria-label="Next question">הבאה ←</button>`;
-h+=`</div>`;
-// Leaderboard
-if(sdLeaderboard.length){
-h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">🏆 Leaderboard</div>`;
-sdLeaderboard.forEach((e,i)=>{h+=`<div class="leaderboard-row"><span>${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)} ${e.streak} questions</span><span style="color:#94a3b8">${e.date}</span></div>`;});
-h+=`</div>`;}
-return h;
-}
+// [moved to src/ui/quiz-view.js]
 
-if(!pool.length)buildPool();
-if(qi>=pool.length)qi=0;
-const q=QZ[pool[qi]];const tot=S.qOk+S.qNo;const pct=tot?Math.round(S.qOk/tot*100)+'%':'—';
-const bk=S.bk[pool[qi]];
-const dueN=getDueQuestions().length;
-// Pomodoro bar
-let h=pomoActive?`<div class="pomo-bar"><div class="pomo-fill" id="pomo-fill" style="width:${(3000-pomoSec)/3000*100}%"></div></div>
-<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 12px;background:#ecfdf5;border-radius:10px;margin-bottom:10px;font-size:11px">
-<span>⏱️ Pomodoro</span><span class="timer" id="pomo-time" style="font-weight:700">${fmtT(pomoSec)}</span>
-<button onclick="stopPomodoro()" style="font-size:10px;color:#dc2626;font-weight:600" aria-label="Stop pomodoro timer">Stop</button></div>`:'';
-h+=examMode?(()=>{
-  const answered=S.qOk+S.qNo;
-  const isMock=!!mockExamResults;
-  const target=isMock?108:72; // 10800/100 vs 10800/150
-  const elapsed=10800-examSec;
-  const avgSec=answered>0?Math.floor(elapsed/answered):0;
-  const paceOk=avgSec<=target*1.1;
-  const paceStr=answered>0?`avg ${fmtT(avgSec)}/q · ${paceOk?'<span style="color:#4ade80">✓</span>':'<span style="color:#f87171">⚠️ slow</span>'}`:'';
-  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:8px 12px;background:#0f172a;border-radius:12px;color:#fff">
-<span style="font-weight:700;font-size:11px">${isMock?'🎯 Mock':'📋 Exam'}<br><span style="font-size:9px;font-weight:400">${paceStr}</span></span>
-<span id="etimer" class="timer" style="font-size:16px;font-weight:700">${fmtT(examSec)}</span>
-<span style="font-size:11px">${qi+1}/${isMock?pool.length:150}</span></div>`;
-})():'';
-if(!examMode){
-h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-<div class="sec-t">Quiz</div>
-<div style="display:flex;gap:4px;flex-wrap:wrap">
-<button onclick="startExam()" class="btn btn-d" style="font-size:10px;padding:5px 12px" aria-label="Start exam with 150 questions">📋 Exam (150q)</button><button onclick="startMockExam()" class="btn btn-d" style="font-size:10px;padding:5px 12px;background:#7c3aed;color:#fff" aria-label="Start mock exam with 100 questions">🎯 Mock (100q)</button>
-<span class="tt-wrap"><button onclick="startSuddenDeath()" class="btn" style="font-size:10px;padding:5px 12px;background:#fef2f2;color:#dc2626" aria-label="Start sudden death mode">💀 Sudden Death</button><button onclick="startOnCallMode()" class="btn" style="font-size:10px;padding:5px 12px;background:#0f172a;color:#7dd3fc" aria-label="Start on-call mode">🌙 On-call</button><button class="tt-icon" tabindex="0" aria-label="Info about sudden death mode">ⓘ</button><div class="tt-box">One wrong answer ends the session. Builds high-stakes exam pressure.</div></span>
-${!pomoActive?'<span class="tt-wrap"><button onclick="startPomodoro()" class="btn" style="font-size:10px;padding:5px 12px;background:#ecfdf5;color:#059669" aria-label="Start pomodoro timer">⏱️ Pomodoro</button><button class="tt-icon" tabindex="0" aria-label="Info about pomodoro timer">ⓘ</button><div class="tt-box">25min focus / 5min break study timer. Helps maintain concentration.</div></span>':''}
-</div>
-</div>`;
-h+=`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">`;
-const _trapCount=QZ.filter((_,i)=>isExamTrap(i)).length;
-const _aiCount=QZ.filter(q=>q.t==='Harrison').length;
-const filts=[['all',`הכל (${QZ.length})`],['2020','20'],['Jun21','Jun21'],['Jun22','Jun22'],['Jun23','Jun23'],['May24','May24'],['Oct24','Oct24'],['Jun25','Jun25'],['Harrison',`🤖 AI (${_aiCount})`],['hard','🔥 Hard'],['slow','⏱️ Slow'],['weak','🎯 Weak'],['due','🔄 Due'],['traps',`🪤 Traps (${_trapCount})`],['nbs','🎯 Next Best Step']];
-// Rescue Drill pill
-const _weakForPill=getWeakTopics(3);
-if(_weakForPill.length&&_weakForPill[0].pct!==null&&_weakForPill[0].pct<65)filts.push(['rescue','🚨 Rescue']);
-if(dueN>0)filts.push(['due',`🔄 Due (${dueN})`]);
-filts.forEach(([f,l])=>{
-if(f==='rescue')h+=`<span class="pill ${filt==='rescue'?'on':''}" onclick="buildRescuePool()">${l}</span>`;
-else if(f==='nbs')h+=`<span class="pill ${filt==='nbs'?'on':''}" onclick="startNextBestStep()">${l}</span>`;
-else h+=`<span class="pill ${filt===f&&filt!=='topic'?'on':''}" onclick="setFilt('${f}')">${l}</span>`;
-});
-h+=`</div>`;
-// Blind recall & Distractor Autopsy toggles
-h+=`<div style="display:flex;gap:8px;margin-bottom:10px;font-size:10px">
-<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${blindRecall?'checked':''} onchange="blindRecall=this.checked;render()"> 🙈 Cover Options</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">Hides answer choices — forces you to recall the answer before seeing options.</div></span>
-<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${autopsyMode?'checked':''} onchange="autopsyMode=this.checked;render()"> 🔬 Distractor Autopsy</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">After answering, explains WHY each wrong option is wrong — builds distractor recognition skill.</div></span>
-<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${timedMode?'checked':''} onchange="timedMode=this.checked;if(timedMode){clearInterval(timedInt);timedSec=90;render();setTimeout(startTimedQ,50);}else{stopTimedMode();}"> ⏱ Timed (90s)</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">90-second countdown per question. Auto-advances when time runs out — marks as wrong. Builds exam-condition reflexes.</div></span>
-</div>`;
-h+=`<div style="display:flex;gap:6px;margin-bottom:10px"><select class="calc-in" style="font-size:11px;padding:6px 10px;flex:1" onchange="this.value===-1?setFilt('all'):setTopicFilt(parseInt(this.value))">
-<option value="-1"${filt!=='topic'?' selected':''}>📂 Filter by topic…</option>`;
-TOPICS.forEach((t,i)=>{h+=`<option value="${i}"${filt==='topic'&&topicFilt===i?' selected':''}>${t}</option>`;});
-h+=`</select>`;
-// Feature 2: Topic mini-exam button
-if(filt==='topic'&&topicFilt>=0){
-const _tqCount=QZ.filter(q=>q.ti===topicFilt).length;
-h+=`<button class="btn btn-d" style="font-size:10px;padding:6px 12px;white-space:nowrap" onclick="startTopicMiniExam(${topicFilt})" aria-label="Start topic mini-exam">🎯 Mini Exam (${Math.min(_tqCount,20)}q)</button>`;
-}
-h+=`</div>`;
-}
-if(!pool.length){h+=`<div class="card" style="padding:24px;text-align:center"><p style="font-size:13px;color:#94a3b8">${filt==='due'?'🎉 No questions due for review!':'No questions match this filter.'}</p></div>`;return h;}
-h+=`<div class="progress-bar"><div class="fill" style="width:${Math.round((qi+1)/pool.length*100)}%"></div></div>`;
-h+=`<div class="card" style="padding:16px">`;
-if(timedMode&&!ans){
-  h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-<span id="timed-count" style="font-size:11px;font-weight:700;color:#64748b;min-width:24px">${timedSec}s</span>
-<div style="flex:1;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden">
-  <div id="timed-bar" style="height:100%;width:${Math.round(timedSec/90*100)}%;background:${timedSec>45?'#10b981':timedSec>22?'#f59e0b':'#ef4444'};border-radius:3px;transition:width .9s linear"></div>
-</div>
-<button onclick="pauseTimed()" style="font-size:9px;padding:2px 7px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;white-space:nowrap" aria-label="${timedPaused?'Resume timer':'Pause timer'}">${timedPaused?'▶ המשך':'⏸ עצור'}</button>
-</div>`;
-}
-const topicName=q.ti>=0&&TOPICS[q.ti]?TOPICS[q.ti]:'';
-const _cf=isChronicFail(S.sr[pool[qi]]);
-h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-<div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">${_cf?'<span title="Chronic difficulty — read the chapter instead of drilling" style="font-size:14px;cursor:default">🔴</span>':''}${isExamTrap(pool[qi])?'<span title="Exam trap — many people pick the same wrong answer" style="font-size:12px;cursor:default">🪤</span>':''}<span class="tag-year" style="background:${q.t==='Harrison'?'#faf5ff':'#eff6ff'};color:${q.t==='Harrison'?'#7c3aed':'#1d4ed8'};font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px">${q.t==='Harrison'?'🤖 AI — Harrison\'s':'📝 '+q.t}</span>${topicName?`<span class="tag-topic" style="background:#f0fdf4;color:#166534;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px">${topicName}</span>`:''}${(()=>{const ref=TOPIC_REF[q.ti];if(!ref)return '';return '';})()}</div>
-<div style="display:flex;align-items:center;gap:8px">
-<button onclick="speakQuestion()" class="speech-btn${isSpeaking?' speaking':''}" title="Read aloud" aria-label="Read question aloud">🔊</button>
-<button onclick="shareQ()" id="shbtn" class="share-btn" title="Share" aria-label="Share question">📋 שתף</button><button onclick="toggleBk()" style="font-size:16px;opacity:${bk?.7:.3};min-height:44px" title="Bookmark" aria-label="${bk?'Remove bookmark':'Bookmark question'}">${bk?'🔖':'🏷️'}</button>
-<span style="color:#94a3b8;font-size:10px">${qi+1}/${pool.length}</span>
-</div></div>`;
-h+=`<p class="heb" style="font-size:13px;font-weight:700;line-height:1.7;margin-bottom:${q.img?'10':'16'}px" dir="auto">${q.q}</p>`;
-if(q.img){h+=`<div style="margin-bottom:14px;text-align:center"><img src="${q.img}" alt="Question image" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer" onclick="viewImg(this.src)" loading="lazy"></div>`;}
-const _shuf=getOptShuffle(pool[qi],q);
-_shuf.forEach((origI,dispJ)=>{
-const o=q.o[origI];
-let cls='qo';
-if(ans){cls+=' lk';if(origI===q.c)cls+=' ok';else if(origI===sel)cls+=' no';else cls+=' dim';}
-else if(origI===sel)cls+=' sel';
-const blurCls=blindRecall&&!ans&&origI!==sel?' qo-blur':'';
-const autopsyCls=(autopsyMode&&ans&&origI!==q.c&&origI===autopsyDistractor)?' distractor-highlight':'';
-h+=`<button class="${cls}${blurCls}${autopsyCls}" onclick="${blindRecall&&!ans&&origI!==sel?'this.classList.remove(\"qo-blur\");':''}pick(${origI})" aria-label="Option ${origI+1}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
-});
-h+=`<div style="display:flex;gap:6px;margin-top:14px">`;
-if(!ans){
-if(!examMode&&sel!==null&&_confidence===null){
-// Feature 9: Confidence before reveal
-h+=`<div style="margin-bottom:8px;font-size:10px;color:#64748b;font-weight:600">How sure are you?</div>
-<div style="display:flex;gap:6px;margin-bottom:10px">
-<button class="btn" style="flex:1;background:#fef2f2;color:#dc2626;font-size:13px;padding:8px" onclick="_confidence=0;render()">😬</button>
-<button class="btn" style="flex:1;background:#fffbeb;color:#d97706;font-size:13px;padding:8px" onclick="_confidence=1;render()">🤔</button>
-<button class="btn" style="flex:1;background:#f0fdf4;color:#059669;font-size:13px;padding:8px" onclick="_confidence=2;render()">😎</button>
-</div>`;
-}
-const _confLabel=_confidence===0?'😬':_confidence===1?'🤔':_confidence===2?'😎':'';
-h+=`<button class="btn btn-p" onclick="check()"${sel===null||(!examMode&&_confidence===null)?' disabled':''} aria-label="Check answer">${_confLabel} בדוק</button>`;if(!examMode)h+=`<button class="btn" onclick="showAnswerHardFail()" style="background:#fff3e0;color:#d97706;font-size:11px;padding:6px 14px;margin-left:6px" aria-label="Show answer">👁 לא יודע</button>`;}
-else{
-// Feature 1: Why-wrong classification (required after wrong, non-exam)
-if(!examMode&&sel!==q.c&&!_wrongReason){
-h+=`<div style="margin-bottom:8px">
-<div style="font-size:10px;font-weight:700;color:#dc2626;margin-bottom:6px">Why did you get it wrong?</div>
-<div style="display:flex;gap:4px;flex-wrap:wrap">
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#fef2f2;color:#991b1b" onclick="_wrongReason='no_knowledge';save();render()">📚 Didn't know</button>
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#fffbeb;color:#92400e" onclick="_wrongReason='misread';save();render()">👓 Misread</button>
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#eff6ff;color:#1e40af" onclick="_wrongReason='between_2';save();render()">⚖️ Between 2</button>
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#f5f3ff;color:#6d28d9" onclick="_wrongReason='silly';save();render()">🤦 Silly mistake</button>
-</div></div>`;
-}
-// Feature 4: Cross-link to chapter after wrong answer
-if(!examMode&&sel!==q.c&&q.ti>=0){
-const _chRef=TOPIC_REF[q.ti];
-if(_chRef&&_chRef.s==='har'){
-h+=`<button class="btn" onclick="tab='lib';libSec='harrison';render()" style="font-size:10px;padding:5px 12px;background:#ede9fe;color:#7c3aed;margin-bottom:6px;width:100%">📖 Read: ${_chRef.l} — you're weak here</button>`;
-}
-}
-// Feature 7: Optional difficulty rating
-if(!examMode){
-h+=`<div style="display:flex;gap:4px;margin-bottom:8px;align-items:center">
-<span style="font-size:9px;color:#94a3b8">Difficulty:</span>
-<button class="btn" style="font-size:9px;padding:3px 8px;${_diffRating==='easy'?'background:#dcfce7;color:#166534':'background:#f8fafc;color:#94a3b8'}" onclick="_diffRating='easy';_storeDiff(pool[qi],'easy')">Easy</button>
-<button class="btn" style="font-size:9px;padding:3px 8px;${_diffRating==='med'?'background:#fef9c3;color:#854d0e':'background:#f8fafc;color:#94a3b8'}" onclick="_diffRating='med';_storeDiff(pool[qi],'med')">Medium</button>
-<button class="btn" style="font-size:9px;padding:3px 8px;${_diffRating==='hard'?'background:#fecaca;color:#991b1b':'background:#f8fafc;color:#94a3b8'}" onclick="_diffRating='hard';_storeDiff(pool[qi],'hard')">Hard</button>
-</div>`;
-}
-// Next button — blocked if wrong + no classification (non-exam)
-const _blocked=!examMode&&sel!==q.c&&!_wrongReason;
-h+=`<button class="btn btn-d" onclick="next()"${_blocked?' disabled':''} aria-label="${examMode&&qi+1>=150?'Finish exam':'Next question'}">${examMode&&qi+1>=150?'סיים':'הבאה ←'}</button>`;
-}
-h+=`</div>`;
 
-// Teach-Back box
-if(ans&&!examMode&&sel===q.c){
-if(!teachBackState){
-h+='<div style="margin-top:12px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:12px">';
-h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:#065f46;direction:rtl">🎓 Teach-Back: הסבר מדוע זו התשובה הנכונה</span><button onclick="startVoiceTeachBack()" id="tb-mic-btn" style="font-size:16px;padding:4px 8px;background:#ecfdf5;border:none;border-radius:8px;cursor:pointer" title="הקלט קולי" aria-label="Record voice teach-back">🎙️</button></div>';
-h+='<textarea id="tbInput" dir="rtl" style="width:100%;min-height:60px;resize:vertical;font-family:Heebo,sans-serif;border:1px solid #a7f3d0;border-radius:8px;padding:8px;font-size:12px" placeholder="הקלד את ההסבר שלך..." aria-label="Teach-back explanation"></textarea>';
-h+='<div style="display:flex;gap:8px;margin-top:8px">';
-h+='<button class="btn btn-g" style="flex:1;font-size:11px" onclick="var v=document.getElementById(\'tbInput\')?.value?.trim();if(v){gradeTeachBack(pool[qi],v);}else{teachBackState=\'skip\';render();}" aria-label="Grade teach-back with AI">🤖 Grade it</button>';
-h+='<button class="btn btn-o" style="font-size:11px" onclick="teachBackState=\'skip\';render()" aria-label="Skip teach-back">דלג</button>';
-h+='</div></div>';
-}else if(teachBackState==='grading'){
-h+='<div style="margin-top:12px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:12px;text-align:center"><div style="font-size:12px;color:#065f46">⏳ Grading...</div></div>';
-}else if(teachBackState&&teachBackState!=='skip'){
-var scoreEmoji=teachBackState.score===3?'🟢':teachBackState.score===2?'🟡':'🔴';
-var scoreLabel=teachBackState.score===3?'Excellent!':teachBackState.score===2?'Partial':'Needs work';
-h+='<div style="margin-top:12px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:12px">';
-h+='<div style="font-size:13px;font-weight:700;margin-bottom:4px">'+scoreEmoji+' '+scoreLabel+'</div>';
-if(teachBackState.feedback){
-  const axes=[['mechanism','מנגנון'],['criteria','קריטריון'],['exception','חריג']];
-  const axesDots=axes.map(([k,l])=>{const v=teachBackState[k];return v===undefined?'':`<span style="font-size:10px;padding:1px 6px;border-radius:10px;background:${v?'#dcfce7':'#fee2e2'};color:${v?'#166534':'#991b1b'}">${l} ${v?'✓':'✗'}</span>`;}).join(' ');
-  if(axesDots)h+='<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">'+axesDots+'</div>';
-  h+='<div style="font-size:11px;line-height:1.7;direction:rtl;text-align:right">'+sanitize(teachBackState.feedback)+'</div>';
-}
-h+='</div>';
-}
-}
-if(ans&&!examMode){
-const note=q.ti>=0&&NOTES[q.ti]?NOTES[q.ti]:null;
-if(note){
-const correctText=q.o[q.c];
-const sentences=note.notes.split(/\.\s+/);
-const relevant=sentences.filter(s=>s.length>20).filter(s=>{
-const sl=s.toLowerCase(),ql=q.q.toLowerCase(),cl=correctText.toLowerCase();
-return cl.split(/\s+/).filter(w=>w.length>3).some(w=>sl.includes(w.toLowerCase()))||ql.split(/\s+/).filter(w=>w.length>4).some(w=>sl.includes(w.toLowerCase()));
-}).slice(0,3);
-h+=`<div class="explain-box" style="margin-top:10px;padding:10px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:11px;line-height:1.7;color:#166534">`;
-h+=`<div style="font-weight:700;margin-bottom:4px">💡 ${note.topic}</div>`;
-if(relevant.length)h+=`<div style="margin-bottom:6px">${relevant.join('. ')}.</div>`;
-else h+=`<div style="margin-bottom:6px;color:#64748b;font-style:italic">Correct answer: <b>${correctText}</b></div>`;
-h+=`<div style="font-size:9px;color:#059669;border-top:1px solid #bbf7d0;padding-top:4px;margin-top:4px">📖 Source: ${note.ch} · ${q.t}</div>`;
-h+=`</div>`;
-}
-}
-// Built-in explanation (every question has one)
-if(ans&&!examMode&&q.e){
-h+=`<div style="margin-top:8px;padding:10px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;font-size:11px;line-height:1.7;color:#1e40af;direction:rtl;text-align:right">`;
-h+=`<div style="font-weight:700;margin-bottom:4px;font-size:10px">📝 הסבר</div>`;
-h+=`<div>${remapExplanationLetters(q.e,_shuf).replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')}</div>`;
-h+=`</div>`;
-}
-// AI Explain button
-if(ans&&!examMode){
-  var _aiIdx=pool[qi];
-  h+='<div id="ai-explain-'+_aiIdx+'" style="margin-top:6px"></div>';
-  if(_exCache[_aiIdx]&&!_exCache[_aiIdx].err){
-    setTimeout(function(){renderExplainBox(_aiIdx);},0);
-  } else {
-    h+='<button class="btn btn-g" style="width:100%;margin-top:4px;font-size:11px" onclick="explainWithAI('+_aiIdx+')'+'">🤖 הסבר AI ('+(_exCache[_aiIdx]?'נסה שוב':'קלוד אופוס')+')</button>';
-  }
-}
-// Distractor Autopsy — AI-powered explanation of ALL wrong options
-if(autopsyMode&&ans){
-const wrongIdxs=q.o.map((_,i)=>i).filter(i=>i!==q.c);
-if(autopsyDistractor<0||autopsyDistractor===q.c)autopsyDistractor=wrongIdxs[Math.floor(Math.random()*wrongIdxs.length)];
-const _apKey='autopsy_'+pool[qi];
-h+=`<div style="padding:12px;margin-top:10px;border:2px solid #f59e0b;border-radius:12px;background:#fffbeb">
-<div style="font-weight:700;font-size:11px;margin-bottom:6px">🔬 Distractor Autopsy</div>`;
-// Check if we have cached AI autopsy
-if(_exCache[_apKey]){
-h+=`<div style="font-size:11px;line-height:1.7;color:#1e293b" dir="auto">${_exCache[_apKey]}</div>`;
-} else {
-h+=`<div style="font-size:11px;line-height:1.6;color:#92400e" dir="auto">`;
-wrongIdxs.forEach(wi=>{
-h+=`<div style="margin-bottom:6px"><b style="color:#dc2626">✗ ${q.o[wi]}</b> — <span style="color:#64748b">why wrong here?</span></div>`;
-});
-h+=`</div>`;
-h+=`<button class="btn" style="font-size:10px;background:#fef3c7;color:#92400e;margin-top:6px;width:100%" onclick="aiAutopsy(${pool[qi]})">🤖 AI: Explain why each is wrong</button>`;
-}
-h+=`</div>`;
-}
-h+=`<div style="display:flex;gap:16px;margin-top:10px;padding-top:8px;border-top:1px solid #f1f5f9;font-size:10px;color:#94a3b8">
-<span>✅ ${S.qOk}</span><span>❌ ${S.qNo}</span><span>📊 ${pct}</span>${S.sr[pool[qi]]?.at?`<span style="color:#94a3b8">⏱${S.sr[pool[qi]].at}s avg</span>`:""}</div>`;
-h+=`</div>`;
-return h;
-}
-// Sudden Death check/next
-function sdCheck(){if(sel===null)return;ans=true;const q=QZ[sdPool[sdQi]];if(sel===q.c){sdStreak++;S.qOk++;srScore(sdPool[sdQi],true);save();render();}else{S.qNo++;srScore(sdPool[sdQi],false);save();render();setTimeout(()=>endSuddenDeath(),800);}}
-function sdNext(){sdQi++;if(sdQi>=sdPool.length)sdQi=0;sel=null;ans=false;autopsyDistractor=-1;render();}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ===== STUDY NOTES =====
-let openNote=null;
-function toggleNote(i){openNote=openNote===i?null:i;render();}
-function renderStudy(){
-let h=`<div class="sec-t">📚 Study Notes</div><div class="sec-s">Internal Medicine Board Prep · Harrison's 22e + Required Articles</div>`;
-h+=`<input class="search-box" placeholder="Search topics..." oninput="filterNotes(this.value)" id="nfilt">`;
-const fv=document.getElementById('nfilt')?.value?.toLowerCase()||'';
-NOTES.filter(n=>n.topic.toLowerCase().includes(fv)||n.notes.toLowerCase().includes(fv)).forEach(n=>{
-const i=n.id;
-h+=`<div class="card"><button class="acc-h" onclick="toggleNote(${i})">
-<div style="display:flex;align-items:center;gap:8px"><span style="font-weight:700;font-size:12px">${n.topic}</span>
-<span style="font-size:9px;color:#94a3b8">${n.ch}</span></div>
-<span class="acc-ar${openNote===i?' op':''}">▼</span></button>`;
-if(openNote===i){
-const _fmtNote=function(txt){
-const parts=txt.split(/📖\s*HARRISON BOARD PEARLS:\s*/i);
-const clinicalNotes=parts[0]||'';
-const boardPearls=parts[1]||'';
-function fmtLine(line){
-// Section headers: ▸ HEADING — render as a styled block header
-if(/^▸\s+/.test(line)){
-const title=line.replace(/^▸\s+/,'');
-return '<div style="margin:14px 0 6px;padding:5px 10px;background:linear-gradient(90deg,#eff6ff,transparent);border-left:3px solid #3b82f6;border-radius:0 4px 4px 0;font-size:10px;font-weight:800;color:#1e40af;text-transform:uppercase;letter-spacing:.6px">'+title+'</div>';
-}
-// Sub-headers: ALL-CAPS word followed by colon at line start (e.g. "Tai Chi:", "RACF setting:")
-line=line.replace(/^([A-Z][A-Z\s\/&\-()]{2,40}):/,'<strong style="color:#0f172a">$1:</strong>');
-// Any remaining "Label:" pattern
-line=line.replace(/^([^:\n]{2,50}):/,'<strong>$1:</strong>');
-// Numbers with units, thresholds
-line=line.replace(/(≥\d[\d.]*\s*(?:mmHg|m\/s|s\b|mg|IU|%)?|≤\d[\d.]*\s*(?:mmHg|m\/s|s\b|mg|IU|%)?|[<>]\d[\d.]*\s*(?:mmHg|m\/s|s\b|mg|IU|%)?|\d+–\d+%|\d+%)/g,'<b style="color:#0f172a">$1</b>');
-// SOE badges
-line=line.replace(/\(SOE=[A-C]\)/g,'<span style="background:#ecfdf5;color:#059669;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;vertical-align:middle">$&</span>');
-// INCREASES / AVOID / WARNING keywords
-line=line.replace(/\b(INCREASES|AVOID|DO NOT|WARNING|CRITICAL|CONTRAINDICATED)\b/g,'<span style="color:#dc2626;font-weight:700">$1</span>');
-// Positive keywords
-line=line.replace(/\b(SOE=A)\b/g,'<span style="color:#059669;font-weight:700">$1</span>');
-return line;
-}
-function fmtBlock(t){
-const paras=t.split(/\n{2,}/);
-return paras.map(function(para){
-const lines=para.split('\n');
-// Check if first line is a section header
-if(lines.length===1&&/^▸\s+/.test(lines[0])){
-return fmtLine(lines[0]);
-}
-const fmt=lines.map(fmtLine).join('<br>');
-return '<p style="font-size:11.5px;line-height:1.9;margin:0 0 10px;color:#1e293b">'+fmt+'</p>';
-}).join('');
-}
-let h='<div style="font-size:10px;font-weight:700;color:#3b82f6;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📝 Clinical Notes</div>';
-h+=fmtBlock(clinicalNotes.trim());
-if(boardPearls.trim()){
-h+='<div style="margin-top:16px;padding:10px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px">';
-h+='<div style="font-size:10px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📖 Board Pearls</div>';
-h+='<p style="font-size:11px;line-height:1.85;margin:0;color:#14532d">'+boardPearls.trim().replace(/(≥\d[\d.]*|≤\d[\d.]*|[<>]\d[\d.]*|\d+%)/g,'<b>$1</b>').replace(/\(SOE=[A-C]\)/g,'<span style="background:#dcfce7;color:#166534;padding:1px 4px;border-radius:3px;font-size:9px;font-weight:700">$&</span>').replace(/\b(INCREASES|AVOID|DO NOT)\b/g,'<span style="color:#dc2626;font-weight:700">$1</span>')+'</p>';
-h+='</div>';
-}
-return h;
-};
-h+=`<div style="padding:10px 14px 14px;border-top:1px solid #f1f5f9">${_fmtNote(n.notes)}</div>`;
-}
-h+=`</div>`;
-});
-return h;
-}
-function filterNotes(v){render();}
-
-// ===== SYLLABUS (P005-2026 Official IMA) =====
-let sylSec='haz';
-const SYL_HAZ_EXCLUDED=new Set([2,3,4,5,6,34,62]);
-const SYL_HAZ=[];
-const SYL_HAR_ALL=[
-{ch:26,t:'Neurologic Causes of Weakness and Paralysis'},
-{ch:382,t:'Approach to Articular and Musculoskeletal Disorders'},
-{ch:387,t:'Periarticular Disorders of the Extremities'},
-{ch:433,t:'Approach to the Patient with Neurologic Disease'},
-{ch:436,t:'Seizures and Epilepsy'},
-{ch:437,t:'Introduction to Cerebrovascular Diseases'},
-{ch:438,t:'Ischemic Stroke'},
-{ch:439,t:'Intracerebral Hemorrhage'},
-{ch:458,t:'Guillain-Barré Syndrome & Immune-Mediated Neuropathies'},
-{ch:459,t:'Myasthenia Gravis & Neuromuscular Junction Diseases'},
-];
-const SYL_HAR_BASE=[
-{ch:14,t:'Pain: Pathophysiology and Management'},
-{ch:15,t:'Chest Discomfort'},{ch:16,t:'Abdominal Pain'},
-{ch:17,t:'Headache'},{ch:18,t:'Low Back Pain'},
-{ch:20,t:'Fever'},{ch:22,t:'Fever of Unknown Origin'},
-{ch:30,t:'Coma'},{ch:39,t:'Dyspnea'},
-{ch:40,t:'Cough'},{ch:41,t:'Hemoptysis'},
-{ch:42,t:'Hypoxia and Cyanosis'},{ch:43,t:'Edema'},
-{ch:48,t:'Nausea, Vomiting, and Indigestion'},
-{ch:49,t:'Diarrhea and Constipation'},
-{ch:50,t:'Unintentional Weight Loss'},
-{ch:51,t:'Gastrointestinal Bleeding'},
-{ch:52,t:'Jaundice'},{ch:53,t:'Abdominal Swelling and Ascites'},
-{ch:55,t:'Azotemia and Urinary Abnormalities'},
-{ch:56,t:'Fluid and Electrolyte Disturbances'},
-{ch:57,t:'Hypercalcemia and Hypocalcemia'},
-{ch:58,t:'Acidosis and Alkalosis'},
-{ch:66,t:'Anemia and Polycythemia'},
-{ch:67,t:'Disorders of Granulocytes and Monocytes'},
-{ch:69,t:'Bleeding and Thrombosis'},
-{ch:70,t:'Enlargement of Lymph Nodes and Spleen'},
-{ch:79,t:'Infections in Patients with Cancer'},
-{ch:80,t:'Oncologic Emergencies'},
-{ch:102,t:'Iron Deficiency & Hypo-proliferative Anemias'},
-{ch:120,t:'Disorders of Platelets and Vessel Wall'},
-{ch:121,t:'Coagulation Disorders'},
-{ch:127,t:'Approach to the Acutely Ill Infected Febrile Patient'},
-{ch:133,t:'Infective Endocarditis'},
-{ch:136,t:'Osteomyelitis'},
-{ch:142,t:'Encephalitis'},{ch:143,t:'Meningitis'},
-{ch:147,t:'Infections Acquired in Health Care Facilities'},
-{ch:243,t:'Approach to Patient with Cardiovascular Disease'},
-{ch:247,t:'Electrocardiography'},
-{ch:285,t:'NSTEMI & Unstable Angina'},
-{ch:286,t:'ST-Segment Elevation Myocardial Infarction'},
-{ch:295,t:'Approach to Patient with Respiratory Disease'},
-{ch:305,t:'Disorders of the Pleura'},
-{ch:311,t:'Approach to the Patient with Critical Illness'},
-{ch:314,t:'Approach to the Patient with Shock'},
-{ch:315,t:'Sepsis and Septic Shock'},
-{ch:316,t:'Cardiogenic Shock and Pulmonary Edema'},
-{ch:317,t:'Cardiovascular Collapse, Cardiac Arrest, Sudden Death'},
-{ch:319,t:'Approach to Patient with Renal/Urinary Tract Disease'},
-{ch:321,t:'Acute Kidney Injury'},
-{ch:322,t:'Chronic Kidney Disease'},
-{ch:332,t:'Approach to Patient with GI Disease'},
-{ch:347,t:'Evaluation of Liver Function'},
-{ch:355,t:'Cirrhosis and Its Complications'},
-{ch:375,t:'The Vasculitis Syndromes'},
-{ch:379,t:'Sarcoidosis'},
-{ch:384,t:'Gout & Crystal-Associated Arthropathies'},
-{ch:388,t:'Approach to Patient with Endocrine Disorders'},
-];
-const SYL_LAWS=[];
-const SYL_ARTICLES=[
-{t:'Digitoxin in Patients with Heart Failure and Reduced Ejection Fraction',j:'N Engl J Med 2025;393:1155-65'},
-{t:'A Cell-free DNA Blood-Based Test for Colorectal Cancer Screening',j:'N Engl J Med 2024;390:973-83'},
-{t:'Antibiotic Treatment for 7 versus 14 Days in Patients with Bloodstream Infections',j:'NEJM 2025;392:1065-78'},
-{t:'Aspirin in Patients with Chronic Coronary Syndrome Receiving Oral Anticoagulation',j:'DOI: 10.1056/NEJMoa2507532'},
-{t:'Efficacy and Safety of Baxdrostat in Uncontrolled and Resistant Hypertension',j:'DOI: 10.1056/NEJMoa2507109'},
-{t:'Apixaban for Extended Treatment of Provoked Venous Thromboembolism',j:'N Engl J Med 2025;393:1166-76'},
-{t:'A Phase 3 Trial of Upadacitinib for Giant-Cell Arteritis',j:'N Engl J Med 2025;392:2013-24'},
-{t:'First-Line Treatment of Pulmonary Sarcoidosis with Prednisone or Methotrexate',j:'N Engl J Med 2025;393:231-42'},
-{t:'Sotatercept in Patients with Pulmonary Arterial Hypertension at High Risk for Death',j:'N Engl J Med 2025;392:1987-2000'},
-{t:'ECST-2: Optimised Medical Therapy Alone vs Plus Revascularisation for Carotid Stenosis',j:'Lancet Neurol 2025;24:389-99'},
-];
-// renderSyllabus removed — dead code (89 lines)
-
-// ===== TOPIC PRIORITY MATRIX (added to Track tab) =====
-function renderPriorityMatrix(){
-  const TOPICS_L=TOPICS;
-  const EF_FREQ=[50,45,40,30,45,60,50,40,35,50,45,35,55,35,40,30,15,15,20,20,15,15,25,20];
-  const maxFreq=Math.max(...EF_FREQ);
-  const tSt=S.ts||{};
-  const rows=TOPICS_L.map((name,ti)=>{
-    const s=tSt[ti]||{ok:0,no:0,tot:0};
-    const acc=s.tot>0?s.ok/s.tot:null;
-    const freq=EF_FREQ[ti]||0;
-    const freqPct=maxFreq>0?freq/maxFreq:0;
-    const gap=acc===null?0.7:(1-acc); // unknown → treat as 70% gap
-    const priority=Math.round(freqPct*gap*100);
-    return{ti,name,freq,acc,gap,priority,s};
-  }).filter(r=>r.freq>0).sort((a,b)=>b.priority-a.priority);
-  
-  let h='<div style="font-weight:700;font-size:12px;margin:14px 0 8px;color:#0f172a">🎯 Priority Matrix — where to study next</div>';
-  h+='<div style="font-size:9px;color:#94a3b8;margin-bottom:8px">Score = exam frequency × your gap. Higher = drill harder.</div>';
-  rows.slice(0,15).forEach((r,rank)=>{
-    const accStr=r.acc===null?'untested':`${Math.round(r.acc*100)}%`;
-    const barW=Math.round(r.priority);
-    const color=r.priority>=60?'#dc2626':r.priority>=30?'#f59e0b':'#10b981';
-    const trend=getTopicTrend(r.ti);
-    const trendStr=trend===null?'':trend>5?'<span style="color:#059669;font-size:10px">↑</span>':trend<-5?'<span style="color:#dc2626;font-size:10px">↓</span>':'<span style="color:#94a3b8;font-size:10px">→</span>';
-    h+=`<div style="margin-bottom:6px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
-        <div style="font-size:11px;font-weight:${rank<5?'700':'400'}">${rank+1}. ${r.name} ${trendStr}</div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <span style="font-size:9px;color:#64748b">${r.s.tot}q · ${accStr}</span>
-          <span style="font-size:10px;font-weight:700;color:${color}">${r.priority}</span>
-        </div>
-      </div>
-      <div style="height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden">
-        <div style="width:${barW}%;height:100%;background:${color};border-radius:3px"></div>
-      </div>
-    </div>`;
-  });
-  h+=`<div onclick="var el=document.getElementById('pmFull');el.style.display=el.style.display==='none'?'block':'none'" style="font-size:10px;color:rgb(var(--sky));cursor:pointer;margin-top:6px">Show all 24 topics ▾</div>`;
-  h+=`<div id="pmFull" style="display:none">`;
-  rows.slice(15).forEach((r,rank)=>{
-    const accStr=r.acc===null?'untested':`${Math.round(r.acc*100)}%`;
-    h+=`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;font-size:10px">
-      <span>${rank+16}. ${r.name}</span>
-      <span style="color:#64748b">${r.s.tot}q · ${accStr}</span>
-    </div>`;
-  });
-  h+=`</div>`;
-  return h;
-}
-function renderWrongAnswerLog(){
-  const TOPICS_L=TOPICS;
-  // Get chronically failing + recently answered wrong questions
-  const chronic=[];const recentWrong=[];
-  Object.entries(S.sr||{}).forEach(([idx,s])=>{
-    const q=QZ[+idx];if(!q)return;
-    if(s.tot>=4&&s.ok/s.tot<0.35)chronic.push({idx:+idx,q,s});
-    else if(s.n===0&&s.tot>=1)recentWrong.push({idx:+idx,q,s});
-  });
-  chronic.sort((a,b)=>a.s.ok/a.s.tot-b.s.ok/b.s.tot);
-  recentWrong.sort((a,b)=>(b.s.ts?.slice(-1)[0]||0)-(a.s.ts?.slice(-1)[0]||0));
-  
-  let h='';
-  // Wrong answer key reporter (still useful, now prominent)
-  const curQ=pool.length&&qi<pool.length?QZ[pool[qi]]:null;
-  if(curQ){
-    h+=`<div style="margin-bottom:12px;padding:10px;background:#fffbeb;border-radius:10px;border:1px solid #fde68a">
-<div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:6px">❌ Report wrong answer key for current question</div>
-<input id="reportInput" class="search-box" placeholder="מה לדעתך התשובה הנכונה ולמה?" style="font-size:11px;margin-bottom:6px;direction:rtl">
-<button class="btn" style="font-size:10px;width:100%;background:#d97706;color:#fff" onclick="S._reportType='wrong_answer';submitReport()" aria-label="Submit report for AI review">שלח לבדיקת AI</button>
-<div id="fbStatus" style="font-size:10px;margin-top:4px;display:none"></div>
-<div id="aiVerifyResult" style="display:none;margin-top:8px;padding:10px;border-radius:8px;font-size:10px;line-height:1.6"></div>
-</div>`;
-  }
-  
-  // Chronic failures
-  if(chronic.length>0){
-    h+=`<div style="font-weight:700;font-size:11px;margin-bottom:6px;color:#dc2626">🔴 Chronic Failures — read the chapter, not drill</div>`;
-    chronic.slice(0,5).forEach(({idx,q,s})=>{
-      const acc=Math.round(s.ok/s.tot*100);
-      const topic=q.ti>=0?TOPICS_L[q.ti]:'';
-      h+=`<div style="padding:8px;background:#fef2f2;border-radius:8px;margin-bottom:6px;cursor:pointer" onclick="filt='all';pool=[${idx}];qi=0;sel=null;ans=false;flipRevealed=false;tab='quiz';render()">
-<div style="font-size:10px;font-weight:600;line-height:1.4">${q.q.slice(0,80)}${q.q.length>80?'…':''}</div>
-<div style="display:flex;gap:8px;margin-top:4px"><span style="font-size:9px;color:#dc2626">${s.ok}/${s.tot} (${acc}%) · D=${s.fsrsD?s.fsrsD.toFixed(1):'?'}</span><span style="font-size:9px;color:#94a3b8">${topic}</span></div>
-</div>`;
-    });
-  }
-  
-  // Recently wrong (last streak broken)
-  const shown=recentWrong.slice(0,8);
-  if(shown.length>0){
-    h+=`<div style="font-weight:700;font-size:11px;margin-bottom:6px;margin-top:10px;color:#d97706">⚠️ Recently Wrong — retry these</div>`;
-    shown.forEach(({idx,q,s})=>{
-      const topic=q.ti>=0?TOPICS_L[q.ti]:'';
-      h+=`<div style="padding:8px;background:#fffbeb;border-radius:8px;margin-bottom:4px;cursor:pointer" onclick="filt='all';pool=[${idx}];qi=0;sel=null;ans=false;tab='quiz';render()">
-<div style="font-size:10px;line-height:1.4">${q.q.slice(0,75)}${q.q.length>75?'…':''}</div>
-<div style="font-size:9px;color:#94a3b8;margin-top:2px">${topic}</div>
-</div>`;
-    });
-  }
-  
-  if(!chronic.length&&!shown.length&&!curQ)h+='<div style="font-size:11px;color:#94a3b8;text-align:center;padding:20px">No data yet — answer some questions first</div>';
-  return h;
-}
-function toggleHarrisonAI(){
-  const b=document.getElementById('harrison-ai-box');
-  if(b)b.style.display=b.style.display==='none'?'block':'none';
-}
-async function submitHarrisonAI(){
-  const q=document.getElementById('harrison-ai-q')?.value?.trim();
-  const ans=document.getElementById('harrison-ai-answer');
-  if(!q||!ans)return;
-  ans.style.display='block';ans.innerHTML='⏳ ...';
-  const prompt=`You are an expert internist helping an Israeli internal medicine resident study Harrison's Internal Medicine 22e for the שלב א׳ internal medicine board exam (P0064-2025).
-
-Question: ${q}
-
-Answer in HEBREW (4-6 sentences). Cite the relevant Harrison chapter if known. Focus on internal medicine principles and what the exam is likely to test. If a specific threshold/criterion/number is asked, lead with it.`;
-  try{
-    const txt=await callAI([{role:'user',content:prompt}],600,'sonnet');
-    ans.innerHTML=sanitize(txt);
-    document.getElementById('harrison-ai-q').value='';
-  }catch(e){ans.innerHTML='⚠️ Failed: '+sanitize(e.message);}
-}
-async function aiSummarizeChapter(chNum,chTitle){
-  const box=document.getElementById('quiz-me-box');
-  if(!box)return;
-  box.innerHTML='<div style="text-align:center;padding:16px;color:#64748b">⏳ מסכם את הפרק...</div>';
-  let chText='';
-  if(window._libData){
-    const ch=window._libData.chapters.find(c=>c.ch===chNum);
-    if(ch&&ch.sections)chText=ch.sections.slice(0,8).map(s=>s.title+(s.content?': '+s.content.slice(0,300):'')).join('\n').slice(0,3500);
-  }
-  const prompt=`You are summarizing Harrison's Internal Medicine Ch ${chNum}: ${chTitle} for the Israeli internal medicine board exam (שלב א׳ פנימית).
-
-Chapter content:
-${chText||'Chapter '+chNum+': '+chTitle}
-
-Create a board-focused summary in HEBREW with:
-1. 5-7 key facts/thresholds the examiner will test (specific numbers, criteria)
-2. 2-3 "exam traps" — common wrong answers and why they're wrong
-3. One clinical pearl for internal medicine practice
-
-Format as clean bullet points. Be concise and high-yield.`;
-  try{
-    const txt=await callAI([{role:'user',content:prompt}],800,'sonnet');
-    box.innerHTML=`<div style="margin-top:12px;padding:14px;background:#f0fdf4;border-radius:10px;border-left:4px solid #059669">
-<div style="font-weight:700;font-size:12px;color:#065f46;margin-bottom:8px">📝 Board Summary — Ch ${chNum}: ${chTitle}</div>
-<div style="font-size:11px;line-height:1.8;direction:rtl;text-align:right;white-space:pre-wrap">${sanitize(txt)}</div>
-</div>`;
-  }catch(e){box.innerHTML='<div style="color:#dc2626;font-size:11px;padding:8px">⚠️ Failed: '+sanitize(e.message)+'</div>';}
-}
-// toggleAskAI removed — dead code
-// submitAskAI removed — dead code
-async function quizMeOnChapter(chNum,chTitle){
-  // Show loading state in Library
-  const el=document.getElementById('quiz-me-box');
-  if(el){el.innerHTML='<div style="text-align:center;padding:20px;color:#64748b">⏳ Generating questions from Ch '+chNum+'...</div>';}
-  // Get chapter text from already-loaded data
-  let chapterText='';
-  if(window._libData&&window._libData.chapters){
-    const ch=window._libData.chapters.find(c=>c.ch===chNum);
-    if(ch&&ch.sections){
-      chapterText=ch.sections.slice(0,6).map(s=>s.title+': '+s.content).join('\n').slice(0,3000);
-    }
-  }
-  if(!chapterText){
-    chapterText="Harrison's Internal Medicine Chapter "+chNum+": "+chTitle;
-  }
-  const prompt=`You are an Israeli internal medicine board examiner writing MCQ for the שלב א׳ exam.
-
-Based on this chapter content from Harrison's Internal Medicine Ch ${chNum} (${chTitle}):
-${chapterText}
-
-Generate 3 original MCQ questions NOT already in the question bank. Each question must:
-1. Test a specific fact, threshold, or mechanism from this chapter
-2. Have exactly 5 answer options (A-E)
-3. Have one definitively correct answer
-4. Include a brief Hebrew explanation (2-3 sentences)
-
-Return ONLY valid JSON array:
-[{"q":"question text","o":["A. opt","B. opt","C. opt","D. opt","E. opt"],"c":0,"e":"הסבר בעברית"}]
-c = 0-based index of correct answer. No markdown, no preamble.`;
-  try{
-    const txt=await callAI([{role:'user',content:prompt}],1200,'sonnet');
-    const clean=txt.replace(/\`\`\`json|\`\`\`/g,'').trim();
-    const qs=JSON.parse(clean);
-    // Display the generated questions
-    let h='<div style="margin-top:16px;border-top:2px solid #7c3aed;padding-top:12px">';
-    h+='<div style="font-weight:700;font-size:12px;color:#7c3aed;margin-bottom:10px">🧠 AI-Generated Questions — Ch '+chNum+': '+chTitle+'</div>';
-    qs.forEach((q,qi)=>{
-      h+=`<div style="margin-bottom:14px;padding:12px;background:#faf5ff;border-radius:10px;border-left:3px solid #7c3aed">`;
-      h+=`<div style="font-size:12px;font-weight:600;margin-bottom:8px">${qi+1}. ${sanitize(q.q)}</div>`;
-      q.o.forEach((opt,oi)=>{
-        const isCorrect=oi===q.c;
-        h+=`<div style="font-size:11px;padding:4px 8px;margin-bottom:3px;border-radius:6px;background:${isCorrect?'#dcfce7':'#f8fafc'};color:${isCorrect?'#166534':'#475569'};font-weight:${isCorrect?'700':'400'}">${sanitize(opt)}${isCorrect?' ✓':''}</div>`;
-      });
-      if(q.e)h+=`<div style="font-size:10px;color:#6d28d9;margin-top:8px;direction:rtl;text-align:right;line-height:1.6;border-top:1px solid #e9d5ff;padding-top:6px">💡 ${sanitize(q.e)}</div>`;
-      h+='</div>';
-    });
-    h+='<button onclick="addChapterQsToBank('+JSON.stringify(JSON.stringify(qs)).slice(1,-1)+')" style="font-size:10px;padding:6px 14px;background:#059669;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:4px">➕ Add to my question bank</button>';
-    h+='</div>';
-    if(el)el.innerHTML=h;
-  }catch(e){
-    if(el)el.innerHTML='<div style="color:#dc2626;font-size:11px;padding:8px">⚠️ Failed to generate: '+sanitize(e.message)+'</div>';
-  }
-}
-function addChapterQsToBank(jsonStr){
-  try{
-    const qs=JSON.parse(jsonStr);
-    const existing=JSON.parse(localStorage.getItem('pnimit_custom_qs')||'[]');
-    qs.forEach(q=>{q.t='AI-Ch';q.ti=-1;existing.push(q);});
-    localStorage.setItem('pnimit_custom_qs',JSON.stringify(existing));
-    alert('✅ '+qs.length+' questions added! Reload to see them in the AI-Ch filter.');
-  }catch(e){alert('Failed: '+e.message);}
-}
-function renderLibrary(){
-let h=`<div class="sec-t">📖 Library</div>
-<div class="sec-s">Harrison's 22e · Articles · Past Exams</div>`;
-// Sub-tabs
-const libTabs=[
-{id:'harrison',l:'📗 Harrison',c:'#8b5cf6'},
-{id:'articles',l:'📄 Articles',c:'#3b82f6'},
-{id:'exams',l:'📝 Exams',c:'#06b6d4'}
-];
-h+=`<div style="display:flex;gap:4px;overflow-x:auto;padding:4px 0;margin-bottom:12px;-webkit-overflow-scrolling:touch">`;
-libTabs.forEach(t=>{
-h+=`<span class="pill ${libSec===t.id?'on':''}" style="white-space:nowrap;font-size:10px" onclick="libSec='${t.id}';render()">${t.l}</span>`;
-});
-h+=`</div>`;
-
-// ===== HARRISON IN-APP READER =====
-if(libSec==='harrison'){
-if(harChOpen!==null&&_harData&&_harData[String(harChOpen)]){
-const ch=_harData[String(harChOpen)];
-const allSylChNums=[...SYL_HAR_ALL,...SYL_HAR_BASE].map(c=>c.ch).sort((a,b)=>a-b);
-const curIdx=allSylChNums.indexOf(harChOpen);
-const prevCh=curIdx>0?allSylChNums[curIdx-1]:null;
-const nextCh=curIdx<allSylChNums.length-1?allSylChNums[curIdx+1]:null;
-h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-<button onclick="harChOpen=null;render()" style="background:#f1f5f9;border:none;border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer">← Back</button>
-<div style="font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Ch ${harChOpen}: ${ch.title}</div>
-</div>
-<div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
-${prevCh?`<button onclick="openHarrisonChapter(${prevCh})" style="font-size:10px;padding:5px 10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">‹ Ch ${prevCh}</button>`:''}
-<button onclick="quizMeOnChapter(harChOpen,ch.title)" style="font-size:10px;padding:5px 10px;background:#7c3aed;color:#fff;border:none;border-radius:8px;cursor:pointer">🧠 Quiz</button>
-<button onclick="aiSummarizeChapter(harChOpen,ch.title)" style="font-size:10px;padding:5px 10px;background:#059669;color:#fff;border:none;border-radius:8px;cursor:pointer">📝 Summary</button>
-${nextCh?`<button onclick="openHarrisonChapter(${nextCh})" style="font-size:10px;padding:5px 10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">Ch ${nextCh} ›</button>`:''}
-</div>
-<div id="quiz-me-box"></div>
-<div class="card" style="padding:16px">`;
-// Feature 4: Show question stats for this topic in chapter reader
-const _relTopics=Object.entries(TOPIC_REF).filter(([ti,ref])=>ref.s==='har').map(([ti])=>+ti);
-const _chTopicIdx=_relTopics.find(ti=>{const ref=TOPIC_REF[ti];return ref&&String(ref.ch)===String(harChOpen);});
-if(_chTopicIdx!==undefined){
-const _ts=getTopicStats()[_chTopicIdx]||{ok:0,no:0,tot:0};
-const _tpct=_ts.tot?Math.round(_ts.ok/_ts.tot*100):null;
-const _tqCount=QZ.filter(q=>q.ti===_chTopicIdx).length;
-h+=`<div style="display:flex;gap:8px;margin-bottom:12px;padding:8px 12px;background:#f5f3ff;border-radius:10px;font-size:10px;align-items:center">
-<span>📝 ${_tqCount} questions on this topic</span>
-${_tpct!==null?`<span style="font-weight:700;color:${_tpct>=70?'#059669':_tpct>=50?'#d97706':'#dc2626'}">${_tpct}% accuracy</span>`:'<span style="color:#94a3b8">Not attempted yet</span>'}
-<button onclick="tab='quiz';filt='topic';topicFilt=${_chTopicIdx};buildPool();render()" style="margin-left:auto;font-size:10px;padding:4px 10px;background:#7c3aed;color:#fff;border:none;border-radius:6px;cursor:pointer">▶ Drill</button>
-</div>`;
-}
-ch.sections.forEach(sec=>{
-if(sec.title){h+=`<div style="font-size:13px;font-weight:800;color:#7c3aed;margin:18px 0 8px;padding-bottom:4px;border-bottom:2px solid #ede9fe">${sec.title}</div>`;}
-sec.content.forEach(p=>{h+=`<p style="font-size:11.5px;line-height:1.9;color:#1e293b;margin:0 0 10px;text-align:justify">${p}</p>`;});
-});
-h+=`</div>`;
-}else if(_harLoading){
-h+=`<div class="card" style="padding:40px;text-align:center"><div style="font-size:13px;color:#64748b">⏳ Loading Harrison's chapter...</div></div>`;
-}else{
-const allSylChs=[...SYL_HAR_ALL,...SYL_HAR_BASE].sort((a,b)=>a.ch-b.ch);
-const allChNums=SYL_HAR_ALL.map(c=>c.ch);
-h+=`<div class="card" style="padding:14px">
-<div style="font-size:13px;font-weight:700;margin-bottom:4px">📗 Harrison's 22e — In-App Reader</div>
-<div style="font-size:10px;color:#64748b;margin-bottom:12px">${allSylChs.length} required chapters · <span style="color:#7c3aed">purple</span> = all examinees · <span style="color:#06b6d4">teal</span> = base track only</div>`;
-allSylChs.forEach(c=>{
-const isAll=allChNums.includes(c.ch);
-const harCh=_harData&&_harData[String(c.ch)];
-const wc=harCh?`~${Math.round(harCh.wordCount/250)} min`:'tap to load';
-h+=`<div onclick="openHarrisonChapter(${c.ch})" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer">
-<span style="background:${isAll?'#7c3aed':'#06b6d4'};color:#fff;font-size:10px;font-weight:700;padding:4px 8px;border-radius:8px;min-width:42px;text-align:center">Ch ${c.ch}</span>
-<div style="flex:1;min-width:0">
-<div style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.t}</div>
-<div style="font-size:9px;color:#94a3b8;margin-top:2px">${wc}</div>
-</div>
-<span style="font-size:18px;color:#94a3b8">›</span></div>`;
-});
-h+=`</div>`;
-}
-}
-
-// ===== LAWS =====
-if(libSec==='laws'){
-h+=`<div class="card" style="padding:14px">
-<div style="font-size:13px;font-weight:700;margin-bottom:4px">⚖️ חוקים, נהלים ופרסומים</div>
-<div class="heb" style="font-size:10px;color:#64748b;margin-bottom:10px">${SYL_LAWS.length} items</div>`;
-SYL_LAWS.forEach((l,i)=>{
-h+=`<div class="heb" style="padding:8px 0;border-bottom:1px solid #f1f5f9">
-<div style="display:flex;align-items:flex-start;gap:8px">
-<span style="background:#f59e0b;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0">${i+1}</span>
-<div style="flex:1"><div style="font-size:11px;font-weight:600">${l.n}</div>
-<div style="font-size:9px;color:#94a3b8;margin-top:2px">${l.s}</div></div>${l.f?`<a href="${l.f}" target="_blank" style="font-size:10px;padding:3px 7px;background:#fffbeb;color:#d97706;border-radius:6px;text-decoration:none;flex-shrink:0;white-space:nowrap">📄</a>`:''}</div></div>`;
-});
-h+=`</div>`;
-}
-
-// ===== ARTICLES =====
-if(libSec==='articles'){
-h+=`<div class="card" style="padding:14px">
-<div style="font-size:13px;font-weight:700;margin-bottom:4px">📄 Required Articles</div>
-<div style="font-size:10px;color:#64748b;margin-bottom:10px">${SYL_ARTICLES.length} journal articles</div>`;
-const _artMap={"0":"articles/01_digitoxin_hfref.pdf","1":"articles/02_cfdna_crc_screening.pdf","2":"articles/03_bsi_7vs14_days.pdf","3":"articles/04_aspirin_ccs_oac.pdf","4":"articles/05_baxdrostat_htn.pdf","5":"articles/06_apixaban_vte.pdf","6":"articles/07_upadacitinib_gca.pdf","7":"articles/08_sarcoidosis_pred_mtx.pdf","8":"articles/09_sotatercept_pah.pdf","9":"articles/10_ecst2_carotid.pdf"};
-SYL_ARTICLES.forEach((a,i)=>{
-const _apdf=_artMap[String(i)];
-h+=`<div style="padding:8px 0;border-bottom:1px solid #f1f5f9;display:flex;align-items:flex-start;gap:8px">
-<div style="flex:1"><div style="font-size:11px;font-weight:600;line-height:1.5">${i+1}. ${a.t}</div>
-<div style="font-size:9px;color:rgb(var(--sky));margin-top:2px">${a.j}</div></div>${_apdf?`<a href="${_apdf}" download style="font-size:10px;padding:3px 7px;background:#eff6ff;color:#3b82f6;border-radius:6px;text-decoration:none;flex-shrink:0">📄</a>`:''}</div>`;
-});
-h+=`</div>`;
-}
-
-// ===== EXAMS =====
-if(libSec==='exams'){
-const examYears=[...new Set(QZ.map(q=>q.t))].sort();
-h+=`<div class="card" style="padding:14px">
-<div style="font-size:13px;font-weight:700;margin-bottom:4px">📝 Past Exams in Question Bank</div>
-<div style="font-size:10px;color:#64748b;margin-bottom:10px">${QZ.length} questions from ${examYears.length} exam sessions</div>`;
-examYears.forEach(yr=>{
-const cnt=QZ.filter(q=>q.t===yr).length;
-h+=`<div onclick="tab='quiz';filt='${yr}';buildPool();render()" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer">
-<span style="background:#06b6d4;color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:8px;min-width:60px;text-align:center">${yr}</span>
-<span style="font-size:11px;flex:1">${cnt} questions</span>
-<span style="font-size:14px;color:#94a3b8">›</span></div>`;
-});
-h+=`</div>`;
-}
-
-h+=`<div style="text-align:center;margin-top:12px;font-size:9px;color:#94a3b8">
-<a href="syllabus/P0064-2025.pdf" target="_blank" style="color:rgb(var(--sky));text-decoration:underline">P0064-2025 Syllabus ↗</a></div>`;
-h+=`<div style="text-align:center;margin-top:8px;padding:8px;font-size:9px;color:#94a3b8;line-height:1.5">
-صدقة جارية الى من نحب<br>Ceaseless Charity — To the People That We Love</div>`;
-return h;
-}
+// [moved to src/ui/learn-view.js]
 
 
 
-async function openHarrisonChapter(ch){
-harChOpen=ch;
-trackChapterRead('har',ch);
-if(_harData){render();return;}
-if(_harLoading)return;
-_harLoading=true;
-render();
-try{
-const r=await fetch('harrison_chapters.json');
-_harData=await r.json();
-}catch(e){
-console.error('Failed to load Harrison chapters',e);
-_harData={};
-}
-_harLoading=false;
-render();
-}
-
-// ===== FLASHCARDS =====
-function renderFlash(){
-const f=FLASH[S.fci%FLASH.length];
-const fcsr=S.fcsr||{};
-let fcKnown=0,fcLearning=0,fcNew=0;
-for(let i=0;i<FLASH.length;i++){const r=fcsr['fc_'+i];if(!r)fcNew++;else if(r.n>=2)fcKnown++;else fcLearning++;}
-let h=`<div class="sec-t">🃏 Flashcards</div><div class="sec-s">${FLASH.length} high-yield cards · Tap to flip</div>`;
-h+=`<div style="display:flex;gap:6px;margin-bottom:12px">
-<span class="badge badge-g">✅ Known: ${fcKnown}</span>
-<span class="badge badge-y">📖 Learning: ${fcLearning}</span>
-<span class="badge" style="background:#f1f5f9;color:#64748b">🆕 New: ${fcNew}</span>
-</div>`;
-h+=`<div class="fc" onclick="S.fcFlip=!S.fcFlip;save();render()" style="border-color:${S.fcFlip?'rgb(var(--em))':'rgb(var(--sky))'}" role="button" tabindex="0" aria-label="${S.fcFlip?'Show question':'Show answer'}">
-<p style="font-size:${S.fcFlip?'12px':'14px'};font-weight:${S.fcFlip?'400':'700'};line-height:1.7;color:${S.fcFlip?'#334155':'#1e293b'}">
-${S.fcFlip?f.b:f.f}</p>
-<p style="font-size:9px;color:#94a3b8;margin-top:12px">${S.fcFlip?'Tap for question':'Tap to reveal answer'} · ${S.fci%FLASH.length+1}/${FLASH.length}</p>
-</div>`;
-h+=`<div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
-<button class="btn btn-o" onclick="S.fci=(S.fci-1+FLASH.length)%FLASH.length;S.fcFlip=false;save();render()" aria-label="Previous flashcard">← Prev</button>
-<button class="btn btn-p" onclick="S.fci++;S.fcFlip=false;save();render()" aria-label="Next flashcard">Next →</button>
-</div>`;
-if(S.fcFlip){h+=`<div style="display:flex;gap:6px;justify-content:center;margin-top:8px">
-<button class="btn" style="background:#fef2f2;color:#dc2626" onclick="fcRate(0)" aria-label="Rate: Again">🔄 שוב</button>
-<button class="btn" style="background:#fffbeb;color:#d97706" onclick="fcRate(1)" aria-label="Rate: Hard">🤔 קשה</button>
-<button class="btn" style="background:#ecfdf5;color:#059669" onclick="fcRate(2)" aria-label="Rate: Easy">✅ קל</button>
-</div>`;}
-h+=`<div style="text-align:center;margin-top:8px"><button onclick="S.fci=Math.floor(Math.random()*FLASH.length);S.fcFlip=false;save();render()" style="font-size:10px;color:rgb(var(--sky));text-decoration:underline" aria-label="Random flashcard">🔀 Random</button></div>`;
-return h;
-}
-
-// ===== DRUG LOOKUP =====
-let drugSearch='';
-function renderDrugs(){
-let h=`<div class="sec-t">💊 Drug Lookup</div><div class="sec-s">Beers Criteria + ACB Score Checker</div>`;
-h+=`<input class="search-box" placeholder="Search drug name..." oninput="drugSearch=this.value;render()" value="${drugSearch}" id="dsrch">`;
-const fv=drugSearch.toLowerCase();
-const filtered=DRUGS.filter(d=>!fv||d.name.toLowerCase().includes(fv)||d.heb.includes(fv)||(d.cat||'').toLowerCase().includes(fv));
-h+=`<div class="card">`;
-if(!filtered.length)h+=`<div style="padding:16px;text-align:center;color:#94a3b8;font-size:12px">No drugs found</div>`;
-filtered.forEach(d=>{
-h+=`<div class="drug-row"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-<span style="font-weight:700;font-size:12px">${d.name} ${d.heb?'<span style="color:#94a3b8">('+d.heb+')</span>':''}</span>
-<div style="display:flex;gap:4px">
-${d.beers?'<span class="badge badge-r">BEERS</span>':''}
-${d.acb>=3?'<span class="badge badge-r">ACB '+d.acb+'</span>':d.acb>=2?'<span class="badge badge-y">ACB '+d.acb+'</span>':d.acb>=1?'<span class="badge badge-g">ACB '+d.acb+'</span>':''}
-</div></div>
-<div style="font-size:10px;color:#64748b">${d.cat||''}</div>
-<div style="font-size:10px;color:#475569;margin-top:2px">${d.risk}</div></div>`;
-});
-h+=`</div>`;
-return h;
-}
-
-// ===== CALCULATORS =====
-let calcVals={};
-function calcUp(k,v){calcVals[k]=parseFloat(v)||0;render();}
-function renderCalc(){
-let h=`<div class="sec-t">🧮 Clinical Calculators</div><div class="sec-s">CrCl · CHA₂DS₂-VASc · CURB-65 · Wells · PADUA</div>`;
-
-// CrCl
-const age=calcVals.age||75,wt=calcVals.wt||55,cr=calcVals.cr||1.0,fem=calcVals.fem===undefined?0.85:calcVals.fem;
-const crcl=Math.max(0,Math.round(((140-age)*wt*fem)/(72*cr)));
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">Cockcroft-Gault CrCl</h3>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-<div><label style="font-size:10px;color:#64748b">Age</label><input class="calc-in" type="number" value="${age}" onchange="calcUp('age',this.value)"></div>
-<div><label style="font-size:10px;color:#64748b">Weight (kg)</label><input class="calc-in" type="number" value="${wt}" onchange="calcUp('wt',this.value)"></div>
-<div><label style="font-size:10px;color:#64748b">Creatinine</label><input class="calc-in" type="number" step="0.1" value="${cr}" onchange="calcUp('cr',this.value)"></div>
-<div><label style="font-size:10px;color:#64748b">Sex</label><select class="calc-in" onchange="calcUp('fem',this.value)">
-<option value="0.85" ${fem<1?'selected':''}>Female (×0.85)</option><option value="1" ${fem>=1?'selected':''}>Male (×1)</option></select></div>
-</div>
-<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center">
-<span style="font-size:22px;font-weight:700;color:${crcl<30?'#dc2626':crcl<60?'#d97706':'#059669'}">${crcl} ml/min</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${crcl<30?'CKD 4-5: Avoid metformin, adjust all renally-cleared drugs':crcl<60?'CKD 3: Dose adjust many drugs':'CKD 1-2: Mild impairment'}</p>
-</div></div>`;
-
-// CHA2DS2-VASc
-const cha=Object.entries(calcVals).filter(([k])=>k.startsWith('cha_')).reduce((s,[k,v])=>s+v,0);
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">CHA₂DS₂-VASc</h3>`;
-[['cha_chf','CHF',1],['cha_htn','HTN',1],['cha_age75','Age ≥75',2],['cha_dm','Diabetes',1],
-['cha_stroke','Stroke/TIA',2],['cha_vasc','Vascular disease',1],['cha_age65','Age 65-74',1],['cha_sex','Female sex',1]
-].forEach(([k,l,pts])=>{
-const on=calcVals[k]||0;
-h+=`<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:11px;cursor:pointer">
-<span>${l} (+${pts})</span>
-<input type="checkbox" ${on?'checked':''} onchange="calcUp('${k}',this.checked?${pts}:0)" style="width:16px;height:16px">
-</label>`;
-});
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center">
-<span style="font-size:22px;font-weight:700;color:${cha>=2?'#dc2626':'#d97706'}">${cha}</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${cha>=2?'Anticoagulate (DOAC preferred, Apixaban safest in CKD)':cha===1?'Consider anticoagulation':'Low risk — consider no therapy'}</p>
-</div></div>`;
 
 
-// CURB-65
-const curb=Object.entries(calcVals).filter(([k])=>k.startsWith('curb_')).reduce((s,[k,v])=>s+v,0);
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">CURB-65</h3>`;
-[['curb_conf','Confusion (new)',1],['curb_bun','BUN >20 mg/dL (>7 mmol/L)',1],['curb_rr','RR ≥30',1],['curb_bp','BP: SBP<90 or DBP≤60',1],['curb_age','Age ≥65',1]
-].forEach(([k,l,pts])=>{
-const on=calcVals[k]||0;
-h+=`<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:11px;cursor:pointer">
-<span>${l} (+${pts})</span>
-<input type="checkbox" ${on?'checked':''} onchange="calcUp('${k}',this.checked?${pts}:0)" style="width:16px;height:16px">
-</label>`;
-});
-const curbRisk=curb<=1?'Low risk (<2% mortality) — consider outpatient':curb===2?'Moderate (9%) — short inpatient or supervised outpatient':'High (15-40%) — ICU if 4-5';
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center">
-<span style="font-size:22px;font-weight:700;color:${curb>=3?'#dc2626':curb>=2?'#d97706':'#059669'}">${curb}</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${curbRisk}</p>
-</div></div>`;
 
 
-// PADUA VTE Score
-const paduaItems=[
-['pad_cancer','Active cancer',3],['pad_vte','Previous VTE',3],['pad_immob','Reduced mobility (≥3 days)',3],
-['pad_throm','Known thrombophilia',3],['pad_trauma','Recent (≤1mo) trauma/surgery',2],
-['pad_age','Age ≥70',1],['pad_hf','Heart/respiratory failure',1],['pad_mi','Acute MI or stroke',1],
-['pad_infect','Acute infection/rheumatic disorder',1],['pad_obesity','Obesity (BMI ≥30)',1],['pad_hormone','Ongoing hormonal therapy',1]
-];
-const paduaScore=paduaItems.reduce((s,[k,,pts])=>s+(calcVals[k]?pts:0),0);
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">PADUA VTE Risk Score</h3>`;
-paduaItems.forEach(([k,l,pts])=>{
-const on=calcVals[k]||0;
-h+=`<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:11px;cursor:pointer">
-<span>${l} (+${pts})</span>
-<input type="checkbox" ${on?'checked':''} onchange="calcUp('${k}',this.checked?${pts}:0)" style="width:16px;height:16px">
-</label>`;
-});
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center" class="calc-result">
-<span style="font-size:22px;font-weight:700;color:${paduaScore>=4?'#dc2626':'#059669'}">${paduaScore}</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${paduaScore>=4?'High VTE risk (≥4) — Pharmacological prophylaxis recommended':'Low VTE risk (<4) — Mechanical prophylaxis or early mobilization'}</p>
-</div></div>`;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
-return h;
-}
+// ===== SYLLABUS (P005-2026 Official IMA) =====
+// [moved to src/ui/library-view.js]
 
 
-// ===== TRACKER =====
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// [moved to src/ui/track-view.js]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// [moved to src/ui/library-view.js]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// [moved to src/ui/learn-view.js]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// [moved to src/ui/track-view.js]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // [moved to src/core/constants.js]
-// topic index → {source:'haz'|'notes', label, action} for deep link
-const TOPIC_REF={
-0:{s:'har',ch:285,l:'Harrison Ch 243-286'},
-1:{s:'har',ch:316,l:'Harrison Ch 252-264'},
-2:{s:'har',ch:247,l:'Harrison Ch 247-251'},
-3:{s:'har',ch:133,l:'Harrison Ch 265-277'},
-4:{s:'har',ch:56,l:'Harrison Ch 278-281'},
-5:{s:'har',ch:295,l:'Harrison Ch 282-305'},
-6:{s:'har',ch:332,l:'Harrison Ch 306-370'},
-7:{s:'har',ch:321,l:'Harrison Ch 319-322'},
-8:{s:'har',ch:56,l:'Harrison Ch 55-58'},
-9:{s:'har',ch:388,l:'Harrison Ch 371-407'},
-10:{s:'har',ch:120,l:'Harrison Ch 66-121'},
-11:{s:'har',ch:80,l:'Harrison Ch 73-80'},
-12:{s:'har',ch:315,l:'Harrison Ch 127-192'},
-13:{s:'har',ch:375,l:'Harrison Ch 375-387'},
-14:{s:'har',ch:437,l:'Harrison Ch 433-459'},
-15:{s:'har',ch:314,l:'Harrison Ch 311-317'},
-16:{s:'har',ch:56,l:'Harrison Ch 54-72'},
-17:{s:'har',ch:56,l:'Harrison Ch 342-345'},
-18:{s:'har',ch:56,l:'Harrison Ch 55-58'},
-19:{s:'har',ch:14,l:'Harrison Ch 14-18'},
-20:{s:'har',ch:56,l:'Harrison Ch 311-317'},
-21:{s:'har',ch:56,l:'Harrison Ch 455-460'},
-22:{s:'har',ch:56,l:'Harrison Ch 13-72'},
-23:{s:'har',ch:56,l:'Harrison Ch 278-281'},
-};
-
-function renderExamTrendCard(){
-  const OLD_EX=new Set(['2020','Jun21','Jun22']);
-  const NEW_EX=new Set(['May24','Oct24','Jun25']);
-  const TOPICS_L=TOPICS;
-  const oldTot=QZ.filter(q=>OLD_EX.has(q.t)).length||1;
-  const newTot=QZ.filter(q=>NEW_EX.has(q.t)).length||1;
-  const trends=TOPICS_L.map((name,ti)=>{
-    const oldN=QZ.filter(q=>OLD_EX.has(q.t)&&q.ti===ti).length;
-    const newN=QZ.filter(q=>NEW_EX.has(q.t)&&q.ti===ti).length;
-    const delta=(newN/newTot - oldN/oldTot)*100;
-    return{ti,name,oldN,newN,oldPct:oldN/oldTot*100,newPct:newN/newTot*100,delta};
-  }).filter(r=>r.oldN+r.newN>0);
-  
-  const growing=trends.filter(r=>r.delta>0.5).sort((a,b)=>b.delta-a.delta).slice(0,6);
-  const shrinking=trends.filter(r=>r.delta<-0.5).sort((a,b)=>a.delta-b.delta).slice(0,4);
-  
-  let h=`<div class="card" style="padding:14px;margin-bottom:10px;border-left:4px solid #7c3aed">
-<div style="font-weight:700;font-size:12px;margin-bottom:4px;color:#7c3aed">📈 Exam Trend — 2020-22 vs May24–Jun25</div>
-<div style="font-size:9px;color:#94a3b8;margin-bottom:10px">Where the exam is heading. Study accordingly.</div>`;
-  
-  h+=`<div style="font-size:10px;font-weight:700;color:#059669;margin-bottom:5px">▲ GROWING — prioritize</div>`;
-  growing.forEach(r=>{
-    const barW=Math.min(100,Math.round(r.delta*15));
-    h+=`<div style="margin-bottom:5px">
-<div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px">
-  <span style="font-weight:${r.delta>1.5?'700':'400'}">${r.name}</span>
-  <span style="color:#059669">+${r.delta.toFixed(1)}pp · ${r.newPct.toFixed(1)}% of exam</span>
-</div>
-<div style="height:4px;background:#e2e8f0;border-radius:2px"><div style="width:${barW}%;height:100%;background:#10b981;border-radius:2px"></div></div>
-</div>`;
-  });
-  
-  h+=`<div style="font-size:10px;font-weight:700;color:#dc2626;margin-bottom:5px;margin-top:10px">▼ SHRINKING — less priority</div>`;
-  shrinking.forEach(r=>{
-    h+=`<div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px">
-<span style="color:#64748b">${r.name}</span>
-<span style="color:#dc2626">${r.delta.toFixed(1)}pp</span>
-</div>`;
-  });
-  
-  h+=`<div style="font-size:9px;color:#94a3b8;margin-top:8px;border-top:1px solid #f1f5f9;padding-top:6px">Old: 2021+2022+יוני23 (${oldTot}q) · New: ספט24+יוני25+2025-א (${newTot}q)</div>`;
-  h+=`</div>`;
-  return h;
-}
-function saveSessionSummary(){
-  try{
-    const TOPICS_L=TOPICS;
-    const dur=Math.floor((Date.now()-_sessionStart)/1000);
-    const best=Object.entries(_sessionBest).sort((a,b)=>b[1]-a[1])[0];
-    const worse=Object.entries(_sessionWorse).sort((a,b)=>b[1]-a[1])[0];
-    const sess={
-      date:new Date().toISOString(),
-      ok:_sessionOk,no:_sessionNo,dur,
-      best:best?{ti:+best[0],name:TOPICS_L[+best[0]],n:best[1]}:null,
-      worse:worse?{ti:+worse[0],name:TOPICS_L[+worse[0]],n:worse[1]}:null,
-      due:getDueQuestions().length
-    };
-    const hist=JSON.parse(localStorage.getItem('pnimit_sessions')||'[]');
-    hist.push(sess);if(hist.length>30)hist.splice(0,hist.length-30);
-    localStorage.setItem('pnimit_sessions',JSON.stringify(hist));
-  }catch(e){}
-}
-// ===== FEATURE 5: Daily Study Plan =====
-function renderDailyPlan(){
-if(!S.examDate&&!localStorage.getItem('pnimit_exam_date'))return '';
-const examDate=S.examDate||localStorage.getItem('pnimit_exam_date')||'';
-const daysLeft=examDate?Math.max(0,Math.ceil((new Date(examDate)-Date.now())/864e5)):null;
-const dueN=getDueQuestions().length;
-const tSt=getTopicStats();
-const weakest=TOPICS.map((t,i)=>({name:t,i,s:tSt[i]||{ok:0,no:0,tot:0}})).filter(p=>p.s.tot>=3).sort((a,b)=>{
-const pa=a.s.tot?a.s.ok/a.s.tot:0,pb=b.s.tot?b.s.ok/b.s.tot:0;return pa-pb;}).slice(0,3);
-const trapCount=QZ.filter((_,i)=>isExamTrap(i)).length;
-let h=`<div class="card" style="padding:14px;margin-bottom:10px;border-left:4px solid #059669">
-<div style="font-weight:700;font-size:13px;margin-bottom:4px;color:#059669">📋 Today's Study Plan</div>`;
-if(daysLeft!==null)h+=`<div style="font-size:10px;color:#64748b;margin-bottom:10px">${daysLeft} days to exam · ${new Date(examDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>`;
-h+=`<div style="font-size:11px;line-height:2">`;
-// Step 1: Due questions
-if(dueN>0)h+=`<div>1️⃣ <b>${dueN} due questions</b> (~${Math.round(dueN*1.5)} min) <button onclick="setFilt('due');tab='quiz';render()" style="font-size:9px;padding:2px 8px;background:#eff6ff;color:#3b82f6;border:none;border-radius:6px;cursor:pointer">▶ Start</button></div>`;
-else h+=`<div>1️⃣ ✅ No questions due — you're caught up!</div>`;
-// Step 2: Weakest topic
-if(weakest.length){
-const w=weakest[0];
-const wPct=w.s.tot?Math.round(w.s.ok/w.s.tot*100):0;
-const ref=TOPIC_REF[w.i];
-h+=`<div>2️⃣ Read: <b>${w.name}</b> (${wPct}% accuracy, ${QZ.filter(q=>q.ti===w.i).length} questions) ${ref?`<button onclick="tab='lib';libSec='harrison';render()" style="font-size:9px;padding:2px 8px;background:#ede9fe;color:#7c3aed;border:none;border-radius:6px;cursor:pointer">📖 Open</button>`:''}</div>`;
-h+=`<div>3️⃣ Drill: <b>20q mini-exam on ${w.name}</b> <button onclick="startTopicMiniExam(${w.i})" style="font-size:9px;padding:2px 8px;background:#dcfce7;color:#166534;border:none;border-radius:6px;cursor:pointer">🎯 Start</button></div>`;
-}
-// Step 3: Traps
-if(trapCount>0)h+=`<div>4️⃣ Review <b>${trapCount} trap questions</b> <button onclick="setFilt('traps');tab='quiz';render()" style="font-size:9px;padding:2px 8px;background:#fffbeb;color:#92400e;border:none;border-radius:6px;cursor:pointer">🪤 Start</button></div>`;
-h+=`</div></div>`;
-return h;
-}
-function setExamDate(){
-const d=prompt('Enter exam date (YYYY-MM-DD):',S.examDate||'');
-if(d&&/^\d{4}-\d{2}-\d{2}$/.test(d)){S.examDate=d;localStorage.setItem('pnimit_exam_date',d);save();render();}
-}
-// ===== FEATURE 10: Cheat Sheet Export =====
-function exportCheatSheet(){
-const tSt=getTopicStats();
-const ranked=TOPICS.map((t,i)=>({name:t,i,s:tSt[i]||{ok:0,no:0,tot:0}})).filter(p=>p.s.tot>0).sort((a,b)=>{
-const pa=a.s.tot?a.s.ok/a.s.tot:0,pb=b.s.tot?b.s.ok/b.s.tot:0;return pa-pb;});
-const weak15=ranked.slice(0,15);
-let doc='<html><head><meta charset="UTF-8"><title>Pnimit Mega — Cheat Sheet</title>';
-doc+='<style>body{font-family:Inter,system-ui,sans-serif;max-width:700px;margin:0 auto;padding:16px;font-size:11px;color:#1e293b}';
-doc+='h1{font-size:16px;margin-bottom:4px}h2{font-size:13px;color:#dc2626;margin:12px 0 4px;border-bottom:1px solid #e2e8f0;padding-bottom:2px}';
-doc+='.bar{height:6px;background:#e2e8f0;border-radius:3px;margin:2px 0 6px}.fill{height:100%;border-radius:3px}';
-doc+='.topic{margin-bottom:10px;padding:8px;border:1px solid #e2e8f0;border-radius:8px;page-break-inside:avoid}';
-doc+='.stat{font-size:10px;color:#64748b}@media print{body{font-size:10px}}</style></head><body>';
-doc+='<h1>🩺 Pnimit Mega — Personal Weak Topics Cheat Sheet</h1>';
-doc+='<p style="color:#64748b;font-size:10px">Generated '+new Date().toLocaleDateString('en-GB')+' · '+QZ.length+' questions analyzed</p>';
-weak15.forEach((p,idx)=>{
-const pct=p.s.tot?Math.round(p.s.ok/p.s.tot*100):0;
-const clr=pct>=70?'#10b981':pct>=50?'#f59e0b':'#ef4444';
-const note=NOTES.find(n=>n.id===p.i||NOTES.indexOf(n)===p.i);
-const keyFacts=note?note.notes.split(/\n|\. /).filter(s=>s.length>15).slice(0,5):[];
-doc+='<div class="topic">';
-doc+='<h2>#'+(idx+1)+' '+p.name+' — '+pct+'% ('+p.s.ok+'/'+p.s.tot+')</h2>';
-doc+='<div class="bar"><div class="fill" style="width:'+pct+'%;background:'+clr+'"></div></div>';
-if(keyFacts.length){doc+='<ul style="margin:4px 0;padding-left:16px">';keyFacts.forEach(f=>{doc+='<li>'+f.trim()+'</li>';});doc+='</ul>';}
-doc+='</div>';
-});
-doc+='<p style="text-align:center;color:#94a3b8;margin-top:16px;font-size:9px">صدقة جارية الى من نحب</p>';
-doc+='</body></html>';
-const w=window.open('','_blank');w.document.write(doc);w.document.close();
-setTimeout(()=>w.print(),500);
-}
-function renderSessionCard(){
-  try{
-    const hist=JSON.parse(localStorage.getItem('pnimit_sessions')||'[]');
-    if(!hist.length)return '';
-    const last=hist[hist.length-1];
-    const tot=last.ok+last.no;
-    const pct=tot?Math.round(last.ok/tot*100):0;
-    const mins=Math.round(last.dur/60);
-    const today=new Date().toDateString();
-    const sessDate=new Date(last.date).toDateString();
-    if(sessDate!==today)return '';
-    return `<div class="card" style="padding:14px;margin-bottom:10px;border-left:4px solid #7c3aed">
-<div style="font-weight:700;font-size:12px;margin-bottom:6px;color:#7c3aed">📊 Today's Session</div>
-<div style="display:flex;gap:12px;margin-bottom:8px">
-  <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:${pct>=70?'#059669':pct>=50?'#d97706':'#dc2626'}">${pct}%</div><div style="font-size:9px;color:#94a3b8">${last.ok}/${tot} correct</div></div>
-  <div style="text-align:center"><div style="font-size:18px;font-weight:700">${mins}m</div><div style="font-size:9px;color:#94a3b8">duration</div></div>
-  <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:#f59e0b">${last.due}</div><div style="font-size:9px;color:#94a3b8">due tomorrow</div></div>
-</div>
-${last.best?`<div style="font-size:10px;margin-bottom:2px">✅ Best: <b>${last.best.name}</b> (${last.best.n} correct)</div>`:''}
-${last.worse?`<div style="font-size:10px">🔴 Worst: <b>${last.worse.name}</b> (${last.worse.n} wrong)</div>`:''}
-<button onclick="this.parentElement.style.display='none'" style="margin-top:8px;font-size:9px;color:#94a3b8;background:none;border:none;cursor:pointer" aria-label="Dismiss notification">dismiss</button>
-</div>`;
-  }catch(e){return '';}
-}
-function calcEstScore(){
-  // FSRS-aware estimated score: weight by retrievability for seen questions
-  const now2=Date.now();
-  // Frequency weights from historical exam distribution
-  const totalFreq=EXAM_FREQ.reduce((a,b)=>a+b,0);
-  const tSt=S.ts||{};
-  const due=new Set(getDueQuestions());
-  
-  let weightedScore=0,totalWeight=0;
-  EXAM_FREQ.forEach((freq,ti)=>{
-    if(!freq)return;
-    const s=tSt[ti]||{ok:0,no:0,tot:0};
-    const weight=freq/totalFreq;
-    let acc;
-    if(s.tot<3){
-      // Not enough data — assume 60% (neutral)
-      acc=0.60;
-    } else {
-      acc=s.ok/s.tot;
-      // Penalize if due questions exist in this topic
-      const duePenalty=QZ.filter((_,i)=>QZ[i]?.ti===ti&&due.has(i)).length;
-      if(duePenalty>0)acc=Math.max(0,acc-duePenalty*0.02);
-    }
-    weightedScore+=acc*weight;
-    totalWeight+=weight;
-  });
-  return totalWeight>0?Math.round(weightedScore/totalWeight*100):null;
-}
-
-// ===== HARRISON'S 22e CHAPTER MAPPING =====
-// Maps topic names to {ch: 'Chapter(s)', p: PDF page number}
-// PDF: https://drive.google.com/file/d/1sW0asEfszQJvbeAqd8Lzcf6Q20JPq77r/view
-const HAR_CHAPTERS = {
-  'ACS (STEMI/NSTEMI)': {ch:'285–286'},
-  'Heart Failure': {ch:'252'},
-  'Arrhythmias & ECG': {ch:'247'},
-  'Hypertension': {ch:'261'},
-  'Valvular Disease': {ch:'256'},
-  'Sepsis & Septic Shock': {ch:'315'},
-  'Pneumonia & CAP/HAP': {ch:'127'},
-  'Endocarditis': {ch:'133'},
-  'Meningitis & Encephalitis': {ch:'142–143'},
-  'Shock (All Types)': {ch:'314–316'},
-  'Cardiac Arrest & ACLS': {ch:'317'},
-  'Mechanical Ventilation': {ch:'311'},
-  'AKI & CKD': {ch:'321–322'},
-  'Electrolyte Disorders': {ch:'56'},
-  'Acid-Base Disorders': {ch:'58'},
-  'Cirrhosis & Complications': {ch:'355'},
-  'GI Bleeding': {ch:'51'},
-  'Jaundice & Liver Disease': {ch:'52, 347'},
-  'Diarrhea & Constipation': {ch:'49'},
-  'Pulmonary Embolism & VTE': {ch:'295'},
-  'COPD & Asthma': {ch:'295'},
-  'Dyspnea & Hypoxia': {ch:'39, 42'},
-  'Pleural Disease': {ch:'305'},
-  'Anemia (Iron, B12, Chronic)': {ch:'66, 102'},
-  'Bleeding & Coagulation': {ch:'69, 121'},
-  'Thrombocytopenia & Platelet Disorders': {ch:'120'},
-  'Anticoagulation': {ch:'121'},
-  'Ischemic Stroke & ICH': {ch:'438–439'},
-  'Seizures & Epilepsy': {ch:'436'},
-  'Coma & AMS': {ch:'30'},
-  'GBS & Myasthenia Gravis': {ch:'458–459'},
-  'Diabetes & DKA/HHS': {ch:'388'},
-  'Thyroid Disease': {ch:'388'},
-  'Adrenal Disorders': {ch:'388'},
-  'Vasculitis Syndromes': {ch:'375'},
-  'Sarcoidosis': {ch:'379'},
-  'Gout & Crystal Arthropathies': {ch:'384'},
-  'Rheumatoid & MSK': {ch:'382, 387'},
-  'Oncologic Emergencies': {ch:'80'},
-  'Cancer Screening': {ch:'79'},
-  'Infections in Cancer': {ch:'79'},
-  'DIGIT-HF / ECLIPSE / BALANCE': {ch:'Articles 1–3'},
-  'SELECT-GCA / STELLAR / ECST-2': {ch:'Articles 7, 9, 10'},
-  'Baxdrostat / Apixaban VTE / FIRE': {ch:'Articles 4–6, 8'},
-  'Fluids & Volume Management': {ch:'56'},
-  'Pain & Palliative': {ch:'14'},
-  'Perioperative Medicine': {ch:'—'},
-  'Toxicology & Overdose': {ch:'—'},
-  'Dermatology': {ch:'—'},
-  'Allergy & Anaphylaxis': {ch:'—'},
-  'Clinical Approach & DDx': {ch:'15–22'},
-  'Vascular Disease': {ch:'—'},
-};
-
-// ===== STUDY PLAN DATA =====
-const STUDY_PLAN = [
-  { tier: 1, label: 'Tier 1 — Know Cold', color: '#dc3545', desc: '~40% of exam', domains: [
-    { name: 'Cardiology', topics: [
-      { n: 'ACS (STEMI/NSTEMI)', ti: 0, hrs: '5-6h' },
-      { n: 'Heart Failure', ti: 1, hrs: '4-5h' },
-      { n: 'Arrhythmias & ECG', ti: 2, hrs: '4-5h' },
-      { n: 'Hypertension', ti: 4, hrs: '3-4h' },
-      { n: 'Valvular Disease', ti: 3, hrs: '3h' },
-    ]},
-    { name: 'Infectious Disease', topics: [
-      { n: 'Sepsis & Septic Shock', ti: 12, hrs: '4-5h' },
-      { n: 'Pneumonia & CAP/HAP', ti: 12, hrs: '3-4h' },
-      { n: 'Endocarditis', ti: 12, hrs: '3h' },
-      { n: 'Meningitis & Encephalitis', ti: 12, hrs: '3h' },
-    ]},
-    { name: 'Critical Care', topics: [
-      { n: 'Shock (All Types)', ti: 15, hrs: '4-5h' },
-      { n: 'Cardiac Arrest & ACLS', ti: 15, hrs: '3h' },
-      { n: 'Mechanical Ventilation', ti: 15, hrs: '2-3h' },
-    ]},
-    { name: 'Nephrology', topics: [
-      { n: 'AKI & CKD', ti: 7, hrs: '4-5h' },
-      { n: 'Electrolyte Disorders', ti: 8, hrs: '4-5h' },
-      { n: 'Acid-Base Disorders', ti: 8, hrs: '3-4h' },
-    ]},
-  ]},
-  { tier: 2, label: 'Tier 2 — High Yield', color: '#fd7e14', desc: '~30% of exam', domains: [
-    { name: 'GI & Hepatology', topics: [
-      { n: 'Cirrhosis & Complications', ti: 6, hrs: '4h' },
-      { n: 'GI Bleeding', ti: 6, hrs: '3h' },
-      { n: 'Jaundice & Liver Disease', ti: 6, hrs: '2-3h' },
-      { n: 'Diarrhea & Constipation', ti: 6, hrs: '2h' },
-    ]},
-    { name: 'Pulmonology', topics: [
-      { n: 'Pulmonary Embolism & VTE', ti: 5, hrs: '3-4h' },
-      { n: 'COPD & Asthma', ti: 5, hrs: '3h' },
-      { n: 'Dyspnea & Hypoxia', ti: 5, hrs: '2-3h' },
-      { n: 'Pleural Disease', ti: 5, hrs: '2h' },
-    ]},
-    { name: 'Hematology', topics: [
-      { n: 'Anemia (Iron, B12, Chronic)', ti: 10, hrs: '3-4h' },
-      { n: 'Bleeding & Coagulation', ti: 10, hrs: '3-4h' },
-      { n: 'Thrombocytopenia & Platelet Disorders', ti: 10, hrs: '2-3h' },
-      { n: 'Anticoagulation', ti: 10, hrs: '2-3h' },
-    ]},
-    { name: 'Neurology', topics: [
-      { n: 'Ischemic Stroke & ICH', ti: 14, hrs: '4h' },
-      { n: 'Seizures & Epilepsy', ti: 14, hrs: '2-3h' },
-      { n: 'Coma & AMS', ti: 14, hrs: '2-3h' },
-      { n: 'GBS & Myasthenia Gravis', ti: 14, hrs: '2h' },
-    ]},
-  ]},
-  { tier: 3, label: 'Tier 3 — Important', color: '#0D7377', desc: '~20% of exam', domains: [
-    { name: 'Endocrinology', topics: [
-      { n: 'Diabetes & DKA/HHS', ti: 9, hrs: '4h' },
-      { n: 'Thyroid Disease', ti: 9, hrs: '2-3h' },
-      { n: 'Adrenal Disorders', ti: 9, hrs: '2h' },
-    ]},
-    { name: 'Rheumatology', topics: [
-      { n: 'Vasculitis Syndromes', ti: 13, hrs: '3h' },
-      { n: 'Sarcoidosis', ti: 13, hrs: '2-3h' },
-      { n: 'Gout & Crystal Arthropathies', ti: 13, hrs: '2h' },
-      { n: 'Rheumatoid & MSK', ti: 13, hrs: '2h' },
-    ]},
-    { name: 'Oncology', topics: [
-      { n: 'Oncologic Emergencies', ti: 11, hrs: '2-3h' },
-      { n: 'Cancer Screening', ti: 11, hrs: '2h' },
-      { n: 'Infections in Cancer', ti: 11, hrs: '2h' },
-    ]},
-    { name: 'Landmark Trials', topics: [
-      { n: 'DIGIT-HF / ECLIPSE / BALANCE', ti: 22, hrs: '3h' },
-      { n: 'SELECT-GCA / STELLAR / ECST-2', ti: 22, hrs: '3h' },
-      { n: 'Baxdrostat / Apixaban VTE / FIRE', ti: 22, hrs: '2h' },
-    ]},
-  ]},
-  { tier: 4, label: 'Tier 4 — Lower Yield', color: '#6c757d', desc: '~10% of exam', domains: [
-    { name: 'Special Topics', topics: [
-      { n: 'Fluids & Volume Management', ti: 18, hrs: '2h' },
-      { n: 'Pain & Palliative', ti: 19, hrs: '2h' },
-      { n: 'Perioperative Medicine', ti: 20, hrs: '2h' },
-      { n: 'Toxicology & Overdose', ti: 21, hrs: '2h' },
-      { n: 'Dermatology', ti: 16, hrs: '1-2h' },
-      { n: 'Allergy & Anaphylaxis', ti: 17, hrs: '1-2h' },
-      { n: 'Clinical Approach & DDx', ti: 22, hrs: '2h' },
-      { n: 'Vascular Disease', ti: 23, hrs: '1-2h' },
-    ]},
-  ]},
-];
-
-function renderStudyPlan(){
-  const spOpen = S.spOpen !== undefined ? S.spOpen : true;
-  if (spOpen !== S.spOpen) S.spOpen = spOpen;
-
-  // Count total topics and checked topics
-  let totalTopics = 0, checkedTopics = 0;
-  STUDY_PLAN.forEach(tier => {
-    tier.domains.forEach(domain => {
-      domain.topics.forEach(topic => {
-        totalTopics++;
-        if(S.sp && S.sp[topic.n]) checkedTopics++;
-      });
-    });
-  });
-
-  const spPct = totalTopics > 0 ? Math.round(checkedTopics / totalTopics * 100) : 0;
-
-  let h = `<div class="card" style="margin-bottom:12px">
-  <div style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="S.spOpen=!S.spOpen;save();render()" role="button" tabindex="0" aria-expanded="${spOpen?'true':'false'}" aria-label="Study Plan">
-    <div style="display:flex;align-items:center;gap:8px;flex:1">
-      <div style="font-size:16px">📅</div>
-      <div style="flex:1">
-        <div style="font-weight:700;font-size:13px;margin-bottom:2px">Study Plan — Internal Medicine</div>
-        <div style="font-size:9px;color:#64748b">${checkedTopics}/${totalTopics} topics (${spPct}%)</div>
-      </div>
-    </div>
-    <div style="font-size:12px;color:#94a3b8;transition:transform .2s" class="${spOpen?'':''}">▼</div>
-  </div>`;
-
-  if(spOpen){
-    // Progress bar
-    h += `<div style="padding:0 14px;margin-bottom:10px">
-    <div style="width:100%;height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden">
-      <div style="width:${spPct}%;height:100%;background:rgb(var(--em));border-radius:3px;transition:width .3s ease"></div>
-    </div>
-    </div>`;
-
-    // Tiers
-    STUDY_PLAN.forEach(tier => {
-      const tierOpen = S['sp_t' + tier.tier] !== undefined ? S['sp_t' + tier.tier] : true;
-
-      // Count topics for this tier
-      let tierTopics = 0, tierChecked = 0;
-      tier.domains.forEach(domain => {
-        domain.topics.forEach(topic => {
-          tierTopics++;
-          if(S.sp && S.sp[topic.n]) tierChecked++;
-        });
-      });
-
-      h += `<div style="border-top:1px solid #f1f5f9;padding:0">
-      <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:#f8fafc" onclick="S['sp_t${tier.tier}']=!S['sp_t${tier.tier}'];save();render()" role="button" tabindex="0" aria-expanded="${tierOpen?'true':'false'}">
-        <div style="display:flex;align-items:center;gap:8px;flex:1">
-          <div style="width:20px;height:20px;border-radius:8px;background:${tier.color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700">${tier.tier}</div>
-          <div style="flex:1">
-            <div style="font-weight:600;font-size:11px">${tier.label}</div>
-            <div style="font-size:8px;color:#94a3b8;margin-top:1px">${tierChecked}/${tierTopics} · ${tier.desc}</div>
-          </div>
-        </div>
-        <div style="font-size:10px;color:#94a3b8;transition:transform .2s;transform:${tierOpen?'':'rotate(-90deg)'}">${tierOpen?'▼':'▶'}</div>
-      </div>`;
-
-      if(tierOpen){
-        tier.domains.forEach(domain => {
-          h += `<div style="padding:8px 14px;border-top:1px solid #f1f5f9">
-          <div style="font-size:10px;font-weight:600;color:#475569;margin-bottom:6px">${domain.name}</div>`;
-
-          domain.topics.forEach(topic => {
-            const isChecked = S.sp && S.sp[topic.n];
-            const tSt = getTopicStats();
-            const topicStat = tSt[topic.ti];
-            let accBadge = '';
-            if(topicStat && topicStat.tot > 0){
-              const acc = Math.round(topicStat.ok / topicStat.tot * 100);
-              let badgeColor = '#94a3b8';
-              if(acc >= 70) badgeColor = '#059669';
-              else if(acc >= 50) badgeColor = '#d97706';
-              else badgeColor = '#dc2626';
-              accBadge = `<span style="background:${badgeColor}20;color:${badgeColor};padding:2px 6px;border-radius:4px;font-size:8px;font-weight:600">${acc}%</span>`;
-            }
-
-            h += `<div style="border-radius:8px;margin-bottom:4px;background:${isChecked?'#f8fafc':'transparent'}">
-            <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:10px;cursor:pointer" onclick="event.stopPropagation();S.sp=S.sp||{};S.sp['${topic.n.replace(/'/g,"\\'")}']=!S.sp['${topic.n.replace(/'/g,"\\'")}']; save();render()" role="checkbox" aria-checked="${isChecked?'true':'false'}" tabindex="0">
-            <input type="checkbox" ${isChecked?'checked':''} readonly style="width:14px;height:14px;flex-shrink:0;cursor:pointer" tabindex="-1">
-            <span style="flex:1;${isChecked?'color:#94a3b8;text-decoration:line-through':'color:#1e293b'}">${topic.n}</span>
-            ${accBadge}
-            <span style="color:#94a3b8;font-size:9px;white-space:nowrap">${topic.hrs}</span>
-            </div>
-            <div style="display:flex;gap:4px;padding:0 8px 6px 36px;flex-wrap:wrap">
-            ${HAR_CHAPTERS[topic.n]?`<button onclick="event.stopPropagation();libSec=\"harrison\";tab=\"lib\";render()" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#b45309;cursor:pointer;white-space:nowrap">📕 Ch ${HAR_CHAPTERS[topic.n].ch}</button>`:""}
-            <button onclick="event.stopPropagation();openNote=${topic.ti};go('study')" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#0D7377;cursor:pointer;white-space:nowrap" aria-label="Open notes for ${topic.n.replace(/'/g,'')}">📖 Notes</button>
-            <button onclick="event.stopPropagation();setTopicFilt(${topic.ti});go('quiz')" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#3b82f6;cursor:pointer;white-space:nowrap" aria-label="Quiz ${topic.n.replace(/'/g,'')}">📝 Quiz</button>
-            <button onclick="event.stopPropagation();S.chat=[];go('chat');setTimeout(function(){sendChatStarter('Give me a concise board-review summary of ${topic.n.replace(/'/g,"\\'")} in internal medicine. Cover: key definitions, diagnostic criteria, management pearls, exam traps, and must-know numbers. Format with bold headings.')},100)" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#7c3aed;cursor:pointer;white-space:nowrap" aria-label="AI summary of ${topic.n.replace(/'/g,'')}">🤖 Summarize</button>
-            </div>
-            </div>`;
-          });
-
-          h += `</div>`;
-        });
-      }
-
-      h += `</div>`;
-    });
-  }
-
-  h += `</div>`;
-  return h;
-}
-
-function renderTrack(){
-const done=Object.values(S.ck).filter(Boolean).length;
-const tot=S.qOk+S.qNo;const pctN=tot?Math.round(S.qOk/tot*100):0;const pct=tot?pctN+'%':'—';
-const bkCount=Object.values(S.bk).filter(Boolean).length;
-const dueN=getDueQuestions().length;
-const readiness=calcEstScore();
-const streak=getStudyStreak();
-// Key metrics row
-let h=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
-<div class="card" style="padding:10px;text-align:center">
-<div style="font-size:22px;font-weight:800;color:${readiness===null?'#94a3b8':readiness>=70?'#059669':readiness>=50?'#d97706':'#dc2626'}">${readiness!==null?readiness+'%':'—'}</div>
-<div style="font-size:9px;color:#64748b">Est. Score</div>
-</div>
-<div class="card" style="padding:10px;text-align:center">
-<div style="font-size:22px;font-weight:800;color:#7c3aed">${streak}</div>
-<div style="font-size:9px;color:#64748b">Day Streak</div>
-</div>
-<div class="card" style="padding:10px;text-align:center">
-<div style="font-size:22px;font-weight:800;color:#0ea5e9">${tot}</div>
-<div style="font-size:9px;color:#64748b">Answered</div>
-</div>
-<div class="card" style="padding:10px;text-align:center">
-<div style="font-size:22px;font-weight:800;color:${pctN>=70?'#059669':'#d97706'}">${pct}</div>
-<div style="font-size:9px;color:#64748b">Accuracy</div>
-</div>
-</div>`;
-// SRS due alert
-if(dueN>0){
-h+=`<div class="card" style="padding:12px;margin-bottom:8px;background:#fef2f2;border:1px solid #fecaca">
-<div style="display:flex;align-items:center;gap:8px">
-<span style="font-size:18px">🔔</span>
-<div style="flex:1"><div style="font-size:12px;font-weight:700;color:#dc2626">${dueN} questions due for review</div>
-<div style="font-size:10px;color:#64748b">Spaced repetition items ready now</div></div>
-<button onclick="filt='due';buildPool();tab='quiz';render()" class="btn" style="font-size:10px;padding:6px 12px;background:#dc2626;color:#fff;border:none;border-radius:8px">▶ Review</button>
-</div></div>`;
-}
-// Topic mastery heatmap
-const _tStats=getTopicStats();
-h+=`<div class="card" style="padding:14px;margin-bottom:8px">
-<div style="font-size:12px;font-weight:700;margin-bottom:8px">🗺️ Topic Mastery Map</div>
-<div style="display:flex;flex-wrap:wrap;gap:3px">`;
-Object.entries(_tStats).forEach(([ti,s])=>{
-ti=Number(ti);if(!TOPICS[ti])return;
-const _p=s.tot>=2?Math.round(s.ok/s.tot*100):null;
-const color=_p===null?'#e2e8f0':_p>=80?'#059669':_p>=60?'#84cc16':_p>=40?'#f59e0b':'#ef4444';
-const bg=_p===null?'#f8fafc':_p>=80?'#ecfdf5':_p>=60?'#f7fee7':_p>=40?'#fffbeb':'#fef2f2';
-h+=`<div onclick="tab='quiz';filt='topic';topicFilt=${ti};buildPool();render()" style="padding:4px 6px;border-radius:6px;font-size:8px;background:${bg};color:${color};font-weight:700;cursor:pointer;border:1px solid ${color}30;min-width:28px;text-align:center" title="${TOPICS[ti]}: ${_p!==null?_p+'%':'no data'} (${s.tot} Qs)">${_p!==null?_p+'%':'·'}</div>`;
-});
-h+=`</div></div>`;
-h+=renderStudyPlan();
-// Feature 5: Exam date + daily plan
-if(!S.examDate&&!localStorage.getItem('pnimit_exam_date')){
-h+=`<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
-<div style="font-size:12px;font-weight:700;margin-bottom:6px">📅 When is your exam?</div>
-<button class="btn btn-p" onclick="setExamDate()" style="font-size:11px">Set Exam Date</button>
-</div>`;
-}else{
-h+=renderDailyPlan();
-}
-h+=renderSessionCard();
-// Feature 9: Confidence accuracy matrix
-const _confStats={sure_ok:0,sure_no:0,unsure_ok:0,unsure_no:0};
-Object.values(S.sr||{}).forEach(s=>{if(s.conf){Object.entries(s.conf).forEach(([k,v])=>{if(_confStats[k]!==undefined)_confStats[k]+=v;});}});
-const _confTotal=Object.values(_confStats).reduce((a,b)=>a+b,0);
-if(_confTotal>=10){
-const _blindSpots=_confStats.sure_no;
-const _lucky=_confStats.unsure_ok;
-h+=`<div class="card" style="padding:14px;margin-bottom:10px">
-<div style="font-weight:700;font-size:12px;margin-bottom:8px">🎯 Confidence Matrix (${_confTotal} rated)</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:10px;text-align:center">
-<div style="padding:8px;background:#dcfce7;border-radius:8px"><div style="font-size:16px;font-weight:700">${_confStats.sure_ok}</div>😎✅ Confident + Right</div>
-<div style="padding:8px;background:#fecaca;border-radius:8px"><div style="font-size:16px;font-weight:700;color:#dc2626">${_confStats.sure_no}</div>😎❌ BLIND SPOTS</div>
-<div style="padding:8px;background:#fef9c3;border-radius:8px"><div style="font-size:16px;font-weight:700">${_confStats.unsure_ok}</div>😬✅ Lucky</div>
-<div style="padding:8px;background:#f1f5f9;border-radius:8px"><div style="font-size:16px;font-weight:700">${_confStats.unsure_no}</div>😬❌ Expected miss</div>
-</div>
-${_blindSpots>0?`<div style="margin-top:8px;font-size:10px;color:#dc2626;font-weight:600">⚠️ ${_blindSpots} blind spots — you were confident but wrong. These are your most dangerous gaps.</div>`:''}
-</div>`;
-}
-// Feature 10: Cheat sheet export button
-h+=`<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
-<button class="btn btn-d" onclick="exportCheatSheet()" style="font-size:11px" aria-label="Export cheat sheet">📄 Export Weak Topics Cheat Sheet</button>
-<div style="font-size:9px;color:#94a3b8;margin-top:4px">Print-ready 2-page summary of your 15 weakest topics</div>
-</div>`;
-// Feature 5: Change exam date
-if(S.examDate||localStorage.getItem('pnimit_exam_date')){
-h+=`<div style="text-align:center;margin-bottom:10px"><button onclick="setExamDate()" style="font-size:9px;color:#94a3b8;background:none;border:none;cursor:pointer;text-decoration:underline">📅 Change exam date</button></div>`;
-}
-h+=renderExamTrendCard();
-// Rescue Drill CTA
-const _weakTopics=getWeakTopics(3);
-if(_weakTopics.length&&_weakTopics[0].pct!==null&&_weakTopics[0].pct<65){
-h+=`<div class="card" style="padding:14px;margin-bottom:10px;background:linear-gradient(135deg,#fef2f2,#fffbeb);border:1px solid #fecaca">
-<div style="display:flex;align-items:center;gap:10px">
-<span style="font-size:24px">🚨</span>
-<div style="flex:1">
-<div style="font-weight:700;font-size:12px;color:#dc2626">Rescue Drill</div>
-<div style="font-size:10px;color:#64748b">${_weakTopics.map(w=>TOPICS[w.ti]+' ('+w.pct+'%)').join(' \u00b7 ')}</div>
-</div>
-<button onclick="buildRescuePool();tab='quiz';render()" class="btn" style="font-size:11px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:10px;font-weight:700">GO</button>
-</div></div>`;
-}
-// Activity Calendar (30 days)
-h+=`<div class="card" style="padding:14px;margin-bottom:10px">
-<div style="font-size:12px;font-weight:700;margin-bottom:8px">📅 Activity (last 30 days)</div>
-<div style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px">`;
-for(let _i=29;_i>=0;_i--){
-const _d=new Date();_d.setDate(_d.getDate()-_i);
-const _dk=_d.toISOString().slice(0,10);
-const _act=S.dailyAct&&S.dailyAct[_dk];
-const _qc=_act?_act.q:0;
-const _int=_qc===0?0:_qc<5?1:_qc<15?2:_qc<30?3:4;
-const _cols=['#f1f5f9','#dcfce7','#86efac','#22c55e','#15803d'];
-h+=`<div style="aspect-ratio:1;border-radius:3px;background:${_cols[_int]}" title="${_dk}: ${_qc} Qs"></div>`;
-}
-h+=`</div></div>`;
-// Spaced Reading Due
-const _harDue=getChaptersDueForReading('har',30);
-if(_harDue.length){
-h+=`<div class="card" style="padding:14px;margin-bottom:10px">
-<div style="font-size:12px;font-weight:700;margin-bottom:8px">📖 Chapters Due for Re-Reading</div>`;
-_harDue.slice(0,5).forEach(c=>{
-  const _chData=_harData&&_harData[c.ch];
-  const _title=_chData?_chData.title:'Ch '+c.ch;
-  h+=`<div onclick="tab='lib';libSec='harrison';openHarrisonChapter(${c.ch})" style="font-size:10px;padding:4px 0;cursor:pointer;color:#64748b;border-bottom:1px solid #f8fafc">📗 Ch ${c.ch}: ${_title} <span style="color:#7c3aed;font-weight:700">(${c.daysSince}d ago)</span></div>`;
-});
-h+=`</div>`;
-}
-// Leaderboard
-h+=`<div class="card" style="padding:14px;margin-bottom:10px">
-<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-<span style="font-size:14px">🏆</span>
-<div style="font-size:12px;font-weight:700;flex:1">Leaderboard</div>
-<button onclick="showLeaderboard()" style="font-size:9px;padding:4px 10px;background:#f59e0b;color:#fff;border:none;border-radius:6px;cursor:pointer">Refresh</button>
-</div>
-<div id="leaderboard-box" style="font-size:10px;color:#94a3b8;text-align:center">Tap refresh to load</div>
-</div>`;
-h+=`<div class="sec-t">Progress</div><div class="sec-s">Syllabus · Bookmarks · Spaced Repetition</div>`;
-if(S.streak>0)h+=`<div style="text-align:center;margin-bottom:12px"><span class="streak-badge">🔥 ${S.streak} day${S.streak>1?'s':''} streak</span></div>`;
-const estScore=calcEstScore();
-h+=`<div class="stats">
-<div class="stat"><div class="n" style="color:rgb(var(--em))">${done}/${TOPICS.length}</div><div class="l">Topics</div></div>
-<div class="stat"><div class="n" style="color:rgb(var(--sky))">${pct}</div><div class="l">Quiz</div></div>
-<div class="stat"><span class="tt-wrap"><div class="n" style="color:${estScore===null?'#94a3b8':estScore>=70?'#059669':estScore>=60?'#d97706':'#dc2626'}">${estScore!==null?estScore+'%':'—'}</div><div class="l">Est. Score <button class="tt-icon" tabindex="0">ⓘ</button></div><div class="tt-box" style="left:0;transform:none">Rolling exam score estimate: topic accuracy × exam frequency weight. Penalizes overdue SR cards. Needs 3+ answers per topic for accuracy. Pass = 60%.</div></span></div>
-<div class="stat"><span class="tt-wrap"><div class="n" style="color:rgb(var(--amb))">${dueN}</div><div class="l">Due (SR) <button class="tt-icon" tabindex="0">ⓘ</button></div><div class="tt-box" style="left:0;transform:none">Spaced repetition cards due for review. Based on your past performance.</div></span></div>
-</div>`;
-// Bookmarked questions with folder grouping
-if(bkCount>0){
-const _byTopic={};
-Object.entries(S.bk).filter(([,v])=>v).forEach(([k])=>{
-const q=QZ[k];if(!q)return;
-const tp=TOPICS[q.ti]||'Other';
-if(!_byTopic[tp])_byTopic[tp]=[];
-_byTopic[tp].push({k:k,q:q});
-});
-const _topicKeys=Object.keys(_byTopic);
-if(_topicKeys.length>1){
-h+='<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">📁 Bookmark Folders</div>';
-_topicKeys.forEach(function(topic){
-var fk='bkf_'+topic.replace(/[^a-z0-9]/gi,'_');
-var open=S[fk];
-var qs=_byTopic[topic];
-h+='<div style="margin-bottom:6px">';
-h+='<div onclick="S[\''+fk+'\']=' + '!S[\''+fk+'\'];save();render()" style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#f8fafc;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600" role="button" tabindex="0" aria-expanded="'+(open?'true':'false')+'" aria-label="'+topic+'">';
-h+='<span>📁 '+topic+' ('+qs.length+')</span><span>'+(open?'▼':'▶')+'</span></div>';
-if(open){qs.forEach(function(e){h+='<div style="padding:6px 12px;font-size:10px;border-bottom:1px solid #f1f5f9" class="heb" dir="rtl">'+e.q.q.substring(0,90)+'...</div>';});}
-h+='</div>';
-});
-h+='</div>';
-}else{
-h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">🔖 Bookmarked (${bkCount})</div>`;
-Object.entries(S.bk).filter(([,v])=>v).slice(0,10).forEach(([k])=>{
-const q=QZ[k];if(q)h+=`<div style="font-size:10px;padding:6px 0;border-bottom:1px solid #f8fafc" class="heb" dir="rtl">${q.q.substring(0,80)}...</div>`;
-});
-h+=`</div>`;
-}
-}
-// Syllabus
-h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:10px">📋 Syllabus (${done}/${TOPICS.length})</div>`;
-// Per-topic accuracy bars
-const tSt=getTopicStats();
-const ranked=TOPICS.map((t,i)=>({name:t,i,s:tSt[i]||{ok:0,no:0,tot:0}})).filter(p=>p.s.tot>0);
-if(ranked.length>0){
-h+=`<div class="card" style="padding:14px;margin-bottom:10px"><div style="font-weight:700;font-size:12px;margin-bottom:10px">📊 Accuracy by Topic <span class="tt-wrap"><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">Shows your accuracy (% correct) for each topic you've attempted. Green ≥70%, amber ≥50%, red <50%.</div></span></div>`;
-ranked.sort((a,b)=>{const pa=a.s.tot?a.s.ok/a.s.tot:0,pb=b.s.tot?b.s.ok/b.s.tot:0;return pa-pb;}).forEach(p=>{
-const pct=p.s.tot?Math.round(p.s.ok/p.s.tot*100):0;
-const clr=pct>=70?'rgb(var(--em))':pct>=50?'rgb(var(--amb))':'rgb(var(--red))';
-h+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #f8fafc;font-size:10px">
-<span style="flex:1">${p.name}</span>
-<div style="display:flex;align-items:center;gap:6px">
-<div style="width:50px;height:5px;background:#f1f5f9;border-radius:3px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${clr};border-radius:3px"></div></div>
-<span style="width:28px;text-align:right;font-weight:600;color:${clr}">${pct}%</span>
-<span style="color:#94a3b8;font-size:8px">${p.s.tot}</span>
-</div></div>`;
-});
-h+=`</div>`;}
-// Year × Topic heatmap
-const years=[...new Set(QZ.map(q=>q.t))].sort();
-const heatData=[];
-TOPICS.forEach((topic,ti)=>{
-const row={topic,cells:[]};
-years.forEach(yr=>{
-const qs=QZ.map((q,i)=>({q,i})).filter(e=>e.q.ti===ti&&e.q.t===yr);
-if(!qs.length){row.cells.push({yr,pct:-1,n:0});return;}
-const answered=qs.filter(e=>S.sr[e.i]);
-const correct=qs.filter(e=>{const s=S.sr[e.i];return s&&s.n>0&&s.ef>=2.3;});
-row.cells.push({yr,pct:answered.length?Math.round(correct.length/answered.length*100):-1,n:answered.length});
-});
-if(row.cells.some(c=>c.n>0))heatData.push(row);
-});
-if(heatData.length>0){
-h+=`<div class="card" style="padding:14px;margin-bottom:10px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">🗺️ Weak Spots Map</div>`;
-h+=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:9px"><thead><tr><th style="text-align:right;padding:3px;font-size:8px">Topic</th>`;
-years.forEach(y=>{h+=`<th style="padding:3px;text-align:center;font-size:7px;white-space:nowrap">${y.length>4?y.slice(-2):y}</th>`;});
-h+=`</tr></thead><tbody>`;
-heatData.sort((a,b)=>{
-const avgA=a.cells.filter(c=>c.n>0).reduce((s,c)=>s+c.pct,0)/(a.cells.filter(c=>c.n>0).length||1);
-const avgB=b.cells.filter(c=>c.n>0).reduce((s,c)=>s+c.pct,0)/(b.cells.filter(c=>c.n>0).length||1);
-return avgA-avgB;
-});
-heatData.forEach(row=>{
-h+=`<tr><td style="padding:3px;text-align:right;white-space:nowrap;max-width:100px;overflow:hidden;text-overflow:ellipsis">${row.topic}</td>`;
-row.cells.forEach(c=>{
-if(c.n===0){h+=`<td style="padding:2px;text-align:center;background:#f8fafc;color:#cbd5e1">·</td>`;}
-else{
-const bg=c.pct>=75?'#dcfce7':c.pct>=50?'#fef9c3':'#fecaca';
-h+=`<td style="padding:2px;text-align:center;background:${bg};font-weight:600;border-radius:2px">${c.pct}</td>`;}
-});
-h+=`</tr>`;
-});
-h+=`</tbody></table></div>`;
-h+=`<div style="display:flex;gap:8px;margin-top:6px;font-size:8px;color:#94a3b8;justify-content:center">
-<span style="display:flex;align-items:center;gap:2px"><span style="width:10px;height:10px;background:#fecaca;border-radius:2px"></span>&lt;50%</span>
-<span style="display:flex;align-items:center;gap:2px"><span style="width:10px;height:10px;background:#fef9c3;border-radius:2px"></span>50-74%</span>
-<span style="display:flex;align-items:center;gap:2px"><span style="width:10px;height:10px;background:#dcfce7;border-radius:2px"></span>&ge;75%</span>
-</div>`;
-h+=`</div>`;}
-// ROI Matrix and Radar chart removed — accuracy bars above are sufficient
-h+=renderPriorityMatrix();
-
-TOPICS.forEach((t,i)=>{h+=`<div class="topic${S.ck[i]?' done':''}" onclick="S.ck[${i}]=!S.ck[${i}];save();render()" style="display:${S._sylOpen?'flex':'none'}" role="checkbox" aria-checked="${S.ck[i]?'true':'false'}" tabindex="0" aria-label="${t}">
-<input type="checkbox" ${S.ck[i]?'checked':''} readonly style="width:13px;height:13px" tabindex="-1"><span>${t}</span></div>`;});
-h+=`<div onclick="S._sylOpen=!S._sylOpen;render()" style="text-align:center;padding:8px;cursor:pointer;font-size:10px;color:rgb(var(--sky));font-weight:600" role="button" tabindex="0" aria-expanded="${S._sylOpen}" aria-label="Toggle syllabus topics">${S._sylOpen?'▲ Collapse':'▼ Show '+TOPICS.length+' topics'}</div>`;
-h+=`</div>`;
-// IMA Links
-h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">📥 IMA Exam Archive</div><div style="font-size:10px">`;
-[["2022","639899_34c9618e-ff88-4811-84d5-ba1fdd9d5f1c","639902_9a12e7aa-9876-40e1-bdea-0786dc417406"],
-["2023","639904_14aa53eb-d114-4ab8-8bfe-938b32d02fc0","639907_33601987-d23e-4f5f-8180-53890b2cfcb4"],
-["May 24","652285_f10c088f-c183-4f9c-8324-b37bedabe522","652288_5f94445c-1fe5-4207-bd42-e223be8064a0"],
-["Sep 24","652291_5946c97e-78c1-4920-81e3-1081d46fdb6e","652294_46e7d570-db16-4307-b4f1-66f002ed456e"],
-["Jun 25","749665_d23a3de1-a2af-4467-b2b0-71f297f6b800","766892_d886488d-27d3-487c-8088-56f67ae43409"],
-].forEach(([y,q,a])=>{h+=`<div style="display:flex;gap:8px;padding:3px 0"><b style="width:48px">${y}</b><a href="https://ima-files.s3.amazonaws.com/${q}.pdf" target="_blank" style="color:rgb(var(--sky));text-decoration:underline">שאלון</a><a href="https://ima-files.s3.amazonaws.com/${a}.pdf" target="_blank" style="color:rgb(var(--sky));text-decoration:underline">תשובות</a></div>`;});
-h+=`</div></div>`;
-// Reset
-// Share with friends
-h+=`<div class="card" style="padding:14px;text-align:center;margin-top:12px">
-<div style="font-weight:700;font-size:12px;margin-bottom:8px">🔗 Share with Friends</div>
-<div style="font-size:10px;color:#64748b;margin-bottom:10px">Share this app with fellow internal medicine residents</div>
-<button class="btn btn-p" onclick="shareApp()" style="margin-bottom:8px" aria-label="Share app link">📤 Share App Link</button>
-</div>`;
-// Data management
-h+=`<div class="card" style="padding:14px;margin-top:12px">
-<div style="font-weight:700;font-size:12px;margin-bottom:8px">💾 Data Management</div>
-<div style="font-size:10px;color:#64748b;margin-bottom:10px">Your progress is saved automatically in your browser. Export to backup or transfer between devices.</div>
-<div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
-<button class="btn btn-p" onclick="exportProgress()" aria-label="Export progress">📥 Export Progress</button>
-<button class="btn btn-g" onclick="importProgress()" aria-label="Import progress">📤 Import Progress</button>
-<button class="btn btn-o" onclick="if(confirm('Reset ALL data? This cannot be undone.')){localStorage.removeItem('${LS}');location.reload()}" aria-label="Reset all data">🗑️ Reset</button>
-</div>
-<div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:8px">
-<button id="cloud-backup-btn" class="btn" style="background:#e0f2fe;color:#0284c7" onclick="cloudBackup()" aria-label="Backup to cloud">☁️ Backup to Cloud</button>
-<button class="btn" style="background:#f0fdf4;color:#15803d" onclick="cloudRestore()" aria-label="Restore from cloud">☁️ Restore from Cloud</button>
-</div>
-<div style="font-size:9px;color:#94a3b8;text-align:center;margin-top:6px">Cloud sync · progress keyed by device ID</div>
-</div></div>`;
-// Study Journal — wrong answer log + personal notes
-h+=`<div class="card" style="padding:14px;margin-top:12px">
-<div style="font-weight:700;font-size:12px;margin-bottom:10px">📓 Study Journal</div>
-${renderWrongAnswerLog()}
-</div>`;
-// API key settings card
-var _storedKey=getApiKey();
-h+='<div class="card" style="padding:14px;margin-top:10px;border:2px solid '+(_storedKey?'#bbf7d0':'#fde68a')+'">';
-h+='<div class="sec-t" style="font-size:13px">🔑 Anthropic API Key</div>';
-h+='<div class="sec-s" style="margin-bottom:10px">לשימוש ב-AI Explain ו-Teach-Back · מאוחסן בדפדפן בלבד</div>';
-if(!_storedKey){h+='<div style="padding:8px 10px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;font-size:10px;color:#065f46;margin-bottom:10px">✅ AI פועל דרך שרת proxy — לא צריך מפתח אישי. אפשר להוסיף כגיבוי. <a href="https://console.anthropic.com/keys" target="_blank" style="color:#d97706;font-weight:700">קבל מפתח ↗</a></div>';}
-if(_storedKey){
-  h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
-  h+='<div style="flex:1;font-size:11px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;padding:6px 10px;color:#065f46">✅ API key מוגדר (sk-...'+_storedKey.slice(-6)+')</div>';
-  h+='<button class="btn btn-o" style="font-size:11px" onclick="setApiKey(\'\');render()" aria-label="Remove API key">הסר</button>';
-  h+='</div>';
-} else {
-  h+='<div style="display:flex;gap:8px;margin-bottom:8px">';
-  h+='<input id="apiKeyInput" type="password" placeholder="sk-ant-..." class="calc-in" style="flex:1;margin:0;font-size:11px" aria-label="Claude API key">';
-  h+='<button class="btn btn-p" style="font-size:11px" onclick="var v=document.getElementById(\'apiKeyInput\').value.trim();if(v){setApiKey(v);render();}" aria-label="Save API key">שמור</button>';
-  h+='</div>';
-}
-h+='<div style="font-size:9px;color:#94a3b8">API key נשמר ב-localStorage בלבד · לא נשלח לשרתים של האפליקציה</div></div>';
-// Version footer
-h+=`<div style="text-align:center;margin-top:20px;padding:12px;font-size:9px;color:#94a3b8;line-height:1.8">
-<div>Pnimit Mega v${APP_VERSION} · ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})} · build ${BUILD_HASH}</div>
-<div>Harrison's 22e · ${QZ.length} Questions</div>
-<div style="margin-top:8px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-<button onclick="applyUpdate()" style="font-size:10px;padding:5px 14px;background:#4f46e5;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">🔄 Force Update</button>
-<a href="https://eiasash.github.io/Geriatrics/" target="_blank" style="font-size:10px;padding:5px 14px;background:#0D7377;color:#fff;border:none;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">🩺 Geriatrics App →</a>
-</div>
-<div style="margin-top:6px">صدقة جارية الى من نحب</div></div>`;
-return h;
-}
-
-// ===== SEARCH =====
-let srchQ='';
-function renderSearch(){
-let h=`<div class="sec-t">🔍 Search</div><div class="sec-s">Search across all ${QZ.length} questions + ${NOTES.length} study notes + ${DRUGS.length} drugs</div>`;
-h+=`<div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
-<input class="search-box" style="margin-bottom:0;flex:1" placeholder="Type to search..." oninput="srchQ=this.value;render()" value="${srchQ}" id="srchi">
-<button class="voice-btn${voiceListening?' listening':''}" onclick="startVoiceParser()" aria-label="${voiceListening?'Stop voice input':'Start voice input'}">${voiceListening?'🔴 Listening...':'🎤 Voice'}</button>
-</div>`;
-if(voiceTranscript&&srchQ){h+=`<div style="font-size:10px;color:#64748b;margin-bottom:8px;padding:6px 10px;background:#f8fafc;border-radius:8px" dir="auto">🎤 "${voiceTranscript}"</div>`;}
-if(srchQ.length>=2){
-const q=srchQ.toLowerCase();
-// Search questions
-const qRes=[];QZ.forEach((item,i)=>{if(item.q.toLowerCase().includes(q)||item.o.some(o=>o.toLowerCase().includes(q)))qRes.push(i);});
-// Search notes
-const nRes=NOTES.filter(n=>n.topic.toLowerCase().includes(q)||n.notes.toLowerCase().includes(q));
-// Search drugs
-const dRes=DRUGS.filter(d=>d.name.toLowerCase().includes(q)||d.heb.includes(q)||d.risk.toLowerCase().includes(q));
-
-h+=`<div style="font-size:11px;color:#64748b;margin-bottom:10px">${qRes.length} questions · ${nRes.length} topics · ${dRes.length} drugs</div>`;
-
-if(nRes.length){
-h+=`<div style="font-weight:700;font-size:12px;margin-bottom:6px">📚 Study Notes</div>`;
-nRes.forEach(n=>{h+=`<div class="card" style="padding:10px"><div style="font-weight:700;font-size:11px">${n.topic}</div><div style="font-size:10px;color:#475569;margin-top:4px;line-height:1.6">${n.notes.substring(0,200)}...</div></div>`;});
-}
-if(dRes.length){
-h+=`<div style="font-weight:700;font-size:12px;margin:8px 0 6px">💊 Drugs</div>`;
-dRes.forEach(d=>{h+=`<div class="card" style="padding:10px"><span style="font-weight:700;font-size:11px">${d.name}</span> ${d.beers?'<span class="badge badge-r">BEERS</span>':''}<div style="font-size:10px;color:#475569;margin-top:2px">${d.risk}</div></div>`;});
-}
-if(qRes.length){
-h+=`<div style="font-weight:700;font-size:12px;margin:8px 0 6px">📝 Questions (${Math.min(qRes.length,15)} shown)</div>`;
-qRes.slice(0,15).forEach(i=>{h+=`<div class="card heb" dir="rtl" style="padding:10px;font-size:11px;line-height:1.5"><span class="badge" style="background:${QZ[i].t==='Harrison'?'#faf5ff':'#eff6ff'};color:${QZ[i].t==='Harrison'?'#7c3aed':'#1d4ed8'}">${QZ[i].t==='Harrison'?'🤖 AI':'📝 '+QZ[i].t}</span> ${QZ[i].q.substring(0,120)}...</div>`;});
-}
-}
-return h;
-}
-
-// ===== WARD MODE RENDER =====
 
 
 
 
 
-// ===== RENDER =====
-let lastTab=null;
-function showAnswerHardFail(){
-if(ans)return;
-const q=QZ[pool[qi]];
-sel=q.c;ans=true;
-if(!examMode){
-S.qNo++;
-if(q.ti>=0){if(!S.tpNo)S.tpNo={};if(!S.tpNo[q.ti])S.tpNo[q.ti]=0;S.tpNo[q.ti]++;}
-const _srk=String(pool[qi]);
-if(!S.sr[_srk])S.sr[_srk]={ef:2.5,n:0,next:0};
-S.sr[_srk].ef=Math.max(1.3,(S.sr[_srk].ef||2.5)-0.3);
-S.sr[_srk].n=0;S.sr[_srk].next=Date.now();
-}
-save();render();
-}
 
-// ===== AI CHAT =====
-const CHAT_STARTERS=[
-'מה ההבדל בין דמנציה לדליריום?',
-'תסביר על תסמונת השברירות (frailty)',
-'מה הגישה האבחנתית לאנמיה נורמוציטית?',
-'תרופות שיש להימנע מהן בקשישים (Beers)',
-'מה הגישה לנפילות בקשיש?',
-];
-const CHAT_SYSTEM="You are a senior internist and mentor at Shaare Zedek Medical Center in Jerusalem. The user is an internal medicine resident preparing for their Stage A board exam (P0064-2025). Answer in the same language as the question (Hebrew or English). Be concise, clinically precise. Focus on Harrison's 22e and the 10 required NEJM/Lancet articles. Emphasize pathophysiology, evidence-based management, and exam-tested thresholds.";
-let chatLoading=false;
 
-function renderChat(){
-let h='<div class="sec-t">💬 AI Chat</div><div class="sec-s">Claude-powered Internal Medicine Q&A — board prep focus</div>';
-h+='<div class="card" style="display:flex;flex-direction:column;height:calc(100vh - 200px);overflow:hidden">';
-h+='<div class="chat-disclaimer" style="margin:10px 10px 0">⚠️ AI mentor — not a substitute for clinical judgment. For board prep use only.</div>';
-if(S.chat.length>0){h+='<div style="padding:4px 10px;text-align:left"><button onclick="clearChat()" style="font-size:10px;color:#94a3b8;background:none;border:none;cursor:pointer" aria-label="Clear chat history">🗑 נקה שיחה</button></div>';}
-h+='<div class="chat-msgs" id="chat-msgs">';
-if(S.chat.length===0){
-h+='<div style="padding:8px 4px 12px"><div class="heb" style="font-size:11px;color:#64748b;margin-bottom:10px;text-align:right">התחל שיחה — בחר נושא או כתוב שאלה חופשית:</div>';
-CHAT_STARTERS.forEach(function(s){h+='<button class="chat-starter" onclick="sendChatStarter(this.getAttribute(\'data-t\'))" data-t="'+s.replace(/"/g,'&quot;')+'">' +sanitize(s)+'</button>';});
-h+='</div>';
-}else{
-S.chat.forEach(function(m){
-var cls=m.role==='user'?'chat-msg-user':m.role==='error'?'chat-msg-err':'chat-msg-ai';
-if(m.role==='user'){h+='<div class="'+cls+' heb" dir="rtl" style="text-align:right">'+sanitize(m.text)+'</div>';}
-else{h+='<div class="'+cls+'">'+sanitize(m.text)+'</div>';}
-});
-if(chatLoading){h+='<div class="chat-msg-ai" style="padding:6px 12px"><div class="typing-dots"><span></span><span></span><span></span></div></div>';}
-}
-h+='</div>';
-h+='<div class="chat-input-row">';
-h+='<textarea id="chat-input" placeholder="שאל שאלה ברפואה פנימית..." rows="2" aria-label="Chat input" style="flex:1;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px;font-size:12px;resize:none;font-family:Heebo,sans-serif;direction:rtl;text-align:right;background:inherit;color:inherit" onkeydown="if(event.key===&apos;Enter&apos;&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>';
-h+='<button class="btn btn-p" onclick="sendChat()" '+(chatLoading?'disabled':'')+' style="align-self:flex-end;min-width:52px" aria-label="Send">שלח</button>';
-h+='</div>';
-h+='</div>';
-return h;
-}
 
-async function sendChat(){
-const input=document.getElementById('chat-input');
-const text=(input?input.value:'').trim();
-if(!text||chatLoading)return;
-const key=getApiKey();
-if(!key){const k=prompt('הכנס Anthropic API Key:','');if(!k)return;setApiKey(k);}
-S.chat.push({role:'user',text:text});
-chatLoading=true;save();render();
-setTimeout(function(){const el=document.getElementById('chat-msgs');if(el)el.scrollTop=el.scrollHeight;},50);
-let history=S.chat.slice(-10);
-if(history.length>0&&history[0].role!=='user')history=history.slice(1);
-const messages=history.filter(function(m){return m.role==='user'||m.role==='assistant';}).map(function(m){return{role:m.role,content:m.text};});
-try{
-const ctrl=new AbortController();
-const timeout=setTimeout(function(){ctrl.abort();},45000);
-const resp=await fetch(AI_PROXY,{
-method:'POST',
-headers:{'Content-Type':'application/json','x-api-secret':AI_SECRET},
-body:JSON.stringify({model:'sonnet',max_tokens:1024,system:CHAT_SYSTEM,messages:messages}),
-signal:ctrl.signal
-});
-clearTimeout(timeout);
-if(!resp.ok){const e=await resp.json().catch(function(){return{};});if(resp.status===401||resp.status===403){localStorage.removeItem('pnimit_apikey');throw new Error('API key invalid');}throw new Error(e.error&&e.error.message?e.error.message:'HTTP '+resp.status);}
-const data=await resp.json();
-S.chat.push({role:'assistant',text:data.content[0].text});
-}catch(e){
-const offline=!navigator.onLine||e.message.includes('Failed to fetch');
-const timedOut=e.name==='AbortError';
-S.chat.push({role:'error',text:offline?'📡 אין חיבור לאינטרנט':timedOut?'⏱️ תם הזמן':'⚠️ '+sanitize(e.message)});
-}
-chatLoading=false;save();render();
-setTimeout(function(){const el=document.getElementById('chat-msgs');if(el)el.scrollTop=el.scrollHeight;},50);
-}
 
-function sendChatStarter(text){const input=document.getElementById('chat-input');if(input)input.value=text;sendChat();}
-function clearChat(){S.chat=[];chatLoading=false;save();render();}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// [moved to src/ui/more-view.js]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // [moved to src/features/cloud.js]
 

@@ -2,16 +2,15 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
 
 const html = readFileSync('pnimit-mega.html', 'utf-8');
-const constantsJs = readFileSync('src/core/constants.js', 'utf-8');
-const utilsJs = readFileSync('src/core/utils.js', 'utf-8');
-const stateJs = readFileSync('src/core/state.js', 'utf-8');
-const srJs = readFileSync('src/sr/spaced-repetition.js', 'utf-8');
-const quizJs = readFileSync('src/quiz/engine.js', 'utf-8');
-const aiClientJs = readFileSync('src/ai/client.js', 'utf-8');
-const aiExplainJs = readFileSync('src/ai/explain.js', 'utf-8');
-const cloudJs = readFileSync('src/features/cloud.js', 'utf-8');
+const srcFiles = [
+  'src/core/constants.js', 'src/core/utils.js', 'src/core/state.js', 'src/core/data-loader.js',
+  'src/sr/spaced-repetition.js', 'src/quiz/engine.js', 'src/quiz/modes.js',
+  'src/ai/client.js', 'src/ai/explain.js', 'src/features/cloud.js',
+  'src/ui/quiz-view.js', 'src/ui/learn-view.js', 'src/ui/library-view.js',
+  'src/ui/track-view.js', 'src/ui/more-view.js',
+];
+const allSource = [html, ...srcFiles.map(f => readFileSync(f, 'utf-8'))].join('\n');
 // Combined source: HTML + external JS for constant/function lookups
-const allSource = html + '\n' + constantsJs + '\n' + utilsJs + '\n' + stateJs + '\n' + srJs + '\n' + quizJs + '\n' + aiClientJs + '\n' + aiExplainJs + '\n' + cloudJs;
 
 // Extract JS between first <script> and last </script>
 const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/);
@@ -142,7 +141,7 @@ describe('SRS / FSRS Edge Cases', () => {
 
   it('SRS handles missing/corrupted sr object gracefully', () => {
     // S.sr should be initialized safely
-    expect(html).toMatch(/S\.sr\s*\|\|\s*\{/);
+    expect(allSource).toMatch(/S\.sr\s*\|\|\s*\{/);
   });
 
   it('SRS due calculation uses Date.now()', () => {
@@ -156,8 +155,8 @@ describe('SRS / FSRS Edge Cases', () => {
   });
 
   it('streak calculation uses dailyAct data', () => {
-    expect(html).toContain('dailyAct');
-    expect(html).toMatch(/streak/i);
+    expect(allSource).toContain('dailyAct');
+    expect(allSource).toMatch(/streak/i);
   });
 
   it('backup includes SRS data', () => {
