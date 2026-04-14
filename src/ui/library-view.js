@@ -110,7 +110,7 @@ export function renderWrongAnswerLog(){
     h+=`<div style="margin-bottom:12px;padding:10px;background:#fffbeb;border-radius:10px;border:1px solid #fde68a">
 <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:6px">❌ Report wrong answer key for current question</div>
 <input id="reportInput" class="search-box" placeholder="מה לדעתך התשובה הנכונה ולמה?" style="font-size:11px;margin-bottom:6px;direction:rtl">
-<button class="btn" style="font-size:10px;width:100%;background:#d97706;color:#fff" onclick="S._reportType='wrong_answer';submitReport()" aria-label="Submit report for AI review">שלח לבדיקת AI</button>
+<button class="btn" style="font-size:10px;width:100%;background:#d97706;color:#fff" onclick="G.S._reportType='wrong_answer';submitReport()" aria-label="Submit report for AI review">שלח לבדיקת AI</button>
 <div id="fbStatus" style="font-size:10px;margin-top:4px;display:none"></div>
 <div id="aiVerifyResult" style="display:none;margin-top:8px;padding:10px;border-radius:8px;font-size:10px;line-height:1.6"></div>
 </div>`;
@@ -149,9 +149,9 @@ export function toggleHarrisonAI(){
   const b=document.getElementById('harrison-ai-box');
   if(b)b.style.display=b.style.display==='none'?'block':'none';
 }
-async export function submitHarrisonAI(){
+export async function submitHarrisonAI(){
   const q=document.getElementById('harrison-ai-q')?.value?.trim();
-  const G.ans=document.getElementById('harrison-ai-answer');
+  const ans=document.getElementById('harrison-ai-answer');
   if(!q||!G.ans)return;
   G.ans.style.display='block';G.ans.innerHTML='⏳ ...';
   const prompt=`You are an expert internist helping an Israeli internal medicine resident study Harrison's Internal Medicine 22e for the שלב א׳ internal medicine board exam (P0064-2025).
@@ -165,7 +165,7 @@ Answer in HEBREW (4-6 sentences). Cite the relevant Harrison chapter if known. F
     document.getElementById('harrison-ai-q').value='';
   }catch(e){G.ans.innerHTML='⚠️ Failed: '+sanitize(e.message);}
 }
-async export function aiSummarizeChapter(chNum,chTitle){
+export async function aiSummarizeChapter(chNum,chTitle){
   const box=document.getElementById('quiz-me-box');
   if(!box)return;
   box.innerHTML='<div style="text-align:center;padding:16px;color:#64748b">⏳ מסכם את הפרק...</div>';
@@ -195,7 +195,7 @@ Format as clean bullet points. Be concise and high-yield.`;
 }
 // toggleAskAI removed — dead code
 // submitAskAI removed — dead code
-async export function quizMeOnChapter(chNum,chTitle){
+export async function quizMeOnChapter(chNum,chTitle){
   // Show loading state in Library
   const el=document.getElementById('quiz-me-box');
   if(el){el.innerHTML='<div style="text-align:center;padding:20px;color:#64748b">⏳ Generating questions from Ch '+chNum+'...</div>';}
@@ -231,9 +231,9 @@ c = 0-based index of correct answer. No markdown, no preamble.`;
     // Display the generated questions
     let h='<div style="margin-top:16px;border-top:2px solid #7c3aed;padding-top:12px">';
     h+='<div style="font-weight:700;font-size:12px;color:#7c3aed;margin-bottom:10px">🧠 AI-Generated Questions — Ch '+chNum+': '+chTitle+'</div>';
-    qs.forEach((q,G.qi)=>{
+    qs.forEach((q,idx)=>{
       h+=`<div style="margin-bottom:14px;padding:12px;background:#faf5ff;border-radius:10px;border-left:3px solid #7c3aed">`;
-      h+=`<div style="font-size:12px;font-weight:600;margin-bottom:8px">${G.qi+1}. ${sanitize(q.q)}</div>`;
+      h+=`<div style="font-size:12px;font-weight:600;margin-bottom:8px">${idx+1}. ${sanitize(q.q)}</div>`;
       q.o.forEach((opt,oi)=>{
         const isCorrect=oi===q.c;
         h+=`<div style="font-size:11px;padding:4px 8px;margin-bottom:3px;border-radius:6px;background:${isCorrect?'#dcfce7':'#f8fafc'};color:${isCorrect?'#166534':'#475569'};font-weight:${isCorrect?'700':'400'}">${sanitize(opt)}${isCorrect?' ✓':''}</div>`;
@@ -389,7 +389,7 @@ return h;
 
 
 
-async export function openHarrisonChapter(ch){
+export async function openHarrisonChapter(ch){
 G.harChOpen=ch;
 trackChapterRead('har',ch);
 if(G._harData){G.render();return;}

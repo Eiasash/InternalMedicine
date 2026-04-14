@@ -2,7 +2,6 @@ import G from '../core/globals.js';
 import { TOPICS } from '../core/constants.js';
 import { sanitize } from '../core/utils.js';
 
-let G.openNote=null;
 export function toggleNote(i){G.openNote=G.openNote===i?null:i;G.render();}
 export function renderStudy(){
 let h=`<div class="sec-t">📚 Study Notes</div><div class="sec-s">Internal Medicine Board Prep · Harrison's 22e + Required Articles</div>`;
@@ -19,7 +18,7 @@ const _fmtNote=function(txt){
 const parts=txt.split(/📖\s*HARRISON BOARD PEARLS:\s*/i);
 const clinicalNotes=parts[0]||'';
 const boardPearls=parts[1]||'';
-export function fmtLine(line){
+function fmtLine(line){
 // Section headers: ▸ HEADING — G.render as a styled block header
 if(/^▸\s+/.test(line)){
 const title=line.replace(/^▸\s+/,'');
@@ -39,7 +38,7 @@ line=line.replace(/\b(INCREASES|AVOID|DO NOT|WARNING|CRITICAL|CONTRAINDICATED)\b
 line=line.replace(/\b(SOE=A)\b/g,'<span style="color:#059669;font-weight:700">$1</span>');
 return line;
 }
-export function fmtBlock(t){
+function fmtBlock(t){
 const paras=t.split(/\n{2,}/);
 return paras.map(function(para){
 const lines=para.split('\n');
@@ -83,21 +82,21 @@ h+=`<div style="display:flex;gap:6px;margin-bottom:12px">
 <span class="badge badge-y">📖 Learning: ${fcLearning}</span>
 <span class="badge" style="background:#f1f5f9;color:#64748b">🆕 New: ${fcNew}</span>
 </div>`;
-h+=`<div class="fc" onclick="S.fcFlip=!S.fcFlip;G.save();G.render()" style="border-color:${S.fcFlip?'rgb(var(--em))':'rgb(var(--sky))'}" role="button" tabindex="0" aria-label="${S.fcFlip?'Show question':'Show answer'}">
+h+=`<div class="fc" onclick="G.S.fcFlip=!G.S.fcFlip;G.save();G.render()" style="border-color:${S.fcFlip?'rgb(var(--em))':'rgb(var(--sky))'}" role="button" tabindex="0" aria-label="${S.fcFlip?'Show question':'Show answer'}">
 <p style="font-size:${G.S.fcFlip?'12px':'14px'};font-weight:${G.S.fcFlip?'400':'700'};line-height:1.7;color:${G.S.fcFlip?'#334155':'#1e293b'}">
 ${G.S.fcFlip?f.b:f.f}</p>
 <p style="font-size:9px;color:#94a3b8;margin-top:12px">${G.S.fcFlip?'Tap for question':'Tap to reveal answer'} · ${G.S.fci%G.FLASH.length+1}/${G.FLASH.length}</p>
 </div>`;
 h+=`<div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
-<button class="btn btn-o" onclick="S.fci=(S.fci-1+FLASH.length)%FLASH.length;S.fcFlip=false;G.save();G.render()" aria-label="Previous flashcard">← Prev</button>
-<button class="btn btn-p" onclick="S.fci++;S.fcFlip=false;G.save();G.render()" aria-label="Next flashcard">Next →</button>
+<button class="btn btn-o" onclick="G.S.fci=(G.S.fci-1+G.FLASH.length)%G.FLASH.length;G.S.fcFlip=false;G.save();G.render()" aria-label="Previous flashcard">← Prev</button>
+<button class="btn btn-p" onclick="G.S.fci++;G.S.fcFlip=false;G.save();G.render()" aria-label="Next flashcard">Next →</button>
 </div>`;
 if(G.S.fcFlip){h+=`<div style="display:flex;gap:6px;justify-content:center;margin-top:8px">
 <button class="btn" style="background:#fef2f2;color:#dc2626" onclick="fcRate(0)" aria-label="Rate: Again">🔄 שוב</button>
 <button class="btn" style="background:#fffbeb;color:#d97706" onclick="fcRate(1)" aria-label="Rate: Hard">🤔 קשה</button>
 <button class="btn" style="background:#ecfdf5;color:#059669" onclick="fcRate(2)" aria-label="Rate: Easy">✅ קל</button>
 </div>`;}
-h+=`<div style="text-align:center;margin-top:8px"><button onclick="S.fci=Math.floor(Math.random()*FLASH.length);S.fcFlip=false;G.save();G.render()" style="font-size:10px;color:rgb(var(--sky));text-decoration:underline" aria-label="Random flashcard">🔀 Random</button></div>`;
+h+=`<div style="text-align:center;margin-top:8px"><button onclick="G.S.fci=Math.floor(Math.random()*G.FLASH.length);G.S.fcFlip=false;G.save();G.render()" style="font-size:10px;color:rgb(var(--sky));text-decoration:underline" aria-label="Random flashcard">🔀 Random</button></div>`;
 return h;
 }
 

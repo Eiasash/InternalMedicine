@@ -54,7 +54,6 @@ function renderPriorityMatrix(){
 }
 
 // Track view — renderCalc, renderTrack, calcEstScore, study plan, exam trend, cheat sheet, etc.
-let G.calcVals={};
 export function calcUp(k,v){G.calcVals[k]=parseFloat(v)||0;G.render();}
 export function renderCalc(){
 
@@ -254,7 +253,7 @@ if(weakest.length){
 const w=weakest[0];
 const wPct=w.s.tot?Math.round(w.s.ok/w.s.tot*100):0;
 const ref=TOPIC_REF[w.i];
-h+=`<div>2️⃣ Read: <b>${w.name}</b> (${wPct}% accuracy, ${QZ.filter(q=>q.ti===w.i).length} questions) ${ref?`<button onclick="tab='lib';libSec='harrison';G.render()" style="font-size:9px;padding:2px 8px;background:#ede9fe;color:#7c3aed;border:none;border-radius:6px;cursor:pointer">📖 Open</button>`:''}</div>`;
+h+=`<div>2️⃣ Read: <b>${w.name}</b> (${wPct}% accuracy, ${G.QZ.filter(q=>q.ti===w.i).length} questions) ${ref?`<button onclick="G.tab='lib';G.libSec='harrison';G.render()" style="font-size:9px;padding:2px 8px;background:#ede9fe;color:#7c3aed;border:none;border-radius:6px;cursor:pointer">📖 Open</button>`:''}</div>`;
 h+=`<div>3️⃣ Drill: <b>20q mini-exam on ${w.name}</b> <button onclick="startTopicMiniExam(${w.i})" style="font-size:9px;padding:2px 8px;background:#dcfce7;color:#166534;border:none;border-radius:6px;cursor:pointer">🎯 Start</button></div>`;
 }
 // Step 3: Traps
@@ -515,7 +514,7 @@ export function renderStudyPlan(){
   const spPct = totalTopics > 0 ? Math.round(checkedTopics / totalTopics * 100) : 0;
 
   let h = `<div class="card" style="margin-bottom:12px">
-  <div style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="S.spOpen=!S.spOpen;G.save();G.render()" role="button" tabindex="0" aria-expanded="${spOpen?'true':'false'}" aria-label="Study Plan">
+  <div style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="G.S.spOpen=!G.S.spOpen;G.save();G.render()" role="button" tabindex="0" aria-expanded="${spOpen?'true':'false'}" aria-label="Study Plan">
     <div style="display:flex;align-items:center;gap:8px;flex:1">
       <div style="font-size:16px">📅</div>
       <div style="flex:1">
@@ -579,7 +578,7 @@ export function renderStudyPlan(){
             }
 
             h += `<div style="border-radius:8px;margin-bottom:4px;background:${isChecked?'#f8fafc':'transparent'}">
-            <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:10px;cursor:pointer" onclick="event.stopPropagation();S.sp=S.sp||{};S.sp['${topic.n.replace(/'/g,"\\'")}']=!S.sp['${topic.n.replace(/'/g,"\\'")}']; G.save();G.render()" role="checkbox" aria-checked="${isChecked?'true':'false'}" tabindex="0">
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:10px;cursor:pointer" onclick="event.stopPropagation();G.S.sp=G.S.sp||{};G.S.sp['${topic.n.replace(/'/g,"\\'")}']=!G.S.sp['${topic.n.replace(/'/g,"\\'")}']; G.save();G.render()" role="checkbox" aria-checked="${isChecked?'true':'false'}" tabindex="0">
             <input type="checkbox" ${isChecked?'checked':''} readonly style="width:14px;height:14px;flex-shrink:0;cursor:pointer" tabindex="-1">
             <span style="flex:1;${isChecked?'color:#94a3b8;text-decoration:line-through':'color:#1e293b'}">${topic.n}</span>
             ${accBadge}
@@ -589,7 +588,7 @@ export function renderStudyPlan(){
             ${HAR_CHAPTERS[topic.n]?`<button onclick="event.stopPropagation();libSec=\"harrison\";tab=\"lib\";G.render()" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#b45309;cursor:pointer;white-space:nowrap">📕 Ch ${HAR_CHAPTERS[topic.n].ch}</button>`:""}
             <button onclick="event.stopPropagation();openNote=${topic.ti};go('study')" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#0D7377;cursor:pointer;white-space:nowrap" aria-label="Open notes for ${topic.n.replace(/'/g,'')}">📖 Notes</button>
             <button onclick="event.stopPropagation();setTopicFilt(${topic.ti});go('quiz')" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#3b82f6;cursor:pointer;white-space:nowrap" aria-label="Quiz ${topic.n.replace(/'/g,'')}">📝 Quiz</button>
-            <button onclick="event.stopPropagation();S.chat=[];go('chat');setTimeout(function(){sendChatStarter('Give me a concise board-review summary of ${topic.n.replace(/'/g,"\\'")} in internal medicine. Cover: key definitions, diagnostic criteria, management pearls, exam traps, and must-know numbers. Format with bold headings.')},100)" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#7c3aed;cursor:pointer;white-space:nowrap" aria-label="AI summary of ${topic.n.replace(/'/g,'')}">🤖 Summarize</button>
+            <button onclick="event.stopPropagation();G.S.chat=[];go('chat');setTimeout(function(){sendChatStarter('Give me a concise board-review summary of ${topic.n.replace(/'/g,"\\'")} in internal medicine. Cover: key definitions, diagnostic criteria, management pearls, exam traps, and must-know numbers. Format with bold headings.')},100)" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#7c3aed;cursor:pointer;white-space:nowrap" aria-label="AI summary of ${topic.n.replace(/'/g,'')}">🤖 Summarize</button>
             </div>
             </div>`;
           });
@@ -729,7 +728,7 @@ h+=`<div class="card" style="padding:14px;margin-bottom:10px">
 _harDue.slice(0,5).forEach(c=>{
   const _chData=G._harData&&G._harData[c.ch];
   const _title=_chData?_chData.title:'Ch '+c.ch;
-  h+=`<div onclick="tab='lib';libSec='harrison';openHarrisonChapter(${c.ch})" style="font-size:10px;padding:4px 0;cursor:pointer;color:#64748b;border-bottom:1px solid #f8fafc">📗 Ch ${c.ch}: ${_title} <span style="color:#7c3aed;font-weight:700">(${c.daysSince}d ago)</span></div>`;
+  h+=`<div onclick="G.tab='lib';G.libSec='harrison';openHarrisonChapter(${c.ch})" style="font-size:10px;padding:4px 0;cursor:pointer;color:#64748b;border-bottom:1px solid #f8fafc">📗 Ch ${c.ch}: ${_title} <span style="color:#7c3aed;font-weight:700">(${c.daysSince}d ago)</span></div>`;
 });
 h+=`</div>`;
 }
@@ -845,9 +844,9 @@ h+=`</div>`;}
 // ROI Matrix and Radar chart removed — accuracy bars above are sufficient
 h+=renderPriorityMatrix();
 
-TOPICS.forEach((t,i)=>{h+=`<div class="topic${S.ck[i]?' done':''}" onclick="S.ck[${i}]=!S.ck[${i}];G.save();G.render()" style="display:${S._sylOpen?'flex':'none'}" role="checkbox" aria-checked="${S.ck[i]?'true':'false'}" tabindex="0" aria-label="${t}">
+TOPICS.forEach((t,i)=>{h+=`<div class="topic${G.S.ck[i]?' done':''}" onclick="G.S.ck[${i}]=!G.S.ck[${i}];G.save();G.render()" style="display:${G.S._sylOpen?'flex':'none'}" role="checkbox" aria-checked="${G.S.ck[i]?'true':'false'}" tabindex="0" aria-label="${t}">
 <input type="checkbox" ${G.S.ck[i]?'checked':''} readonly style="width:13px;height:13px" tabindex="-1"><span>${t}</span></div>`;});
-h+=`<div onclick="S._sylOpen=!S._sylOpen;G.render()" style="text-align:center;padding:8px;cursor:pointer;font-size:10px;color:rgb(var(--sky));font-weight:600" role="button" tabindex="0" aria-expanded="${S._sylOpen}" aria-label="Toggle syllabus topics">${S._sylOpen?'▲ Collapse':'▼ Show '+TOPICS.length+' topics'}</div>`;
+h+=`<div onclick="G.S._sylOpen=!G.S._sylOpen;G.render()" style="text-align:center;padding:8px;cursor:pointer;font-size:10px;color:rgb(var(--sky));font-weight:600" role="button" tabindex="0" aria-expanded="${G.S._sylOpen}" aria-label="Toggle syllabus topics">${G.S._sylOpen?'▲ Collapse':'▼ Show '+TOPICS.length+' topics'}</div>`;
 h+=`</div>`;
 // IMA Links
 h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">📥 IMA Exam Archive</div><div style="font-size:10px">`;

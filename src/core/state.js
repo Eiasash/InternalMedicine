@@ -11,7 +11,7 @@ if(G.S.studyMode===undefined)G.S.studyMode=false;
 if(!G.S.streak)G.S.streak=0;if(!G.S.lastDay)G.S.lastDay=null;
 if(!G.S.sp)G.S.sp={};
 if(G.S.spOpen===undefined)G.S.spOpen=true;
-G.save=function G.save(){clearTimeout(G._saveTimer);G._saveTimer=setTimeout(()=>{
+G.save=function(){clearTimeout(G._saveTimer);G._saveTimer=setTimeout(()=>{
   localStorage.setItem(LS,JSON.stringify(G.S));
   // Warn if localStorage approaching 5MB limit
   try{
@@ -36,7 +36,6 @@ G.S.lastDay=today;G.save();
 
 // ===== INDEXEDDB MIGRATION =====
 const IDB_NAME='pnimit_mega_db',IDB_VER=1,IDB_STORE='state';
-let G.idb=null;
 export function openIDB(){return new Promise((resolve,reject)=>{
 const req=indexedDB.open(IDB_NAME,IDB_VER);
 req.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains(IDB_STORE))db.createObjectStore(IDB_STORE);};
@@ -59,7 +58,7 @@ tx.onerror=()=>resolve();
 });}
 // Migrate localStorage → IndexedDB on first run
 export async function migrateToIDB(){
-if(typeof _dataPromise!=='undefined') await _dataPromise; else await new Promise(r=>{const iv=setInterval(()=>{if(typeof QZ!=='undefined'&&QZ.length){clearInterval(iv);r();}},50);setTimeout(()=>{clearInterval(iv);r();},5000);});
+if(typeof G._dataPromise!=='undefined') await G._dataPromise; else await new Promise(r=>{const iv=setInterval(()=>{if(G.QZ&&G.QZ.length){clearInterval(iv);r();}},50);setTimeout(()=>{clearInterval(iv);r();},5000);});
 
 try{
 await openIDB();

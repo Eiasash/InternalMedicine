@@ -8,7 +8,7 @@ import { buildPool, check as quizCheck, next as quizNext } from '../quiz/engine.
 export function toggleBk(){G.S.bk[G.pool[G.qi]]=!G.S.bk[G.pool[G.qi]];G.save();G.render();}
 
 
-async export function uploadQImage(qIdx){
+export async function uploadQImage(qIdx){
 const input=document.createElement('input');
 input.type='file';input.accept='image/*';input.capture='environment';
 input.onchange=async function(){

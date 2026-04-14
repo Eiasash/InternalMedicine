@@ -2,7 +2,6 @@ import G from '../core/globals.js';
 import { sanitize } from '../core/utils.js';
 import { callAI } from '../ai/client.js';
 
-let G.srchQ='';
 export function renderSearch(){
 let h=`<div class="sec-t">🔍 Search</div><div class="sec-s">Search across all ${G.QZ.length} questions + ${G.NOTES.length} study notes + ${G.DRUGS.length} drugs</div>`;
 h+=`<div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
@@ -44,7 +43,6 @@ return h;
 
 
 // ===== RENDER =====
-let G.lastTab=null;
 export function showAnswerHardFail(){
 if(G.ans)return;
 const q=G.QZ[G.pool[G.qi]];
@@ -69,13 +67,12 @@ const CHAT_STARTERS=[
 'מה הגישה לנפילות בקשיש?',
 ];
 const CHAT_SYSTEM="You are a senior internist and mentor at Shaare Zedek Medical Center in Jerusalem. The user is an internal medicine resident preparing for their Stage A board exam (P0064-2025). Answer in the same language as the question (Hebrew or English). Be concise, clinically precise. Focus on Harrison's 22e and the 10 required NEJM/Lancet articles. Emphasize pathophysiology, evidence-based management, and exam-tested thresholds.";
-let G.chatLoading=false;
 
 export function renderChat(){
 let h='<div class="sec-t">💬 AI Chat</div><div class="sec-s">Claude-powered Internal Medicine Q&A — board prep focus</div>';
 h+='<div class="card" style="display:flex;flex-direction:column;height:calc(100vh - 200px);overflow:hidden">';
 h+='<div class="chat-disclaimer" style="margin:10px 10px 0">⚠️ AI mentor — not a substitute for clinical judgment. For board prep use only.</div>';
-if(S.chat.length>0){h+='<div style="padding:4px 10px;text-align:left"><button onclick="clearChat()" style="font-size:10px;color:#94a3b8;background:none;border:none;cursor:pointer" aria-label="Clear chat history">🗑 נקה שיחה</button></div>';}
+if(G.S.chat.length>0){h+='<div style="padding:4px 10px;text-align:left"><button onclick="clearChat()" style="font-size:10px;color:#94a3b8;background:none;border:none;cursor:pointer" aria-label="Clear chat history">🗑 נקה שיחה</button></div>';}
 h+='<div class="chat-msgs" id="chat-msgs">';
 if(G.S.chat.length===0){
 h+='<div style="padding:8px 4px 12px"><div class="heb" style="font-size:11px;color:#64748b;margin-bottom:10px;text-align:right">התחל שיחה — בחר נושא או כתוב שאלה חופשית:</div>';
@@ -98,7 +95,7 @@ h+='</div>';
 return h;
 }
 
-async export function sendChat(){
+export async function sendChat(){
 const input=document.getElementById('chat-input');
 const text=(input?input.value:'').trim();
 if(!text||G.chatLoading)return;

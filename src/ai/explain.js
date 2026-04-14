@@ -13,7 +13,7 @@ export function toggleFlagExplain(qIdx){
   if(!G.S.flagged)G.S.flagged={};
   G.S.flagged[qIdx]=!G.S.flagged[qIdx];
   if(!G.S.flagged[qIdx])delete G.S.flagged[qIdx];
-  save();
+  G.save();
   // Re-G.render just the explain container
   const el=document.getElementById('ai-explain-'+qIdx);
   if(el){G._exLoading=false;G._exIdx=-1;renderExplainBox(qIdx);}
@@ -29,7 +29,7 @@ export function renderExplainBox(qIdx){
   container.innerHTML='<div class="explain-box" style="margin-top:8px;padding:10px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:11px;line-height:1.7;color:#166534;direction:rtl;text-align:right"><div style="font-weight:700;margin-bottom:4px">🤖 הסבר AI</div><div>'+sanitize(ex.text)+'</div></div>'+
     '<button onclick="toggleFlagExplain('+qIdx+')" style="font-size:9px;padding:2px 8px;margin-top:3px;background:'+(_isFlagged?'#fef2f2':'#f8fafc')+';color:'+(_isFlagged?'#dc2626':'#94a3b8')+';border:1px solid '+(_isFlagged?'#fecaca':'#e2e8f0')+';border-radius:6px;cursor:pointer">'+(_isFlagged?'⚑ Flagged — verify':'⚐ Flag as unreliable')+'</button>';
 }
-async export function explainWithAI(qIdx){
+export async function explainWithAI(qIdx){
   if(G._exCache[qIdx]&&!G._exCache[qIdx].err){setTimeout(function(){renderExplainBox(qIdx);},0);return;}
   G._exLoading=true;G._exIdx=qIdx;renderExplainBox(qIdx);
   var q=G.QZ[qIdx];
@@ -48,7 +48,7 @@ async export function explainWithAI(qIdx){
   setTimeout(function(){renderExplainBox(qIdx);},0);
 }
 
-async export function aiAutopsy(qIdx){
+export async function aiAutopsy(qIdx){
 const q=G.QZ[qIdx];
 const _apKey='autopsy_'+qIdx;
 G._exCache[_apKey]='<div style="color:#64748b">⏳ AI analyzing each option...</div>';
@@ -99,7 +99,7 @@ export function startVoiceTeachBack(){
   rec.onend=function(){if(btn){btn.textContent='🎙️';btn.disabled=false;}};
   rec.start();
 }
-async export function gradeTeachBack(qIdx,userExplanation){
+export async function gradeTeachBack(qIdx,userExplanation){
 G.teachBackState='grading';G.render();
 const q=G.QZ[qIdx];
 const correctOption=q.o[q.c];

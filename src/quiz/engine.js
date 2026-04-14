@@ -159,7 +159,7 @@ export function renderOnCall(){
   h+=`</div>`;
   return h;
 }
-async export function runExplainOnCall(qIdx){
+export async function runExplainOnCall(qIdx){
   const btn=document.getElementById('oc-exp-'+qIdx);
   const box=document.getElementById('oc-exp-box-'+qIdx);
   if(!btn||!box)return;
