@@ -7,7 +7,7 @@ const srcFiles = [
   'src/sr/spaced-repetition.js', 'src/quiz/engine.js', 'src/quiz/modes.js',
   'src/ai/client.js', 'src/ai/explain.js', 'src/features/cloud.js',
   'src/ui/quiz-view.js', 'src/ui/learn-view.js', 'src/ui/library-view.js',
-  'src/ui/track-view.js', 'src/ui/more-view.js',
+  'src/ui/track-view.js', 'src/ui/more-view.js', 'src/ui/app.js',
 ];
 const allSource = [html, ...srcFiles.map(f => readFileSync(f, 'utf-8'))].join('\n');
 // Combined source: HTML + external JS for constant/function lookups
