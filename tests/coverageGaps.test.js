@@ -3,8 +3,9 @@ import { readFileSync } from 'fs';
 
 const html = readFileSync('pnimit-mega.html', 'utf-8');
 const constantsJs = readFileSync('src/core/constants.js', 'utf-8');
-// Combined source: HTML + external JS for constant lookups
-const allSource = html + '\n' + constantsJs;
+const utilsJs = readFileSync('src/core/utils.js', 'utf-8');
+// Combined source: HTML + external JS for constant/function lookups
+const allSource = html + '\n' + constantsJs + '\n' + utilsJs;
 
 // Extract JS between first <script> and last </script>
 const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/);
@@ -62,12 +63,12 @@ describe('AI Proxy Routing', () => {
 });
 
 describe('Sanitization', () => {
-  // Extract sanitize function for testing
-  const sanitizeMatch = html.match(/function sanitize\(s\)\{([^}]+)\}/);
+  // Extract sanitize function for testing (may be in HTML or external utils.js)
+  const sanitizeMatch = allSource.match(/function sanitize\(s\)\{([^}]+)\}/);
   const sanitizeBody = sanitizeMatch ? sanitizeMatch[1] : '';
 
   it('sanitize function exists', () => {
-    expect(html).toContain('function sanitize(');
+    expect(allSource).toContain('function sanitize(');
   });
 
   it('escapes & to &amp;', () => {
