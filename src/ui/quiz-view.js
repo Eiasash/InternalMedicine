@@ -3,6 +3,7 @@ import { SUPA_URL, SUPA_ANON, TOPICS, EXAM_FREQ } from '../core/constants.js';
 import { sanitize, fmtT, safeJSONParse, getOptShuffle, remapExplanationLetters, isMetaOption } from '../core/utils.js';
 import { getDueQuestions, getWeakTopics, isExamTrap, srScore, getTopicStats } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
+import { TOPIC_REF } from './track-view.js';
 import { buildPool, check as quizCheck, next as quizNext } from '../quiz/engine.js';
 
 export function toggleBk(){G.S.bk[G.pool[G.qi]]=!G.S.bk[G.pool[G.qi]];G.save();G.render();}
