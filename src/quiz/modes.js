@@ -4,8 +4,7 @@ try{G.sdLeaderboard=JSON.parse(localStorage.getItem('pnimit_sd_lb')||'[]')}catch
 // References at runtime: G.render, G.QZ, G.pool, G.qi, G.sel, G.ans, G.filt, fmtT, G.srchQ, G.tab
 
 // ===== SCREEN WAKE LOCK =====
-let G.wakeLock=null;
-async export function requestWakeLock(){
+export async function requestWakeLock(){
 try{
 if('G.wakeLock' in navigator){
 G.wakeLock=await navigator.wakeLock.request('screen');
@@ -16,7 +15,6 @@ G.wakeLock.addEventListener('release',()=>{G.wakeLock=null;});
 // Wake lock init moved to app.js boot
 
 // ===== POMODORO TIMER =====
-let G.pomoActive=false,G.pomoSec=3000,G.pomoBreak=false,G.pomoBreakSec=300,G.pomoInterval=null;
 export function startPomodoro(){
 G.pomoActive=true;G.pomoSec=3000;G.pomoBreak=false;G.pomoBreakSec=300;
 if(G.pomoInterval)clearInterval(G.pomoInterval);
@@ -53,8 +51,6 @@ d.textContent=fmtT(G.pomoBreakSec);},1000);
 }
 
 // ===== SUDDEN DEATH MODE =====
-let G.sdMode=false,G.sdStreak=0,G.sdPool=[],G.sdQi=0;
-let G.sdLeaderboard=JSON.parse(localStorage.getItem('pnimit_sd_lb')||'[]');
 export function startSuddenDeath(){
 G.sdMode=true;G.sdStreak=0;G.sdPool=G.QZ.map((_,i)=>i);
 for(let i=G.sdPool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[G.sdPool[i],G.sdPool[j]]=[G.sdPool[j],G.sdPool[i]];}
@@ -71,13 +67,10 @@ G.render();
 }
 
 // ===== BLIND RECALL STATE =====
-let G.blindRecall=false;
 
 // ===== DISTRACTOR AUTOPSY STATE =====
-let G.autopsyMode=false,G.autopsyIdx=-1,G.autopsyDistractor=-1;
 
 // ===== SPEECH SYNTHESIS =====
-let G.isSpeaking=false;
 export function speakQuestion(){
 if(!window.speechSynthesis)return;
 if(G.isSpeaking){window.speechSynthesis.cancel();G.isSpeaking=false;G.render();return;}
@@ -105,7 +98,6 @@ G._sessionOk=0;G._sessionNo=0;G._sessionBest={};G._sessionWorse={};G._sessionSta
 
 
 // ===== VOICE-TO-TEXT CASE PARSER =====
-let G.voiceListening=false,G.voiceTranscript='';
 export function startVoiceParser(){
 if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){alert('Speech Recognition not supported in this browser');return;}
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;

@@ -10,7 +10,7 @@ import { getTopicStats, getDueQuestions } from '../sr/spaced-repetition.js';
 
 // ===== SUPABASE CLOUD SYNC =====
 // ===== FEATURE: LEADERBOARD =====
-async export function submitLeaderboardScore(){
+export async function submitLeaderboardScore(){
 const totalAnswered=Object.values(G.S.sr||{}).reduce((a,s)=>a+(s.tot||0),0);
 const totalCorrect=Object.values(G.S.sr||{}).reduce((a,s)=>a+(s.ok||0),0);
 const streak=G.S.streak||0;
@@ -26,7 +26,7 @@ try{
   });
 }catch(e){console.warn('Leaderboard submit failed',e);}
 }
-async export function fetchLeaderboard(){
+export async function fetchLeaderboard(){
 try{
   const res=await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard?select=uid,answered,correct,streak,readiness,ts&order=readiness.desc&limit=20',{
     headers:{'apikey':SUPA_ANON}
@@ -35,7 +35,7 @@ try{
 }catch(e){console.warn('Leaderboard fetch failed',e);return[];}
 }
 let _leaderboardData=null;
-async export function showLeaderboard(){
+export async function showLeaderboard(){
 const box=document.getElementById('leaderboard-box');
 if(!box)return;
 await submitLeaderboardScore();
@@ -91,7 +91,7 @@ h+='</div>';
 }
 return h;
 }
-async export function submitFeedbackForm(){
+export async function submitFeedbackForm(){
 const type=document.getElementById('fb-type')?.value||'other';
 const text=document.getElementById('fb-text')?.value?.trim();
 if(!text){alert('Please describe your feedback');return;}
@@ -118,7 +118,7 @@ G.render();
 // ===== END FEEDBACK =====
 const _SB_KEY=SUPA_ANON;
 export function _sbDeviceId(){let id=localStorage.getItem('pnimit_devid');if(!id){id='dev_'+Math.random().toString(36).slice(2,12);localStorage.setItem('pnimit_devid',id);}return id;}
-async export function cloudBackup(){
+export async function cloudBackup(){
   const btn=document.getElementById('cloud-backup-btn');
   if(btn){btn.disabled=true;btn.textContent='☁️ Saving...';}
   try{
@@ -146,7 +146,7 @@ async export function cloudBackup(){
   }catch(e){alert('❌ Backup failed: '+e.message);}
   if(btn){btn.disabled=false;btn.textContent='☁️ Backup to Cloud';}
 }
-async export function cloudRestore(){
+export async function cloudRestore(){
   const id=prompt('Enter device ID to restore from (leave blank for this device):',_sbDeviceId())||_sbDeviceId();
   if(!id)return;
   try{
@@ -191,7 +191,7 @@ return `Pnimit Mega v${APP_VERSION}\n`+
 `Dark: ${G.S.dark?'on':'off'} · SW: ${navigator.serviceWorker?'registered':'none'}`;
 }
 // copyDiagnostics removed — dead code
-async export function submitReport(){
+export async function submitReport(){
 const type=G.S._reportType;
 if(!type)return;
 const input=document.getElementById('reportInput');
@@ -236,7 +236,7 @@ if(st)setTimeout(()=>{st.style.display='none';G.render();},type==='wrong_answer'
 }
 
 // ===== WRONG ANSWER REPORTS → SUPABASE =====
-async export function saveAnswerReport(qIdx, userReason, aiVerdict){
+export async function saveAnswerReport(qIdx, userReason, aiVerdict){
 try{
 const q=G.QZ[qIdx];
 await fetch(SUPA_URL+'/rest/v1/answer_reports',{

@@ -18,12 +18,12 @@ q.ti=best>=0?best:8;
 G._dataPromise = (async function loadDataArrays() {
   const basePath = './data/';
   const files = {
-    G.QZ: 'questions.json',
-    G.TK: 'topics.json',
-    G.NOTES: 'notes.json',
-    G.DRUGS: 'drugs.json',
-    G.FLASH: 'flashcards.json',
-    G.TABS: 'tabs.json',
+    QZ: 'questions.json',
+    TK: 'topics.json',
+    NOTES: 'notes.json',
+    DRUGS: 'drugs.json',
+    FLASH: 'flashcards.json',
+    TABS: 'tabs.json',
   };
   try {
     const entries = Object.entries(files);
@@ -36,12 +36,12 @@ G._dataPromise = (async function loadDataArrays() {
       )
     );
     entries.forEach(([varName], i) => {
-      if (varName === 'G.QZ') G.QZ = results[i];
-      else if (varName === 'G.TK') G.TK = results[i];
-      else if (varName === 'G.NOTES') G.NOTES = results[i];
-      else if (varName === 'G.DRUGS') G.DRUGS = results[i];
-      else if (varName === 'G.FLASH') G.FLASH = results[i];
-      else if (varName === 'G.TABS') G.TABS = results[i];
+      if (varName === 'QZ') G.QZ = results[i];
+      else if (varName === 'TK') G.TK = results[i];
+      else if (varName === 'NOTES') G.NOTES = results[i];
+      else if (varName === 'DRUGS') G.DRUGS = results[i];
+      else if (varName === 'FLASH') G.FLASH = results[i];
+      else if (varName === 'TABS') G.TABS = results[i];
       });
     G._dataReady = true;
     const _xp=safeJSONParse('pnimit_pending_qs',[]);
