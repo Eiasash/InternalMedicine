@@ -1,0 +1,38 @@
+/* === Question Options === */
+.qo { position: relative; width: 100%; text-align: right; padding: 12px 14px; border-radius: 12px; border: 2px solid #e2e8f0; font-size: 12px; line-height: 1.6; transition: .15s; margin-bottom: 6px; font-family: 'Heebo', sans-serif; display: flex; align-items: center; min-height: 44px }
+.qo:not(.lk):hover { border-color: #bae6fd; background: #f0f9ff }
+.qo:active:not(.lk) { transform: scale(.99) }
+.qo.sel { border-color: rgb(var(--sky)); background: #eff6ff }
+.qo.ok { border-color: rgb(var(--em)); background: #ecfdf5; color: #065f46 }
+.qo.no { border-color: rgb(var(--red)); background: #fef2f2; color: #991b1b }
+.qo.dim { border-color: #f1f5f9; color: #cbd5e1 }
+
+/* === Blind Recall Blur === */
+.qo-blur { filter: blur(8px); transition: filter .25s ease; user-select: none }
+.qo-blur:active, .qo-blur:focus, .qo-blur.revealed { filter: none }
+.qo-blur::after { content: 'Tap to reveal'; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: 10px; color: #94a3b8; pointer-events: none; opacity: .9 }
+
+/* === Distractor Autopsy === */
+.distractor-highlight { border: 2px solid #f59e0b !important; background: #fffbeb !important; position: relative }
+.distractor-highlight::before { content: '🔍'; position: absolute; top: -8px; right: -8px; font-size: 14px }
+
+/* === Speech Button === */
+.speech-btn { font-size: 18px; padding: 4px; opacity: .5; cursor: pointer; border: none; background: none; transition: .15s }
+.speech-btn:hover, .speech-btn.speaking { opacity: 1 }
+.speech-btn.speaking { animation: pulse-speak 1s infinite }
+@keyframes pulse-speak { 0%,100% { transform: scale(1) } 50% { transform: scale(1.15) } }
+
+/* === Sudden Death === */
+.sudden-death-banner { background: linear-gradient(135deg, #dc2626, #991b1b); color: #fff; padding: 10px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; animation: pulse-red 2s infinite }
+@keyframes pulse-red { 0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,.4) } 50% { box-shadow: 0 0 0 8px rgba(220,38,38,0) } }
+
+/* === Pomodoro === */
+.pomo-bar { position: fixed; top: 0; left: 0; right: 0; height: 4px; background: #e2e8f0; z-index: 60 }
+.pomo-bar .pomo-fill { height: 100%; background: rgb(var(--em)); transition: width 1s linear }
+.pomo-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.92); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; backdrop-filter: blur(6px) }
+.pomo-overlay h2 { font-size: 24px; margin-bottom: 8px }
+.pomo-overlay .pomo-break-timer { font-size: 64px; font-weight: 700; font-variant-numeric: tabular-nums }
+
+/* === Voice Parser === */
+.voice-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; cursor: pointer }
+.voice-btn.listening { background: #dc2626; color: #fff; animation: pulse-red 1.5s infinite }

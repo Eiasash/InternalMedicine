@@ -1,0 +1,15 @@
+/* === Progress Bars === */
+.progress-bar { height: 3px; background: #e2e8f0; border-radius: 2px; margin-bottom: 10px; overflow: hidden }
+.progress-bar .fill { height: 100%; background: rgb(var(--sky)); border-radius: 2px; transition: width .3s ease }
+
+/* === Streak Badge === */
+.streak-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #fffbeb; color: #d97706; border: 1px solid #fde68a }
+
+/* === ROI Scatter === */
+.roi-grid { position: relative; width: 100%; aspect-ratio: 1.4; border-left: 2px solid #64748b; border-bottom: 2px solid #64748b; margin: 12px 0 }
+.roi-dot { position: absolute; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7px; font-weight: 700; cursor: pointer; transition: .2s; border: 2px solid rgba(255,255,255,.8); text-align: center; line-height: 1.1; overflow: hidden }
+.roi-dot:hover { transform: scale(1.3); z-index: 5 }
+.roi-label { position: absolute; font-size: 9px; color: #64748b; font-weight: 600 }
+
+/* === Leaderboard === */
+.leaderboard-row { display: flex; justify-content: space-between; padding: 6px 10px; border-bottom: 1px solid #f1f5f9; font-size: 11px }
