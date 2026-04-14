@@ -1,0 +1,243 @@
+// Cloud sync, leaderboard, feedback, diagnostics — extracted from pnimit-mega.html
+// Depends on: SUPA_URL, SUPA_ANON (constants.js), S, save (state.js),
+//   QZ, TOPICS (constants.js), getTopicStats (sr), callAI (client.js), sanitize (utils.js)
+
+// ===== SUPABASE CLOUD SYNC =====
+// ===== FEATURE: LEADERBOARD =====
+async function submitLeaderboardScore(){
+const totalAnswered=Object.values(S.sr||{}).reduce((a,s)=>a+(s.tot||0),0);
+const totalCorrect=Object.values(S.sr||{}).reduce((a,s)=>a+(s.ok||0),0);
+const streak=S.streak||0;
+const readiness=calcEstScore()||0;
+let uid=localStorage.getItem('pnimit_uid');
+if(!uid){uid='u'+Math.random().toString(36).slice(2,10);localStorage.setItem('pnimit_uid',uid);}
+const payload={uid,answered:totalAnswered,correct:totalCorrect,streak,readiness,ts:new Date().toISOString()};
+try{
+  await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Prefer':'resolution=merge-duplicates'},
+    body:JSON.stringify(payload)
+  });
+}catch(e){console.warn('Leaderboard submit failed',e);}
+}
+async function fetchLeaderboard(){
+try{
+  const res=await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard?select=uid,answered,correct,streak,readiness,ts&order=readiness.desc&limit=20',{
+    headers:{'apikey':SUPA_ANON}
+  });
+  return await res.json();
+}catch(e){console.warn('Leaderboard fetch failed',e);return[];}
+}
+let _leaderboardData=null;
+async function showLeaderboard(){
+const box=document.getElementById('leaderboard-box');
+if(!box)return;
+await submitLeaderboardScore();
+box.innerHTML='<div style="text-align:center;padding:8px;font-size:10px;color:#64748b">Loading...</div>';
+const data=await fetchLeaderboard();
+_leaderboardData=data;
+const myUid=localStorage.getItem('pnimit_uid')||'';
+let html='';
+if(!data.length){html='<div style="font-size:10px;color:#94a3b8;text-align:center">No data yet</div>';}
+else{
+data.forEach((r,i)=>{
+  const isMe=r.uid===myUid;
+  html+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9;${isMe?'background:#eff6ff;border-radius:8px;padding:6px 8px;margin:-2px -8px':''}">
+  <span style="font-size:12px;font-weight:800;color:${i<3?['#f59e0b','#94a3b8','#d97706'][i]:'#64748b'};min-width:20px">${i+1}</span>
+  <div style="flex:1;font-size:10px;font-weight:${isMe?'700':'400'}">${isMe?'You \u2b50':'User '+sanitize(r.uid).slice(0,4)}</div>
+  <span style="font-size:10px;color:#64748b">${sanitize(String(r.answered))} Qs</span>
+  <span style="font-size:10px;font-weight:700;color:${Number(r.readiness)>=60?'#059669':'#d97706'}">${sanitize(String(r.readiness))}%</span>
+  <span style="font-size:10px">🔥${sanitize(String(r.streak))}d</span>
+  </div>`;
+});
+}
+box.innerHTML=html;
+}
+// ===== FEATURE: FEEDBACK SYSTEM =====
+function renderFeedback(){
+let h='<div class="sec-t">💡 Feedback & Feature Requests</div>';
+h+='<div class="sec-s">Help improve Pnimit Mega for everyone. AI reviews every submission.</div>';
+h+='<div class="card" style="padding:16px;margin-bottom:12px">';
+h+='<div style="font-size:12px;font-weight:700;margin-bottom:8px">Submit Feedback</div>';
+h+='<select id="fb-type" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;margin-bottom:8px;background:#f8fafc">';
+h+='<option value="bug">🐛 Bug Report</option>';
+h+='<option value="feature">✨ Feature Request</option>';
+h+='<option value="content">📝 Content Fix (wrong answer/explanation)</option>';
+h+='<option value="ux">🎨 UX/Design Improvement</option>';
+h+='<option value="other">💬 Other</option>';
+h+='</select>';
+h+='<textarea id="fb-text" dir="auto" placeholder="Describe your feedback in detail..." style="width:100%;min-height:100px;padding:10px;border:1px solid #e2e8f0;border-radius:10px;font-size:12px;font-family:inherit;resize:vertical;margin-bottom:8px"></textarea>';
+h+='<button onclick="submitFeedbackForm()" class="btn" style="width:100%;padding:10px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer">📤 Submit Feedback</button>';
+h+='</div>';
+let fb=[];try{fb=JSON.parse(localStorage.getItem('pnimit_fb_sent')||'[]');}catch(e){}
+if(fb.length){
+h+='<div class="card" style="padding:14px">';
+h+='<div style="font-size:12px;font-weight:700;margin-bottom:8px">📋 Your Submissions ('+fb.length+')</div>';
+fb.slice(-5).reverse().forEach(f=>{
+  h+='<div style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:10px">';
+  h+='<span style="font-weight:600">'+({bug:'🐛',feature:'✨',content:'📝',ux:'🎨',other:'💬'}[f.type]||'💬')+' '+f.type+'</span>';
+  h+=' \u00b7 <span style="color:#64748b">'+new Date(f.ts).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'</span>';
+  h+='<div style="color:#475569;margin-top:2px;line-height:1.5">'+sanitize(f.text).slice(0,120)+(f.text.length>120?'...':'')+'</div>';
+  if(f.aiResponse){h+='<div style="color:#7c3aed;margin-top:4px;padding:6px 8px;background:#f5f3ff;border-radius:6px;font-size:9px;line-height:1.5">🤖 '+sanitize(f.aiResponse)+'</div>';}
+  h+='</div>';
+});
+h+='</div>';
+}
+return h;
+}
+async function submitFeedbackForm(){
+const type=document.getElementById('fb-type')?.value||'other';
+const text=document.getElementById('fb-text')?.value?.trim();
+if(!text){alert('Please describe your feedback');return;}
+const entry={type,text,ts:Date.now(),version:APP_VERSION,uid:localStorage.getItem('pnimit_uid')||'anon'};
+let fb=[];try{fb=JSON.parse(localStorage.getItem('pnimit_fb_sent')||'[]');}catch(e){}
+fb.push(entry);
+localStorage.setItem('pnimit_fb_sent',JSON.stringify(fb));
+try{
+  await fetch(SUPA_URL+'/rest/v1/pnimit_feedback',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Prefer':'return=minimal'},
+    body:JSON.stringify({message:text,type,app_version:APP_VERSION})
+  });
+}catch(e){console.warn('Feedback submit failed',e);}
+try{
+  const aiText=await callAI([{role:'user',content:'A user submitted this feedback for a medical study app. Briefly acknowledge it and assess feasibility in 1-2 sentences. Type: '+type+'. Feedback: '+text}],300);
+  if(aiText){
+    fb[fb.length-1].aiResponse=aiText.slice(0,300);
+    localStorage.setItem('pnimit_fb_sent',JSON.stringify(fb));
+  }
+}catch(e){}
+render();
+}
+// ===== END FEEDBACK =====
+const _SB_KEY=SUPA_ANON;
+function _sbDeviceId(){let id=localStorage.getItem('pnimit_devid');if(!id){id='dev_'+Math.random().toString(36).slice(2,12);localStorage.setItem('pnimit_devid',id);}return id;}
+async function cloudBackup(){
+  const btn=document.getElementById('cloud-backup-btn');
+  if(btn){btn.disabled=true;btn.textContent='☁️ Saving...';}
+  try{
+    const payload={id:_sbDeviceId(),data:S,updated_at:new Date().toISOString()};
+    const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups',{
+      method:'POST',
+      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify(payload)
+    });
+    if(res.ok||res.status===409){
+      // If 409, try upsert
+      if(res.status===409){
+        const patchRes=await fetch(SUPA_URL+'/rest/v1/pnimit_backups?id=eq.'+_sbDeviceId(),{
+          method:'PATCH',
+          headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json'},
+          body:JSON.stringify({data:S,updated_at:new Date().toISOString()})
+        });
+        if(!patchRes.ok){const pe=await patchRes.text();alert('❌ Backup update failed: '+patchRes.status+'\n'+pe.slice(0,200));return;}
+      }
+      alert('✅ Progress backed up to cloud!\nDevice ID: '+_sbDeviceId().slice(0,12)+'...');
+    } else {
+      const err=await res.text();
+      alert('❌ Backup failed: '+res.status+'\n'+err.slice(0,200));
+    }
+  }catch(e){alert('❌ Backup failed: '+e.message);}
+  if(btn){btn.disabled=false;btn.textContent='☁️ Backup to Cloud';}
+}
+async function cloudRestore(){
+  const id=prompt('Enter device ID to restore from (leave blank for this device):',_sbDeviceId())||_sbDeviceId();
+  if(!id)return;
+  try{
+    const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups?id=eq.'+encodeURIComponent(id)+'&select=data,updated_at',{
+      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}
+    });
+    if(!res.ok){alert('❌ Restore failed: '+res.status);return;}
+    const rows=await res.json();
+    if(!rows||!rows.length){alert('No backup found for ID: '+id);return;}
+    const row=rows[0];
+    if(confirm('Restore backup from '+new Date(row.updated_at).toLocaleString()+'?\nThis will overwrite your current progress.')){
+      Object.assign(S,row.data);save();render();
+      alert('✅ Progress restored!');
+    }
+  }catch(e){alert('❌ Restore failed: '+e.message);}
+}
+
+function getDiagnostics(){
+const tot=S.qOk+S.qNo;
+const srEntries=Object.entries(S.sr||{});
+const srDue=srEntries.filter(([k,v])=>v.next<=Date.now()).length;
+const srHard=srEntries.filter(([k,v])=>v.ef<2.0).length;
+const srMastered=srEntries.filter(([k,v])=>v.n>=3&&v.ef>=2.5).length;
+const ts=getTopicStats();
+const weakTopics=TOPICS.map((t,i)=>({t,s:ts[i]||{ok:0,no:0,tot:0}}))
+  .filter(p=>p.s.tot>=3).sort((a,b)=>(a.s.ok/a.s.tot)-(b.s.ok/b.s.tot)).slice(0,5);
+const weakStr=weakTopics.map(p=>`  ${p.t}: ${Math.round(p.s.ok/p.s.tot*100)}% (${p.s.ok}/${p.s.tot})`).join('\n');
+return `Pnimit Mega v${APP_VERSION}\n`+
+`Date: ${new Date().toISOString()}\n`+
+`UA: ${navigator.userAgent}\n`+
+`Screen: ${screen.width}x${screen.height} · DPR: ${devicePixelRatio}\n`+
+`---\n`+
+`Questions: ${QZ.length} · Answered: ${tot} · Correct: ${S.qOk} (${tot?Math.round(S.qOk/tot*100):0}%)\n`+
+`SR: ${srEntries.length} tracked · ${srDue} due · ${srHard} hard (EF<2.0) · ${srMastered} mastered\n`+
+`Topics done: ${Object.values(S.ck).filter(Boolean).length}/${TOPICS.length}\n`+
+`Bookmarks: ${Object.values(S.bk).filter(Boolean).length}\n`+
+`Streak: ${S.streak||0} days\n`+
+`---\n`+
+`Weakest 5 topics:\n${weakStr||'  (not enough data)'}\n`+
+`---\n`+
+`Storage: ${(JSON.stringify(S).length/1024).toFixed(1)}KB · Online: ${navigator.onLine}\n`+
+`Dark: ${S.dark?'on':'off'} · SW: ${navigator.serviceWorker?'registered':'none'}`;
+}
+// copyDiagnostics removed — dead code
+async function submitReport(){
+const type=S._reportType;
+if(!type)return;
+const input=document.getElementById('reportInput');
+const msg=input?.value?.trim();
+if(!msg){const st=document.getElementById('fbStatus');if(st){st.textContent='⚠️ כתוב משהו';st.style.display='block';st.style.color='#d97706';setTimeout(()=>st.style.display='none',2000);}return;}
+const labels={bug:'🐛 Bug',wrong_answer:'❌ Wrong Answer',feature:'💡 Feature'};
+let qObj=null,context='';
+if(pool.length&&qi<pool.length){qObj=QZ[pool[qi]];}
+if(type==='wrong_answer'&&qObj){
+context=`Q#${pool[qi]}: ${qObj.q.substring(0,100)} | correct: ${qObj.o[qObj.c]}`;
+}
+const st=document.getElementById('fbStatus');
+if(st){st.textContent='⏳ שולח...';st.style.display='block';st.style.color='#64748b';}
+const diag=getDiagnostics();
+const payload={type,msg,context,diag,ts:new Date().toISOString(),v:APP_VERSION};
+let fb;try{fb=JSON.parse(localStorage.getItem('pnimit_feedback')||'[]');}catch(e){fb=[];}
+fb.push(payload);if(fb.length>50)fb.splice(0,fb.length-50);
+localStorage.setItem('pnimit_feedback',JSON.stringify(fb));
+fetch(SUPA_URL+'/rest/v1/pnimit_feedback',{
+method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Prefer':'return=minimal'},
+body:JSON.stringify({message:msg,diagnostics:diag,app_version:APP_VERSION,type,context})
+}).catch(()=>{});
+if(type==='wrong_answer'&&qObj){
+if(st){st.textContent='🤖 AI verifying...';st.style.color='#8b5cf6';}
+try{
+const aiText=await callAI([{role:'user',content:`Internal medicine board exam. A student reports wrong answer key.\nQUESTION: ${qObj.q}\nOPTIONS: ${qObj.o.map((o,i)=>(i===qObj.c?'[MARKED CORRECT] ':'')+o).join(' | ')}\nSTUDENT SAYS: ${msg}\nIs the answer key correct or wrong? 2-3 sentences. Start with VERDICT: CORRECT or VERDICT: WRONG.`}],400);
+const isWrong=aiText.startsWith('VERDICT: WRONG');
+const aiBox=document.getElementById('aiVerifyResult');
+if(aiBox){
+aiBox.innerHTML=`<div style="font-weight:700;margin-bottom:4px;color:${isWrong?'#dc2626':'#059669'}">${isWrong?'⚠️ AI agrees — answer key may be wrong':'✅ AI: answer key is correct'}</div><div>${sanitize(aiText.replace(/VERDICT: (CORRECT|WRONG)/,'').trim())}</div>`;
+aiBox.style.display='block';aiBox.style.background=isWrong?'#fef2f2':'#f0fdf4';aiBox.style.border=`1px solid ${isWrong?'#fecaca':'#bbf7d0'}`;
+}
+if(st){st.textContent=isWrong?'⚠️ AI confirmed error':'✅ AI: answer key OK';st.style.color=isWrong?'#dc2626':'#059669';}
+saveAnswerReport(pool[qi],msg,aiText);
+}catch(e){if(st){st.textContent='✅ Saved';st.style.color='#059669';}}
+}else{
+if(st){st.textContent='✅ '+labels[type]+' saved';st.style.color='#059669';}
+}
+if(input)input.value='';
+S._reportType=null;
+if(st)setTimeout(()=>{st.style.display='none';render();},type==='wrong_answer'?8000:3000);
+}
+
+// ===== WRONG ANSWER REPORTS → SUPABASE =====
+async function saveAnswerReport(qIdx, userReason, aiVerdict){
+try{
+const q=QZ[qIdx];
+await fetch(SUPA_URL+'/rest/v1/answer_reports',{
+method:'POST',
+headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Content-Type':'application/json','Prefer':'return=minimal'},
+body:JSON.stringify({app:'pnimit',question_idx:qIdx,question_text:(q.q||'').slice(0,200),current_answer:q.c,reported_answer:(userReason||'').slice(0,50),user_reason:userReason||'',ai_verdict:aiVerdict||'',device_id:_sbDeviceId()})
+});
+}catch(e){console.warn('Report save failed:',e.message);}
+}
+
