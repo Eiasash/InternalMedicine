@@ -1,5 +1,5 @@
 const CACHE='pnimit-v9.43';
-const HTML_URLS=['pnimit-mega.html','manifest.json','shared/fsrs.js'];
+const HTML_URLS=['pnimit-mega.html','manifest.json','shared/fsrs.js','src/core/constants.js'];
 const CSS_URLS=['src/styles/base.css','src/styles/layout.css','src/styles/components.css','src/styles/quiz.css','src/styles/track.css','src/styles/chat.css','src/styles/theme.css','src/styles/utilities.css'];
 const JSON_DATA_URLS=['data/questions.json','data/topics.json','data/notes.json','data/drugs.json','data/flashcards.json','data/tabs.json','harrison_chapters.json'];
 const ALL_URLS=[...HTML_URLS,...CSS_URLS,...JSON_DATA_URLS];
