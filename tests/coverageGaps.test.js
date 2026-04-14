@@ -9,8 +9,9 @@ const srJs = readFileSync('src/sr/spaced-repetition.js', 'utf-8');
 const quizJs = readFileSync('src/quiz/engine.js', 'utf-8');
 const aiClientJs = readFileSync('src/ai/client.js', 'utf-8');
 const aiExplainJs = readFileSync('src/ai/explain.js', 'utf-8');
+const cloudJs = readFileSync('src/features/cloud.js', 'utf-8');
 // Combined source: HTML + external JS for constant/function lookups
-const allSource = html + '\n' + constantsJs + '\n' + utilsJs + '\n' + stateJs + '\n' + srJs + '\n' + quizJs + '\n' + aiClientJs + '\n' + aiExplainJs;
+const allSource = html + '\n' + constantsJs + '\n' + utilsJs + '\n' + stateJs + '\n' + srJs + '\n' + quizJs + '\n' + aiClientJs + '\n' + aiExplainJs + '\n' + cloudJs;
 
 // Extract JS between first <script> and last </script>
 const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/);
@@ -102,7 +103,7 @@ describe('Sanitization', () => {
 
   it('sanitize is applied to user-visible content in innerHTML assignments', () => {
     // Check that question text is sanitized before innerHTML
-    const sanitizeCallCount = (html.match(/sanitize\(/g) || []).length;
+    const sanitizeCallCount = (allSource.match(/sanitize\(/g) || []).length;
     expect(sanitizeCallCount).toBeGreaterThan(20); // used extensively
   });
 
@@ -146,7 +147,7 @@ describe('SRS / FSRS Edge Cases', () => {
 
   it('SRS due calculation uses Date.now()', () => {
     // Due cards: sr.next <= Date.now()
-    expect(html).toContain('.next<=Date.now()');
+    expect(allSource).toContain('.next<=Date.now()');
   });
 
   it('confidence rating maps to FSRS ratings', () => {
