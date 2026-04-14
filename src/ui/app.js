@@ -20,7 +20,7 @@ import { submitLeaderboardScore, fetchLeaderboard, showLeaderboard, renderFeedba
          saveAnswerReport, _sbDeviceId } from '../features/cloud.js';
 import { renderQuiz, toggleBk, uploadQImage, removeQImage, viewImg, pauseTimed,
          startTimedQ, stopTimedMode, sdCheck, sdNext } from './quiz-view.js';
-import { renderStudy, toggleNote, filterNotes, renderFlash, renderDrugs } from './learn-view.js';
+import { renderStudy, toggleNote, filterNotes, renderFlash, renderDrugs, initLearnEvents } from './learn-view.js';
 import { renderLibrary, openHarrisonChapter,
          toggleHarrisonAI, submitHarrisonAI, aiSummarizeChapter, quizMeOnChapter,
          addChapterQsToBank, renderWrongAnswerLog, initLibraryEvents } from './library-view.js';
@@ -99,15 +99,7 @@ if(G.S.dark)document.body.classList.add('dark');
 if(G.S.studyMode)document.body.classList.add('study');
 
 // ===== FLASHCARD SPACED REP =====
-export function fcRate(q){// q: 0=again, 1=hard, 2=easy
-const key='fc_'+G.S.fci%G.FLASH.length;
-if(!G.S.fcsr)G.S.fcsr={};
-if(!G.S.fcsr[key])G.S.fcsr[key]={n:0,next:0};
-const s=G.S.fcsr[key];
-const days=q===0?0:q===1?1:4;
-s.n=q===0?0:s.n+1;s.next=Date.now()+days*86400000;
-G.S.fci++;G.S.fcFlip=false;G.save();render();
-}
+// fcRate moved to learn-view.js
 
 // ===== SHARE =====
 export function shareQ(){
@@ -350,7 +342,7 @@ _w.openHarrisonChapter = openHarrisonChapter; _w.toggleHarrisonAI = toggleHarris
 _w.submitHarrisonAI = submitHarrisonAI; // aiSummarizeChapter: now handled by library-view delegation
 _w.quizMeOnChapter = quizMeOnChapter; _w.addChapterQsToBank = addChapterQsToBank;
 // Learn
-_w.toggleNote = toggleNote; _w.filterNotes = filterNotes; _w.fcRate = fcRate;
+// toggleNote, filterNotes, fcRate: now handled by learn-view delegation
 // Track
 _w.calcUp = calcUp; _w.setExamDate = setExamDate; _w.exportCheatSheet = exportCheatSheet;
 // Cloud & social
@@ -373,6 +365,7 @@ _w.takeWeeklySnapshot = takeWeeklySnapshot;
 // === Event delegation (set up once, survives innerHTML changes) ===
 initMoreEvents(document.getElementById('ct'));
 initLibraryEvents(document.getElementById('ct'));
+initLearnEvents(document.getElementById('ct'));
 
 // === Boot ===
 // Wake lock
