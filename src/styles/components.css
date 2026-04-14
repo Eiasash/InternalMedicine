@@ -1,0 +1,71 @@
+/* === Cards === */
+.card { background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,.04); overflow: hidden; margin-bottom: 10px }
+
+/* === Pills === */
+.pill { display: inline-flex; align-items: center; min-height: 32px; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; transition: .15s; cursor: pointer }
+.pill.on { background: rgb(var(--sky)); color: #fff; box-shadow: 0 2px 6px rgba(59,130,246,.25) }
+.pill:not(.on) { background: #fff; color: #64748b; border: 1px solid #e2e8f0 }
+
+/* === Buttons === */
+.btn { padding: 7px 18px; border-radius: 12px; font-size: 12px; font-weight: 700; transition: .15s; display: inline-block }
+.btn:disabled { opacity: .35 }
+.btn:active { transform: scale(.96) }
+.btn-p { background: rgb(var(--sky)); color: #fff }
+.btn-d { background: rgb(var(--sl8)); color: #fff }
+.btn-g { background: rgb(var(--em)); color: #fff }
+.btn-o { background: #f1f5f9; color: #475569 }
+
+/* === Badges === */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700 }
+.badge-r { background: #fef2f2; color: #dc2626 }
+.badge-y { background: #fffbeb; color: #d97706 }
+.badge-g { background: #ecfdf5; color: #059669 }
+
+/* === Inputs === */
+.search-box { width: 100%; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px 12px; font-size: 12px; margin-bottom: 12px }
+.search-box:focus { outline: none; border-color: rgb(var(--sky)); box-shadow: 0 0 0 3px rgba(59,130,246,.15) }
+.calc-in { width: 100%; border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px 12px; font-size: 13px; margin-bottom: 8px }
+.calc-in:focus { outline: none; border-color: rgb(var(--sky)) }
+
+/* === Accordions === */
+.ab { max-height: 0; overflow: hidden; transition: max-height .3s ease }
+.ab.op { max-height: 5000px }
+.acc-h { width: 100%; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; text-align: left; transition: .1s }
+.acc-h:hover { background: #f8fafc }
+.acc-ic { width: 30px; height: 30px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; color: #fff; flex-shrink: 0 }
+.acc-ar { font-size: 10px; color: #94a3b8; transition: transform .2s }
+.acc-ar.op { transform: rotate(180deg) }
+
+/* === Stats Row === */
+.stats { display: flex; gap: 6px; margin-bottom: 12px }
+.stat { flex: 1; background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; padding: 10px 8px; text-align: center }
+.stat .n { font-size: 20px; font-weight: 700 }
+.stat .l { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 600; letter-spacing: .5px; margin-top: 2px }
+
+/* === Flashcards === */
+.fc { background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 24px 20px; min-height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; cursor: pointer; transition: .2s; user-select: none }
+.fc:active { transform: scale(.98) }
+
+/* === Timer === */
+.timer { font-variant-numeric: tabular-nums; font-family: 'Inter', monospace }
+
+/* === Checklists === */
+.ck { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 11px; cursor: pointer; margin-bottom: 5px; min-height: 44px }
+.ck:hover { background: #f8fafc }
+.ck.done span { text-decoration: line-through; color: #94a3b8 }
+
+/* === Topics === */
+.topic { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 10px; font-size: 11px; cursor: pointer; transition: .1s; min-height: 44px }
+.topic:hover { background: #f1f5f9 }
+.topic.done { background: #ecfdf5; border: 1px solid #a7f3d0 }
+
+/* === Drug Rows === */
+.drug-row { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; font-size: 11px }
+.drug-row:last-child { border: none }
+
+/* === Share Button === */
+.share-btn { font-size: 13px; padding: 2px 6px; opacity: .5; cursor: pointer; border: none; background: none }
+.share-btn:hover { opacity: 1 }
+
+/* === Empty State === */
+.empty { text-align: center; padding: 32px 16px; color: #94a3b8; font-size: 12px; line-height: 1.7 }

@@ -31,6 +31,26 @@ describe('service worker (sw.js)', () => {
     expect(sw).toMatch(/HTML_URLS\s*=\s*\[/);
   });
 
+  test('defines CSS_URLS for all style files', () => {
+    expect(sw).toMatch(/CSS_URLS\s*=\s*\[/);
+    expect(sw).toContain('src/styles/base.css');
+    expect(sw).toContain('src/styles/layout.css');
+    expect(sw).toContain('src/styles/components.css');
+    expect(sw).toContain('src/styles/quiz.css');
+    expect(sw).toContain('src/styles/track.css');
+    expect(sw).toContain('src/styles/chat.css');
+    expect(sw).toContain('src/styles/theme.css');
+    expect(sw).toContain('src/styles/utilities.css');
+  });
+
+  test('all cached CSS files actually exist on disk', () => {
+    const cssUrls = sw.match(/['"]src\/styles\/[^'"]+\.css['"]/g) || [];
+    cssUrls.forEach(url => {
+      const clean = url.replace(/['"]/g, '');
+      expect(existsSync(resolve(rootDir, clean)), `Missing: ${clean}`).toBe(true);
+    });
+  });
+
   test('defines JSON_DATA_URLS for all data files', () => {
     expect(sw).toMatch(/JSON_DATA_URLS\s*=\s*\[/);
     expect(sw).toContain('data/questions.json');
@@ -121,6 +141,13 @@ describe('service worker (sw.js)', () => {
 
   test('has notification click handler', () => {
     expect(sw).toMatch(/addEventListener\s*\(\s*['"]notificationclick['"]/);
+  });
+
+  test('HTML links external CSS files (not inline styles)', () => {
+    const html = readFile('pnimit-mega.html');
+    expect(html).toContain('href="src/styles/base.css"');
+    expect(html).toContain('href="src/styles/theme.css"');
+    expect(html).toContain('href="src/styles/components.css"');
   });
 
   test('caches manifest.json', () => {

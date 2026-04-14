@@ -1,0 +1,79 @@
+/* ========================================
+   Dark Mode
+   ======================================== */
+body.dark { background: #0f172a; color: #e2e8f0 }
+body.dark .card { background: #1e293b; border-color: #334155 }
+body.dark .hdr { background: linear-gradient(135deg, #000, #0f172a) }
+body.dark .tabs { background: #1e293b; border-color: #334155 }
+body.dark .tabs button:not(.on) { color: #64748b }
+
+/* Dark: question options */
+body.dark .qo { border-color: #334155; color: #e2e8f0 }
+body.dark .qo:not(.lk):hover { border-color: #475569; background: #1e293b }
+body.dark .qo.sel { border-color: rgb(var(--sky)); background: #172554 }
+body.dark .qo.ok { background: #064e3b; border-color: #065f46; color: #a7f3d0 }
+body.dark .qo.no { background: #450a0a; border-color: #7f1d1d; color: #fca5a5 }
+body.dark .qo.dim { border-color: #1e293b; color: #475569 }
+
+/* Dark: components */
+body.dark .pill:not(.on) { background: #1e293b; color: #94a3b8; border-color: #334155 }
+body.dark .search-box, body.dark .calc-in { background: #1e293b; border-color: #334155; color: #e2e8f0 }
+body.dark select { background: #1e293b; color: #e2e8f0 }
+body.dark .acc-h:hover { background: #1e293b }
+body.dark .fc { background: #1e293b; border-color: #334155; color: #e2e8f0 }
+body.dark .topic:hover { background: #1e293b }
+body.dark .topic.done { background: #064e3b; border-color: #065f46 }
+body.dark .ck { border-color: #334155; color: #e2e8f0 }
+body.dark .ck:hover { background: #1e293b }
+body.dark .stat { background: #1e293b; border-color: #334155 }
+body.dark .sec-t { color: #f1f5f9 }
+body.dark .sec-s { color: #94a3b8 }
+body.dark .drug-row { border-color: #334155; color: #e2e8f0 }
+body.dark .btn-o { background: #334155; color: #e2e8f0 }
+body.dark a { color: #60a5fa }
+
+/* Dark: badges */
+body.dark .badge-r { background: #450a0a; color: #fca5a5 }
+body.dark .badge-y { background: #451a03; color: #fde68a }
+body.dark .badge-g { background: #064e3b; color: #6ee7b7 }
+
+/* Dark: progress & track */
+body.dark .progress-bar { background: #334155 }
+body.dark .streak-badge { background: #451a03; border-color: #92400e }
+body.dark .leaderboard-row { border-color: #334155 }
+body.dark .calc-result { background: #1e293b !important }
+
+/* Dark: AI / explain */
+body.dark .explain-box { background: #064e3b !important; border-color: #059669 !important; color: #a7f3d0 !important }
+body.dark .tag-topic { background: #064e3b !important; color: #6ee7b7 !important }
+body.dark .tag-year { background: #1e3a5f !important; color: #93c5fd !important }
+
+/* Dark: distractor */
+body.dark .distractor-highlight { background: #451a03 !important; border-color: #d97706 !important }
+
+/* Dark: voice */
+body.dark .voice-btn { background: #450a0a; border-color: #7f1d1d }
+
+/* Dark: chat */
+body.dark .chat-msg-ai { background: #1e293b; border-color: #334155; color: #e2e8f0 }
+body.dark .chat-msg-user { background: #1e3a5f; color: #e2e8f0 }
+body.dark .chat-starter { background: #1e293b; border-color: #334155; color: #e2e8f0 }
+body.dark .chat-input-row { border-color: #334155 }
+body.dark .chat-disclaimer { background: #422006; border-color: #92400e; color: #fcd34d }
+
+/* ========================================
+   Study / Night Mode (warm sepia)
+   ======================================== */
+body.study { background: #1a1008; color: #e8d5b0 }
+body.study .card { background: #221508; border-color: #3d2a12 }
+body.study .hdr { background: linear-gradient(135deg, #0d0804, #1a1008) }
+body.study .tabs { background: #221508; border-color: #3d2a12 }
+body.study .tabs button:not(.on) { color: #a08060 }
+body.study .pill:not(.on) { background: #221508; color: #a08060; border-color: #3d2a12 }
+body.study .qo { border-color: #3d2a12; color: #e8d5b0; background: #221508 }
+body.study .qo:not(.lk):hover { border-color: #7a5c30; background: #2a1e0d }
+body.study .qo.sel { border-color: #c48a3a; background: #2a1e0d }
+body.study .search-box, body.study .calc-in { background: #221508; border-color: #3d2a12; color: #e8d5b0 }
+body.study .stat { background: #221508; border-color: #3d2a12 }
+body.study .fc { background: #221508; border-color: #3d2a12; color: #e8d5b0 }
+body.study .sec-t { color: #e8d5b0 }
