@@ -1,12 +1,14 @@
 import G from '../core/globals.js';
 import { sanitize, getApiKey, setApiKey } from '../core/utils.js';
 import { callAI } from '../ai/client.js';
+import { AI_PROXY, AI_SECRET } from '../core/constants.js';
+import { startVoiceParser } from '../quiz/modes.js';
 
 export function renderSearch(){
 let h=`<div class="sec-t">🔍 Search</div><div class="sec-s">Search across all ${G.QZ.length} questions + ${G.NOTES.length} study notes + ${G.DRUGS.length} drugs</div>`;
 h+=`<div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
-<input class="search-box" style="margin-bottom:0;flex:1" placeholder="Type to search..." oninput="G.srchQ=this.value;G.render()" value="${G.srchQ}" id="srchi">
-<button class="voice-btn${G.voiceListening?' listening':''}" onclick="startVoiceParser()" aria-label="${G.voiceListening?'Stop voice input':'Start voice input'}">${G.voiceListening?'🔴 Listening...':'🎤 Voice'}</button>
+<input class="search-box" style="margin-bottom:0;flex:1" placeholder="Type to search..." data-action="search-input" value="${G.srchQ}" id="srchi">
+<button class="voice-btn${G.voiceListening?' listening':''}" data-action="voice-parser" aria-label="${G.voiceListening?'Stop voice input':'Start voice input'}">${G.voiceListening?'🔴 Listening...':'🎤 Voice'}</button>
 </div>`;
 if(G.voiceTranscript&&G.srchQ){h+=`<div style="font-size:10px;color:#64748b;margin-bottom:8px;padding:6px 10px;background:#f8fafc;border-radius:8px" dir="auto">🎤 "${G.voiceTranscript}"</div>`;}
 if(G.srchQ.length>=2){
@@ -72,11 +74,11 @@ export function renderChat(){
 let h='<div class="sec-t">💬 AI Chat</div><div class="sec-s">Claude-powered Internal Medicine Q&A — board prep focus</div>';
 h+='<div class="card" style="display:flex;flex-direction:column;height:calc(100vh - 200px);overflow:hidden">';
 h+='<div class="chat-disclaimer" style="margin:10px 10px 0">⚠️ AI mentor — not a substitute for clinical judgment. For board prep use only.</div>';
-if(G.S.chat.length>0){h+='<div style="padding:4px 10px;text-align:left"><button onclick="clearChat()" style="font-size:10px;color:#94a3b8;background:none;border:none;cursor:pointer" aria-label="Clear chat history">🗑 נקה שיחה</button></div>';}
+if(G.S.chat.length>0){h+='<div style="padding:4px 10px;text-align:left"><button data-action="clear-chat" style="font-size:10px;color:#94a3b8;background:none;border:none;cursor:pointer" aria-label="Clear chat history">🗑 נקה שיחה</button></div>';}
 h+='<div class="chat-msgs" id="chat-msgs">';
 if(G.S.chat.length===0){
 h+='<div style="padding:8px 4px 12px"><div class="heb" style="font-size:11px;color:#64748b;margin-bottom:10px;text-align:right">התחל שיחה — בחר נושא או כתוב שאלה חופשית:</div>';
-CHAT_STARTERS.forEach(function(s){h+='<button class="chat-starter" onclick="sendChatStarter(this.getAttribute(\'data-t\'))" data-t="'+s.replace(/"/g,'&quot;')+'">' +sanitize(s)+'</button>';});
+CHAT_STARTERS.forEach(function(s){h+='<button class="chat-starter" data-action="chat-starter" data-t="'+s.replace(/"/g,'&quot;')+'">' +sanitize(s)+'</button>';});
 h+='</div>';
 }else{
 G.S.chat.forEach(function(m){
@@ -88,8 +90,8 @@ if(G.chatLoading){h+='<div class="chat-msg-ai" style="padding:6px 12px"><div cla
 }
 h+='</div>';
 h+='<div class="chat-input-row">';
-h+='<textarea id="chat-input" placeholder="שאל שאלה ברפואה פנימית..." rows="2" aria-label="Chat input" style="flex:1;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px;font-size:12px;resize:none;font-family:Heebo,sans-serif;direction:rtl;text-align:right;background:inherit;color:inherit" onkeydown="if(event.key===&apos;Enter&apos;&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>';
-h+='<button class="btn btn-p" onclick="sendChat()" '+(G.chatLoading?'disabled':'')+' style="align-self:flex-end;min-width:52px" aria-label="Send">שלח</button>';
+h+='<textarea id="chat-input" placeholder="שאל שאלה ברפואה פנימית..." rows="2" aria-label="Chat input" style="flex:1;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px;font-size:12px;resize:none;font-family:Heebo,sans-serif;direction:rtl;text-align:right;background:inherit;color:inherit" data-action="chat-input"></textarea>';
+h+='<button class="btn btn-p" data-action="send-chat" '+(G.chatLoading?'disabled':'')+' style="align-self:flex-end;min-width:52px" aria-label="Send">שלח</button>';
 h+='</div>';
 h+='</div>';
 return h;
@@ -130,4 +132,30 @@ setTimeout(function(){const el=document.getElementById('chat-msgs');if(el)el.scr
 }
 
 export function sendChatStarter(text){const input=document.getElementById('chat-input');if(input)input.value=text;sendChat();}
-export function clearChat(){S.chat=[];chatLoading=false;G.save();G.render();}
+export function clearChat(){G.S.chat=[];G.chatLoading=false;G.save();G.render();}
+
+
+// Event delegation for More tab — set up once on #ct container
+export function initMoreEvents(container) {
+  container.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const action = btn.dataset.action;
+    if (action === 'voice-parser') { startVoiceParser(); }
+    else if (action === 'clear-chat') { clearChat(); }
+    else if (action === 'chat-starter') { const t = btn.getAttribute('data-t'); if (t) sendChatStarter(t); }
+    else if (action === 'send-chat') { sendChat(); }
+  });
+  container.addEventListener('input', (e) => {
+    if (e.target.dataset.action === 'search-input') {
+      G.srchQ = e.target.value;
+      G.render();
+    }
+  });
+  container.addEventListener('keydown', (e) => {
+    if (e.target.dataset.action === 'chat-input' && e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendChat();
+    }
+  });
+}

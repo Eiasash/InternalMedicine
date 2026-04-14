@@ -28,7 +28,7 @@ import { renderTrack, renderCalc, calcUp, calcEstScore, renderStudyPlan, renderE
          renderDailyPlan, renderSessionCard, setExamDate, exportCheatSheet,
          saveSessionSummary } from './track-view.js';
 import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
-         showAnswerHardFail } from './more-view.js';
+         showAnswerHardFail, initMoreEvents } from './more-view.js';
 
 export function renderTabs(){
 document.getElementById('tb').innerHTML=G.TABS.map(t=>
@@ -358,7 +358,7 @@ _w.showLeaderboard = showLeaderboard; _w.submitFeedbackForm = submitFeedbackForm
 _w.cloudBackup = cloudBackup; _w.cloudRestore = cloudRestore;
 _w.submitReport = submitReport; _w.showAnswerHardFail = showAnswerHardFail;
 // More
-_w.sendChat = sendChat; _w.sendChatStarter = sendChatStarter; _w.clearChat = clearChat;
+_w.sendChatStarter = sendChatStarter; // still needed by track-view onclick
 _w.setApiKey = setApiKey;
 // Settings
 _w.toggleDark = toggleDark; _w.toggleStudyMode = toggleStudyMode;
@@ -369,6 +369,9 @@ _w._storeDiff = _storeDiff; _w.shareApp = shareApp;
 _w.uploadQImage = uploadQImage; _w.removeQImage = removeQImage; _w.viewImg = viewImg;
 _w.saveAnswerReport = saveAnswerReport;
 _w.takeWeeklySnapshot = takeWeeklySnapshot;
+
+// === Event delegation (set up once, survives innerHTML changes) ===
+initMoreEvents(document.getElementById('ct'));
 
 // === Boot ===
 // Wake lock
