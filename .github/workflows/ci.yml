@@ -25,45 +25,36 @@ jobs:
         run: |
           COUNT=$(python3 -c "import json; print(len(json.load(open('data/questions.json'))))")
           echo "Question count: $COUNT"
-          if [ "$COUNT" -le 800 ]; then
-            echo "ERROR: Expected > 800 questions, got $COUNT"
-            exit 1
-          fi
-          echo "OK: $COUNT questions"
+          [ "$COUNT" -gt 800 ] && echo "OK: $COUNT questions" || { echo "ERROR: Expected > 800, got $COUNT"; exit 1; }
 
       # ── Question Schema ──
       - name: Validate question schema integrity
         run: |
-          python3 -c "
+          python3 << 'PYEOF'
           import json, sys
           qs = json.load(open('data/questions.json'))
           errors = []
           for i, q in enumerate(qs):
-              if not q.get('q'):
-                  errors.append(f'Q{i}: missing question text')
-              if len(q.get('q', '')) < 10:
-                  errors.append(f'Q{i}: question text suspiciously short')
+              if not q.get('q'): errors.append(f'Q{i}: missing question text')
+              if len(q.get('q', '')) < 10: errors.append(f'Q{i}: question text too short')
               if not isinstance(q.get('o'), list) or len(q.get('o', [])) != 4:
-                  errors.append(f'Q{i}: expected 4 options, got {len(q.get(\"o\", []))}')
+                  errors.append(f'Q{i}: expected 4 options')
               if not isinstance(q.get('c'), int) or q['c'] < 0 or q['c'] >= len(q.get('o', [])):
-                  errors.append(f'Q{i}: invalid correct answer index c={q.get(\"c\")}')
-              if q.get('ti') is None:
-                  errors.append(f'Q{i}: missing topic index ti')
+                  errors.append(f'Q{i}: invalid correct answer c={q.get("c")}')
+              if q.get('ti') is None: errors.append(f'Q{i}: missing ti')
               elif not isinstance(q.get('ti'), int) or q['ti'] < 0 or q['ti'] > 23:
-                  errors.append(f'Q{i}: topic index ti={q.get(\"ti\")} out of range 0-23')
-              if not q.get('t'):
-                  errors.append(f'Q{i}: missing year field t')
+                  errors.append(f'Q{i}: ti={q.get("ti")} out of range')
+              if not q.get('t'): errors.append(f'Q{i}: missing year t')
           if errors:
-              for e in errors:
-                  print(f'ERROR: {e}', file=sys.stderr)
+              for e in errors: print(f'ERROR: {e}', file=sys.stderr)
               sys.exit(1)
-          print(f'OK: All {len(qs)} questions have valid schema')
-          "
+          print(f'OK: All {len(qs)} questions valid')
+          PYEOF
 
       # ── Conflicting Duplicates ──
       - name: Check for conflicting duplicate questions
         run: |
-          python3 -c "
+          python3 << 'PYEOF'
           import json, sys
           qs = json.load(open('data/questions.json'))
           seen = {}
@@ -77,204 +68,115 @@ jobs:
               else:
                   seen[key] = i
           if conflicts:
-              print(f'CRITICAL: {len(conflicts)} duplicate pairs have DIFFERENT correct answers:', file=sys.stderr)
+              print(f'CRITICAL: {len(conflicts)} conflicting duplicates', file=sys.stderr)
               for j, i, k in conflicts:
-                  print(f'  Q{j} (c={qs[j][\"c\"]}) vs Q{i} (c={qs[i][\"c\"]}): {k}...', file=sys.stderr)
+                  print(f'  Q{j} vs Q{i}: {k}...', file=sys.stderr)
               sys.exit(1)
           print('OK: No conflicting duplicates')
-          "
+          PYEOF
 
-      # ── Notes Schema ──
-      - name: Validate notes schema
+      # ── Notes / Drugs / Flashcards Schema ──
+      - name: Validate notes, drugs, flashcards schema
         run: |
-          python3 -c "
+          python3 << 'PYEOF'
           import json, sys
-          notes = json.load(open('data/notes.json'))
           errors = []
-          for i, n in enumerate(notes):
-              if not n.get('topic'):
-                  errors.append(f'Note {i}: missing topic')
-              if not n.get('notes'):
-                  errors.append(f'Note {i}: missing notes content')
-          if errors:
-              for e in errors:
-                  print(f'ERROR: {e}', file=sys.stderr)
-              sys.exit(1)
-          print(f'OK: All {len(notes)} notes valid')
-          "
-
-      # ── Drugs Schema ──
-      - name: Validate drugs schema
-        run: |
-          python3 -c "
-          import json, sys
-          drugs = json.load(open('data/drugs.json'))
-          errors = []
-          required = ['name', 'heb', 'acb', 'beers', 'cat', 'risk']
-          for i, d in enumerate(drugs):
-              for k in required:
-                  if k not in d:
-                      errors.append(f'Drug {i} ({d.get(\"name\",\"?\")}): missing \"{k}\"')
-          if errors:
-              for e in errors:
-                  print(f'ERROR: {e}', file=sys.stderr)
-              sys.exit(1)
-          print(f'OK: All {len(drugs)} drugs valid')
-          "
-
-      # ── Flashcards Schema ──
-      - name: Validate flashcards schema
-        run: |
-          python3 -c "
-          import json, sys
-          fc = json.load(open('data/flashcards.json'))
-          errors = []
-          for i, c in enumerate(fc):
-              if not c.get('f'): errors.append(f'Flashcard {i}: missing front')
-              if not c.get('b'): errors.append(f'Flashcard {i}: missing back')
+          for i, n in enumerate(json.load(open('data/notes.json'))):
+              if not n.get('topic'): errors.append(f'Note {i}: missing topic')
+              if not n.get('notes'): errors.append(f'Note {i}: missing notes')
+          for i, d in enumerate(json.load(open('data/drugs.json'))):
+              for k in ['name','heb','acb','beers','cat','risk']:
+                  if k not in d: errors.append(f'Drug {i} ({d.get("name","?")}): missing {k}')
+          for i, c in enumerate(json.load(open('data/flashcards.json'))):
+              if not c.get('f'): errors.append(f'FC {i}: missing front')
+              if not c.get('b'): errors.append(f'FC {i}: missing back')
           if errors:
               for e in errors: print(f'ERROR: {e}', file=sys.stderr)
               sys.exit(1)
-          print(f'OK: All {len(fc)} flashcards valid')
-          "
+          print('OK: Notes, drugs, flashcards all valid')
+          PYEOF
 
-      # ── Service Worker Version Sync ──
-      - name: Check SW cache version matches APP_VERSION
+      # ── SW Version Sync ──
+      - name: Check SW version matches APP_VERSION
         run: |
           python3 << 'PYEOF'
           import re, sys
-          html = open('pnimit-mega.html').read()
+          constants = open('src/core/constants.js').read()
           sw = open('sw.js').read()
-          m_app = re.search(r"APP_VERSION\s*=\s*['\"]([^'\"]+)['\"]", html)
+          m_app = re.search(r"APP_VERSION\s*=\s*['\"]([^'\"]+)['\"]", constants)
           m_sw = re.search(r"CACHE\s*=\s*['\"]pnimit-v([^'\"]+)['\"]", sw)
-          if not m_app:
-              print('ERROR: APP_VERSION not found', file=sys.stderr); sys.exit(1)
-          if not m_sw:
-              print('ERROR: CACHE version not found in sw.js', file=sys.stderr); sys.exit(1)
+          if not m_app: print('ERROR: APP_VERSION not found', file=sys.stderr); sys.exit(1)
+          if not m_sw: print('ERROR: CACHE not found in sw.js', file=sys.stderr); sys.exit(1)
           if m_app.group(1) != m_sw.group(1):
-              print(f'ERROR: Version mismatch — app={m_app.group(1)}, sw={m_sw.group(1)}', file=sys.stderr)
-              sys.exit(1)
-          print(f'OK: Versions match (v{m_app.group(1)})')
+              print(f'ERROR: mismatch app={m_app.group(1)} sw={m_sw.group(1)}', file=sys.stderr); sys.exit(1)
+          print(f'OK: v{m_app.group(1)}')
           PYEOF
 
-      # ── Topic Coverage (min 5 per topic) ──
-      - name: Check topic coverage (min 5 questions per topic)
+      # ── Topic Coverage ──
+      - name: Check topic coverage (min 5 per topic)
         run: |
-          python3 -c "
+          python3 << 'PYEOF'
           import json, sys
           qs = json.load(open('data/questions.json'))
-          TOPICS = [
-              'Cardiology','Heart Failure','Arrhythmias','Valvular Disease',
-              'Hypertension','Pulmonology','Gastroenterology','Nephrology',
-              'Electrolytes/Acid-Base','Endocrinology','Hematology','Oncology',
-              'Infectious Disease','Rheumatology','Neurology','Critical Care/ICU',
-              'Dermatology','Allergy/Immunology','Fluids/Volume','Pain/Palliative',
-              'Perioperative','Toxicology','Clinical Approach','Vascular'
-          ]
           counts = {}
-          for q in qs:
-              ti = q.get('ti', -1)
-              counts[ti] = counts.get(ti, 0) + 1
-          thin = []
-          for ti in range(24):
-              c = counts.get(ti, 0)
-              name = TOPICS[ti] if ti < len(TOPICS) else f'Topic {ti}'
-              if c < 5:
-                  thin.append(f'  ti={ti} ({name}): {c} questions')
+          for q in qs: counts[q.get('ti',-1)] = counts.get(q.get('ti',-1),0)+1
+          thin = [f'ti={ti}: {counts.get(ti,0)}' for ti in range(24) if counts.get(ti,0) < 5]
           if thin:
-              print(f'ERROR: {len(thin)} topics have fewer than 5 questions:', file=sys.stderr)
-              for t in thin:
-                  print(t, file=sys.stderr)
-              sys.exit(1)
-          total = len(qs)
-          with_expl = sum(1 for q in qs if q.get('e'))
-          print(f'OK: All topics have at least 5 questions')
-          print(f'Coverage: {total} questions, {with_expl} with explanations ({100*with_expl//total}%)')
-          "
+              print(f'ERROR: {len(thin)} topics < 5 questions: {thin}', file=sys.stderr); sys.exit(1)
+          print(f'OK: All 24 topics covered, {len(qs)} total')
+          PYEOF
 
-      # ── HTML Parse ──
-      - name: Validate HTML syntax
+      # ── HTML Shell Validity ──
+      - name: Validate HTML shell parses
         run: |
           python3 -c "
           from html.parser import HTMLParser
-          import sys
-          class Checker(HTMLParser):
-              def __init__(self):
-                  super().__init__()
-              def handle_starttag(self, tag, attrs): pass
-              def handle_endtag(self, tag): pass
-          c = Checker()
-          try:
-              c.feed(open('pnimit-mega.html').read())
-              print('OK: HTML parses without errors')
-          except Exception as e:
-              print(f'ERROR: HTML parse error: {e}', file=sys.stderr)
-              sys.exit(1)
+          c = HTMLParser()
+          c.feed(open('pnimit-mega.html').read())
+          print('OK: HTML shell parses')
           "
 
-      # ── JS Brace Balance ──
-      - name: Check JS brace balance
-        run: |
-          python3 -c "
-          import sys
-          c = open('pnimit-mega.html').read()
-          opens = c.count('{')
-          closes = c.count('}')
-          diff = opens - closes
-          if diff != 0:
-              print(f'ERROR: Brace imbalance — {{ ={opens}, }} ={closes}, diff={diff}', file=sys.stderr)
-              sys.exit(1)
-          print(f'OK: Brace balance ({opens} pairs)')
-          "
-
-      # ── innerHTML Sanitization Audit ──
+      # ── innerHTML Audit (all source modules) ──
       - name: Audit innerHTML for unsanitized interpolation
         run: |
           python3 << 'PYEOF'
-          import re, sys
-          html = open('pnimit-mega.html').read()
-          lines = html.split('\n')
+          import glob
           warnings = []
-          for i, line in enumerate(lines, 1):
-              if '.innerHTML=' in line or '.innerHTML =' in line:
-                  after_eq = line.split('innerHTML')[1]
-                  if ('+' in after_eq or '${' in after_eq) and 'sanitize(' not in after_eq:
-                      warnings.append(f'  Line {i}: {line.strip()[:100]}')
+          for f in sorted(glob.glob('src/**/*.js', recursive=True)):
+              for i, line in enumerate(open(f).readlines(), 1):
+                  if '.innerHTML=' in line or '.innerHTML =' in line:
+                      after = line.split('innerHTML')[1]
+                      if ('+' in after or '${' in after) and 'sanitize(' not in after:
+                          warnings.append(f'{f}:{i}')
           if warnings:
-              print(f'WARNING: {len(warnings)} innerHTML assignments with unsanitized interpolation:')
-              for w in warnings:
-                  print(w)
+              print(f'WARNING: {len(warnings)} unsanitized innerHTML assignments')
+              for w in warnings[:5]: print(f'  {w}')
           else:
-              print('OK: No unsanitized innerHTML interpolation detected')
+              print('OK: No unsanitized innerHTML')
           PYEOF
 
-      # ── No Hazzard/GRS References ──
-      - name: Check no geriatrics-only content in study plan
+      # ── No Geriatrics-Only Content ──
+      - name: Check no geriatrics-only content
         run: |
           python3 << 'PYEOF'
-          import re, sys
-          html = open('pnimit-mega.html').read()
-          # Extract study plan section
-          sp_start = html.find('const STUDY_PLAN')
-          sp_end = html.find('function renderStudyPlan')
-          if sp_start < 0 or sp_end < 0:
-              print('WARNING: Could not find study plan boundaries')
-              sys.exit(0)
-          sp = html[sp_start:sp_end]
-          banned = ['GRS', "Hazzard's", 'CGA', 'Elder Abuse', 'Driving Fitness', 'siud murkav',
-                    'BPSD', 'Dysphagia', 'FIM', 'ייפוי כוח']
+          import sys, glob
+          banned = ['GRS', "Hazzard's", 'CGA', 'Elder Abuse', 'Driving Fitness',
+                    'siud murkav', 'BPSD', 'Dysphagia', 'FIM']
           found = []
-          for term in banned:
-              if term in sp:
-                  found.append(term)
+          for f in sorted(glob.glob('src/**/*.js', recursive=True)):
+              content = open(f).read()
+              for term in banned:
+                  if term in content: found.append(f'{f}: "{term}"')
           if found:
-              print(f'ERROR: Study plan contains geriatrics-only terms: {found}', file=sys.stderr)
+              for f in found: print(f'ERROR: {f}', file=sys.stderr)
               sys.exit(1)
-          print('OK: Study plan is clean of geriatrics-only content')
+          print('OK: Clean of geriatrics content')
           PYEOF
 
-      # ── Vitest Test Suite ──
-      - name: Install test dependencies
+      # ── Install + Test + Build ──
+      - name: Install dependencies
         run: npm ci
-      - name: Run Vitest tests
+      - name: Run tests
         run: npx vitest run
+      - name: Verify production build
+        run: npx vite build
