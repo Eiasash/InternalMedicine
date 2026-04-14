@@ -268,7 +268,7 @@ const libTabs=[
 ];
 h+=`<div style="display:flex;gap:4px;overflow-x:auto;padding:4px 0;margin-bottom:12px;-webkit-overflow-scrolling:touch">`;
 libTabs.forEach(t=>{
-h+=`<span class="pill ${libSec===t.id?'on':''}" style="white-space:nowrap;font-size:10px" onclick="libSec='${t.id}';G.render()">${t.l}</span>`;
+h+=`<span class="pill ${G.libSec===t.id?'on':''}" style="white-space:nowrap;font-size:10px" onclick="libSec='${t.id}';G.render()">${t.l}</span>`;
 });
 h+=`</div>`;
 
