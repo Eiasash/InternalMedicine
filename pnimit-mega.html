@@ -160,37 +160,6 @@ body.dark .leaderboard-row{border-color:#334155}
 
 
 
-/* ===== MED BASKET ===== */
-.med-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:16px;font-size:10px;font-weight:600;background:#eff6ff;color:#1d4ed8;cursor:pointer;border:1px solid #bfdbfe;margin:2px}
-.med-chip .x{font-size:12px;font-weight:700;margin-left:2px;opacity:.6}
-.med-chip .x:hover{opacity:1}
-body.dark .med-chip{background:#1e3a5f;color:#93c5fd;border-color:#1e40af}
-.acb-meter{height:10px;border-radius:5px;background:#e2e8f0;overflow:hidden;margin:6px 0}
-.acb-meter .acb-fill{height:100%;border-radius:5px;transition:width .3s}
-
-
-/* ===== LAB OVERLAY ===== */
-.lab-modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-.lab-sheet{background:#fff;width:calc(100% - 24px);max-width:600px;max-height:85vh;border-radius:20px;overflow-y:auto;padding:20px 16px;animation:fadeIn .2s ease}
-body.dark .lab-sheet{background:#1e293b;color:#e2e8f0}
-.range-bar{height:8px;border-radius:4px;background:#e2e8f0;position:relative;margin:8px 0}
-.range-bar .normal{position:absolute;height:100%;background:#bbf7d0;border-radius:4px}
-.range-bar .marker{position:absolute;width:3px;height:16px;top:-4px;background:#1e293b;border-radius:2px}
-body.dark .range-bar{background:#334155}
-body.dark .range-bar .marker{background:#f1f5f9}
-.frailty-slider{width:100%;-webkit-appearance:none;height:6px;border-radius:3px;background:linear-gradient(to right,#bbf7d0,#fde68a,#fecaca);outline:none}
-.frailty-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#1e293b;cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2)}
-body.dark .frailty-slider::-webkit-slider-thumb{background:#e2e8f0;border-color:#334155}
-
-/* ===== CHEAT SHEET ===== */
-.aging-row{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid #f1f5f9;font-size:10px}
-.aging-row .cell{padding:8px 10px;line-height:1.5}
-.aging-row .normal-cell{background:#f0fdf4;color:#166534}
-.aging-row .path-cell{background:#fef2f2;color:#991b1b}
-body.dark .aging-row{border-color:#334155}
-body.dark .aging-row .normal-cell{background:#064e3b;color:#6ee7b7}
-body.dark .aging-row .path-cell{background:#450a0a;color:#fca5a5}
-
 /* ===== DISTRACTOR AUTOPSY ===== */
 .distractor-highlight{border:2px solid #f59e0b !important;background:#fffbeb !important;position:relative}
 .distractor-highlight::before{content:'🔍';position:absolute;top:-8px;right:-8px;font-size:14px}
@@ -666,7 +635,6 @@ const _dataPromise = (async function loadDataArrays() {
     DRUGS: 'drugs.json',
     FLASH: 'flashcards.json',
     TABS: 'tabs.json',
-    // OSCE removed
   };
   try {
     const entries = Object.entries(files);
@@ -685,8 +653,7 @@ const _dataPromise = (async function loadDataArrays() {
       else if (varName === 'DRUGS') DRUGS = results[i];
       else if (varName === 'FLASH') FLASH = results[i];
       else if (varName === 'TABS') TABS = results[i];
-      // OSCE removed
-    });
+      });
     _dataReady = true;
     const _xp=safeJSONParse('pnimit_pending_qs',[]);
     const _xc=safeJSONParse('pnimit_custom_qs',[]);
@@ -2227,14 +2194,6 @@ return h;
 }
 
 
-// ===== OSCE =====
-
-
-let oi=-1,oint=null,ocks={};
-function exitO(){if(oint)clearInterval(oint);oi=-1;orun=false;render();}
-// togOT, togOck removed — dead code
-
-// renderOsce removed v9.10
 // ===== TRACKER =====
 const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 // topic index → {source:'haz'|'notes', label, action} for deep link
@@ -3322,7 +3281,6 @@ case'flash':tab='learn';learnSub='flash';el.innerHTML='';render();break;
 case'drugs':tab='learn';learnSub='drugs';el.innerHTML='';render();break;
 case'lib':el.innerHTML=renderLibrary();break;
 case'articles':libSec='articles';tab='lib';el.innerHTML=renderLibrary();break;
-// OSCE removed v9.9
 case'track':
   if(!_sessionSaved&&(_sessionOk+_sessionNo)>=5){
     saveSessionSummary();_sessionSaved=true;
@@ -3403,8 +3361,14 @@ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=
 
 
 // ===== FEEDBACK & DIAGNOSTICS =====
-const APP_VERSION='9.39';
+const APP_VERSION='9.40';
 const CHANGELOG={
+'9.40':[
+'📚 +140 questions across 10 weak topics (Valvular, ICU, Derm, Allergy, Fluids, Pain, Periop, Tox, Onc, Vascular) — total 1309',
+'🔧 Fixed 4 questions with duplicate/empty options (Q135, Q280, Q308, Q342)',
+'🗑️ OSCE dead code removed, dead Med Basket/Lab/Aging CSS removed (~2.3KB)',
+'🧪 Test coverage +33 — AI proxy routing, sanitization, SRS/FSRS, CSP tests',
+],
 '9.39':[
 '🔒 XSS: sanitize AI-generated question fields in quizMeOnChapter',
 '🔒 XSS: sanitize leaderboard data from Supabase',
