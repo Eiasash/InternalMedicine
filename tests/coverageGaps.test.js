@@ -8,8 +8,9 @@ const stateJs = readFileSync('src/core/state.js', 'utf-8');
 const srJs = readFileSync('src/sr/spaced-repetition.js', 'utf-8');
 const quizJs = readFileSync('src/quiz/engine.js', 'utf-8');
 const aiClientJs = readFileSync('src/ai/client.js', 'utf-8');
+const aiExplainJs = readFileSync('src/ai/explain.js', 'utf-8');
 // Combined source: HTML + external JS for constant/function lookups
-const allSource = html + '\n' + constantsJs + '\n' + utilsJs + '\n' + stateJs + '\n' + srJs + '\n' + quizJs + '\n' + aiClientJs;
+const allSource = html + '\n' + constantsJs + '\n' + utilsJs + '\n' + stateJs + '\n' + srJs + '\n' + quizJs + '\n' + aiClientJs + '\n' + aiExplainJs;
 
 // Extract JS between first <script> and last </script>
 const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/);
