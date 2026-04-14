@@ -1,20 +1,21 @@
+import G from './globals.js';
 // Utility functions — extracted from pnimit-mega.html
 
 // Safe localStorage JSON parser
-function safeJSONParse(key,fallback){try{const r=localStorage.getItem(key);if(!r)return fallback;const p=JSON.parse(r);return p??fallback;}catch(e){try{localStorage.removeItem(key);}catch(_){}return fallback;}}
+export function safeJSONParse(key,fallback){try{const r=localStorage.getItem(key);if(!r)return fallback;const p=JSON.parse(r);return p??fallback;}catch(e){try{localStorage.removeItem(key);}catch(_){}return fallback;}}
 
 // XSS-safe string escaping
-function sanitize(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+export function sanitize(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
 // API key management
-function getApiKey(){return localStorage.getItem('pnimit_apikey')||'';}
-function setApiKey(k){if(k)localStorage.setItem('pnimit_apikey',k.trim());else localStorage.removeItem('pnimit_apikey');}
+export function getApiKey(){return localStorage.getItem('pnimit_apikey')||'';}
+export function setApiKey(k){if(k)localStorage.setItem('pnimit_apikey',k.trim());else localStorage.removeItem('pnimit_apikey');}
 
 // Format seconds as H:MM:SS or MM:SS
-function fmtT(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return(h?h+':':'')+String(m).padStart(2,'0')+':'+String(sc).padStart(2,'0')}
+export function fmtT(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return(h?h+':':'')+String(m).padStart(2,'0')+':'+String(sc).padStart(2,'0')}
 
 // Option shuffle utilities
-function isMetaOption(text){
+export function isMetaOption(text){
   // Detect options that reference letter positions or aggregate all answers
   // These must NOT be shuffled as their content references other option positions
   const t=(text||'').trim();
@@ -31,7 +32,7 @@ function isMetaOption(text){
   ];
   return metaPatterns.some(p=>p.test(t));
 }
-function remapExplanationLetters(text,shuf){
+export function remapExplanationLetters(text,shuf){
   const inv={};shuf.forEach((orig,disp)=>{inv[orig]=disp;});
   const letters=['A','B','C','D','E'];
   const heb=['א','ב','ג','ד','ה'];
@@ -45,9 +46,9 @@ function remapExplanationLetters(text,shuf){
     return prefix+heb[inv[origIdx]];
   });
 }
-function getOptShuffle(qIdx,q){
+export function getOptShuffle(qIdx,q){
   // Return stable shuffle for this question in this session
-  if(_optShuffle&&_optShuffle.qIdx===qIdx)return _optShuffle.map;
+  if(G._optShuffle&&G._optShuffle.qIdx===qIdx)return G._optShuffle.map;
   const n=q.o.length;
   // Separate meta-options (pin to end) from regular options (shuffle)
   const regular=[],meta=[];
@@ -61,6 +62,6 @@ function getOptShuffle(qIdx,q){
   }
   // Meta options stay at end in original relative order
   const map=[...regular,...meta];
-  _optShuffle={qIdx,map};
+  G._optShuffle={qIdx,map};
   return map;
 }

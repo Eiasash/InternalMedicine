@@ -1,44 +1,68 @@
-// App orchestrator — extracted from pnimit-mega.html
-// render(), renderTabs, go, theme toggles, share, help, SW boot
+// App entry point — orchestrates all modules, wires up window bindings for onclick handlers
+import G from '../core/globals.js';
+import { APP_VERSION, LS, TOPICS, EXAM_FREQ, CHANGELOG, BUILD_HASH } from '../core/constants.js';
+import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey } from '../core/utils.js';
+import { migrateToIDB } from '../core/state.js';
+import '../core/data-loader.js'; // side-effect: populates G.QZ, G.TABS, etc.
+import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, buildRescuePool,
+         srScore, trackChapterRead, getChaptersDueForReading, isExamTrap } from '../sr/spaced-repetition.js';
+import { buildPool, setFilt, setTopicFilt, startOnCallMode, exitOnCallMode, flipCard,
+         onCallPick, renderOnCall, runExplainOnCall, pick, check, next, _storeDiff,
+         startTopicMiniExam, endMiniExam, startExam, startMockExam, endExam, endMockExam,
+         checkMockIntercept, showMockExamResult, buildMockExamPool } from '../quiz/engine.js';
+import { requestWakeLock, startPomodoro, stopPomodoro, startSuddenDeath, endSuddenDeath,
+         speakQuestion, startNextBestStep, startVoiceParser } from '../quiz/modes.js';
+import { callAI } from '../ai/client.js';
+import { explainWithAI, aiAutopsy, gradeTeachBack, renderExplainBox, toggleFlagExplain,
+         startVoiceTeachBack } from '../ai/explain.js';
+import { submitLeaderboardScore, fetchLeaderboard, showLeaderboard, renderFeedback,
+         submitFeedbackForm, cloudBackup, cloudRestore, getDiagnostics, submitReport,
+         saveAnswerReport, _sbDeviceId } from '../features/cloud.js';
+import { renderQuiz, toggleBk, uploadQImage, removeQImage, viewImg, pauseTimed,
+         startTimedQ, stopTimedMode, sdCheck, sdNext } from './quiz-view.js';
+import { renderStudy, toggleNote, filterNotes, renderFlash, renderDrugs } from './learn-view.js';
+import { renderLibrary, renderPriorityMatrix, renderWrongAnswerLog, openHarrisonChapter,
+         toggleHarrisonAI, submitHarrisonAI, aiSummarizeChapter, quizMeOnChapter,
+         addChapterQsToBank } from './library-view.js';
+import { renderTrack, renderCalc, calcUp, calcEstScore, renderStudyPlan, renderExamTrendCard,
+         renderDailyPlan, renderSessionCard, setExamDate, exportCheatSheet,
+         saveSessionSummary } from './track-view.js';
+import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
+         showAnswerHardFail } from './more-view.js';
 
-let tab='quiz';
-let learnSub='study';
-let moreSub='calc';
-let libSec='harrison';
-let harChOpen=null,_harData=null,_harLoading=false;
-function renderTabs(){
-document.getElementById('tb').innerHTML=TABS.map(t=>
+export function renderTabs(){
+document.getElementById('tb').innerHTML=G.TABS.map(t=>
 `<button class="${t.id===tab?'on':''}" onclick="go('${t.id}')" aria-label="${t.l}"><span class="ic">${t.ic}</span>${t.l}</button>`
 ).join('');
 }
-function go(t){tab=t;renderTabs();render()}
+export function go(t){G.tab=t;renderTabs();render()}
 
 
-function render(){
+export function render(){
 const el=document.getElementById('ct');
 const focused=document.activeElement?.id;
 const sv={srchi:document.getElementById('srchi')?.value,nfilt:document.getElementById('nfilt')?.value,dsrch:document.getElementById('dsrch')?.value};
-if(tab!==lastTab){el.classList.remove('fade-in');void el.offsetWidth;el.classList.add('fade-in');window.scrollTo({top:0});lastTab=tab;}
-switch(tab){
-case'quiz':el.innerHTML=onCallMode?renderOnCall():renderQuiz();break;
+if(G.tab!==G.lastTab){el.classList.remove('fade-in');void el.offsetWidth;el.classList.add('fade-in');window.scrollTo({top:0});G.lastTab=G.tab;}
+switch(G.tab){
+case'quiz':el.innerHTML=G.onCallMode?renderOnCall():renderQuiz();break;
 case'learn':
   {const _subBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
   [{id:'study',ic:'📚',l:'Study'},{id:'flash',ic:'🃏',l:'Cards'},{id:'drugs',ic:'💊',l:'Drugs'}].map(s=>
     '<button onclick="learnSub=\''+s.id+'\';render()" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(learnSub===s.id?'700':'400')+';cursor:pointer;background:'+(learnSub===s.id?'#fff':'transparent')+';color:'+(learnSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(learnSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
   let _body='';
-  if(learnSub==='study')_body=renderStudy();
-  else if(learnSub==='flash')_body=renderFlash();
-  else if(learnSub==='drugs')_body=renderDrugs();
+  if(G.learnSub==='study')_body=renderStudy();
+  else if(G.learnSub==='flash')_body=renderFlash();
+  else if(G.learnSub==='drugs')_body=renderDrugs();
   el.innerHTML=_subBar+_body;}break;
-case'study':tab='learn';learnSub='study';el.innerHTML='';render();break;
-case'flash':tab='learn';learnSub='flash';el.innerHTML='';render();break;
-case'drugs':tab='learn';learnSub='drugs';el.innerHTML='';render();break;
+case'study':G.tab='learn';G.learnSub='study';el.innerHTML='';render();break;
+case'flash':G.tab='learn';G.learnSub='flash';el.innerHTML='';render();break;
+case'drugs':G.tab='learn';G.learnSub='drugs';el.innerHTML='';render();break;
 case'lib':el.innerHTML=renderLibrary();break;
-case'articles':libSec='articles';tab='lib';el.innerHTML=renderLibrary();break;
+case'articles':G.libSec='articles';G.tab='lib';el.innerHTML=renderLibrary();break;
 case'track':
-  if(!_sessionSaved&&(_sessionOk+_sessionNo)>=5){
-    saveSessionSummary();_sessionSaved=true;
+  if(!G._sessionSaved&&(G._sessionOk+G._sessionNo)>=5){
+    saveSessionSummary();G._sessionSaved=true;
   }
   el.innerHTML=renderTrack();break;
 case'more':
@@ -47,16 +71,16 @@ case'more':
     '<button onclick="moreSub=\''+s.id+'\';render()" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(moreSub===s.id?'700':'400')+';cursor:pointer;background:'+(moreSub===s.id?'#fff':'transparent')+';color:'+(moreSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(moreSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
   let _mBody='';
-  if(moreSub==='calc')_mBody=renderCalc();
-  else if(moreSub==='search')_mBody=renderSearch();
-  else if(moreSub==='chat')_mBody=renderChat();
-  else if(moreSub==='feedback')_mBody=renderFeedback();
+  if(G.moreSub==='calc')_mBody=renderCalc();
+  else if(G.moreSub==='search')_mBody=renderSearch();
+  else if(G.moreSub==='chat')_mBody=renderChat();
+  else if(G.moreSub==='feedback')_mBody=renderFeedback();
   el.innerHTML=_moreBar+_mBody;}break;
-case'calc':tab='more';moreSub='calc';el.innerHTML='';render();break;
-case'search':tab='more';moreSub='search';el.innerHTML='';render();break;
-case'chat':tab='more';moreSub='chat';el.innerHTML='';render();break;
-case'book':case'syl':tab='lib';el.innerHTML=renderLibrary();break;
-default:tab='quiz';el.innerHTML=renderQuiz();break;
+case'calc':G.tab='more';G.moreSub='calc';el.innerHTML='';render();break;
+case'search':G.tab='more';G.moreSub='search';el.innerHTML='';render();break;
+case'chat':G.tab='more';G.moreSub='chat';el.innerHTML='';render();break;
+case'book':case'syl':G.tab='lib';el.innerHTML=renderLibrary();break;
+default:G.tab='quiz';el.innerHTML=renderQuiz();break;
 }
 // Ward modal
 
@@ -69,31 +93,31 @@ if(focused){const fe=document.getElementById(focused);if(fe){fe.focus();if(fe.va
 
 
 // ===== DARK MODE =====
-function toggleDark(){document.body.classList.toggle('dark');S.dark=document.body.classList.contains('dark');if(S.dark&&document.body.classList.contains('study')){document.body.classList.remove('study');S.studyMode=false;}save();}
-function toggleStudyMode(){document.body.classList.toggle('study');S.studyMode=document.body.classList.contains('study');if(S.studyMode&&document.body.classList.contains('dark')){document.body.classList.remove('dark');S.dark=false;}save();}
-if(S.dark)document.body.classList.add('dark');
-if(S.studyMode)document.body.classList.add('study');
+export function toggleDark(){document.body.classList.toggle('dark');G.S.dark=document.body.classList.contains('dark');if(G.S.dark&&document.body.classList.contains('study')){document.body.classList.remove('study');G.S.studyMode=false;}G.save();}
+export function toggleStudyMode(){document.body.classList.toggle('study');G.S.studyMode=document.body.classList.contains('study');if(G.S.studyMode&&document.body.classList.contains('dark')){document.body.classList.remove('dark');G.S.dark=false;}G.save();}
+if(G.S.dark)document.body.classList.add('dark');
+if(G.S.studyMode)document.body.classList.add('study');
 
 // ===== FLASHCARD SPACED REP =====
-function fcRate(q){// q: 0=again, 1=hard, 2=easy
-const key='fc_'+S.fci%FLASH.length;
-if(!S.fcsr)S.fcsr={};
-if(!S.fcsr[key])S.fcsr[key]={n:0,next:0};
-const s=S.fcsr[key];
+export function fcRate(q){// q: 0=again, 1=hard, 2=easy
+const key='fc_'+G.S.fci%G.FLASH.length;
+if(!G.S.fcsr)G.S.fcsr={};
+if(!G.S.fcsr[key])G.S.fcsr[key]={n:0,next:0};
+const s=G.S.fcsr[key];
 const days=q===0?0:q===1?1:4;
 s.n=q===0?0:s.n+1;s.next=Date.now()+days*86400000;
-S.fci++;S.fcFlip=false;save();render();
+G.S.fci++;G.S.fcFlip=false;G.save();render();
 }
 
 // ===== SHARE =====
-function shareQ(){
-const q=QZ[pool[qi]];
+export function shareQ(){
+const q=G.QZ[G.pool[G.qi]];
 let txt=q.q+'\n';
 q.o.forEach((o,i)=>{txt+=(i===q.c?'✅ ':'❌ ')+o+'\n';});
 if(navigator.share){navigator.share({title:'Pnimit Mega — Question',text:txt}).catch(()=>{});}
 else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>{const b=document.getElementById('shbtn');if(b){b.textContent='✅ הועתק';setTimeout(()=>b.textContent='📋 שתף',1500)}});
 }
-function shareApp(){
+export function shareApp(){
 const url=location.href;
 if(navigator.share){navigator.share({title:'Pnimit Mega — Internal Medicine Board Prep',text:'Internal Medicine Board Prep — Harrison\'s 22e + Required Articles + Calculators + Spaced Repetition',url:url}).catch(()=>{});}
 else if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>alert('✅ Link copied!'));}
@@ -101,27 +125,27 @@ else if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>alert('
 
 // ===== EXPORT PROGRESS =====
 
-function importProgress(){
+export function importProgress(){
 const input=document.createElement('input');input.type='file';input.accept='.json';
 input.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
-r.onload=ev=>{try{const d=JSON.parse(ev.target.result);Object.assign(S,d);save();render();
+r.onload=ev=>{try{const d=JSON.parse(ev.target.result);Object.assign(G.S,d);G.save();render();
 alert('✅ Progress imported successfully!');}catch(err){alert('❌ Invalid file');}};r.readAsText(f);};
 input.click();}
 
-function exportProgress(){
-const data=JSON.stringify(S,null,2);
+export function exportProgress(){
+const data=JSON.stringify(G.S,null,2);
 const blob=new Blob([data],{type:'application/json'});
 const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='pnimit-progress.json';a.click();
 }
 
 
-function takeWeeklySnapshot(){
+export function takeWeeklySnapshot(){
   try{
     const now=new Date();
     const weekKey='w_'+now.getFullYear()+'_'+Math.floor((now-new Date(now.getFullYear(),0,0))/(7*864e5));
     const snapshots=JSON.parse(localStorage.getItem('pnimit_weekly')||'{}');
     if(snapshots[weekKey])return; // already taken this week
-    const tSt=S&&S.ts?S.ts:{};
+    const tSt=G.S&&G.S.ts?G.S.ts:{};
     const snap={};
     for(let i=0;i<TOPICS.length;i++){const s=tSt[i]||{ok:0,no:0,tot:0};snap[i]=s.tot>0?Math.round(s.ok/s.tot*100):null;}
     snapshots[weekKey]={date:now.toISOString(),acc:snap};
@@ -130,7 +154,7 @@ function takeWeeklySnapshot(){
     localStorage.setItem('pnimit_weekly',JSON.stringify(snapshots));
   }catch(e){}
 }
-function getTopicTrend(ti){
+export function getTopicTrend(ti){
   try{
     const snapshots=JSON.parse(localStorage.getItem('pnimit_weekly')||'{}');
     const keys=Object.keys(snapshots).sort();
@@ -146,7 +170,7 @@ function getTopicTrend(ti){
 
 
 
-function showHelp(){
+export function showHelp(){
 const ov=document.createElement('div');
 ov.id='help-overlay';
 ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px';
@@ -192,14 +216,14 @@ ${sec('Study Modes','📚','#dc2626',
 )}
 ${sec('Progress Tracking','📊','#f59e0b',
 '<b>⏱️ Answer Timer</b> — Silently tracks time per question<br>'+
-'<b>🗺️ Weak Spots Map</b> — Topic × Year heatmap (Track tab)<br>'+
+'<b>🗺️ Weak Spots Map</b> — Topic × Year heatmap (Track G.tab)<br>'+
 '<b>📊 Accuracy Bars</b> — Per-topic accuracy sorted worst-first<br>'+
 '<b>☁️ Cloud Sync</b> — Backup/restore progress across devices<br>'+
 '<b>🔥 Streak</b> — Daily study streak'
 )}
 <div style="padding:10px;background:#f0fdf4;border-radius:10px;margin-bottom:12px">
 <div style="font-weight:700;font-size:11px;margin-bottom:4px">🚀 Quick Start</div>
-<div style="font-size:10px;line-height:1.7">1. Tap <b>Quiz</b> → answer questions<br>2. Check <b>🔬 Distractor Autopsy</b> for AI analysis<br>3. Review <b>Track</b> tab for weak spots<br>4. Use <b>🔥 Hard</b> filter to drill mistakes<br>5. Read <b>Library → Harrison</b> for chapter content</div>
+<div style="font-size:10px;line-height:1.7">1. Tap <b>Quiz</b> → answer questions<br>2. Check <b>🔬 Distractor Autopsy</b> for AI analysis<br>3. Review <b>Track</b> G.tab for weak spots<br>4. Use <b>🔥 Hard</b> filter to drill mistakes<br>5. Read <b>Library → Harrison</b> for chapter content</div>
 </div>
 <div style="text-align:center;font-size:9px;color:#94a3b8;line-height:1.5">
 صدقة جارية الى من نحب<br>Ceaseless Charity — To the People That We Love<br><br>
@@ -237,7 +261,7 @@ setTimeout(showUpdateBanner,1000);
 
 
 
-function showUpdateBanner(){
+export function showUpdateBanner(){
 const existing=document.getElementById('update-banner');
 if(existing)return;
 const b=document.createElement('div');
@@ -250,7 +274,7 @@ b.innerHTML=`<div><b>🆕 עדכון זמין!</b> גרסה חדשה מוכנה<
 </div>`;
 document.body.prepend(b);
 }
-function applyUpdate(){
+export function applyUpdate(){
 if(navigator.serviceWorker&&navigator.serviceWorker.controller){
 navigator.serviceWorker.getRegistrations().then(regs=>{
 regs.forEach(r=>{if(r.waiting)r.waiting.postMessage({type:'SKIP_WAITING'});});
@@ -277,7 +301,7 @@ const nw=reg.installing;
 if(nw){nw.addEventListener('statechange',()=>{if(nw.state==='installed'&&navigator.serviceWorker.controller){showUpdateBanner();}});}
 });
 // Schedule daily notification at 07:00
-function scheduleDailyNotification(){
+export function scheduleDailyNotification(){
 const now=new Date();
 const target=new Date(now);
 target.setHours(7,0,0,0);
@@ -300,4 +324,87 @@ scheduleDailyNotification();
 }
 // queueBackgroundSync removed — dead code
 
-_dataPromise.then(()=>{renderTabs();render();}).catch(()=>{});
+G._dataPromise.then(()=>{renderTabs();render();}).catch(()=>{});
+
+// === Wire up G references for cross-module calls ===
+G.render = render;
+G.renderTabs = renderTabs;
+
+// === Window bindings for onclick/onchange/oninput handlers in HTML strings ===
+const _w = window;
+// Core navigation
+_w.go = go; _w.render = render; _w.renderTabs = renderTabs;
+// Quiz
+_w.pick = pick; _w.check = check; _w.next = next; _w.toggleBk = toggleBk;
+_w.setFilt = setFilt; _w.setTopicFilt = setTopicFilt; _w.buildPool = buildPool;
+_w.startExam = startExam; _w.startMockExam = startMockExam;
+_w.startTopicMiniExam = startTopicMiniExam;
+_w.startOnCallMode = startOnCallMode; _w.exitOnCallMode = exitOnCallMode;
+_w.flipCard = flipCard; _w.onCallPick = onCallPick;
+_w.runExplainOnCall = runExplainOnCall;
+_w.sdCheck = sdCheck; _w.sdNext = sdNext;
+_w.startSuddenDeath = startSuddenDeath; _w.endSuddenDeath = endSuddenDeath;
+_w.startNextBestStep = startNextBestStep;
+_w.speakQuestion = speakQuestion; _w.startVoiceParser = startVoiceParser;
+_w.startPomodoro = startPomodoro; _w.stopPomodoro = stopPomodoro;
+_w.pauseTimed = pauseTimed; _w.startTimedQ = startTimedQ; _w.stopTimedMode = stopTimedMode;
+_w.buildRescuePool = buildRescuePool;
+// AI
+_w.explainWithAI = explainWithAI; _w.aiAutopsy = aiAutopsy; _w.gradeTeachBack = gradeTeachBack;
+_w.toggleFlagExplain = toggleFlagExplain; _w.startVoiceTeachBack = startVoiceTeachBack;
+_w.callAI = callAI;
+// Library
+_w.openHarrisonChapter = openHarrisonChapter; _w.toggleHarrisonAI = toggleHarrisonAI;
+_w.submitHarrisonAI = submitHarrisonAI; _w.aiSummarizeChapter = aiSummarizeChapter;
+_w.quizMeOnChapter = quizMeOnChapter; _w.addChapterQsToBank = addChapterQsToBank;
+// Learn
+_w.toggleNote = toggleNote; _w.filterNotes = filterNotes; _w.fcRate = fcRate;
+// Track
+_w.calcUp = calcUp; _w.setExamDate = setExamDate; _w.exportCheatSheet = exportCheatSheet;
+// Cloud & social
+_w.showLeaderboard = showLeaderboard; _w.submitFeedbackForm = submitFeedbackForm;
+_w.cloudBackup = cloudBackup; _w.cloudRestore = cloudRestore;
+_w.submitReport = submitReport; _w.showAnswerHardFail = showAnswerHardFail;
+// More
+_w.sendChat = sendChat; _w.sendChatStarter = sendChatStarter; _w.clearChat = clearChat;
+_w.setApiKey = setApiKey;
+// Settings
+_w.toggleDark = toggleDark; _w.toggleStudyMode = toggleStudyMode;
+_w.showHelp = showHelp; _w.applyUpdate = applyUpdate;
+_w.importProgress = importProgress; _w.exportProgress = exportProgress;
+_w.shareQ = shareQ; _w.shareApp = shareApp;
+_w.uploadQImage = uploadQImage; _w.removeQImage = removeQImage; _w.viewImg = viewImg;
+_w.saveAnswerReport = saveAnswerReport;
+_w.takeWeeklySnapshot = takeWeeklySnapshot;
+
+// === Boot ===
+// Wake lock
+requestWakeLock();
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') requestWakeLock();
+});
+
+// Header version
+{const hv=document.getElementById('headerVer');if(hv)hv.textContent='v'+APP_VERSION;}
+
+// IDB migration → initial render
+migrateToIDB().then(()=>{
+  renderTabs();render();
+  if(!localStorage.getItem('pnimit_seen_help')){localStorage.setItem('pnimit_seen_help','1');setTimeout(showHelp,500);}
+}).catch(e=>{console.error('IDB init failed, falling back to localStorage:',e);renderTabs();render();});
+
+// Prevent accidental navigation during mock exam
+window.addEventListener('beforeunload', function(e){
+  if(G.examMode&&(G.S.qOk+G.S.qNo)>0){
+    e.preventDefault(); e.returnValue='Mock exam in progress — are you sure you want to leave?';
+    return e.returnValue;
+  }
+});
+// iOS Safari: save on background
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState==='hidden'){
+    try{localStorage.setItem('pnimit_mega',JSON.stringify(G.S));}catch(e){}
+  }
+});
+// Data promise → render after load
+G._dataPromise.then(()=>{renderTabs();render();}).catch(()=>{});

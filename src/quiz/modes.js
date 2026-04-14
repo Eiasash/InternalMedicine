@@ -1,105 +1,103 @@
+try{G.sdLeaderboard=JSON.parse(localStorage.getItem('pnimit_sd_lb')||'[]')}catch(e){}
 // Quiz modes & peripherals — extracted from pnimit-mega.html
 // Wake lock, pomodoro, sudden death, blind recall, speech, NBS, voice parser
-// References at runtime: render, QZ, pool, qi, sel, ans, filt, fmtT, srchQ, tab
+// References at runtime: G.render, G.QZ, G.pool, G.qi, G.sel, G.ans, G.filt, fmtT, G.srchQ, G.tab
 
 // ===== SCREEN WAKE LOCK =====
-let wakeLock=null;
-async function requestWakeLock(){
+let G.wakeLock=null;
+async export function requestWakeLock(){
 try{
-if('wakeLock' in navigator){
-wakeLock=await navigator.wakeLock.request('screen');
-wakeLock.addEventListener('release',()=>{wakeLock=null;});
+if('G.wakeLock' in navigator){
+G.wakeLock=await navigator.wakeLock.request('screen');
+G.wakeLock.addEventListener('release',()=>{G.wakeLock=null;});
 }
 }catch(e){/* user denied or unsupported */}
 }
-document.addEventListener('visibilitychange',()=>{
-if(document.visibilityState==='visible')requestWakeLock();
-});
-requestWakeLock();
+// Wake lock init moved to app.js boot
 
 // ===== POMODORO TIMER =====
-let pomoActive=false,pomoSec=3000,pomoBreak=false,pomoBreakSec=300,pomoInterval=null;
-function startPomodoro(){
-pomoActive=true;pomoSec=3000;pomoBreak=false;pomoBreakSec=300;
-if(pomoInterval)clearInterval(pomoInterval);
-pomoInterval=setInterval(()=>{
-if(pomoBreak){
-pomoBreakSec--;
-if(pomoBreakSec<=0){pomoBreak=false;pomoSec=3000;}
+let G.pomoActive=false,G.pomoSec=3000,G.pomoBreak=false,G.pomoBreakSec=300,G.pomoInterval=null;
+export function startPomodoro(){
+G.pomoActive=true;G.pomoSec=3000;G.pomoBreak=false;G.pomoBreakSec=300;
+if(G.pomoInterval)clearInterval(G.pomoInterval);
+G.pomoInterval=setInterval(()=>{
+if(G.pomoBreak){
+G.pomoBreakSec--;
+if(G.pomoBreakSec<=0){G.pomoBreak=false;G.pomoSec=3000;}
 }else{
-pomoSec--;
-if(pomoSec<=0){pomoBreak=true;pomoBreakSec=300;}
+G.pomoSec--;
+if(G.pomoSec<=0){G.pomoBreak=true;G.pomoBreakSec=300;}
 }
 const bar=document.getElementById('pomo-fill');
-if(bar&&!pomoBreak)bar.style.width=((3000-pomoSec)/3000*100)+'%';
+if(bar&&!G.pomoBreak)bar.style.width=((3000-G.pomoSec)/3000*100)+'%';
 const el=document.getElementById('pomo-time');
-if(el)el.textContent=fmtT(pomoBreak?pomoBreakSec:pomoSec);
-if(pomoBreak)renderPomoOverlay();
+if(el)el.textContent=fmtT(G.pomoBreak?G.pomoBreakSec:G.pomoSec);
+if(G.pomoBreak)renderPomoOverlay();
 else{const ov=document.getElementById('pomo-overlay');if(ov)ov.remove();}
 },1000);
-render();
+G.render();
 }
-function stopPomodoro(){pomoActive=false;clearInterval(pomoInterval);pomoInterval=null;
-const ov=document.getElementById('pomo-overlay');if(ov)ov.remove();render();}
-function renderPomoOverlay(){
-if(!pomoBreak)return;
+export function stopPomodoro(){G.pomoActive=false;clearInterval(G.pomoInterval);G.pomoInterval=null;
+const ov=document.getElementById('pomo-overlay');if(ov)ov.remove();G.render();}
+export function renderPomoOverlay(){
+if(!G.pomoBreak)return;
 if(document.getElementById('pomo-overlay'))return;
 const div=document.createElement('div');div.id='pomo-overlay';div.className='pomo-overlay';
 div.innerHTML=`<h2>Break Time</h2><p style="font-size:13px;margin-bottom:16px;color:#94a3b8">Rest your eyes. Stand up. Stretch.</p>
-<div class="pomo-break-timer" id="pomo-break-display">${fmtT(pomoBreakSec)}</div>
-<p style="font-size:10px;margin-top:12px;color:#64748b">Auto-resumes in ${Math.ceil(pomoBreakSec/60)} min</p>`;
+<div class="pomo-break-timer" id="pomo-break-display">${fmtT(G.pomoBreakSec)}</div>
+<p style="font-size:10px;margin-top:12px;color:#64748b">Auto-resumes in ${Math.ceil(G.pomoBreakSec/60)} min</p>`;
 document.body.appendChild(div);
 const iv=setInterval(()=>{const d=document.getElementById('pomo-break-display');
-if(!pomoBreak||!d){clearInterval(iv);const o=document.getElementById('pomo-overlay');if(o)o.remove();return;}
-d.textContent=fmtT(pomoBreakSec);},1000);
+if(!G.pomoBreak||!d){clearInterval(iv);const o=document.getElementById('pomo-overlay');if(o)o.remove();return;}
+d.textContent=fmtT(G.pomoBreakSec);},1000);
 }
 
 // ===== SUDDEN DEATH MODE =====
-let sdMode=false,sdStreak=0,sdPool=[],sdQi=0;
-let sdLeaderboard=JSON.parse(localStorage.getItem('pnimit_sd_lb')||'[]');
-function startSuddenDeath(){
-sdMode=true;sdStreak=0;sdPool=QZ.map((_,i)=>i);
-for(let i=sdPool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[sdPool[i],sdPool[j]]=[sdPool[j],sdPool[i]];}
-sdQi=0;sel=null;ans=false;render();
+let G.sdMode=false,G.sdStreak=0,G.sdPool=[],G.sdQi=0;
+let G.sdLeaderboard=JSON.parse(localStorage.getItem('pnimit_sd_lb')||'[]');
+export function startSuddenDeath(){
+G.sdMode=true;G.sdStreak=0;G.sdPool=G.QZ.map((_,i)=>i);
+for(let i=G.sdPool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[G.sdPool[i],G.sdPool[j]]=[G.sdPool[j],G.sdPool[i]];}
+G.sdQi=0;G.sel=null;G.ans=false;G.render();
 }
-function endSuddenDeath(){
-sdLeaderboard.push({streak:sdStreak,date:new Date().toISOString().slice(0,10)});
-sdLeaderboard.sort((a,b)=>b.streak-a.streak);
-sdLeaderboard=sdLeaderboard.slice(0,10);
-localStorage.setItem('pnimit_sd_lb',JSON.stringify(sdLeaderboard));
-sdMode=false;
-alert(`Sudden Death Over!\n\n💀 Streak: ${sdStreak} questions\n${sdStreak>=20?'Legendary!':sdStreak>=10?'Impressive!':'Keep practicing!'}`);
-render();
+export function endSuddenDeath(){
+G.sdLeaderboard.push({streak:G.sdStreak,date:new Date().toISOString().slice(0,10)});
+G.sdLeaderboard.sort((a,b)=>b.streak-a.streak);
+G.sdLeaderboard=G.sdLeaderboard.slice(0,10);
+localStorage.setItem('pnimit_sd_lb',JSON.stringify(G.sdLeaderboard));
+G.sdMode=false;
+alert(`Sudden Death Over!\n\n💀 Streak: ${G.sdStreak} questions\n${G.sdStreak>=20?'Legendary!':G.sdStreak>=10?'Impressive!':'Keep practicing!'}`);
+G.render();
 }
 
 // ===== BLIND RECALL STATE =====
-let blindRecall=false;
+let G.blindRecall=false;
 
 // ===== DISTRACTOR AUTOPSY STATE =====
-let autopsyMode=false,autopsyIdx=-1,autopsyDistractor=-1;
+let G.autopsyMode=false,G.autopsyIdx=-1,G.autopsyDistractor=-1;
 
 // ===== SPEECH SYNTHESIS =====
-let isSpeaking=false;
-function speakQuestion(){
+let G.isSpeaking=false;
+export function speakQuestion(){
 if(!window.speechSynthesis)return;
-if(isSpeaking){window.speechSynthesis.cancel();isSpeaking=false;render();return;}
-const q=QZ[pool[qi]];if(!q)return;
+if(G.isSpeaking){window.speechSynthesis.cancel();G.isSpeaking=false;G.render();return;}
+const q=G.QZ[G.pool[G.qi]];if(!q)return;
 let text=q.q+(q.img?' [Image: '+q.img+']':'')+'. ';q.o.forEach((o,i)=>{text+=String.fromCharCode(1488+i)+'. '+o+'. ';});
 const u=new SpeechSynthesisUtterance(text);
 u.lang='he-IL';u.rate=0.9;
-u.onend=()=>{isSpeaking=false;render();};
-u.onerror=()=>{isSpeaking=false;render();};
-window.speechSynthesis.speak(u);isSpeaking=true;render();
+u.onend=()=>{G.isSpeaking=false;G.render();};
+u.onerror=()=>{G.isSpeaking=false;G.render();};
+window.speechSynthesis.speak(u);G.isSpeaking=true;G.render();
 }
 
 // ===== NEXT BEST STEP FILTER =====
-function startNextBestStep(){
+export function startNextBestStep(){
 const re=/הצעד הבא|הטיפול המתאים|first[- ]line|הטיפול הראשוני|הגישה הנכונה/i;
-pool=[];
-QZ.forEach((q,i)=>{if(re.test(q.q))pool.push(i);});
-for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-qi=0;sel=null;ans=false;
-_sessionOk=0;_sessionNo=0;_sessionBest={};_sessionWorse={};_sessionStart=Date.now();_sessionSaved=false;filt='nbs';render();
+G.pool=[];
+G.QZ.forEach((q,i)=>{if(re.test(q.q))G.pool.push(i);});
+for(let i=G.pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[G.pool[i],G.pool[j]]=[G.pool[j],G.pool[i]];}
+G.qi=0;G.sel=null;G.ans=false;
+G._sessionOk=0;G._sessionNo=0;G._sessionBest={};G._sessionWorse={};G._sessionStart=Date.now();G._sessionSaved=false;G.filt='nbs';G.render();
 }
 
 
@@ -107,19 +105,19 @@ _sessionOk=0;_sessionNo=0;_sessionBest={};_sessionWorse={};_sessionStart=Date.no
 
 
 // ===== VOICE-TO-TEXT CASE PARSER =====
-let voiceListening=false,voiceTranscript='';
-function startVoiceParser(){
+let G.voiceListening=false,G.voiceTranscript='';
+export function startVoiceParser(){
 if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){alert('Speech Recognition not supported in this browser');return;}
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 const rec=new SR();rec.lang='he-IL';rec.interimResults=false;rec.maxAlternatives=1;
-voiceListening=true;render();
+G.voiceListening=true;G.render();
 rec.onresult=e=>{
-voiceTranscript=e.results[0][0].transcript;voiceListening=false;
+G.voiceTranscript=e.results[0][0].transcript;G.voiceListening=false;
 // Extract keywords and search
-const words=voiceTranscript.split(/\s+/).filter(w=>w.length>2);
-srchQ=words.join(' ');tab='search';render();
+const words=G.voiceTranscript.split(/\s+/).filter(w=>w.length>2);
+G.srchQ=words.join(' ');G.tab='search';G.render();
 };
-rec.onerror=()=>{voiceListening=false;render();};
-rec.onend=()=>{voiceListening=false;render();};
+rec.onerror=()=>{G.voiceListening=false;G.render();};
+rec.onend=()=>{G.voiceListening=false;G.render();};
 rec.start();
 }

@@ -3,8 +3,8 @@ import { readFileSync } from 'fs';
 
 const html = readFileSync('pnimit-mega.html', 'utf-8');
 const srcFiles = [
-  'src/core/constants.js', 'src/core/utils.js', 'src/core/state.js', 'src/core/data-loader.js',
-  'src/sr/spaced-repetition.js', 'src/quiz/engine.js', 'src/quiz/modes.js',
+  'src/core/globals.js', 'src/core/constants.js', 'src/core/utils.js', 'src/core/state.js', 'src/core/data-loader.js',
+  'src/sr/fsrs-bridge.js', 'src/sr/spaced-repetition.js', 'src/quiz/engine.js', 'src/quiz/modes.js',
   'src/ai/client.js', 'src/ai/explain.js', 'src/features/cloud.js',
   'src/ui/quiz-view.js', 'src/ui/learn-view.js', 'src/ui/library-view.js',
   'src/ui/track-view.js', 'src/ui/more-view.js', 'src/ui/app.js',

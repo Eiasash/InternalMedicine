@@ -1,12 +1,15 @@
+import G from '../core/globals.js';
+import { AI_PROXY, AI_SECRET } from '../core/constants.js';
+import { getApiKey } from '../core/utils.js';
+
 // AI client — extracted from pnimit-mega.html
 // Depends on: AI_PROXY, AI_SECRET (constants.js), getApiKey (utils.js)
 
-let _aiAbortController=null;
-async function callAI(messages,maxTokens=400,model='sonnet'){
+export async function callAI(messages,maxTokens=400,model='sonnet'){
   // Cancel any in-flight AI request before starting new one
-  if(_aiAbortController)_aiAbortController.abort();
-  _aiAbortController=new AbortController();
-  const signal=_aiAbortController.signal;
+  if(G._aiAbortController)G._aiAbortController.abort();
+  G._aiAbortController=new AbortController();
+  const signal=G._aiAbortController.signal;
 // Model alias map for direct API fallback
 const modelMap={sonnet:'claude-sonnet-4-6',opus:'claude-opus-4-6',haiku:'claude-haiku-4-5-20251001'};
 try{

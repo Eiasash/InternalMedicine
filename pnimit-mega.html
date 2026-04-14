@@ -51,42 +51,10 @@ upd();setInterval(upd,30000);
 
 <div class="tabs" id="tb" role="tablist" aria-label="Navigation tabs"></div>
 
-<script src="src/core/constants.js"></script>
-<script src="src/core/utils.js"></script>
-<script src="src/core/state.js"></script>
-<script src="src/core/data-loader.js"></script>
+<!-- FSRS shared library (plain script, shared with Geriatrics repo) -->
 <script src="shared/fsrs.js"></script>
-<script src="src/sr/spaced-repetition.js"></script>
-<script src="src/quiz/engine.js"></script>
-<script src="src/quiz/modes.js"></script>
-<script src="src/ai/client.js"></script>
-<script src="src/ai/explain.js"></script>
-<script src="src/features/cloud.js"></script>
-<script src="src/ui/quiz-view.js"></script>
-<script src="src/ui/learn-view.js"></script>
-<script src="src/ui/library-view.js"></script>
-<script src="src/ui/track-view.js"></script>
-<script src="src/ui/more-view.js"></script>
-<script src="src/ui/app.js"></script>
-<script>
-// Boot: IDB migration → render
-migrateToIDB().then(()=>{renderTabs();render();if(!localStorage.getItem('pnimit_seen_help')){localStorage.setItem('pnimit_seen_help','1');setTimeout(showHelp,500);}}).catch(e=>{console.error('IDB init failed, falling back to localStorage:',e);renderTabs();render();});
-// Header version
-{const hv=document.getElementById('headerVer');if(hv)hv.textContent='v'+APP_VERSION;}
-// Prevent accidental navigation during mock exam
-window.addEventListener('beforeunload',function(e){
-  if(examMode&&(S.qOk+S.qNo)>0){
-    e.preventDefault();
-    e.returnValue='Mock exam in progress — are you sure you want to leave?';
-    return e.returnValue;
-  }
-});
-// iOS Safari: save on background
-document.addEventListener('visibilitychange',function(){
-  if(document.visibilityState==='hidden'){
-    try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}
-  }
-});
-</script>
+<!-- App entry point (ES module — imports all other modules) -->
+<script type="module" src="src/ui/app.js"></script>
+
 </body>
 </html>

@@ -1,72 +1,67 @@
+import G from '../core/globals.js';
+import { TOPICS, EXAM_FREQ } from '../core/constants.js';
+import { sanitize, fmtT } from '../core/utils.js';
+import { getDueQuestions, getTopicStats, isExamTrap, srScore } from '../sr/spaced-repetition.js';
+import { callAI } from '../ai/client.js';
+
 // Quiz engine — extracted from pnimit-mega.html
-// Depends on: S, save (state.js), QZ, TOPICS, EXAM_FREQ (constants.js),
+// Depends on: G.S, G.save (state.js), G.QZ, TOPICS, EXAM_FREQ (constants.js),
 //   getDueQuestions, getTopicStats, isExamTrap, srScore (spaced-repetition.js),
 //   sanitize, fmtT, callAI (utils.js/client.js)
-// References at runtime: render, _exCache, aiAutopsy, teachBackState (main script)
+// References at runtime: G.render, G._exCache, aiAutopsy, G.teachBackState (main script)
 
 // ===== QUIZ ENGINE =====
-let qi=0,sel=null,ans=false,pool=[],filt='all',topicFilt=-1,examMode=false,examTimer=null,examSec=0;
-let onCallMode=false,flipRevealed=false;
-let timedMode=false,timedSec=90,timedInt=null,timedPaused=false;
-let _optShuffle=null; // {map:[shuffled indices], qIdx} — shuffle per question
 // Session tracking for end-of-session summary
-let _sessionOk=0,_sessionNo=0,_sessionBest={},_sessionWorse={},_sessionStart=Date.now();
-let _sessionSaved=false;
 // Mock exam pacing
-let _mockAnswered=0;
-let qStartTime=Date.now();
 // ===== FEATURES: Confidence, Wrong-Reason, Difficulty =====
-let _confidence=null; // null,0(unsure),1(maybe),2(confident)
-let _wrongReason=null; // null until classified after wrong answer
-let _diffRating=null; // null,'easy','med','hard'
 // Feature 3: Exam trap detection — questions where >40% pick same wrong distractor
 
 
 
 
 
-function buildPool(){
-if(filt==='traps'){
-pool=QZ.map((_,i)=>i).filter(i=>isExamTrap(i));
-for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-qi=0;sel=null;ans=false;return;
+export function buildPool(){
+if(G.filt==='traps'){
+G.pool=G.QZ.map((_,i)=>i).filter(i=>isExamTrap(i));
+for(let i=G.pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[G.pool[i],G.pool[j]]=[G.pool[j],G.pool[i]];}
+G.qi=0;G.sel=null;G.ans=false;return;
 }
-if(filt==='rescue'){return;} // rescue pool already built by buildRescuePool()
-if(filt==='weak'){
+if(G.filt==='rescue'){return;} // rescue G.pool already built by buildRescuePool()
+if(G.filt==='weak'){
 const ts=getTopicStats();
 const weakTopics=TOPICS.map((_,i)=>({i,s:ts[i]||{ok:0,no:0,tot:0}})).filter(p=>p.s.tot>=3).sort((a,b)=>{const pa=a.s.tot?a.s.ok/a.s.tot:0,pb=b.s.tot?b.s.ok/b.s.tot:0;return pa-pb;}).slice(0,10).map(p=>p.i);
-if(weakTopics.length===0){pool=QZ.map((_,i)=>i);}else{pool=QZ.map((_,i)=>i).filter(i=>weakTopics.includes(QZ[i].ti));}
-for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-qi=0;return;}
-if(filt==='due'){pool=getDueQuestions();qi=0;return;}
-if(filt==='hard'){
+if(weakTopics.length===0){G.pool=G.QZ.map((_,i)=>i);}else{G.pool=G.QZ.map((_,i)=>i).filter(i=>weakTopics.includes(G.QZ[i].ti));}
+for(let i=G.pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[G.pool[i],G.pool[j]]=[G.pool[j],G.pool[i]];}
+G.qi=0;return;}
+if(G.filt==='due'){G.pool=getDueQuestions();G.qi=0;return;}
+if(G.filt==='hard'){
 // Any question you've interacted with that isn't at default EF (2.5 = never wrong)
-pool=QZ.map((_,i)=>i).filter(i=>{const s=S.sr[i];return s&&s.ef<2.5;});
-pool.sort((a,b)=>(S.sr[a]?.ef||2.5)-(S.sr[b]?.ef||2.5));
-if(!pool.length){
+G.pool=G.QZ.map((_,i)=>i).filter(i=>{const s=G.S.sr[i];return s&&s.ef<2.5;});
+G.pool.sort((a,b)=>(G.S.sr[a]?.ef||2.5)-(G.S.sr[b]?.ef||2.5));
+if(!G.pool.length){
 // Fallback: any question with SR data at all
-pool=QZ.map((_,i)=>i).filter(i=>S.sr[i]);
-pool.sort((a,b)=>(S.sr[a]?.ef||2.5)-(S.sr[b]?.ef||2.5));
+G.pool=G.QZ.map((_,i)=>i).filter(i=>G.S.sr[i]);
+G.pool.sort((a,b)=>(G.S.sr[a]?.ef||2.5)-(G.S.sr[b]?.ef||2.5));
 }
-qi=0;sel=null;ans=false;return;}
-if(filt==='slow'){
-pool=QZ.map((_,i)=>i).filter(i=>{const s=S.sr[i];return s&&s.at&&s.at>60;});
-pool.sort((a,b)=>(S.sr[b]?.at||0)-(S.sr[a]?.at||0));
-qi=0;sel=null;ans=false;return;}
+G.qi=0;G.sel=null;G.ans=false;return;}
+if(G.filt==='slow'){
+G.pool=G.QZ.map((_,i)=>i).filter(i=>{const s=G.S.sr[i];return s&&s.at&&s.at>60;});
+G.pool.sort((a,b)=>(G.S.sr[b]?.at||0)-(G.S.sr[a]?.at||0));
+G.qi=0;G.sel=null;G.ans=false;return;}
 
-pool=[];
+G.pool=[];
 const due=getDueQuestions();
 let smartShuffled=false;
-if(filt==='due'){pool=due.length?due:[];}
-else if(filt==='topic'&&topicFilt>=0){QZ.forEach((q,i)=>{if(q.ti===topicFilt)pool.push(i)});}
+if(G.filt==='due'){G.pool=due.length?due:[];}
+else if(G.filt==='topic'&&G.topicFilt>=0){G.QZ.forEach((q,i)=>{if(q.ti===G.topicFilt)G.pool.push(i)});}
 else{
-  QZ.forEach((q,i)=>{if(filt==='all'||q.t.includes(filt))pool.push(i)});
-  if(filt==='all'){
+  G.QZ.forEach((q,i)=>{if(G.filt==='all'||q.t.includes(G.filt))G.pool.push(i)});
+  if(G.filt==='all'){
     // Smart shuffle: prioritize struggling questions over pure random
     const due=new Set(getDueQuestions());
     const tier1=[],tier2=[],tier3=[],tier4=[];
-    pool.forEach(i=>{
-      const s=S.sr[i];
+    G.pool.forEach(i=>{
+      const s=G.S.sr[i];
       if(due.has(i))tier1.push(i);
       // FSRS difficulty: D>7=hard struggle, D>4=imperfect (D=1 easy, D=10 hard)
       else if(s&&(s.fsrsD>7||(s.fsrsD===undefined&&s.ef<1.8)))tier2.push(i);
@@ -74,74 +69,73 @@ else{
       else tier4.push(i);
     });
     const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
-    pool=[...shuffle(tier1),...shuffle(tier2),...shuffle(tier3),...shuffle(tier4)];
+    G.pool=[...shuffle(tier1),...shuffle(tier2),...shuffle(tier3),...shuffle(tier4)];
     smartShuffled=true;
   }
 }
-if(!smartShuffled){for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}}
-qi=0;sel=null;ans=false;
+if(!smartShuffled){for(let i=G.pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[G.pool[i],G.pool[j]]=[G.pool[j],G.pool[i]];}}
+G.qi=0;G.sel=null;G.ans=false;
 }
-if(QZ.length)buildPool();
+// Deferred: buildPool called after data loads
 
 // Feature 2: Topic-locked mini-exam
-let miniExamTopic=-1,miniExamResults=null;
-function startTopicMiniExam(ti){
-miniExamTopic=ti;miniExamResults=null;
-pool=QZ.map((_,i)=>i).filter(i=>QZ[i].ti===ti);
-for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-pool=pool.slice(0,20);
-qi=0;sel=null;ans=false;_sessionOk=0;_sessionNo=0;_sessionStart=Date.now();
-examMode=true;examSec=1800;filt='topic';topicFilt=ti;
-if(examTimer)clearInterval(examTimer);
-examTimer=setInterval(()=>{examSec--;if(examSec<=0){clearInterval(examTimer);endMiniExam();}
-const el=document.getElementById('etimer');if(el)el.textContent=fmtT(examSec);},1000);
-render();
+export function startTopicMiniExam(ti){
+G.miniExamTopic=ti;G.miniExamResults=null;
+G.pool=G.QZ.map((_,i)=>i).filter(i=>G.QZ[i].ti===ti);
+for(let i=G.pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[G.pool[i],G.pool[j]]=[G.pool[j],G.pool[i]];}
+G.pool=G.pool.slice(0,20);
+G.qi=0;G.sel=null;G.ans=false;G._sessionOk=0;G._sessionNo=0;G._sessionStart=Date.now();
+G.examMode=true;G.examSec=1800;G.filt='topic';G.topicFilt=ti;
+if(G.examTimer)clearInterval(G.examTimer);
+G.examTimer=setInterval(()=>{G.examSec--;if(G.examSec<=0){clearInterval(G.examTimer);endMiniExam();}
+const el=document.getElementById('etimer');if(el)el.textContent=fmtT(G.examSec);},1000);
+G.render();
 }
-function endMiniExam(){
-clearInterval(examTimer);examTimer=null;examMode=false;
-const tot=_sessionOk+_sessionNo;const pct=tot?Math.round(_sessionOk/tot*100):0;
-const topicName=TOPICS[miniExamTopic]||'Topic';
-alert('🎯 Mini Exam: '+topicName+'\n\n'+pct+'% ('+_sessionOk+'/'+tot+')\n'+(pct>=70?'Great!':pct>=50?'Getting there':'Needs more work'));
-miniExamTopic=-1;render();
+export function endMiniExam(){
+clearInterval(G.examTimer);G.examTimer=null;G.examMode=false;
+const tot=G._sessionOk+G._sessionNo;const pct=tot?Math.round(G._sessionOk/tot*100):0;
+const topicName=TOPICS[G.miniExamTopic]||'Topic';
+alert('🎯 Mini Exam: '+topicName+'\n\n'+pct+'% ('+G._sessionOk+'/'+tot+')\n'+(pct>=70?'Great!':pct>=50?'Getting there':'Needs more work'));
+G.miniExamTopic=-1;G.render();
 }
-function setFilt(f){filt=f;topicFilt=-1;buildPool();render()}
-function setTopicFilt(ti){filt='topic';topicFilt=ti;buildPool();render()}
+export function setFilt(f){G.filt=f;G.topicFilt=-1;buildPool();G.render()}
+export function setTopicFilt(ti){G.filt='topic';G.topicFilt=ti;buildPool();G.render()}
 
 // ===== ON-CALL FLIP CARD MODE =====
-function startOnCallMode(){onCallMode=true;flipRevealed=false;filt='due';buildPool();if(!pool.length){filt='weak';buildPool();}if(!pool.length){filt='all';buildPool();}render();}
-function exitOnCallMode(){onCallMode=false;flipRevealed=false;render();}
-function flipCard(){flipRevealed=true;render();}
-function onCallPick(correct){
-  sel=correct?QZ[pool[qi]].c:((QZ[pool[qi]].c+1)%QZ[pool[qi]].o.length);
-  checkMockIntercept();ans=true;
-  const q=QZ[pool[qi]];
-  if(correct){S.qOk++;srScore(pool[qi],true);}
-  else{S.qNo++;srScore(pool[qi],false);}
-  save();
+export function startOnCallMode(){G.onCallMode=true;G.flipRevealed=false;G.filt='due';buildPool();if(!G.pool.length){G.filt='weak';buildPool();}if(!G.pool.length){G.filt='all';buildPool();}G.render();}
+export function exitOnCallMode(){G.onCallMode=false;G.flipRevealed=false;G.render();}
+export function flipCard(){G.flipRevealed=true;G.render();}
+export function onCallPick(correct){
+  G.sel=correct?G.QZ[G.pool[G.qi]].c:((G.QZ[G.pool[G.qi]].c+1)%G.QZ[G.pool[G.qi]].o.length);
+  checkMockIntercept();G.ans=true;
+  const q=G.QZ[G.pool[G.qi]];
+  if(correct){G.S.qOk++;srScore(G.pool[G.qi],true);}
+  else{G.S.qNo++;srScore(G.pool[G.qi],false);}
+  G.save();
   setTimeout(()=>{
-    qi++;if(qi>=pool.length)qi=0;
-    sel=null;ans=false;flipRevealed=false;autopsyDistractor=-1;teachBackState=null;
-    render();
+    G.qi++;if(G.qi>=G.pool.length)G.qi=0;
+    G.sel=null;G.ans=false;G.flipRevealed=false;G.autopsyDistractor=-1;G.teachBackState=null;
+    G.render();
   },600);
 }
-function renderOnCall(){
-  if(!pool.length)return '<div style="padding:40px;text-align:center;color:#94a3b8">No questions available</div>';
-  const qIdx=pool[qi];const q=QZ[qIdx];
+export function renderOnCall(){
+  if(!G.pool.length)return '<div style="padding:40px;text-align:center;color:#94a3b8">No questions available</div>';
+  const qIdx=G.pool[G.qi];const q=G.QZ[qIdx];
   const TOPICS_L=TOPICS;
   const topic=q.ti>=0?TOPICS_L[q.ti]:'';
   const correct=q.o[q.c];
   let h='<div style="min-height:100vh;padding:16px;display:flex;flex-direction:column;gap:12px">';
   // Header
   h+=`<div style="display:flex;justify-content:space-between;align-items:center">
-    <div style="font-size:11px;color:#64748b">${qi+1}/${pool.length} · ${filt}</div>
+    <div style="font-size:11px;color:#64748b">${G.qi+1}/${G.pool.length} · ${G.filt}</div>
     <button onclick="exitOnCallMode()" style="font-size:11px;padding:4px 10px;background:#f1f5f9;border:none;border-radius:8px;cursor:pointer" aria-label="Exit on-call mode">✕ Exit</button>
   </div>`;
   // Topic tag
   if(topic)h+=`<div style="font-size:10px;background:#f0fdf4;color:#166534;padding:3px 10px;border-radius:20px;display:inline-block;align-self:flex-start;font-weight:600">${topic}</div>`;
   // Question card - large text
   h+=`<div style="background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.08);flex:1;cursor:${flipRevealed?'default':'pointer'}" ${flipRevealed?'':'onclick="flipCard()" role="button" tabindex="0" aria-label="Flip card to reveal answer"'}>
-    <div style="font-size:16px;line-height:1.6;font-weight:500;direction:rtl;text-align:right;margin-bottom:${flipRevealed?'16px':'0'}">${q.q}</div>`;
-  if(!flipRevealed){
+    <div style="font-size:16px;line-height:1.6;font-weight:500;direction:rtl;text-align:right;margin-bottom:${G.flipRevealed?'16px':'0'}">${q.q}</div>`;
+  if(!G.flipRevealed){
     h+=`<div style="text-align:center;margin-top:20px;color:#94a3b8;font-size:13px">👆 tap to reveal answer</div>`;
   } else {
     // Show correct answer prominently
@@ -150,13 +144,13 @@ function renderOnCall(){
       <div style="font-size:14px;font-weight:600;direction:rtl;text-align:right">${correct}</div>
     </div>`;
     // Explanation if available
-    const ex=_exCache&&_exCache[qIdx];
+    const ex=G._exCache&&G._exCache[qIdx];
     if(ex){h+=`<div style="font-size:12px;color:#475569;line-height:1.7;direction:rtl;text-align:right;border-top:1px solid #e2e8f0;padding-top:10px">${ex}</div>`;}
     else{h+=`<button onclick="runExplainOnCall(${qIdx})" id="oc-exp-${qIdx}" style="font-size:11px;padding:5px 12px;background:#eff6ff;color:#3b82f6;border:none;border-radius:8px;cursor:pointer;margin-bottom:8px">🤖 הסבר AI</button><div id="oc-exp-box-${qIdx}"></div>`;}
   }
   h+=`</div>`;
   // Rate buttons (only after flip)
-  if(flipRevealed){
+  if(G.flipRevealed){
     h+=`<div style="display:flex;gap:12px">
       <button onclick="onCallPick(false)" style="flex:1;padding:18px;background:#fef2f2;color:#dc2626;border:none;border-radius:16px;font-size:28px;font-weight:700;cursor:pointer;min-height:64px" aria-label="Wrong answer">✗</button>
       <button onclick="onCallPick(true)" style="flex:1;padding:18px;background:#f0fdf4;color:#16a34a;border:none;border-radius:16px;font-size:28px;font-weight:700;cursor:pointer;min-height:64px" aria-label="Correct answer">✓</button>
@@ -165,66 +159,66 @@ function renderOnCall(){
   h+=`</div>`;
   return h;
 }
-async function runExplainOnCall(qIdx){
+async export function runExplainOnCall(qIdx){
   const btn=document.getElementById('oc-exp-'+qIdx);
   const box=document.getElementById('oc-exp-box-'+qIdx);
   if(!btn||!box)return;
   btn.textContent='⏳ ...';btn.disabled=true;
-  const q=QZ[qIdx];const correct=q.o[q.c];
+  const q=G.QZ[qIdx];const correct=q.o[q.c];
   try{
     const txt=await callAI([{role:'user',content:'ANSWER KEY: The correct answer is DEFINITIVELY "'+correct+'".\n\nהסבר בעברית (3-4 משפטים) למה זו התשובה הנכונה. עגן בתשובה הנכונה. שאלה: '+q.q+'\nתשובה נכונה: '+correct}],400,'sonnet');
-    _exCache[qIdx]=txt;try{localStorage.setItem('pnimit_ex',JSON.stringify(_exCache));}catch(e){}
+    G._exCache[qIdx]=txt;try{localStorage.setItem('pnimit_ex',JSON.stringify(G._exCache));}catch(e){}
     box.innerHTML='<div style="font-size:12px;color:#475569;line-height:1.7;direction:rtl;text-align:right;margin-top:8px">'+sanitize(txt)+'</div>';
     btn.remove();
   }catch(e){btn.textContent='🤖 הסבר AI';btn.disabled=false;}
 }
-function pick(i){if(ans)return;sel=i;render()}
-function _storeDiff(qIdx,d){if(!S.sr[qIdx])S.sr[qIdx]={ef:2.5,n:0,next:0,ts:[],at:0,tot:0,ok:0};S.sr[qIdx].diff=d;save();}
-function check(){
-if(sel===null)return;
+export function pick(i){if(G.ans)return;G.sel=i;G.render()}
+export function _storeDiff(qIdx,d){if(!G.S.sr[qIdx])G.S.sr[qIdx]={ef:2.5,n:0,next:0,ts:[],at:0,tot:0,ok:0};G.S.sr[qIdx].diff=d;G.save();}
+export function check(){
+if(G.sel===null)return;
 checkMockIntercept();
-if(timedMode)clearInterval(timedInt);
-ans=true;
-const q=QZ[pool[qi]];
+if(G.timedMode)clearInterval(G.timedInt);
+G.ans=true;
+const q=G.QZ[G.pool[G.qi]];
 // Feature 9: store confidence in SR data
-if(_confidence!==null){
-if(!S.sr[pool[qi]])S.sr[pool[qi]]={ef:2.5,n:0,next:0,ts:[],at:0,tot:0,ok:0};
-if(!S.sr[pool[qi]].conf)S.sr[pool[qi]].conf={sure_ok:0,sure_no:0,unsure_ok:0,unsure_no:0};
-const _ck=(_confidence>=2?'sure':'unsure')+'_'+(sel===q.c?'ok':'no');
-S.sr[pool[qi]].conf[_ck]++;
+if(G._confidence!==null){
+if(!G.S.sr[G.pool[G.qi]])G.S.sr[G.pool[G.qi]]={ef:2.5,n:0,next:0,ts:[],at:0,tot:0,ok:0};
+if(!G.S.sr[G.pool[G.qi]].conf)G.S.sr[G.pool[G.qi]].conf={sure_ok:0,sure_no:0,unsure_ok:0,unsure_no:0};
+const _ck=(G._confidence>=2?'sure':'unsure')+'_'+(G.sel===q.c?'ok':'no');
+G.S.sr[G.pool[G.qi]].conf[_ck]++;
 }
-if(sel===q.c){S.qOk++;srScore(pool[qi],true);}
-else{S.qNo++;
+if(G.sel===q.c){G.S.qOk++;srScore(G.pool[G.qi],true);}
+else{G.S.qNo++;
   // Store which distractor was chosen for future mistake-pattern analysis
-  if(!S.sr[pool[qi]])S.sr[pool[qi]]={ef:2.5,n:0,next:0,ts:[],at:0,tot:0,ok:0};
-  if(!S.sr[pool[qi]].wc)S.sr[pool[qi]].wc={};
-  const _wci=String(sel);
-  S.sr[pool[qi]].wc[_wci]=(S.sr[pool[qi]].wc[_wci]||0)+1;
-  srScore(pool[qi],false);
+  if(!G.S.sr[G.pool[G.qi]])G.S.sr[G.pool[G.qi]]={ef:2.5,n:0,next:0,ts:[],at:0,tot:0,ok:0};
+  if(!G.S.sr[G.pool[G.qi]].wc)G.S.sr[G.pool[G.qi]].wc={};
+  const _wci=String(G.sel);
+  G.S.sr[G.pool[G.qi]].wc[_wci]=(G.S.sr[G.pool[G.qi]].wc[_wci]||0)+1;
+  srScore(G.pool[G.qi],false);
   // Feature 1: store wrong reason later via onclick
-  const _apk='autopsy_'+pool[qi];
-  if(!_exCache[_apk]){setTimeout(()=>aiAutopsy(pool[qi]),400);}
+  const _apk='autopsy_'+G.pool[G.qi];
+  if(!G._exCache[_apk]){setTimeout(()=>aiAutopsy(G.pool[G.qi]),400);}
 }
-save();render();
+G.save();G.render();
 }
-function next(){
-qStartTime=Date.now();
-if(examMode&&mockExamResults&&qi+1>=pool.length){endMockExam();return;}
-if(examMode&&!mockExamResults&&qi+1>=Math.min(pool.length,150)){endExam();return;}
-qi++;if(qi>=pool.length)qi=0;sel=null;ans=false;autopsyDistractor=-1;teachBackState=null;_optShuffle=null;_confidence=null;_wrongReason=null;_diffRating=null;
-if(timedMode){clearInterval(timedInt);timedSec=90;render();setTimeout(startTimedQ,100);}
-else render();
+export function next(){
+G.qStartTime=Date.now();
+if(G.examMode&&G.mockExamResults&&G.qi+1>=G.pool.length){endMockExam();return;}
+if(G.examMode&&!G.mockExamResults&&G.qi+1>=Math.min(G.pool.length,150)){endExam();return;}
+G.qi++;if(G.qi>=G.pool.length)G.qi=0;G.sel=null;G.ans=false;G.autopsyDistractor=-1;G.teachBackState=null;G._optShuffle=null;G._confidence=null;G._wrongReason=null;G._diffRating=null;
+if(G.timedMode){clearInterval(G.timedInt);G.timedSec=90;G.render();setTimeout(startTimedQ,100);}
+else G.render();
 }
 
 // ===== EXAM MODE =====
 // Historical topic frequency weights (from 9 real exams, recency-weighted 2× for last 2)
 // target 100q: proportional + floor(1) for evergreen topics
-function buildMockExamPool(){
+export function buildMockExamPool(){
   const total=EXAM_FREQ.reduce((a,b)=>a+b,0);
   const examPool=[];
-  // Group QZ by topic
+  // Group G.QZ by topic
   const byTopic={};
-  QZ.forEach((q,i)=>{const ti=q.ti>=0?q.ti:39;if(!byTopic[ti])byTopic[ti]=[];byTopic[ti].push(i);});
+  G.QZ.forEach((q,i)=>{const ti=q.ti>=0?q.ti:39;if(!byTopic[ti])byTopic[ti]=[];byTopic[ti].push(i);});
   // Compute target per topic
   EXAM_FREQ.forEach((freq,ti)=>{
     if(!freq||!byTopic[ti]||!byTopic[ti].length)return;
@@ -237,63 +231,62 @@ function buildMockExamPool(){
   for(let i=examPool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[examPool[i],examPool[j]]=[examPool[j],examPool[i]];}
   return examPool.slice(0,100);
 }
-let mockExamResults=null; // stores per-topic breakdown
-function startExam(){
+export function startExam(){
   // Classic 150q mode (unchanged)
-  examMode=true;filt='all';buildPool();pool=pool.slice(0,150);
-  S.qOk=0;S.qNo=0;examSec=10800;mockExamResults=null;save();
-  examTimer=setInterval(()=>{examSec--;if(examSec<=0)endExam();
-  const el=document.getElementById('etimer');if(el)el.textContent=fmtT(examSec);},1000);
-  render();
+  G.examMode=true;G.filt='all';buildPool();G.pool=G.pool.slice(0,150);
+  G.S.qOk=0;G.S.qNo=0;G.examSec=10800;G.mockExamResults=null;G.save();
+  G.examTimer=setInterval(()=>{G.examSec--;if(G.examSec<=0)endExam();
+  const el=document.getElementById('etimer');if(el)el.textContent=fmtT(G.examSec);},1000);
+  G.render();
 }
-function startMockExam(){
+export function startMockExam(){
   // v2: 100q, realistic distribution, per-topic tracking
-  examMode=true;
-  pool=buildMockExamPool();
-  qi=0;sel=null;ans=false;autopsyDistractor=-1;teachBackState=null;
+  G.examMode=true;
+  G.pool=buildMockExamPool();
+  G.qi=0;G.sel=null;G.ans=false;G.autopsyDistractor=-1;G.teachBackState=null;
   // per-topic tracking: {ok,no} per ti
-  mockExamResults={byTopic:{},start:Date.now()};
-  EXAM_FREQ.forEach((_,ti)=>{mockExamResults.byTopic[ti]={ok:0,no:0};});
-  S.qOk=0;S.qNo=0;examSec=10800;save();
-  examTimer=setInterval(()=>{examSec--;if(examSec<=0)endMockExam();
-  const el=document.getElementById('etimer');if(el)el.textContent=fmtT(examSec);},1000);
-  render();
+  G.mockExamResults={byTopic:{},start:Date.now()};
+  EXAM_FREQ.forEach((_,ti)=>{G.mockExamResults.byTopic[ti]={ok:0,no:0};});
+  G.S.qOk=0;G.S.qNo=0;G.examSec=10800;G.save();
+  G.examTimer=setInterval(()=>{G.examSec--;if(G.examSec<=0)endMockExam();
+  const el=document.getElementById('etimer');if(el)el.textContent=fmtT(G.examSec);},1000);
+  G.render();
 }
 // Override check() to also record per-topic result when in mockExam
 const _origCheck=window.check;
-function checkMockIntercept(){
-  if(ans||sel===null)return;
-  const qIdx=pool[qi];const q=QZ[qIdx];const correct=sel===q.c;
-  if(mockExamResults&&q.ti>=0){
-    if(correct)mockExamResults.byTopic[q.ti].ok++;
-    else mockExamResults.byTopic[q.ti].no++;
-    _mockAnswered++;
+export function checkMockIntercept(){
+  if(G.ans||G.sel===null)return;
+  const qIdx=G.pool[G.qi];const q=G.QZ[qIdx];const correct=G.sel===q.c;
+  if(G.mockExamResults&&q.ti>=0){
+    if(correct)G.mockExamResults.byTopic[q.ti].ok++;
+    else G.mockExamResults.byTopic[q.ti].no++;
+    G._mockAnswered++;
   }
 }
-function endExam(){
-  clearInterval(examTimer);examMode=false;
-  const tot=S.qOk+S.qNo,pct=tot?Math.round(S.qOk/tot*100):0;
-  alert(`Exam Complete!\n\n✅ ${S.qOk}/${tot} (${pct}%)\n${pct>=60?'PASS 🎉':'NEEDS WORK ❌'}\n\nTime: ${fmtT(10800-examSec)}`);
-  render();
+export function endExam(){
+  clearInterval(G.examTimer);G.examMode=false;
+  const tot=G.S.qOk+G.S.qNo,pct=tot?Math.round(G.S.qOk/tot*100):0;
+  alert(`Exam Complete!\n\n✅ ${G.S.qOk}/${tot} (${pct}%)\n${pct>=60?'PASS 🎉':'NEEDS WORK ❌'}\n\nTime: ${fmtT(10800-G.examSec)}`);
+  G.render();
 }
-function endMockExam(){
-  clearInterval(examTimer);examMode=false;
-  if(!mockExamResults){render();return;}
+export function endMockExam(){
+  clearInterval(G.examTimer);G.examMode=false;
+  if(!G.mockExamResults){G.render();return;}
   // Build analytics
-  const tot=S.qOk+S.qNo,pct=tot?Math.round(S.qOk/tot*100):0;
-  const elapsed=Math.floor((Date.now()-mockExamResults.start)/1000);
+  const tot=G.S.qOk+G.S.qNo,pct=tot?Math.round(G.S.qOk/tot*100):0;
+  const elapsed=Math.floor((Date.now()-G.mockExamResults.start)/1000);
   // Store in history
   try{const hist=JSON.parse(localStorage.getItem('pnimit_mock_hist')||'[]');
-    hist.push({date:new Date().toISOString(),score:pct,correct:S.qOk,total:tot,elapsed,byTopic:mockExamResults.byTopic});
+    hist.push({date:new Date().toISOString(),score:pct,correct:G.S.qOk,total:tot,elapsed,byTopic:G.mockExamResults.byTopic});
     if(hist.length>20)hist.splice(0,hist.length-20);
     localStorage.setItem('pnimit_mock_hist',JSON.stringify(hist));
   }catch(e){}
   // Show in custom modal instead of alert
-  showMockExamResult(pct,S.qOk,tot,elapsed,mockExamResults.byTopic);
-  mockExamResults=null;
-  render();
+  showMockExamResult(pct,G.S.qOk,tot,elapsed,G.mockExamResults.byTopic);
+  G.mockExamResults=null;
+  G.render();
 }
-function showMockExamResult(pct,correct,tot,elapsed,byTopic){
+export function showMockExamResult(pct,correct,tot,elapsed,byTopic){
   const TOPICS_LOCAL=TOPICS;
   const pass=pct>=60;
   // per-topic breakdown sorted by accuracy ascending (worst first)

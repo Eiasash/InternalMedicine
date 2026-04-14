@@ -1,4 +1,8 @@
-// Library view — Syllabus section
+import G from '../core/globals.js';
+import { TOPICS, HARRISON_PDF_MAP, APP_VERSION, SYLLABUS_VERSION } from '../core/constants.js';
+import { sanitize, safeJSONParse } from '../core/utils.js';
+import { callAI } from '../ai/client.js';
+import { getTopicStats, trackChapterRead, getChaptersDueForReading } from '../sr/spaced-repetition.js';
 
 let sylSec='haz';
 const SYL_HAZ_EXCLUDED=new Set([2,3,4,5,6,34,62]);
@@ -83,16 +87,16 @@ const SYL_ARTICLES=[
 ];
 // renderSyllabus removed — dead code (89 lines)
 
-// ===== TOPIC PRIORITY MATRIX (added to Track tab) =====
+// ===== TOPIC PRIORITY MATRIX (added to Track G.tab) =====
 
 // Library — wrong answer log, Harrison reader, renderLibrary, laws, articles, exams
 
-function renderWrongAnswerLog(){
+export function renderWrongAnswerLog(){
   const TOPICS_L=TOPICS;
   // Get chronically failing + recently answered wrong questions
   const chronic=[];const recentWrong=[];
-  Object.entries(S.sr||{}).forEach(([idx,s])=>{
-    const q=QZ[+idx];if(!q)return;
+  Object.entries(G.S.sr||{}).forEach(([idx,s])=>{
+    const q=G.QZ[+idx];if(!q)return;
     if(s.tot>=4&&s.ok/s.tot<0.35)chronic.push({idx:+idx,q,s});
     else if(s.n===0&&s.tot>=1)recentWrong.push({idx:+idx,q,s});
   });
@@ -101,7 +105,7 @@ function renderWrongAnswerLog(){
 
   let h='';
   // Wrong answer key reporter (still useful, now prominent)
-  const curQ=pool.length&&qi<pool.length?QZ[pool[qi]]:null;
+  const curQ=G.pool.length&&G.qi<G.pool.length?G.QZ[G.pool[G.qi]]:null;
   if(curQ){
     h+=`<div style="margin-bottom:12px;padding:10px;background:#fffbeb;border-radius:10px;border:1px solid #fde68a">
 <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:6px">❌ Report wrong answer key for current question</div>
@@ -118,7 +122,7 @@ function renderWrongAnswerLog(){
     chronic.slice(0,5).forEach(({idx,q,s})=>{
       const acc=Math.round(s.ok/s.tot*100);
       const topic=q.ti>=0?TOPICS_L[q.ti]:'';
-      h+=`<div style="padding:8px;background:#fef2f2;border-radius:8px;margin-bottom:6px;cursor:pointer" onclick="filt='all';pool=[${idx}];qi=0;sel=null;ans=false;flipRevealed=false;tab='quiz';render()">
+      h+=`<div style="padding:8px;background:#fef2f2;border-radius:8px;margin-bottom:6px;cursor:pointer" onclick="filt='all';pool=[${idx}];qi=0;sel=null;ans=false;flipRevealed=false;tab='quiz';G.render()">
 <div style="font-size:10px;font-weight:600;line-height:1.4">${q.q.slice(0,80)}${q.q.length>80?'…':''}</div>
 <div style="display:flex;gap:8px;margin-top:4px"><span style="font-size:9px;color:#dc2626">${s.ok}/${s.tot} (${acc}%) · D=${s.fsrsD?s.fsrsD.toFixed(1):'?'}</span><span style="font-size:9px;color:#94a3b8">${topic}</span></div>
 </div>`;
@@ -131,7 +135,7 @@ function renderWrongAnswerLog(){
     h+=`<div style="font-weight:700;font-size:11px;margin-bottom:6px;margin-top:10px;color:#d97706">⚠️ Recently Wrong — retry these</div>`;
     shown.forEach(({idx,q,s})=>{
       const topic=q.ti>=0?TOPICS_L[q.ti]:'';
-      h+=`<div style="padding:8px;background:#fffbeb;border-radius:8px;margin-bottom:4px;cursor:pointer" onclick="filt='all';pool=[${idx}];qi=0;sel=null;ans=false;tab='quiz';render()">
+      h+=`<div style="padding:8px;background:#fffbeb;border-radius:8px;margin-bottom:4px;cursor:pointer" onclick="filt='all';pool=[${idx}];qi=0;sel=null;ans=false;tab='quiz';G.render()">
 <div style="font-size:10px;line-height:1.4">${q.q.slice(0,75)}${q.q.length>75?'…':''}</div>
 <div style="font-size:9px;color:#94a3b8;margin-top:2px">${topic}</div>
 </div>`;
@@ -141,15 +145,15 @@ function renderWrongAnswerLog(){
   if(!chronic.length&&!shown.length&&!curQ)h+='<div style="font-size:11px;color:#94a3b8;text-align:center;padding:20px">No data yet — answer some questions first</div>';
   return h;
 }
-function toggleHarrisonAI(){
+export function toggleHarrisonAI(){
   const b=document.getElementById('harrison-ai-box');
   if(b)b.style.display=b.style.display==='none'?'block':'none';
 }
-async function submitHarrisonAI(){
+async export function submitHarrisonAI(){
   const q=document.getElementById('harrison-ai-q')?.value?.trim();
-  const ans=document.getElementById('harrison-ai-answer');
-  if(!q||!ans)return;
-  ans.style.display='block';ans.innerHTML='⏳ ...';
+  const G.ans=document.getElementById('harrison-ai-answer');
+  if(!q||!G.ans)return;
+  G.ans.style.display='block';G.ans.innerHTML='⏳ ...';
   const prompt=`You are an expert internist helping an Israeli internal medicine resident study Harrison's Internal Medicine 22e for the שלב א׳ internal medicine board exam (P0064-2025).
 
 Question: ${q}
@@ -157,11 +161,11 @@ Question: ${q}
 Answer in HEBREW (4-6 sentences). Cite the relevant Harrison chapter if known. Focus on internal medicine principles and what the exam is likely to test. If a specific threshold/criterion/number is asked, lead with it.`;
   try{
     const txt=await callAI([{role:'user',content:prompt}],600,'sonnet');
-    ans.innerHTML=sanitize(txt);
+    G.ans.innerHTML=sanitize(txt);
     document.getElementById('harrison-ai-q').value='';
-  }catch(e){ans.innerHTML='⚠️ Failed: '+sanitize(e.message);}
+  }catch(e){G.ans.innerHTML='⚠️ Failed: '+sanitize(e.message);}
 }
-async function aiSummarizeChapter(chNum,chTitle){
+async export function aiSummarizeChapter(chNum,chTitle){
   const box=document.getElementById('quiz-me-box');
   if(!box)return;
   box.innerHTML='<div style="text-align:center;padding:16px;color:#64748b">⏳ מסכם את הפרק...</div>';
@@ -191,7 +195,7 @@ Format as clean bullet points. Be concise and high-yield.`;
 }
 // toggleAskAI removed — dead code
 // submitAskAI removed — dead code
-async function quizMeOnChapter(chNum,chTitle){
+async export function quizMeOnChapter(chNum,chTitle){
   // Show loading state in Library
   const el=document.getElementById('quiz-me-box');
   if(el){el.innerHTML='<div style="text-align:center;padding:20px;color:#64748b">⏳ Generating questions from Ch '+chNum+'...</div>';}
@@ -227,9 +231,9 @@ c = 0-based index of correct answer. No markdown, no preamble.`;
     // Display the generated questions
     let h='<div style="margin-top:16px;border-top:2px solid #7c3aed;padding-top:12px">';
     h+='<div style="font-weight:700;font-size:12px;color:#7c3aed;margin-bottom:10px">🧠 AI-Generated Questions — Ch '+chNum+': '+chTitle+'</div>';
-    qs.forEach((q,qi)=>{
+    qs.forEach((q,G.qi)=>{
       h+=`<div style="margin-bottom:14px;padding:12px;background:#faf5ff;border-radius:10px;border-left:3px solid #7c3aed">`;
-      h+=`<div style="font-size:12px;font-weight:600;margin-bottom:8px">${qi+1}. ${sanitize(q.q)}</div>`;
+      h+=`<div style="font-size:12px;font-weight:600;margin-bottom:8px">${G.qi+1}. ${sanitize(q.q)}</div>`;
       q.o.forEach((opt,oi)=>{
         const isCorrect=oi===q.c;
         h+=`<div style="font-size:11px;padding:4px 8px;margin-bottom:3px;border-radius:6px;background:${isCorrect?'#dcfce7':'#f8fafc'};color:${isCorrect?'#166534':'#475569'};font-weight:${isCorrect?'700':'400'}">${sanitize(opt)}${isCorrect?' ✓':''}</div>`;
@@ -244,7 +248,7 @@ c = 0-based index of correct answer. No markdown, no preamble.`;
     if(el)el.innerHTML='<div style="color:#dc2626;font-size:11px;padding:8px">⚠️ Failed to generate: '+sanitize(e.message)+'</div>';
   }
 }
-function addChapterQsToBank(jsonStr){
+export function addChapterQsToBank(jsonStr){
   try{
     const qs=JSON.parse(jsonStr);
     const existing=JSON.parse(localStorage.getItem('pnimit_custom_qs')||'[]');
@@ -253,7 +257,7 @@ function addChapterQsToBank(jsonStr){
     alert('✅ '+qs.length+' questions added! Reload to see them in the AI-Ch filter.');
   }catch(e){alert('Failed: '+e.message);}
 }
-function renderLibrary(){
+export function renderLibrary(){
 let h=`<div class="sec-t">📖 Library</div>
 <div class="sec-s">Harrison's 22e · Articles · Past Exams</div>`;
 // Sub-tabs
@@ -264,21 +268,21 @@ const libTabs=[
 ];
 h+=`<div style="display:flex;gap:4px;overflow-x:auto;padding:4px 0;margin-bottom:12px;-webkit-overflow-scrolling:touch">`;
 libTabs.forEach(t=>{
-h+=`<span class="pill ${libSec===t.id?'on':''}" style="white-space:nowrap;font-size:10px" onclick="libSec='${t.id}';render()">${t.l}</span>`;
+h+=`<span class="pill ${libSec===t.id?'on':''}" style="white-space:nowrap;font-size:10px" onclick="libSec='${t.id}';G.render()">${t.l}</span>`;
 });
 h+=`</div>`;
 
 // ===== HARRISON IN-APP READER =====
-if(libSec==='harrison'){
-if(harChOpen!==null&&_harData&&_harData[String(harChOpen)]){
-const ch=_harData[String(harChOpen)];
+if(G.libSec==='harrison'){
+if(G.harChOpen!==null&&G._harData&&G._harData[String(G.harChOpen)]){
+const ch=G._harData[String(G.harChOpen)];
 const allSylChNums=[...SYL_HAR_ALL,...SYL_HAR_BASE].map(c=>c.ch).sort((a,b)=>a-b);
-const curIdx=allSylChNums.indexOf(harChOpen);
+const curIdx=allSylChNums.indexOf(G.harChOpen);
 const prevCh=curIdx>0?allSylChNums[curIdx-1]:null;
 const nextCh=curIdx<allSylChNums.length-1?allSylChNums[curIdx+1]:null;
 h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-<button onclick="harChOpen=null;render()" style="background:#f1f5f9;border:none;border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer">← Back</button>
-<div style="font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Ch ${harChOpen}: ${ch.title}</div>
+<button onclick="harChOpen=null;G.render()" style="background:#f1f5f9;border:none;border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer">← Back</button>
+<div style="font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Ch ${G.harChOpen}: ${ch.title}</div>
 </div>
 <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
 ${prevCh?`<button onclick="openHarrisonChapter(${prevCh})" style="font-size:10px;padding:5px 10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">‹ Ch ${prevCh}</button>`:''}
@@ -290,15 +294,15 @@ ${nextCh?`<button onclick="openHarrisonChapter(${nextCh})" style="font-size:10px
 <div class="card" style="padding:16px">`;
 // Feature 4: Show question stats for this topic in chapter reader
 const _relTopics=Object.entries(TOPIC_REF).filter(([ti,ref])=>ref.s==='har').map(([ti])=>+ti);
-const _chTopicIdx=_relTopics.find(ti=>{const ref=TOPIC_REF[ti];return ref&&String(ref.ch)===String(harChOpen);});
+const _chTopicIdx=_relTopics.find(ti=>{const ref=TOPIC_REF[ti];return ref&&String(ref.ch)===String(G.harChOpen);});
 if(_chTopicIdx!==undefined){
 const _ts=getTopicStats()[_chTopicIdx]||{ok:0,no:0,tot:0};
 const _tpct=_ts.tot?Math.round(_ts.ok/_ts.tot*100):null;
-const _tqCount=QZ.filter(q=>q.ti===_chTopicIdx).length;
+const _tqCount=G.QZ.filter(q=>q.ti===_chTopicIdx).length;
 h+=`<div style="display:flex;gap:8px;margin-bottom:12px;padding:8px 12px;background:#f5f3ff;border-radius:10px;font-size:10px;align-items:center">
 <span>📝 ${_tqCount} questions on this topic</span>
 ${_tpct!==null?`<span style="font-weight:700;color:${_tpct>=70?'#059669':_tpct>=50?'#d97706':'#dc2626'}">${_tpct}% accuracy</span>`:'<span style="color:#94a3b8">Not attempted yet</span>'}
-<button onclick="tab='quiz';filt='topic';topicFilt=${_chTopicIdx};buildPool();render()" style="margin-left:auto;font-size:10px;padding:4px 10px;background:#7c3aed;color:#fff;border:none;border-radius:6px;cursor:pointer">▶ Drill</button>
+<button onclick="tab='quiz';filt='topic';topicFilt=${_chTopicIdx};buildPool();G.render()" style="margin-left:auto;font-size:10px;padding:4px 10px;background:#7c3aed;color:#fff;border:none;border-radius:6px;cursor:pointer">▶ Drill</button>
 </div>`;
 }
 ch.sections.forEach(sec=>{
@@ -306,7 +310,7 @@ if(sec.title){h+=`<div style="font-size:13px;font-weight:800;color:#7c3aed;margi
 sec.content.forEach(p=>{h+=`<p style="font-size:11.5px;line-height:1.9;color:#1e293b;margin:0 0 10px;text-align:justify">${p}</p>`;});
 });
 h+=`</div>`;
-}else if(_harLoading){
+}else if(G._harLoading){
 h+=`<div class="card" style="padding:40px;text-align:center"><div style="font-size:13px;color:#64748b">⏳ Loading Harrison's chapter...</div></div>`;
 }else{
 const allSylChs=[...SYL_HAR_ALL,...SYL_HAR_BASE].sort((a,b)=>a.ch-b.ch);
@@ -316,7 +320,7 @@ h+=`<div class="card" style="padding:14px">
 <div style="font-size:10px;color:#64748b;margin-bottom:12px">${allSylChs.length} required chapters · <span style="color:#7c3aed">purple</span> = all examinees · <span style="color:#06b6d4">teal</span> = base track only</div>`;
 allSylChs.forEach(c=>{
 const isAll=allChNums.includes(c.ch);
-const harCh=_harData&&_harData[String(c.ch)];
+const harCh=G._harData&&G._harData[String(c.ch)];
 const wc=harCh?`~${Math.round(harCh.wordCount/250)} min`:'tap to load';
 h+=`<div onclick="openHarrisonChapter(${c.ch})" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer">
 <span style="background:${isAll?'#7c3aed':'#06b6d4'};color:#fff;font-size:10px;font-weight:700;padding:4px 8px;border-radius:8px;min-width:42px;text-align:center">Ch ${c.ch}</span>
@@ -331,7 +335,7 @@ h+=`</div>`;
 }
 
 // ===== LAWS =====
-if(libSec==='laws'){
+if(G.libSec==='laws'){
 h+=`<div class="card" style="padding:14px">
 <div style="font-size:13px;font-weight:700;margin-bottom:4px">⚖️ חוקים, נהלים ופרסומים</div>
 <div class="heb" style="font-size:10px;color:#64748b;margin-bottom:10px">${SYL_LAWS.length} items</div>`;
@@ -346,7 +350,7 @@ h+=`</div>`;
 }
 
 // ===== ARTICLES =====
-if(libSec==='articles'){
+if(G.libSec==='articles'){
 h+=`<div class="card" style="padding:14px">
 <div style="font-size:13px;font-weight:700;margin-bottom:4px">📄 Required Articles</div>
 <div style="font-size:10px;color:#64748b;margin-bottom:10px">${SYL_ARTICLES.length} journal articles</div>`;
@@ -361,14 +365,14 @@ h+=`</div>`;
 }
 
 // ===== EXAMS =====
-if(libSec==='exams'){
-const examYears=[...new Set(QZ.map(q=>q.t))].sort();
+if(G.libSec==='exams'){
+const examYears=[...new Set(G.QZ.map(q=>q.t))].sort();
 h+=`<div class="card" style="padding:14px">
 <div style="font-size:13px;font-weight:700;margin-bottom:4px">📝 Past Exams in Question Bank</div>
-<div style="font-size:10px;color:#64748b;margin-bottom:10px">${QZ.length} questions from ${examYears.length} exam sessions</div>`;
+<div style="font-size:10px;color:#64748b;margin-bottom:10px">${G.QZ.length} questions from ${examYears.length} exam sessions</div>`;
 examYears.forEach(yr=>{
-const cnt=QZ.filter(q=>q.t===yr).length;
-h+=`<div onclick="tab='quiz';filt='${yr}';buildPool();render()" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer">
+const cnt=G.QZ.filter(q=>q.t===yr).length;
+h+=`<div onclick="tab='quiz';filt='${yr}';buildPool();G.render()" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer">
 <span style="background:#06b6d4;color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:8px;min-width:60px;text-align:center">${yr}</span>
 <span style="font-size:11px;flex:1">${cnt} questions</span>
 <span style="font-size:14px;color:#94a3b8">›</span></div>`;
@@ -385,22 +389,22 @@ return h;
 
 
 
-async function openHarrisonChapter(ch){
-harChOpen=ch;
+async export function openHarrisonChapter(ch){
+G.harChOpen=ch;
 trackChapterRead('har',ch);
-if(_harData){render();return;}
-if(_harLoading)return;
-_harLoading=true;
-render();
+if(G._harData){G.render();return;}
+if(G._harLoading)return;
+G._harLoading=true;
+G.render();
 try{
 const r=await fetch('harrison_chapters.json');
-_harData=await r.json();
+G._harData=await r.json();
 }catch(e){
 console.error('Failed to load Harrison chapters',e);
-_harData={};
+G._harData={};
 }
-_harLoading=false;
-render();
+G._harLoading=false;
+G.render();
 }
 
 // ===== FLASHCARDS =====

@@ -1,13 +1,19 @@
+import G from '../core/globals.js';
+import { SUPA_URL, SUPA_ANON, TOPICS, APP_VERSION } from '../core/constants.js';
+import { sanitize, fmtT } from '../core/utils.js';
+import { callAI } from '../ai/client.js';
+import { getTopicStats, getDueQuestions } from '../sr/spaced-repetition.js';
+
 // Cloud sync, leaderboard, feedback, diagnostics — extracted from pnimit-mega.html
-// Depends on: SUPA_URL, SUPA_ANON (constants.js), S, save (state.js),
-//   QZ, TOPICS (constants.js), getTopicStats (sr), callAI (client.js), sanitize (utils.js)
+// Depends on: SUPA_URL, SUPA_ANON (constants.js), G.S, G.save (state.js),
+//   G.QZ, TOPICS (constants.js), getTopicStats (sr), callAI (client.js), sanitize (utils.js)
 
 // ===== SUPABASE CLOUD SYNC =====
 // ===== FEATURE: LEADERBOARD =====
-async function submitLeaderboardScore(){
-const totalAnswered=Object.values(S.sr||{}).reduce((a,s)=>a+(s.tot||0),0);
-const totalCorrect=Object.values(S.sr||{}).reduce((a,s)=>a+(s.ok||0),0);
-const streak=S.streak||0;
+async export function submitLeaderboardScore(){
+const totalAnswered=Object.values(G.S.sr||{}).reduce((a,s)=>a+(s.tot||0),0);
+const totalCorrect=Object.values(G.S.sr||{}).reduce((a,s)=>a+(s.ok||0),0);
+const streak=G.S.streak||0;
 const readiness=calcEstScore()||0;
 let uid=localStorage.getItem('pnimit_uid');
 if(!uid){uid='u'+Math.random().toString(36).slice(2,10);localStorage.setItem('pnimit_uid',uid);}
@@ -20,7 +26,7 @@ try{
   });
 }catch(e){console.warn('Leaderboard submit failed',e);}
 }
-async function fetchLeaderboard(){
+async export function fetchLeaderboard(){
 try{
   const res=await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard?select=uid,answered,correct,streak,readiness,ts&order=readiness.desc&limit=20',{
     headers:{'apikey':SUPA_ANON}
@@ -29,7 +35,7 @@ try{
 }catch(e){console.warn('Leaderboard fetch failed',e);return[];}
 }
 let _leaderboardData=null;
-async function showLeaderboard(){
+async export function showLeaderboard(){
 const box=document.getElementById('leaderboard-box');
 if(!box)return;
 await submitLeaderboardScore();
@@ -54,7 +60,7 @@ data.forEach((r,i)=>{
 box.innerHTML=html;
 }
 // ===== FEATURE: FEEDBACK SYSTEM =====
-function renderFeedback(){
+export function renderFeedback(){
 let h='<div class="sec-t">💡 Feedback & Feature Requests</div>';
 h+='<div class="sec-s">Help improve Pnimit Mega for everyone. AI reviews every submission.</div>';
 h+='<div class="card" style="padding:16px;margin-bottom:12px">';
@@ -85,7 +91,7 @@ h+='</div>';
 }
 return h;
 }
-async function submitFeedbackForm(){
+async export function submitFeedbackForm(){
 const type=document.getElementById('fb-type')?.value||'other';
 const text=document.getElementById('fb-text')?.value?.trim();
 if(!text){alert('Please describe your feedback');return;}
@@ -107,16 +113,16 @@ try{
     localStorage.setItem('pnimit_fb_sent',JSON.stringify(fb));
   }
 }catch(e){}
-render();
+G.render();
 }
 // ===== END FEEDBACK =====
 const _SB_KEY=SUPA_ANON;
-function _sbDeviceId(){let id=localStorage.getItem('pnimit_devid');if(!id){id='dev_'+Math.random().toString(36).slice(2,12);localStorage.setItem('pnimit_devid',id);}return id;}
-async function cloudBackup(){
+export function _sbDeviceId(){let id=localStorage.getItem('pnimit_devid');if(!id){id='dev_'+Math.random().toString(36).slice(2,12);localStorage.setItem('pnimit_devid',id);}return id;}
+async export function cloudBackup(){
   const btn=document.getElementById('cloud-backup-btn');
   if(btn){btn.disabled=true;btn.textContent='☁️ Saving...';}
   try{
-    const payload={id:_sbDeviceId(),data:S,updated_at:new Date().toISOString()};
+    const payload={id:_sbDeviceId(),data:G.S,updated_at:new Date().toISOString()};
     const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups',{
       method:'POST',
       headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
@@ -128,7 +134,7 @@ async function cloudBackup(){
         const patchRes=await fetch(SUPA_URL+'/rest/v1/pnimit_backups?id=eq.'+_sbDeviceId(),{
           method:'PATCH',
           headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json'},
-          body:JSON.stringify({data:S,updated_at:new Date().toISOString()})
+          body:JSON.stringify({data:G.S,updated_at:new Date().toISOString()})
         });
         if(!patchRes.ok){const pe=await patchRes.text();alert('❌ Backup update failed: '+patchRes.status+'\n'+pe.slice(0,200));return;}
       }
@@ -140,7 +146,7 @@ async function cloudBackup(){
   }catch(e){alert('❌ Backup failed: '+e.message);}
   if(btn){btn.disabled=false;btn.textContent='☁️ Backup to Cloud';}
 }
-async function cloudRestore(){
+async export function cloudRestore(){
   const id=prompt('Enter device ID to restore from (leave blank for this device):',_sbDeviceId())||_sbDeviceId();
   if(!id)return;
   try{
@@ -152,15 +158,15 @@ async function cloudRestore(){
     if(!rows||!rows.length){alert('No backup found for ID: '+id);return;}
     const row=rows[0];
     if(confirm('Restore backup from '+new Date(row.updated_at).toLocaleString()+'?\nThis will overwrite your current progress.')){
-      Object.assign(S,row.data);save();render();
+      Object.assign(G.S,row.data);G.save();G.render();
       alert('✅ Progress restored!');
     }
   }catch(e){alert('❌ Restore failed: '+e.message);}
 }
 
-function getDiagnostics(){
-const tot=S.qOk+S.qNo;
-const srEntries=Object.entries(S.sr||{});
+export function getDiagnostics(){
+const tot=G.S.qOk+G.S.qNo;
+const srEntries=Object.entries(G.S.sr||{});
 const srDue=srEntries.filter(([k,v])=>v.next<=Date.now()).length;
 const srHard=srEntries.filter(([k,v])=>v.ef<2.0).length;
 const srMastered=srEntries.filter(([k,v])=>v.n>=3&&v.ef>=2.5).length;
@@ -173,29 +179,29 @@ return `Pnimit Mega v${APP_VERSION}\n`+
 `UA: ${navigator.userAgent}\n`+
 `Screen: ${screen.width}x${screen.height} · DPR: ${devicePixelRatio}\n`+
 `---\n`+
-`Questions: ${QZ.length} · Answered: ${tot} · Correct: ${S.qOk} (${tot?Math.round(S.qOk/tot*100):0}%)\n`+
+`Questions: ${G.QZ.length} · Answered: ${tot} · Correct: ${G.S.qOk} (${tot?Math.round(G.S.qOk/tot*100):0}%)\n`+
 `SR: ${srEntries.length} tracked · ${srDue} due · ${srHard} hard (EF<2.0) · ${srMastered} mastered\n`+
-`Topics done: ${Object.values(S.ck).filter(Boolean).length}/${TOPICS.length}\n`+
-`Bookmarks: ${Object.values(S.bk).filter(Boolean).length}\n`+
-`Streak: ${S.streak||0} days\n`+
+`Topics done: ${Object.values(G.S.ck).filter(Boolean).length}/${TOPICS.length}\n`+
+`Bookmarks: ${Object.values(G.S.bk).filter(Boolean).length}\n`+
+`Streak: ${G.S.streak||0} days\n`+
 `---\n`+
 `Weakest 5 topics:\n${weakStr||'  (not enough data)'}\n`+
 `---\n`+
-`Storage: ${(JSON.stringify(S).length/1024).toFixed(1)}KB · Online: ${navigator.onLine}\n`+
-`Dark: ${S.dark?'on':'off'} · SW: ${navigator.serviceWorker?'registered':'none'}`;
+`Storage: ${(JSON.stringify(G.S).length/1024).toFixed(1)}KB · Online: ${navigator.onLine}\n`+
+`Dark: ${G.S.dark?'on':'off'} · SW: ${navigator.serviceWorker?'registered':'none'}`;
 }
 // copyDiagnostics removed — dead code
-async function submitReport(){
-const type=S._reportType;
+async export function submitReport(){
+const type=G.S._reportType;
 if(!type)return;
 const input=document.getElementById('reportInput');
 const msg=input?.value?.trim();
 if(!msg){const st=document.getElementById('fbStatus');if(st){st.textContent='⚠️ כתוב משהו';st.style.display='block';st.style.color='#d97706';setTimeout(()=>st.style.display='none',2000);}return;}
 const labels={bug:'🐛 Bug',wrong_answer:'❌ Wrong Answer',feature:'💡 Feature'};
 let qObj=null,context='';
-if(pool.length&&qi<pool.length){qObj=QZ[pool[qi]];}
+if(G.pool.length&&G.qi<G.pool.length){qObj=G.QZ[G.pool[G.qi]];}
 if(type==='wrong_answer'&&qObj){
-context=`Q#${pool[qi]}: ${qObj.q.substring(0,100)} | correct: ${qObj.o[qObj.c]}`;
+context=`Q#${G.pool[G.qi]}: ${qObj.q.substring(0,100)} | correct: ${qObj.o[qObj.c]}`;
 }
 const st=document.getElementById('fbStatus');
 if(st){st.textContent='⏳ שולח...';st.style.display='block';st.style.color='#64748b';}
@@ -219,25 +225,25 @@ aiBox.innerHTML=`<div style="font-weight:700;margin-bottom:4px;color:${isWrong?'
 aiBox.style.display='block';aiBox.style.background=isWrong?'#fef2f2':'#f0fdf4';aiBox.style.border=`1px solid ${isWrong?'#fecaca':'#bbf7d0'}`;
 }
 if(st){st.textContent=isWrong?'⚠️ AI confirmed error':'✅ AI: answer key OK';st.style.color=isWrong?'#dc2626':'#059669';}
-saveAnswerReport(pool[qi],msg,aiText);
+saveAnswerReport(G.pool[G.qi],msg,aiText);
 }catch(e){if(st){st.textContent='✅ Saved';st.style.color='#059669';}}
 }else{
 if(st){st.textContent='✅ '+labels[type]+' saved';st.style.color='#059669';}
 }
 if(input)input.value='';
-S._reportType=null;
-if(st)setTimeout(()=>{st.style.display='none';render();},type==='wrong_answer'?8000:3000);
+G.S._reportType=null;
+if(st)setTimeout(()=>{st.style.display='none';G.render();},type==='wrong_answer'?8000:3000);
 }
 
 // ===== WRONG ANSWER REPORTS → SUPABASE =====
-async function saveAnswerReport(qIdx, userReason, aiVerdict){
+async export function saveAnswerReport(qIdx, userReason, aiVerdict){
 try{
-const q=QZ[qIdx];
+const q=G.QZ[qIdx];
 await fetch(SUPA_URL+'/rest/v1/answer_reports',{
 method:'POST',
 headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Content-Type':'application/json','Prefer':'return=minimal'},
 body:JSON.stringify({app:'pnimit',question_idx:qIdx,question_text:(q.q||'').slice(0,200),current_answer:q.c,reported_answer:(userReason||'').slice(0,50),user_reason:userReason||'',ai_verdict:aiVerdict||'',device_id:_sbDeviceId()})
 });
-}catch(e){console.warn('Report save failed:',e.message);}
+}catch(e){console.warn('Report G.save failed:',e.message);}
 }
 
