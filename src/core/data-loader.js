@@ -1,33 +1,29 @@
+import G from './globals.js';
+import { safeJSONParse, sanitize } from './utils.js';
+
 // Data loader + data arrays — extracted from pnimit-mega.html
 // Depends on: safeJSONParse (utils.js), sanitize (utils.js), takeWeeklySnapshot (still in HTML)
 
-let QZ=[];
 // ===== AUTO TOPIC TAGGING =====
-let TK=[];
-QZ.forEach(q=>{
+G.QZ.forEach(q=>{
 const txt=(q.q+' '+q.o.join(' ')).toLowerCase();
 let best=-1,mx=0;
-TK.forEach((keys,ti)=>{let sc=0;keys.forEach(k=>{if(txt.includes(k.toLowerCase()))sc++;});if(sc>mx){mx=sc;best=ti;}});
+G.TK.forEach((keys,ti)=>{let sc=0;keys.forEach(k=>{if(txt.includes(k.toLowerCase()))sc++;});if(sc>mx){mx=sc;best=ti;}});
 q.ti=best>=0?best:8;
 });
-let NOTES=[];
-let DRUGS=[];
-let FLASH=[];
 
-// ===== TABS =====
-let TABS=[];
+// ===== G.TABS =====
 
 // ===== DATA LOADER (v10.0) =====
-let _dataReady = false;
-const _dataPromise = (async function loadDataArrays() {
+G._dataPromise = (async function loadDataArrays() {
   const basePath = './data/';
   const files = {
-    QZ: 'questions.json',
-    TK: 'topics.json',
-    NOTES: 'notes.json',
-    DRUGS: 'drugs.json',
-    FLASH: 'flashcards.json',
-    TABS: 'tabs.json',
+    G.QZ: 'questions.json',
+    G.TK: 'topics.json',
+    G.NOTES: 'notes.json',
+    G.DRUGS: 'drugs.json',
+    G.FLASH: 'flashcards.json',
+    G.TABS: 'tabs.json',
   };
   try {
     const entries = Object.entries(files);
@@ -40,20 +36,20 @@ const _dataPromise = (async function loadDataArrays() {
       )
     );
     entries.forEach(([varName], i) => {
-      if (varName === 'QZ') QZ = results[i];
-      else if (varName === 'TK') TK = results[i];
-      else if (varName === 'NOTES') NOTES = results[i];
-      else if (varName === 'DRUGS') DRUGS = results[i];
-      else if (varName === 'FLASH') FLASH = results[i];
-      else if (varName === 'TABS') TABS = results[i];
+      if (varName === 'G.QZ') G.QZ = results[i];
+      else if (varName === 'G.TK') G.TK = results[i];
+      else if (varName === 'G.NOTES') G.NOTES = results[i];
+      else if (varName === 'G.DRUGS') G.DRUGS = results[i];
+      else if (varName === 'G.FLASH') G.FLASH = results[i];
+      else if (varName === 'G.TABS') G.TABS = results[i];
       });
-    _dataReady = true;
+    G._dataReady = true;
     const _xp=safeJSONParse('pnimit_pending_qs',[]);
     const _xc=safeJSONParse('pnimit_custom_qs',[]);
     const _xAll=[..._xp,..._xc].filter(q=>q&&typeof q.q==='string'&&Array.isArray(q.o)&&q.o.length===4&&Number.isInteger(q.c)&&q.c>=0&&q.c<=3&&typeof q.ti==='number');
-    if(_xAll.length){QZ.push(..._xAll);console.log('Loaded '+_xAll.length+' user-generated questions');}
-    console.log('Data loaded: ' + QZ.length + ' questions, ' + NOTES.length + ' notes');
-    takeWeeklySnapshot();
+    if(_xAll.length){G.QZ.push(..._xAll);console.log('Loaded '+_xAll.length+' user-generated questions');}
+    console.log('Data loaded: ' + G.QZ.length + ' questions, ' + G.NOTES.length + ' notes');
+    if(window.takeWeeklySnapshot)window.takeWeeklySnapshot();
   } catch (error) {
     console.error('Data load failed:', error);
     var ct = document.getElementById('ct');

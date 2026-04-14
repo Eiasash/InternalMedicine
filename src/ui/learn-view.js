@@ -1,24 +1,26 @@
-// Learn view — renderStudy, fmtLine, fmtBlock, filterNotes
+import G from '../core/globals.js';
+import { TOPICS } from '../core/constants.js';
+import { sanitize } from '../core/utils.js';
 
-let openNote=null;
-function toggleNote(i){openNote=openNote===i?null:i;render();}
-function renderStudy(){
+let G.openNote=null;
+export function toggleNote(i){G.openNote=G.openNote===i?null:i;G.render();}
+export function renderStudy(){
 let h=`<div class="sec-t">📚 Study Notes</div><div class="sec-s">Internal Medicine Board Prep · Harrison's 22e + Required Articles</div>`;
 h+=`<input class="search-box" placeholder="Search topics..." oninput="filterNotes(this.value)" id="nfilt">`;
 const fv=document.getElementById('nfilt')?.value?.toLowerCase()||'';
-NOTES.filter(n=>n.topic.toLowerCase().includes(fv)||n.notes.toLowerCase().includes(fv)).forEach(n=>{
+G.NOTES.filter(n=>n.topic.toLowerCase().includes(fv)||n.notes.toLowerCase().includes(fv)).forEach(n=>{
 const i=n.id;
 h+=`<div class="card"><button class="acc-h" onclick="toggleNote(${i})">
 <div style="display:flex;align-items:center;gap:8px"><span style="font-weight:700;font-size:12px">${n.topic}</span>
 <span style="font-size:9px;color:#94a3b8">${n.ch}</span></div>
-<span class="acc-ar${openNote===i?' op':''}">▼</span></button>`;
-if(openNote===i){
+<span class="acc-ar${G.openNote===i?' op':''}">▼</span></button>`;
+if(G.openNote===i){
 const _fmtNote=function(txt){
 const parts=txt.split(/📖\s*HARRISON BOARD PEARLS:\s*/i);
 const clinicalNotes=parts[0]||'';
 const boardPearls=parts[1]||'';
-function fmtLine(line){
-// Section headers: ▸ HEADING — render as a styled block header
+export function fmtLine(line){
+// Section headers: ▸ HEADING — G.render as a styled block header
 if(/^▸\s+/.test(line)){
 const title=line.replace(/^▸\s+/,'');
 return '<div style="margin:14px 0 6px;padding:5px 10px;background:linear-gradient(90deg,#eff6ff,transparent);border-left:3px solid #3b82f6;border-radius:0 4px 4px 0;font-size:10px;font-weight:800;color:#1e40af;text-transform:uppercase;letter-spacing:.6px">'+title+'</div>';
@@ -37,7 +39,7 @@ line=line.replace(/\b(INCREASES|AVOID|DO NOT|WARNING|CRITICAL|CONTRAINDICATED)\b
 line=line.replace(/\b(SOE=A)\b/g,'<span style="color:#059669;font-weight:700">$1</span>');
 return line;
 }
-function fmtBlock(t){
+export function fmtBlock(t){
 const paras=t.split(/\n{2,}/);
 return paras.map(function(para){
 const lines=para.split('\n');
@@ -65,47 +67,47 @@ h+=`</div>`;
 });
 return h;
 }
-function filterNotes(v){render();}
+export function filterNotes(v){G.render();}
 
 
 // Flashcards + Drug lookup renderers
 
-function renderFlash(){
-const f=FLASH[S.fci%FLASH.length];
-const fcsr=S.fcsr||{};
+export function renderFlash(){
+const f=G.FLASH[G.S.fci%G.FLASH.length];
+const fcsr=G.S.fcsr||{};
 let fcKnown=0,fcLearning=0,fcNew=0;
-for(let i=0;i<FLASH.length;i++){const r=fcsr['fc_'+i];if(!r)fcNew++;else if(r.n>=2)fcKnown++;else fcLearning++;}
-let h=`<div class="sec-t">🃏 Flashcards</div><div class="sec-s">${FLASH.length} high-yield cards · Tap to flip</div>`;
+for(let i=0;i<G.FLASH.length;i++){const r=fcsr['fc_'+i];if(!r)fcNew++;else if(r.n>=2)fcKnown++;else fcLearning++;}
+let h=`<div class="sec-t">🃏 Flashcards</div><div class="sec-s">${G.FLASH.length} high-yield cards · Tap to flip</div>`;
 h+=`<div style="display:flex;gap:6px;margin-bottom:12px">
 <span class="badge badge-g">✅ Known: ${fcKnown}</span>
 <span class="badge badge-y">📖 Learning: ${fcLearning}</span>
 <span class="badge" style="background:#f1f5f9;color:#64748b">🆕 New: ${fcNew}</span>
 </div>`;
-h+=`<div class="fc" onclick="S.fcFlip=!S.fcFlip;save();render()" style="border-color:${S.fcFlip?'rgb(var(--em))':'rgb(var(--sky))'}" role="button" tabindex="0" aria-label="${S.fcFlip?'Show question':'Show answer'}">
-<p style="font-size:${S.fcFlip?'12px':'14px'};font-weight:${S.fcFlip?'400':'700'};line-height:1.7;color:${S.fcFlip?'#334155':'#1e293b'}">
-${S.fcFlip?f.b:f.f}</p>
-<p style="font-size:9px;color:#94a3b8;margin-top:12px">${S.fcFlip?'Tap for question':'Tap to reveal answer'} · ${S.fci%FLASH.length+1}/${FLASH.length}</p>
+h+=`<div class="fc" onclick="S.fcFlip=!S.fcFlip;G.save();G.render()" style="border-color:${S.fcFlip?'rgb(var(--em))':'rgb(var(--sky))'}" role="button" tabindex="0" aria-label="${S.fcFlip?'Show question':'Show answer'}">
+<p style="font-size:${G.S.fcFlip?'12px':'14px'};font-weight:${G.S.fcFlip?'400':'700'};line-height:1.7;color:${G.S.fcFlip?'#334155':'#1e293b'}">
+${G.S.fcFlip?f.b:f.f}</p>
+<p style="font-size:9px;color:#94a3b8;margin-top:12px">${G.S.fcFlip?'Tap for question':'Tap to reveal answer'} · ${G.S.fci%G.FLASH.length+1}/${G.FLASH.length}</p>
 </div>`;
 h+=`<div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
-<button class="btn btn-o" onclick="S.fci=(S.fci-1+FLASH.length)%FLASH.length;S.fcFlip=false;save();render()" aria-label="Previous flashcard">← Prev</button>
-<button class="btn btn-p" onclick="S.fci++;S.fcFlip=false;save();render()" aria-label="Next flashcard">Next →</button>
+<button class="btn btn-o" onclick="S.fci=(S.fci-1+FLASH.length)%FLASH.length;S.fcFlip=false;G.save();G.render()" aria-label="Previous flashcard">← Prev</button>
+<button class="btn btn-p" onclick="S.fci++;S.fcFlip=false;G.save();G.render()" aria-label="Next flashcard">Next →</button>
 </div>`;
-if(S.fcFlip){h+=`<div style="display:flex;gap:6px;justify-content:center;margin-top:8px">
+if(G.S.fcFlip){h+=`<div style="display:flex;gap:6px;justify-content:center;margin-top:8px">
 <button class="btn" style="background:#fef2f2;color:#dc2626" onclick="fcRate(0)" aria-label="Rate: Again">🔄 שוב</button>
 <button class="btn" style="background:#fffbeb;color:#d97706" onclick="fcRate(1)" aria-label="Rate: Hard">🤔 קשה</button>
 <button class="btn" style="background:#ecfdf5;color:#059669" onclick="fcRate(2)" aria-label="Rate: Easy">✅ קל</button>
 </div>`;}
-h+=`<div style="text-align:center;margin-top:8px"><button onclick="S.fci=Math.floor(Math.random()*FLASH.length);S.fcFlip=false;save();render()" style="font-size:10px;color:rgb(var(--sky));text-decoration:underline" aria-label="Random flashcard">🔀 Random</button></div>`;
+h+=`<div style="text-align:center;margin-top:8px"><button onclick="S.fci=Math.floor(Math.random()*FLASH.length);S.fcFlip=false;G.save();G.render()" style="font-size:10px;color:rgb(var(--sky));text-decoration:underline" aria-label="Random flashcard">🔀 Random</button></div>`;
 return h;
 }
 
 // ===== DRUG LOOKUP =====
 let drugSearch='';
-function renderDrugs(){
+export function renderDrugs(){
 let h=`<div class="sec-t">💊 Drug Lookup</div><div class="sec-s">Beers Criteria + ACB Score Checker</div>`;
-h+=`<input class="search-box" placeholder="Search drug name..." oninput="drugSearch=this.value;render()" value="${drugSearch}" id="dsrch">`;
+h+=`<input class="search-box" placeholder="Search drug name..." oninput="drugSearch=this.value;G.render()" value="${drugSearch}" id="dsrch">`;
 const fv=drugSearch.toLowerCase();
-const filtered=DRUGS.filter(d=>!fv||d.name.toLowerCase().includes(fv)||d.heb.includes(fv)||(d.cat||'').toLowerCase().includes(fv));
+const filtered=G.DRUGS.filter(d=>!fv||d.name.toLowerCase().includes(fv)||d.heb.includes(fv)||(d.cat||'').toLowerCase().includes(fv));
 h+=`<div class="card">`;
 if(!filtered.length)h+=`<div style="padding:16px;text-align:center;color:#94a3b8;font-size:12px">No drugs found</div>`;
 filtered.forEach(d=>{

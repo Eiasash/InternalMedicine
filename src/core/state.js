@@ -1,14 +1,18 @@
+import G from './globals.js';
+import { LS } from './constants.js';
+import { safeJSONParse } from './utils.js';
+
 // State & storage — extracted from pnimit-mega.html
 // Depends on: LS (constants.js), safeJSONParse (utils.js)
 
-let S=safeJSONParse(LS,{ck:{},qOk:0,qNo:0,bk:{},notes:{},sr:{},fci:0,fcFlip:false,streak:0,lastDay:null,chat:[],studyMode:false,sp:{},spOpen:true});
-if(!S.chat)S.chat=[];
-if(S.studyMode===undefined)S.studyMode=false;
-if(!S.streak)S.streak=0;if(!S.lastDay)S.lastDay=null;
-if(!S.sp)S.sp={};
-if(S.spOpen===undefined)S.spOpen=true;
-let _saveTimer;function save(){clearTimeout(_saveTimer);_saveTimer=setTimeout(()=>{
-  localStorage.setItem(LS,JSON.stringify(S));
+G.S=safeJSONParse(LS,{ck:{},qOk:0,qNo:0,bk:{},notes:{},sr:{},fci:0,fcFlip:false,streak:0,lastDay:null,chat:[],studyMode:false,sp:{},spOpen:true});
+if(!G.S.chat)G.S.chat=[];
+if(G.S.studyMode===undefined)G.S.studyMode=false;
+if(!G.S.streak)G.S.streak=0;if(!G.S.lastDay)G.S.lastDay=null;
+if(!G.S.sp)G.S.sp={};
+if(G.S.spOpen===undefined)G.S.spOpen=true;
+G.save=function G.save(){clearTimeout(G._saveTimer);G._saveTimer=setTimeout(()=>{
+  localStorage.setItem(LS,JSON.stringify(G.S));
   // Warn if localStorage approaching 5MB limit
   try{
     let total=0;
@@ -23,38 +27,38 @@ let _saveTimer;function save(){clearTimeout(_saveTimer);_saveTimer=setTimeout(()
   },150)}
 (function updateStreak(){
 const today=new Date().toISOString().slice(0,10);
-if(S.lastDay===today)return;
+if(G.S.lastDay===today)return;
 const yest=new Date(Date.now()-86400000).toISOString().slice(0,10);
-if(S.lastDay===yest)S.streak++;
-else if(S.lastDay!==today)S.streak=1;
-S.lastDay=today;save();
+if(G.S.lastDay===yest)G.S.streak++;
+else if(G.S.lastDay!==today)G.S.streak=1;
+G.S.lastDay=today;G.save();
 })();
 
 // ===== INDEXEDDB MIGRATION =====
 const IDB_NAME='pnimit_mega_db',IDB_VER=1,IDB_STORE='state';
-let idb=null;
-function openIDB(){return new Promise((resolve,reject)=>{
+let G.idb=null;
+export function openIDB(){return new Promise((resolve,reject)=>{
 const req=indexedDB.open(IDB_NAME,IDB_VER);
 req.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains(IDB_STORE))db.createObjectStore(IDB_STORE);};
-req.onsuccess=e=>{idb=e.target.result;resolve(idb);};
+req.onsuccess=e=>{G.idb=e.target.result;resolve(G.idb);};
 req.onerror=e=>reject(e.target.error);
 });}
-function idbGet(key){return new Promise((resolve,reject)=>{
-if(!idb)return resolve(null);
-const tx=idb.transaction(IDB_STORE,'readonly');
+export function idbGet(key){return new Promise((resolve,reject)=>{
+if(!G.idb)return resolve(null);
+const tx=G.idb.transaction(IDB_STORE,'readonly');
 const req=tx.objectStore(IDB_STORE).get(key);
 req.onsuccess=()=>resolve(req.result||null);
 req.onerror=()=>resolve(null);
 });}
-function idbSet(key,val){return new Promise((resolve,reject)=>{
-if(!idb)return resolve();
-const tx=idb.transaction(IDB_STORE,'readwrite');
+export function idbSet(key,val){return new Promise((resolve,reject)=>{
+if(!G.idb)return resolve();
+const tx=G.idb.transaction(IDB_STORE,'readwrite');
 tx.objectStore(IDB_STORE).put(val,key);
 tx.oncomplete=()=>resolve();
 tx.onerror=()=>resolve();
 });}
 // Migrate localStorage → IndexedDB on first run
-async function migrateToIDB(){
+export async function migrateToIDB(){
 if(typeof _dataPromise!=='undefined') await _dataPromise; else await new Promise(r=>{const iv=setInterval(()=>{if(typeof QZ!=='undefined'&&QZ.length){clearInterval(iv);r();}},50);setTimeout(()=>{clearInterval(iv);r();},5000);});
 
 try{
@@ -69,22 +73,22 @@ const uid=null/*user_id removed*/;
 localStorage.removeItem(LS);
 // user_id removed — no longer needed
 }else{
-await idbSet('pnimit_mega',S);
+await idbSet('pnimit_mega',G.S);
 }
 }else{
 // Load from IDB into state
-Object.assign(S,existing);
+Object.assign(G.S,existing);
 }
-// Override save() to use IDB
-const origSave=save;
+// Override G.save() to use IDB
+const origSave=G.save;
 window._idbSaveTimer=null;
 const idbSave=()=>{clearTimeout(window._idbSaveTimer);window._idbSaveTimer=setTimeout(()=>{
-idbSet('pnimit_mega',JSON.parse(JSON.stringify(S))).catch(()=>{});
+idbSet('pnimit_mega',JSON.parse(JSON.stringify(G.S))).catch(()=>{});
 // Keep localStorage as fallback
-try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}
+try{localStorage.setItem(LS,JSON.stringify(G.S));}catch(e){}
 },150);};
-// Replace the global save
+// Replace the global G.save
 window.save=idbSave;
-save=idbSave;
+G.save=idbSave;
 }catch(e){console.warn('IDB migration failed, using localStorage:',e);}
 }
