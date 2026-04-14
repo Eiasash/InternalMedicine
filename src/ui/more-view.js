@@ -5,7 +5,7 @@ import { callAI } from '../ai/client.js';
 export function renderSearch(){
 let h=`<div class="sec-t">🔍 Search</div><div class="sec-s">Search across all ${G.QZ.length} questions + ${G.NOTES.length} study notes + ${G.DRUGS.length} drugs</div>`;
 h+=`<div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
-<input class="search-box" style="margin-bottom:0;flex:1" placeholder="Type to search..." oninput="srchQ=this.value;G.render()" value="${G.srchQ}" id="srchi">
+<input class="search-box" style="margin-bottom:0;flex:1" placeholder="Type to search..." oninput="G.srchQ=this.value;G.render()" value="${G.srchQ}" id="srchi">
 <button class="voice-btn${G.voiceListening?' listening':''}" onclick="startVoiceParser()" aria-label="${G.voiceListening?'Stop voice input':'Start voice input'}">${G.voiceListening?'🔴 Listening...':'🎤 Voice'}</button>
 </div>`;
 if(G.voiceTranscript&&G.srchQ){h+=`<div style="font-size:10px;color:#64748b;margin-bottom:8px;padding:6px 10px;background:#f8fafc;border-radius:8px" dir="auto">🎤 "${G.voiceTranscript}"</div>`;}
@@ -130,4 +130,4 @@ setTimeout(function(){const el=document.getElementById('chat-msgs');if(el)el.scr
 }
 
 export function sendChatStarter(text){const input=document.getElementById('chat-input');if(input)input.value=text;sendChat();}
-export function clearChat(){G.S.chat=[];G.chatLoading=false;G.save();G.render();}
+export function clearChat(){S.chat=[];chatLoading=false;G.save();G.render();}
