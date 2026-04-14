@@ -1,27 +1,56 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "=== Pnimit Mega — Production Build ==="
+
+# 1. Run Vite build (bundles JS/CSS, processes HTML)
+echo "→ Vite build..."
+npx vite build
+
+# 2. Copy static assets that Vite doesn't process
+echo "→ Copying static assets..."
+cp -r data/ dist/data/
+cp harrison_chapters.json dist/
+cp -r shared/ dist/shared/
+cp -r exams/ dist/exams/
+cp -r articles/ dist/articles/
+cp -r harrison/ dist/harrison/
+cp -r questions/ dist/questions/
+cp -r syllabus/ dist/syllabus/
+cp manifest.json dist/manifest.json
+cp index.html dist/index.html
+
+# 3. Fix manifest.json path in built HTML
+# Vite hashes it to assets/manifest-HASH.json — revert to plain manifest.json
+echo "→ Fixing manifest path in built HTML..."
+sed -i 's|href="[^"]*manifest[^"]*\.json"|href="manifest.json"|' dist/pnimit-mega.html
+
+# 4. Generate production service worker
+# In production, JS/CSS are content-hashed (immutable) — browser cache handles them.
+# SW only needs to cache: HTML shell (offline access) + data JSON (offline quiz).
+echo "→ Generating production service worker..."
+cat > dist/sw.js << 'SWEOF'
 const CACHE='pnimit-v9.43';
-const HTML_URLS=['pnimit-mega.html','manifest.json','shared/fsrs.js','src/core/globals.js','src/core/constants.js','src/core/utils.js','src/core/state.js','src/core/data-loader.js','src/sr/fsrs-bridge.js','src/sr/spaced-repetition.js','src/quiz/engine.js','src/quiz/modes.js','src/ai/client.js','src/ai/explain.js','src/features/cloud.js','src/ui/quiz-view.js','src/ui/learn-view.js','src/ui/library-view.js','src/ui/track-view.js','src/ui/more-view.js','src/ui/app.js'];
-const CSS_URLS=['src/styles/base.css','src/styles/layout.css','src/styles/components.css','src/styles/quiz.css','src/styles/track.css','src/styles/chat.css','src/styles/theme.css','src/styles/utilities.css'];
-const JSON_DATA_URLS=['data/questions.json','data/topics.json','data/notes.json','data/drugs.json','data/flashcards.json','data/tabs.json','harrison_chapters.json'];
-const ALL_URLS=[...HTML_URLS,...CSS_URLS,...JSON_DATA_URLS];
+const SHELL_URLS=['pnimit-mega.html','manifest.json','shared/fsrs.js'];
+const DATA_URLS=['data/questions.json','data/topics.json','data/notes.json','data/drugs.json','data/flashcards.json','data/tabs.json','harrison_chapters.json'];
+const ALL_URLS=[...SHELL_URLS,...DATA_URLS];
 
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ALL_URLS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 
-function shouldUseCacheFirst(url){
-  return JSON_DATA_URLS.some(pattern=>url.endsWith(pattern));
-}
-
-// Fetch: navigate→HTML fallback, data→cache-first, assets→cache-first
 self.addEventListener('fetch',e=>{
   if(e.request.method!=='GET')return;
   if(!e.request.url.startsWith(self.location.origin))return;
   const url=new URL(e.request.url).pathname;
+  // Navigate → network-first with HTML fallback
   if(e.request.mode==='navigate'){
     e.respondWith(fetch(e.request).then(res=>{
       if(res.ok){const c=res.clone();caches.open(CACHE).then(cache=>cache.put(e.request,c));}
       return res;
     }).catch(()=>caches.match('pnimit-mega.html')));
-  }else if(shouldUseCacheFirst(url)){
+  }
+  // Data JSON → stale-while-revalidate
+  else if(DATA_URLS.some(d=>url.endsWith(d))){
     e.respondWith(caches.match(e.request).then(r=>{
       const nf=fetch(e.request).then(res=>{
         if(res.ok){const c=res.clone();caches.open(CACHE).then(cache=>cache.put(e.request,c));}
@@ -29,15 +58,21 @@ self.addEventListener('fetch',e=>{
       });
       return r||nf;
     }).catch(()=>caches.match(e.request)));
-  }else{
+  }
+  // Hashed assets (JS/CSS) → cache-first (immutable by content hash)
+  else if(url.includes('/assets/')){
     e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{
       if(res.ok){const c=res.clone();caches.open(CACHE).then(cache=>cache.put(e.request,c));}
       return res;
     })));
   }
+  // Everything else → network-first
+  else{
+    e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));
+  }
 });
 
-// Background sync
+// Background sync for Supabase backup
 self.addEventListener('sync',e=>{
 if(e.tag==='supabase-backup'){
 e.waitUntil(
@@ -64,23 +99,14 @@ clearTx.objectStore('state').delete('pending_sync');
 }
 });
 
-
-// Skip waiting when update banner clicked
 self.addEventListener('message',e=>{
 if(e.data&&e.data.type==='SKIP_WAITING'){self.skipWaiting();}
-});
-
-// Push notification
-self.addEventListener('message',e=>{
 if(e.data&&e.data.type==='schedule-notification'){
 const dueCount=e.data.dueCount||0;
 if(dueCount>0&&self.registration.showNotification){
 self.registration.showNotification('Pnimit Mega — Daily Review',{
-body:`You have ${dueCount} question${dueCount>1?'s':''} due for spaced repetition review.`,
-icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🏥</text></svg>',
-badge:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">📝</text></svg>',
-tag:'daily-review',
-renotify:true,
+body:'You have '+dueCount+' question'+(dueCount>1?'s':'')+' due for spaced repetition review.',
+tag:'daily-review',renotify:true,
 data:{url:self.registration.scope+'pnimit-mega.html'}
 });
 }
@@ -96,3 +122,16 @@ if(clients.openWindow)return clients.openWindow(e.notification.data?.url||'pnimi
 })
 );
 });
+SWEOF
+
+# 5. Summary
+echo ""
+echo "=== Build complete ==="
+echo "Output: dist/"
+du -sh dist/
+echo ""
+echo "Key files:"
+ls -lh dist/pnimit-mega.html dist/sw.js dist/manifest.json dist/assets/*.js dist/assets/*.css 2>/dev/null
+echo ""
+echo "Static assets:"
+du -sh dist/data/ dist/harrison_chapters.json dist/shared/ dist/exams/ dist/articles/ dist/harrison/ dist/questions/ dist/syllabus/ 2>/dev/null

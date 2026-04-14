@@ -1,0 +1,26 @@
+/* === Reset & Root Variables === */
+* { box-sizing: border-box; margin: 0; padding: 0 }
+
+:root {
+  --sky: 59 130 246;
+  --em: 16 185 129;
+  --sl8: 30 41 59;
+  --red: 239 68 68;
+  --amb: 245 158 11;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #f8fafc;
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.heb { font-family: 'Heebo', sans-serif; direction: rtl; text-align: right }
+
+button { cursor: pointer; border: none; background: none; font: inherit }
+input, textarea, select { font: inherit }
+
+::-webkit-scrollbar { width: 4px }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px }
