@@ -18,9 +18,9 @@ describe('service worker (sw.js)', () => {
     expect(sw).toMatch(/const\s+CACHE\s*=\s*['"]pnimit-v[\d.]+['"]/);
   });
 
-  test('cache version matches APP_VERSION in HTML', () => {
-    const html = readFile('pnimit-mega.html');
-    const appMatch = html.match(/APP_VERSION\s*=\s*['"]([^'"]+)['"]/);
+  test('cache version matches APP_VERSION in constants.js', () => {
+    const constants = readFile('src/core/constants.js');
+    const appMatch = constants.match(/APP_VERSION\s*=\s*['"]([^'"]+)['"]/);
     const swMatch = sw.match(/CACHE\s*=\s*['"]pnimit-v([^'"]+)['"]/);
     expect(appMatch).not.toBeNull();
     expect(swMatch).not.toBeNull();

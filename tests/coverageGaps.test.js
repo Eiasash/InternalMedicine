@@ -2,6 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
 
 const html = readFileSync('pnimit-mega.html', 'utf-8');
+const constantsJs = readFileSync('src/core/constants.js', 'utf-8');
+// Combined source: HTML + external JS for constant lookups
+const allSource = html + '\n' + constantsJs;
 
 // Extract JS between first <script> and last </script>
 const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/);
@@ -9,11 +12,11 @@ const jsCode = scriptMatch ? scriptMatch[1] : '';
 
 describe('AI Proxy Routing', () => {
   it('has AI_PROXY constant pointing to toranot proxy', () => {
-    expect(html).toContain("const AI_PROXY='https://toranot.netlify.app/api/claude'");
+    expect(allSource).toContain("const AI_PROXY='https://toranot.netlify.app/api/claude'");
   });
 
   it('has AI_SECRET for proxy authentication', () => {
-    expect(html).toMatch(/const AI_SECRET='[^']+'/);
+    expect(allSource).toMatch(/const AI_SECRET='[^']+'/);
   });
 
   it('callAI tries proxy first before direct API', () => {
@@ -127,7 +130,7 @@ describe('SRS / FSRS Edge Cases', () => {
   });
 
   it('SRS state saved to localStorage under correct key', () => {
-    expect(html).toContain("const LS='pnimit_mega'");
+    expect(allSource).toContain("const LS='pnimit_mega'");
   });
 
   it('SRS handles missing/corrupted sr object gracefully', () => {
