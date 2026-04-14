@@ -1,7 +1,7 @@
 import G from '../core/globals.js';
 import { TOPICS, EXAM_FREQ, IMA_WEIGHTS, APP_VERSION, HARRISON_PDF_MAP } from '../core/constants.js';
 import { sanitize, fmtT, safeJSONParse } from '../core/utils.js';
-import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, isExamTrap } from '../sr/spaced-repetition.js';
+import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, isExamTrap, getChaptersDueForReading } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
 import { renderWrongAnswerLog } from './library-view.js';
 
@@ -143,7 +143,7 @@ return h;
 
 // ===== TRACKER =====
 // topic index → {source:'haz'|'notes', label, action} for deep link
-const TOPIC_REF={
+export const TOPIC_REF={
 0:{s:'har',ch:285,l:'Harrison Ch 243-286'},
 1:{s:'har',ch:316,l:'Harrison Ch 252-264'},
 2:{s:'har',ch:247,l:'Harrison Ch 247-251'},

@@ -3,6 +3,7 @@ import { TOPICS, HARRISON_PDF_MAP, APP_VERSION, SYLLABUS_VERSION } from '../core
 import { sanitize, safeJSONParse } from '../core/utils.js';
 import { callAI } from '../ai/client.js';
 import { getTopicStats, trackChapterRead, getChaptersDueForReading } from '../sr/spaced-repetition.js';
+import { TOPIC_REF } from './track-view.js';
 
 let sylSec='haz';
 const SYL_HAZ_EXCLUDED=new Set([2,3,4,5,6,34,62]);
