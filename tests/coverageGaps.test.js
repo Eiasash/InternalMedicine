@@ -4,8 +4,9 @@ import { readFileSync } from 'fs';
 const html = readFileSync('pnimit-mega.html', 'utf-8');
 const constantsJs = readFileSync('src/core/constants.js', 'utf-8');
 const utilsJs = readFileSync('src/core/utils.js', 'utf-8');
+const aiClientJs = readFileSync('src/ai/client.js', 'utf-8');
 // Combined source: HTML + external JS for constant/function lookups
-const allSource = html + '\n' + constantsJs + '\n' + utilsJs;
+const allSource = html + '\n' + constantsJs + '\n' + utilsJs + '\n' + aiClientJs;
 
 // Extract JS between first <script> and last </script>
 const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/);
@@ -21,7 +22,7 @@ describe('AI Proxy Routing', () => {
   });
 
   it('callAI tries proxy first before direct API', () => {
-    const callAIBlock = html.slice(html.indexOf('async function callAI('), html.indexOf('async function callAI(') + 2000);
+    const callAIBlock = allSource.slice(allSource.indexOf('async function callAI('), allSource.indexOf('async function callAI(') + 2000);
     // Proxy fetch comes before direct API fetch
     const proxyIdx = callAIBlock.indexOf('AI_PROXY');
     const directIdx = callAIBlock.indexOf('api.anthropic.com');
@@ -31,34 +32,34 @@ describe('AI Proxy Routing', () => {
   });
 
   it('sends x-api-secret header to proxy', () => {
-    expect(html).toContain("'x-api-secret':AI_SECRET");
+    expect(allSource).toContain("'x-api-secret':AI_SECRET");
   });
 
   it('callAI falls back to user API key when proxy fails', () => {
-    const callAIBlock = html.slice(html.indexOf('async function callAI('), html.indexOf('async function callAI(') + 2000);
+    const callAIBlock = allSource.slice(allSource.indexOf('async function callAI('), allSource.indexOf('async function callAI(') + 2000);
     expect(callAIBlock).toContain('getApiKey()');
     expect(callAIBlock).toContain("throw new Error('no_key')");
   });
 
   it('supports abort controller for in-flight request cancellation', () => {
-    expect(html).toContain('_aiAbortController');
-    expect(html).toContain('AbortController');
+    expect(allSource).toContain('_aiAbortController');
+    expect(allSource).toContain('AbortController');
   });
 
   it('uses model alias map for direct API (sonnet→claude-sonnet-4-6)', () => {
-    expect(html).toContain("sonnet:'claude-sonnet-4-6'");
+    expect(allSource).toContain("sonnet:'claude-sonnet-4-6'");
   });
 
   it('sends anthropic-version header on direct calls', () => {
-    expect(html).toContain("'anthropic-version':'2023-06-01'");
+    expect(allSource).toContain("'anthropic-version':'2023-06-01'");
   });
 
   it('sends anthropic-dangerous-direct-browser-access header', () => {
-    expect(html).toContain("'anthropic-dangerous-direct-browser-access':'true'");
+    expect(allSource).toContain("'anthropic-dangerous-direct-browser-access':'true'");
   });
 
   it('extracts text from Claude response correctly (content[0].text)', () => {
-    expect(html).toContain("d.content?.[0]?.text||''");
+    expect(allSource).toContain("d.content?.[0]?.text||''");
   });
 });
 
