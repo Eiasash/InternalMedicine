@@ -6,7 +6,7 @@ import { isChronicFail } from '../sr/fsrs-bridge.js';
 import { TOPIC_REF } from './track-view.js';
 import { buildPool, check as quizCheck, next as quizNext } from '../quiz/engine.js';
 
-export function toggleBk(){G.S.bk[G.pool[G.qi]]=!G.S.bk[G.pool[G.qi]];G.save();G.render();}
+export function toggleBk(){S.bk[pool[qi]]=!S.bk[pool[qi]];G.save();G.render();}
 
 
 export async function uploadQImage(qIdx){
@@ -162,8 +162,8 @@ if(G.timedMode&&!G.ans){
 }
 const _isFlagQ=(G.S.flagged||{})[G.pool[G.qi]];
 h+=`<p class="heb" style="font-size:13px;font-weight:700;line-height:1.7;margin-bottom:${q.img?'10':'16'}px">${_isFlagQ?'<span style="color:#dc2626;font-size:11px" title="Explanation flagged — verify">⚑ </span>':''  }${q.q}</p>`;
-if(q.img){h+=`<div style="margin-bottom:14px;text-align:center;position:relative"><img src="${q.img}" alt="Question image" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer" onclick="viewImg(this.src)" loading="lazy"><button onclick="event.stopPropagation();removeQImage(${pool[qi]})" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:12px;cursor:pointer">✕</button></div>`;}
-if(!q.img&&!G.examMode){h+=`<div style="margin-bottom:10px"><button onclick="uploadQImage(${pool[qi]})" style="font-size:10px;padding:4px 12px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">📷 Attach Image</button><span id="img-status-${G.pool[G.qi]}" style="font-size:10px;color:#94a3b8;margin-left:6px"></span></div>`;}
+if(q.img){h+=`<div style="margin-bottom:14px;text-align:center;position:relative"><img src="${q.img}" alt="Question image" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer" onclick="viewImg(this.src)" loading="lazy"><button onclick="event.stopPropagation();removeQImage(${G.pool[G.qi]})" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:12px;cursor:pointer">✕</button></div>`;}
+if(!q.img&&!G.examMode){h+=`<div style="margin-bottom:10px"><button onclick="uploadQImage(${G.pool[G.qi]})" style="font-size:10px;padding:4px 12px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">📷 Attach Image</button><span id="img-status-${G.pool[G.qi]}" style="font-size:10px;color:#94a3b8;margin-left:6px"></span></div>`;}
 q.o.forEach((o,i)=>{
 let cls='qo';
 if(G.ans){cls+=' lk';if(i===q.c)cls+=' ok';else if(i===G.sel)cls+=' no';else cls+=' dim';}
@@ -229,9 +229,9 @@ else h+=`<span class="pill ${G.filt===f&&G.filt!=='topic'?'on':''}" onclick="set
 h+=`</div>`;
 // Blind recall & Distractor Autopsy toggles
 h+=`<div style="display:flex;gap:8px;margin-bottom:10px;font-size:10px">
-<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.blindRecall?'checked':''} onchange="blindRecall=this.checked;G.render()"> 🙈 Cover Options</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">Hides answer choices — forces you to recall the answer before seeing options.</div></span>
-<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.autopsyMode?'checked':''} onchange="autopsyMode=this.checked;G.render()"> 🔬 Distractor Autopsy</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">After answering, explains WHY each wrong option is wrong — builds distractor recognition skill.</div></span>
-<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.timedMode?'checked':''} onchange="timedMode=this.checked;if(timedMode){clearInterval(timedInt);timedSec=90;G.render();setTimeout(startTimedQ,50);}else{stopTimedMode();}"> ⏱ Timed (90s)</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">90-second countdown per question. Auto-advances when time runs out — marks as wrong. Builds exam-condition reflexes.</div></span>
+<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.blindRecall?'checked':''} onchange="G.blindRecall=this.checked;G.render()"> 🙈 Cover Options</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">Hides answer choices — forces you to recall the answer before seeing options.</div></span>
+<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.autopsyMode?'checked':''} onchange="G.autopsyMode=this.checked;G.render()"> 🔬 Distractor Autopsy</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">After answering, explains WHY each wrong option is wrong — builds distractor recognition skill.</div></span>
+<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.timedMode?'checked':''} onchange="G.timedMode=this.checked;if(G.timedMode){clearInterval(G.timedInt);G.timedSec=90;G.render();setTimeout(startTimedQ,50);}else{stopTimedMode();}"> ⏱ Timed (90s)</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">90-second countdown per question. Auto-advances when time runs out — marks as wrong. Builds exam-condition reflexes.</div></span>
 </div>`;
 h+=`<div style="display:flex;gap:6px;margin-bottom:10px"><select class="calc-in" style="font-size:11px;padding:6px 10px;flex:1" onchange="this.value===-1?setFilt('all'):setTopicFilt(parseInt(this.value))">
 <option value="-1"${G.filt!=='topic'?' selected':''}>📂 Filter by topic…</option>`;
@@ -240,7 +240,7 @@ h+=`</select>`;
 // Feature 2: Topic mini-exam button
 if(G.filt==='topic'&&G.topicFilt>=0){
 const _tqCount=G.QZ.filter(q=>q.ti===G.topicFilt).length;
-h+=`<button class="btn btn-d" style="font-size:10px;padding:6px 12px;white-space:nowrap" onclick="startTopicMiniExam(${topicFilt})" aria-label="Start topic mini-exam">🎯 Mini Exam (${Math.min(_tqCount,20)}q)</button>`;
+h+=`<button class="btn btn-d" style="font-size:10px;padding:6px 12px;white-space:nowrap" onclick="startTopicMiniExam(${G.topicFilt})" aria-label="Start topic mini-exam">🎯 Mini Exam (${Math.min(_tqCount,20)}q)</button>`;
 }
 h+=`</div>`;
 }
@@ -275,7 +275,7 @@ if(G.ans){cls+=' lk';if(origI===q.c)cls+=' ok';else if(origI===G.sel)cls+=' no';
 else if(origI===G.sel)cls+=' G.sel';
 const blurCls=G.blindRecall&&!G.ans&&origI!==G.sel?' qo-blur':'';
 const autopsyCls=(G.autopsyMode&&G.ans&&origI!==q.c&&origI===G.autopsyDistractor)?' distractor-highlight':'';
-h+=`<button class="${cls}${blurCls}${autopsyCls}" onclick="${blindRecall&&!ans&&origI!==sel?'this.classList.remove(\"qo-blur\");':''}pick(${origI})" aria-label="Option ${origI+1}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
+h+=`<button class="${cls}${blurCls}${autopsyCls}" onclick="${G.blindRecall&&!G.ans&&origI!==G.sel?'this.classList.remove(\"qo-blur\");':''}pick(${origI})" aria-label="Option ${origI+1}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
 });
 h+=`<div style="display:flex;gap:6px;margin-top:14px">`;
 if(!G.ans){
@@ -283,9 +283,9 @@ if(!G.examMode&&G.sel!==null&&G._confidence===null){
 // Feature 9: Confidence before reveal
 h+=`<div style="margin-bottom:8px;font-size:10px;color:#64748b;font-weight:600">How sure are you?</div>
 <div style="display:flex;gap:6px;margin-bottom:10px">
-<button class="btn" style="flex:1;background:#fef2f2;color:#dc2626;font-size:13px;padding:8px" onclick="_confidence=0;G.render()">😬</button>
-<button class="btn" style="flex:1;background:#fffbeb;color:#d97706;font-size:13px;padding:8px" onclick="_confidence=1;G.render()">🤔</button>
-<button class="btn" style="flex:1;background:#f0fdf4;color:#059669;font-size:13px;padding:8px" onclick="_confidence=2;G.render()">😎</button>
+<button class="btn" style="flex:1;background:#fef2f2;color:#dc2626;font-size:13px;padding:8px" onclick="G._confidence=0;G.render()">😬</button>
+<button class="btn" style="flex:1;background:#fffbeb;color:#d97706;font-size:13px;padding:8px" onclick="G._confidence=1;G.render()">🤔</button>
+<button class="btn" style="flex:1;background:#f0fdf4;color:#059669;font-size:13px;padding:8px" onclick="G._confidence=2;G.render()">😎</button>
 </div>`;
 }
 const _confLabel=G._confidence===0?'😬':G._confidence===1?'🤔':G._confidence===2?'😎':'';
@@ -296,26 +296,26 @@ if(!G.examMode&&G.sel!==q.c&&!G._wrongReason){
 h+=`<div style="margin-bottom:8px">
 <div style="font-size:10px;font-weight:700;color:#dc2626;margin-bottom:6px">Why did you get it wrong?</div>
 <div style="display:flex;gap:4px;flex-wrap:wrap">
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#fef2f2;color:#991b1b" onclick="_wrongReason='no_knowledge';G.save();G.render()">📚 Didn't know</button>
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#fffbeb;color:#92400e" onclick="_wrongReason='misread';G.save();G.render()">👓 Misread</button>
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#eff6ff;color:#1e40af" onclick="_wrongReason='between_2';G.save();G.render()">⚖️ Between 2</button>
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#f5f3ff;color:#6d28d9" onclick="_wrongReason='silly';G.save();G.render()">🤦 Silly mistake</button>
+<button class="btn" style="font-size:10px;padding:6px 10px;background:#fef2f2;color:#991b1b" onclick="G._wrongReason='no_knowledge';G.save();G.render()">📚 Didn't know</button>
+<button class="btn" style="font-size:10px;padding:6px 10px;background:#fffbeb;color:#92400e" onclick="G._wrongReason='misread';G.save();G.render()">👓 Misread</button>
+<button class="btn" style="font-size:10px;padding:6px 10px;background:#eff6ff;color:#1e40af" onclick="G._wrongReason='between_2';G.save();G.render()">⚖️ Between 2</button>
+<button class="btn" style="font-size:10px;padding:6px 10px;background:#f5f3ff;color:#6d28d9" onclick="G._wrongReason='silly';G.save();G.render()">🤦 Silly mistake</button>
 </div></div>`;
 }
 // Feature 4: Cross-link to chapter after wrong answer
 if(!G.examMode&&G.sel!==q.c&&q.ti>=0){
 const _chRef=TOPIC_REF[q.ti];
 if(_chRef&&_chRef.s==='har'){
-h+=`<button class="btn" onclick="tab='lib';libSec='harrison';G.render()" style="font-size:10px;padding:5px 12px;background:#ede9fe;color:#7c3aed;margin-bottom:6px;width:100%">📖 Read: ${_chRef.l} — you're weak here</button>`;
+h+=`<button class="btn" onclick="G.tab='lib';G.libSec='harrison';G.render()" style="font-size:10px;padding:5px 12px;background:#ede9fe;color:#7c3aed;margin-bottom:6px;width:100%">📖 Read: ${_chRef.l} — you're weak here</button>`;
 }
 }
 // Feature 7: Optional difficulty rating
 if(!G.examMode){
 h+=`<div style="display:flex;gap:4px;margin-bottom:8px;align-items:center">
 <span style="font-size:9px;color:#94a3b8">Difficulty:</span>
-<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='easy'?'background:#dcfce7;color:#166534':'background:#f8fafc;color:#94a3b8'}" onclick="_diffRating='easy';_storeDiff(pool[qi],'easy')">Easy</button>
-<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='med'?'background:#fef9c3;color:#854d0e':'background:#f8fafc;color:#94a3b8'}" onclick="_diffRating='med';_storeDiff(pool[qi],'med')">Medium</button>
-<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='hard'?'background:#fecaca;color:#991b1b':'background:#f8fafc;color:#94a3b8'}" onclick="_diffRating='hard';_storeDiff(pool[qi],'hard')">Hard</button>
+<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='easy'?'background:#dcfce7;color:#166534':'background:#f8fafc;color:#94a3b8'}" onclick="_diffRating='easy';_storeDiff(G.pool[G.qi],'easy')">Easy</button>
+<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='med'?'background:#fef9c3;color:#854d0e':'background:#f8fafc;color:#94a3b8'}" onclick="_diffRating='med';_storeDiff(G.pool[G.qi],'med')">Medium</button>
+<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='hard'?'background:#fecaca;color:#991b1b':'background:#f8fafc;color:#94a3b8'}" onclick="_diffRating='hard';_storeDiff(G.pool[G.qi],'hard')">Hard</button>
 </div>`;
 }
 // Next button — blocked if wrong + no classification (non-exam)
@@ -331,8 +331,8 @@ h+='<div style="margin-top:12px;background:#f0fdf4;border:1px solid #a7f3d0;bord
 h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:#065f46;direction:rtl">🎓 Teach-Back: הסבר מדוע זו התשובה הנכונה</span><button onclick="startVoiceTeachBack()" id="tb-mic-btn" style="font-size:16px;padding:4px 8px;background:#ecfdf5;border:none;border-radius:8px;cursor:pointer" title="הקלט קולי" aria-label="Record voice teach-back">🎙️</button></div>';
 h+='<textarea id="tbInput" dir="rtl" style="width:100%;min-height:60px;resize:vertical;font-family:Heebo,sans-serif;border:1px solid #a7f3d0;border-radius:8px;padding:8px;font-size:12px" placeholder="הקלד את ההסבר שלך..." aria-label="Teach-back explanation"></textarea>';
 h+='<div style="display:flex;gap:8px;margin-top:8px">';
-h+='<button class="btn btn-g" style="flex:1;font-size:11px" onclick="var v=document.getElementById(\'tbInput\')?.value?.trim();if(v){gradeTeachBack(pool[qi],v);}else{teachBackState=\'skip\';G.render();}" aria-label="Grade teach-back with AI">🤖 Grade it</button>';
-h+='<button class="btn btn-o" style="font-size:11px" onclick="teachBackState=\'skip\';G.render()" aria-label="Skip teach-back">דלג</button>';
+h+='<button class="btn btn-g" style="flex:1;font-size:11px" onclick="var v=document.getElementById(\'tbInput\')?.value?.trim();if(v){gradeTeachBack(G.pool[G.qi],v);}else{G.teachBackState=\'skip\';G.render();}" aria-label="Grade teach-back with AI">🤖 Grade it</button>';
+h+='<button class="btn btn-o" style="font-size:11px" onclick="G.teachBackState=\'skip\';G.render()" aria-label="Skip teach-back">דלג</button>';
 h+='</div></div>';
 }else if(G.teachBackState==='grading'){
 h+='<div style="margin-top:12px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:12px;text-align:center"><div style="font-size:12px;color:#065f46">⏳ Grading...</div></div>';
@@ -400,7 +400,7 @@ wrongIdxs.forEach(wi=>{
 h+=`<div style="margin-bottom:6px"><b style="color:#dc2626">✗ ${q.o[wi]}</b> — <span style="color:#64748b">why wrong here?</span></div>`;
 });
 h+=`</div>`;
-h+=`<button class="btn" style="font-size:10px;background:#fef3c7;color:#92400e;margin-top:6px;width:100%" onclick="aiAutopsy(${pool[qi]})">🤖 AI: Explain why each is wrong</button>`;
+h+=`<button class="btn" style="font-size:10px;background:#fef3c7;color:#92400e;margin-top:6px;width:100%" onclick="aiAutopsy(${G.pool[G.qi]})">🤖 AI: Explain why each is wrong</button>`;
 }
 h+=`</div>`;
 }
@@ -410,7 +410,7 @@ h+=`</div>`;
 return h;
 }
 // Sudden Death check/next
-export function sdCheck(){if(G.sel===null)return;G.ans=true;const q=G.QZ[G.sdPool[G.sdQi]];if(G.sel===q.c){G.sdStreak++;G.S.qOk++;srScore(G.sdPool[G.sdQi],true);G.save();G.render();}else{G.S.qNo++;srScore(G.sdPool[G.sdQi],false);G.save();G.render();setTimeout(()=>endSuddenDeath(),800);}}
-export function sdNext(){G.sdQi++;if(G.sdQi>=G.sdPool.length)G.sdQi=0;G.sel=null;G.ans=false;G.autopsyDistractor=-1;G.render();}
+export function sdCheck(){if(sel===null)return;ans=true;const q=G.QZ[sdPool[sdQi]];if(sel===q.c){sdStreak++;S.qOk++;srScore(sdPool[sdQi],true);G.save();G.render();}else{S.qNo++;srScore(sdPool[sdQi],false);G.save();G.render();setTimeout(()=>endSuddenDeath(),800);}}
+export function sdNext(){sdQi++;if(sdQi>=sdPool.length)sdQi=0;sel=null;ans=false;autopsyDistractor=-1;G.render();}
 
 

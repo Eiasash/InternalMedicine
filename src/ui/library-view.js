@@ -123,7 +123,7 @@ export function renderWrongAnswerLog(){
     chronic.slice(0,5).forEach(({idx,q,s})=>{
       const acc=Math.round(s.ok/s.tot*100);
       const topic=q.ti>=0?TOPICS_L[q.ti]:'';
-      h+=`<div style="padding:8px;background:#fef2f2;border-radius:8px;margin-bottom:6px;cursor:pointer" onclick="filt='all';pool=[${idx}];qi=0;sel=null;ans=false;flipRevealed=false;tab='quiz';G.render()">
+      h+=`<div style="padding:8px;background:#fef2f2;border-radius:8px;margin-bottom:6px;cursor:pointer" onclick="G.filt='all';G.pool=[${idx}];G.qi=0;G.sel=null;G.ans=false;G.flipRevealed=false;G.tab='quiz';G.render()">
 <div style="font-size:10px;font-weight:600;line-height:1.4">${q.q.slice(0,80)}${q.q.length>80?'…':''}</div>
 <div style="display:flex;gap:8px;margin-top:4px"><span style="font-size:9px;color:#dc2626">${s.ok}/${s.tot} (${acc}%) · D=${s.fsrsD?s.fsrsD.toFixed(1):'?'}</span><span style="font-size:9px;color:#94a3b8">${topic}</span></div>
 </div>`;
@@ -136,7 +136,7 @@ export function renderWrongAnswerLog(){
     h+=`<div style="font-weight:700;font-size:11px;margin-bottom:6px;margin-top:10px;color:#d97706">⚠️ Recently Wrong — retry these</div>`;
     shown.forEach(({idx,q,s})=>{
       const topic=q.ti>=0?TOPICS_L[q.ti]:'';
-      h+=`<div style="padding:8px;background:#fffbeb;border-radius:8px;margin-bottom:4px;cursor:pointer" onclick="filt='all';pool=[${idx}];qi=0;sel=null;ans=false;tab='quiz';G.render()">
+      h+=`<div style="padding:8px;background:#fffbeb;border-radius:8px;margin-bottom:4px;cursor:pointer" onclick="G.filt='all';G.pool=[${idx}];G.qi=0;G.sel=null;G.ans=false;G.tab='quiz';G.render()">
 <div style="font-size:10px;line-height:1.4">${q.q.slice(0,75)}${q.q.length>75?'…':''}</div>
 <div style="font-size:9px;color:#94a3b8;margin-top:2px">${topic}</div>
 </div>`;
@@ -269,7 +269,7 @@ const libTabs=[
 ];
 h+=`<div style="display:flex;gap:4px;overflow-x:auto;padding:4px 0;margin-bottom:12px;-webkit-overflow-scrolling:touch">`;
 libTabs.forEach(t=>{
-h+=`<span class="pill ${G.libSec===t.id?'on':''}" style="white-space:nowrap;font-size:10px" onclick="libSec='${t.id}';G.render()">${t.l}</span>`;
+h+=`<span class="pill ${G.libSec===t.id?'on':''}" style="white-space:nowrap;font-size:10px" onclick="G.libSec='${t.id}';G.render()">${t.l}</span>`;
 });
 h+=`</div>`;
 
@@ -282,13 +282,13 @@ const curIdx=allSylChNums.indexOf(G.harChOpen);
 const prevCh=curIdx>0?allSylChNums[curIdx-1]:null;
 const nextCh=curIdx<allSylChNums.length-1?allSylChNums[curIdx+1]:null;
 h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-<button onclick="harChOpen=null;G.render()" style="background:#f1f5f9;border:none;border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer">← Back</button>
+<button onclick="G.harChOpen=null;G.render()" style="background:#f1f5f9;border:none;border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer">← Back</button>
 <div style="font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Ch ${G.harChOpen}: ${ch.title}</div>
 </div>
 <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
 ${prevCh?`<button onclick="openHarrisonChapter(${prevCh})" style="font-size:10px;padding:5px 10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">‹ Ch ${prevCh}</button>`:''}
-<button onclick="quizMeOnChapter(harChOpen,ch.title)" style="font-size:10px;padding:5px 10px;background:#7c3aed;color:#fff;border:none;border-radius:8px;cursor:pointer">🧠 Quiz</button>
-<button onclick="aiSummarizeChapter(harChOpen,ch.title)" style="font-size:10px;padding:5px 10px;background:#059669;color:#fff;border:none;border-radius:8px;cursor:pointer">📝 Summary</button>
+<button onclick="quizMeOnChapter(G.harChOpen,ch.title)" style="font-size:10px;padding:5px 10px;background:#7c3aed;color:#fff;border:none;border-radius:8px;cursor:pointer">🧠 Quiz</button>
+<button onclick="aiSummarizeChapter(G.harChOpen,ch.title)" style="font-size:10px;padding:5px 10px;background:#059669;color:#fff;border:none;border-radius:8px;cursor:pointer">📝 Summary</button>
 ${nextCh?`<button onclick="openHarrisonChapter(${nextCh})" style="font-size:10px;padding:5px 10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">Ch ${nextCh} ›</button>`:''}
 </div>
 <div id="quiz-me-box"></div>
@@ -303,7 +303,7 @@ const _tqCount=G.QZ.filter(q=>q.ti===_chTopicIdx).length;
 h+=`<div style="display:flex;gap:8px;margin-bottom:12px;padding:8px 12px;background:#f5f3ff;border-radius:10px;font-size:10px;align-items:center">
 <span>📝 ${_tqCount} questions on this topic</span>
 ${_tpct!==null?`<span style="font-weight:700;color:${_tpct>=70?'#059669':_tpct>=50?'#d97706':'#dc2626'}">${_tpct}% accuracy</span>`:'<span style="color:#94a3b8">Not attempted yet</span>'}
-<button onclick="tab='quiz';filt='topic';topicFilt=${_chTopicIdx};buildPool();G.render()" style="margin-left:auto;font-size:10px;padding:4px 10px;background:#7c3aed;color:#fff;border:none;border-radius:6px;cursor:pointer">▶ Drill</button>
+<button onclick="G.tab='quiz';G.filt='topic';G.topicFilt=${_chTopicIdx};buildPool();G.render()" style="margin-left:auto;font-size:10px;padding:4px 10px;background:#7c3aed;color:#fff;border:none;border-radius:6px;cursor:pointer">▶ Drill</button>
 </div>`;
 }
 ch.sections.forEach(sec=>{
@@ -373,7 +373,7 @@ h+=`<div class="card" style="padding:14px">
 <div style="font-size:10px;color:#64748b;margin-bottom:10px">${G.QZ.length} questions from ${examYears.length} exam sessions</div>`;
 examYears.forEach(yr=>{
 const cnt=G.QZ.filter(q=>q.t===yr).length;
-h+=`<div onclick="tab='quiz';filt='${yr}';buildPool();G.render()" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer">
+h+=`<div onclick="G.tab='quiz';G.filt='${yr}';buildPool();G.render()" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer">
 <span style="background:#06b6d4;color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:8px;min-width:60px;text-align:center">${yr}</span>
 <span style="font-size:11px;flex:1">${cnt} questions</span>
 <span style="font-size:14px;color:#94a3b8">›</span></div>`;

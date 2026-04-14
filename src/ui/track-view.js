@@ -55,7 +55,7 @@ export function renderPriorityMatrix(){
 }
 
 // Track view — renderCalc, renderTrack, calcEstScore, study plan, exam trend, cheat sheet, etc.
-export function calcUp(k,v){G.calcVals[k]=parseFloat(v)||0;G.render();}
+export function calcUp(k,v){calcVals[k]=parseFloat(v)||0;G.render();}
 export function renderCalc(){
 
 let h=`<div class="sec-t">🧮 Clinical Calculators</div><div class="sec-s">CrCl · CHA₂DS₂-VASc · CURB-65 · Wells · PADUA</div>`;
@@ -247,7 +247,7 @@ let h=`<div class="card" style="padding:14px;margin-bottom:10px;border-left:4px 
 if(daysLeft!==null)h+=`<div style="font-size:10px;color:#64748b;margin-bottom:10px">${daysLeft} days to exam · ${new Date(examDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>`;
 h+=`<div style="font-size:11px;line-height:2">`;
 // Step 1: Due questions
-if(dueN>0)h+=`<div>1️⃣ <b>${dueN} due questions</b> (~${Math.round(dueN*1.5)} min) <button onclick="setFilt('due');tab='quiz';G.render()" style="font-size:9px;padding:2px 8px;background:#eff6ff;color:#3b82f6;border:none;border-radius:6px;cursor:pointer">▶ Start</button></div>`;
+if(dueN>0)h+=`<div>1️⃣ <b>${dueN} due questions</b> (~${Math.round(dueN*1.5)} min) <button onclick="setFilt('due');G.tab='quiz';G.render()" style="font-size:9px;padding:2px 8px;background:#eff6ff;color:#3b82f6;border:none;border-radius:6px;cursor:pointer">▶ Start</button></div>`;
 else h+=`<div>1️⃣ ✅ No questions due — you're caught up!</div>`;
 // Step 2: Weakest topic
 if(weakest.length){
@@ -258,7 +258,7 @@ h+=`<div>2️⃣ Read: <b>${w.name}</b> (${wPct}% accuracy, ${G.QZ.filter(q=>q.t
 h+=`<div>3️⃣ Drill: <b>20q mini-exam on ${w.name}</b> <button onclick="startTopicMiniExam(${w.i})" style="font-size:9px;padding:2px 8px;background:#dcfce7;color:#166534;border:none;border-radius:6px;cursor:pointer">🎯 Start</button></div>`;
 }
 // Step 3: Traps
-if(trapCount>0)h+=`<div>4️⃣ Review <b>${trapCount} trap questions</b> <button onclick="setFilt('traps');tab='quiz';G.render()" style="font-size:9px;padding:2px 8px;background:#fffbeb;color:#92400e;border:none;border-radius:6px;cursor:pointer">🪤 Start</button></div>`;
+if(trapCount>0)h+=`<div>4️⃣ Review <b>${trapCount} trap questions</b> <button onclick="setFilt('traps');G.tab='quiz';G.render()" style="font-size:9px;padding:2px 8px;background:#fffbeb;color:#92400e;border:none;border-radius:6px;cursor:pointer">🪤 Start</button></div>`;
 h+=`</div></div>`;
 return h;
 }
@@ -548,7 +548,7 @@ export function renderStudyPlan(){
       });
 
       h += `<div style="border-top:1px solid #f1f5f9;padding:0">
-      <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:#f8fafc" onclick="S['sp_t${tier.tier}']=!S['sp_t${tier.tier}'];G.save();G.render()" role="button" tabindex="0" aria-expanded="${tierOpen?'true':'false'}">
+      <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:#f8fafc" onclick="G.S['sp_t${tier.tier}']=!G.S['sp_t${tier.tier}'];G.save();G.render()" role="button" tabindex="0" aria-expanded="${tierOpen?'true':'false'}">
         <div style="display:flex;align-items:center;gap:8px;flex:1">
           <div style="width:20px;height:20px;border-radius:8px;background:${tier.color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700">${tier.tier}</div>
           <div style="flex:1">
@@ -586,8 +586,8 @@ export function renderStudyPlan(){
             <span style="color:#94a3b8;font-size:9px;white-space:nowrap">${topic.hrs}</span>
             </div>
             <div style="display:flex;gap:4px;padding:0 8px 6px 36px;flex-wrap:wrap">
-            ${HAR_CHAPTERS[topic.n]?`<button onclick="event.stopPropagation();libSec=\"harrison\";G.tab=\"lib\";G.render()" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#b45309;cursor:pointer;white-space:nowrap">📕 Ch ${HAR_CHAPTERS[topic.n].ch}</button>`:""}
-            <button onclick="event.stopPropagation();openNote=${topic.ti};go('study')" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#0D7377;cursor:pointer;white-space:nowrap" aria-label="Open notes for ${topic.n.replace(/'/g,'')}">📖 Notes</button>
+            ${HAR_CHAPTERS[topic.n]?`<button onclick="event.stopPropagation();G.libSec=\"harrison\";G.tab=\"lib\";G.render()" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#b45309;cursor:pointer;white-space:nowrap">📕 Ch ${HAR_CHAPTERS[topic.n].ch}</button>`:""}
+            <button onclick="event.stopPropagation();G.openNote=${topic.ti};go('study')" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#0D7377;cursor:pointer;white-space:nowrap" aria-label="Open notes for ${topic.n.replace(/'/g,'')}">📖 Notes</button>
             <button onclick="event.stopPropagation();setTopicFilt(${topic.ti});go('quiz')" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#3b82f6;cursor:pointer;white-space:nowrap" aria-label="Quiz ${topic.n.replace(/'/g,'')}">📝 Quiz</button>
             <button onclick="event.stopPropagation();G.S.chat=[];go('chat');setTimeout(function(){sendChatStarter('Give me a concise board-review summary of ${topic.n.replace(/'/g,"\\'")} in internal medicine. Cover: key definitions, diagnostic criteria, management pearls, exam traps, and must-know numbers. Format with bold headings.')},100)" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#7c3aed;cursor:pointer;white-space:nowrap" aria-label="AI summary of ${topic.n.replace(/'/g,'')}">🤖 Summarize</button>
             </div>
@@ -639,7 +639,7 @@ h+=`<div class="card" style="padding:12px;margin-bottom:8px;background:#fef2f2;b
 <span style="font-size:18px">🔔</span>
 <div style="flex:1"><div style="font-size:12px;font-weight:700;color:#dc2626">${dueN} questions due for review</div>
 <div style="font-size:10px;color:#64748b">Spaced repetition items ready now</div></div>
-<button onclick="filt='due';buildPool();tab='quiz';G.render()" class="btn" style="font-size:10px;padding:6px 12px;background:#dc2626;color:#fff;border:none;border-radius:8px">▶ Review</button>
+<button onclick="G.filt='due';buildPool();G.tab='quiz';G.render()" class="btn" style="font-size:10px;padding:6px 12px;background:#dc2626;color:#fff;border:none;border-radius:8px">▶ Review</button>
 </div></div>`;
 }
 // Topic mastery heatmap
@@ -652,7 +652,7 @@ ti=Number(ti);if(!TOPICS[ti])return;
 const _p=s.tot>=2?Math.round(s.ok/s.tot*100):null;
 const color=_p===null?'#e2e8f0':_p>=80?'#059669':_p>=60?'#84cc16':_p>=40?'#f59e0b':'#ef4444';
 const bg=_p===null?'#f8fafc':_p>=80?'#ecfdf5':_p>=60?'#f7fee7':_p>=40?'#fffbeb':'#fef2f2';
-h+=`<div onclick="tab='quiz';filt='topic';topicFilt=${ti};buildPool();G.render()" style="padding:4px 6px;border-radius:6px;font-size:8px;background:${bg};color:${color};font-weight:700;cursor:pointer;border:1px solid ${color}30;min-width:28px;text-align:center" title="${TOPICS[ti]}: ${_p!==null?_p+'%':'no data'} (${s.tot} Qs)">${_p!==null?_p+'%':'·'}</div>`;
+h+=`<div onclick="G.tab='quiz';G.filt='topic';G.topicFilt=${ti};buildPool();G.render()" style="padding:4px 6px;border-radius:6px;font-size:8px;background:${bg};color:${color};font-weight:700;cursor:pointer;border:1px solid ${color}30;min-width:28px;text-align:center" title="${TOPICS[ti]}: ${_p!==null?_p+'%':'no data'} (${s.tot} Qs)">${_p!==null?_p+'%':'·'}</div>`;
 });
 h+=`</div></div>`;
 h+=renderStudyPlan();
@@ -704,7 +704,7 @@ h+=`<div class="card" style="padding:14px;margin-bottom:10px;background:linear-g
 <div style="font-weight:700;font-size:12px;color:#dc2626">Rescue Drill</div>
 <div style="font-size:10px;color:#64748b">${_weakTopics.map(w=>TOPICS[w.ti]+' ('+w.pct+'%)').join(' \u00b7 ')}</div>
 </div>
-<button onclick="buildRescuePool();tab='quiz';G.render()" class="btn" style="font-size:11px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:10px;font-weight:700">GO</button>
+<button onclick="buildRescuePool();G.tab='quiz';G.render()" class="btn" style="font-size:11px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:10px;font-weight:700">GO</button>
 </div></div>`;
 }
 // Activity Calendar (30 days)
@@ -768,7 +768,7 @@ var fk='bkf_'+topic.replace(/[^a-z0-9]/gi,'_');
 var open=G.S[fk];
 var qs=_byTopic[topic];
 h+='<div style="margin-bottom:6px">';
-h+='<div onclick="S[\''+fk+'\']=' + '!S[\''+fk+'\'];G.save();G.render()" style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#f8fafc;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600" role="button" tabindex="0" aria-expanded="'+(open?'true':'false')+'" aria-label="'+topic+'">';
+h+='<div onclick="G.S[\''+fk+'\']=' + '!G.S[\''+fk+'\'];G.save();G.render()" style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#f8fafc;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600" role="button" tabindex="0" aria-expanded="'+(open?'true':'false')+'" aria-label="'+topic+'">';
 h+='<span>📁 '+topic+' ('+qs.length+')</span><span>'+(open?'▼':'▶')+'</span></div>';
 if(open){qs.forEach(function(e){h+='<div style="padding:6px 12px;font-size:10px;border-bottom:1px solid #f1f5f9" class="heb" dir="rtl">'+e.q.q.substring(0,90)+'...</div>';});}
 h+='</div>';
