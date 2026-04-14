@@ -1,5 +1,5 @@
 import G from '../core/globals.js';
-import { TOPICS, EXAM_FREQ, IMA_WEIGHTS, APP_VERSION, HARRISON_PDF_MAP } from '../core/constants.js';
+import { TOPICS, EXAM_FREQ, IMA_WEIGHTS, APP_VERSION, HARRISON_PDF_MAP, LS, BUILD_HASH } from '../core/constants.js';
 import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey } from '../core/utils.js';
 import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, isExamTrap, getChaptersDueForReading } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
@@ -69,7 +69,7 @@ export function renderPriorityMatrix(){
 }
 
 // Track view — renderCalc, renderTrack, calcEstScore, study plan, exam trend, cheat sheet, etc.
-export function calcUp(k,v){calcVals[k]=parseFloat(v)||0;G.render();}
+export function calcUp(k,v){G.calcVals[k]=parseFloat(v)||0;G.render();}
 export function renderCalc(){
 
 let h=`<div class="sec-t">🧮 Clinical Calculators</div><div class="sec-s">CrCl · CHA₂DS₂-VASc · CURB-65 · Wells · PADUA</div>`;
