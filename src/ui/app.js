@@ -23,8 +23,8 @@ import { renderQuiz, toggleBk, uploadQImage, removeQImage, viewImg, pauseTimed,
 import { renderStudy, toggleNote, filterNotes, renderFlash, renderDrugs } from './learn-view.js';
 import { renderLibrary, openHarrisonChapter,
          toggleHarrisonAI, submitHarrisonAI, aiSummarizeChapter, quizMeOnChapter,
-         addChapterQsToBank } from './library-view.js';
-import { renderTrack, renderCalc, calcUp, calcEstScore, renderStudyPlan, renderExamTrendCard, renderPriorityMatrix, renderWrongAnswerLog,
+         addChapterQsToBank, renderWrongAnswerLog } from './library-view.js';
+import { renderTrack, renderCalc, calcUp, calcEstScore, renderStudyPlan, renderExamTrendCard, renderPriorityMatrix,
          renderDailyPlan, renderSessionCard, setExamDate, exportCheatSheet,
          saveSessionSummary } from './track-view.js';
 import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,

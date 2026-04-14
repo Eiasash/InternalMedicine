@@ -3,6 +3,7 @@ import { TOPICS, EXAM_FREQ, IMA_WEIGHTS, APP_VERSION, HARRISON_PDF_MAP } from '.
 import { sanitize, fmtT, safeJSONParse } from '../core/utils.js';
 import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, isExamTrap } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
+import { renderWrongAnswerLog } from './library-view.js';
 
 export function renderPriorityMatrix(){
   const TOPICS_L=TOPICS;
