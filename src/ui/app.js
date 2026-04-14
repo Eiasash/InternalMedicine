@@ -26,7 +26,7 @@ import { renderLibrary, openHarrisonChapter,
          addChapterQsToBank, renderWrongAnswerLog, initLibraryEvents } from './library-view.js';
 import { renderTrack, renderCalc, calcUp, calcEstScore, renderStudyPlan, renderExamTrendCard, renderPriorityMatrix,
          renderDailyPlan, renderSessionCard, setExamDate, exportCheatSheet,
-         saveSessionSummary } from './track-view.js';
+         saveSessionSummary, initTrackEvents } from './track-view.js';
 import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
          showAnswerHardFail, initMoreEvents } from './more-view.js';
 
@@ -344,7 +344,9 @@ _w.quizMeOnChapter = quizMeOnChapter; _w.addChapterQsToBank = addChapterQsToBank
 // Learn
 // toggleNote, filterNotes, fcRate: now handled by learn-view delegation
 // Track
-_w.calcUp = calcUp; _w.setExamDate = setExamDate; _w.exportCheatSheet = exportCheatSheet;
+// calcUp: track-view delegation
+// setExamDate: track-view delegation
+// exportCheatSheet: track-view delegation
 // Cloud & social
 _w.showLeaderboard = showLeaderboard; _w.submitFeedbackForm = submitFeedbackForm;
 _w.cloudBackup = cloudBackup; _w.cloudRestore = cloudRestore;
@@ -366,6 +368,7 @@ _w.takeWeeklySnapshot = takeWeeklySnapshot;
 initMoreEvents(document.getElementById('ct'));
 initLibraryEvents(document.getElementById('ct'));
 initLearnEvents(document.getElementById('ct'));
+initTrackEvents(document.getElementById('ct'));
 
 // === Boot ===
 // Wake lock
