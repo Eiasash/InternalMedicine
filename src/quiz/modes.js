@@ -1,3 +1,6 @@
+import G from '../core/globals.js';
+import { fmtT } from '../core/utils.js';
+
 try{G.sdLeaderboard=JSON.parse(localStorage.getItem('pnimit_sd_lb')||'[]')}catch(e){}
 // Quiz modes & peripherals — extracted from pnimit-mega.html
 // Wake lock, pomodoro, sudden death, blind recall, speech, NBS, voice parser

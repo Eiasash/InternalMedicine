@@ -1,5 +1,5 @@
 import G from '../core/globals.js';
-import { sanitize } from '../core/utils.js';
+import { sanitize, getApiKey, setApiKey } from '../core/utils.js';
 import { callAI } from '../ai/client.js';
 
 export function renderSearch(){

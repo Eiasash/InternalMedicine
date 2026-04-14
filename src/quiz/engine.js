@@ -3,6 +3,8 @@ import { TOPICS, EXAM_FREQ } from '../core/constants.js';
 import { sanitize, fmtT } from '../core/utils.js';
 import { getDueQuestions, getTopicStats, isExamTrap, srScore } from '../sr/spaced-repetition.js';
 import { callAI } from '../ai/client.js';
+import { buildRescuePool } from '../sr/spaced-repetition.js';
+import { aiAutopsy } from '../ai/explain.js';
 
 // Quiz engine — extracted from pnimit-mega.html
 // Depends on: G.S, G.save (state.js), G.QZ, TOPICS, EXAM_FREQ (constants.js),
