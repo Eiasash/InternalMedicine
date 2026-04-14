@@ -2,9 +2,8 @@ name: Weekly Audit
 
 on:
   schedule:
-    # Run every Sunday at 06:00 UTC
     - cron: '0 6 * * 0'
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
   audit:
@@ -15,7 +14,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       # ── Data Integrity ──
       - name: Validate all JSON files
@@ -58,7 +57,7 @@ jobs:
 
       - name: Check for conflicting duplicates
         run: |
-          python3 -c "
+          python3 << 'PYEOF'
           import json, sys
           qs = json.load(open('data/questions.json'))
           seen = {}
@@ -77,11 +76,11 @@ jobs:
                   print(f'  Q{j} vs Q{i}: {k}...')
               sys.exit(1)
           print('OK: No conflicting duplicates')
-          "
+          PYEOF
 
       - name: Check topic coverage (min 5 per topic)
         run: |
-          python3 -c "
+          python3 << 'PYEOF'
           import json, sys
           qs = json.load(open('data/questions.json'))
           counts = {}
@@ -95,26 +94,25 @@ jobs:
                   print(f'  ti={ti}: {counts.get(ti,0)} questions')
               sys.exit(1)
           print(f'OK: All 24 topics have >=5 questions')
-          "
+          PYEOF
 
       # ── No Geriatrics Content ──
       - name: Check no geriatrics-only content
         run: |
           python3 << 'PYEOF'
-          import sys
-          html = open('pnimit-mega.html').read()
-          sp_start = html.find('const STUDY_PLAN')
-          sp_end = html.find('function renderStudyPlan')
-          if sp_start >= 0 and sp_end >= 0:
-              sp = html[sp_start:sp_end]
-              banned = ['GRS', "Hazzard's", 'CGA', 'Elder Abuse', 'Driving Fitness',
-                        'BPSD', 'Dysphagia', 'FIM']
-              found = [t for t in banned if t in sp]
-              if found:
-                  print(f'ERROR: geriatrics terms in study plan: {found}'); sys.exit(1)
-          # Check for EOL tree dead code
-          if 'eolState' in html or 'renderEOLTree' in html:
-              print('ERROR: geriatrics EOL tree code found in Pnimit'); sys.exit(1)
+          import sys, glob
+          banned = ['GRS', "Hazzard's", 'CGA', 'Elder Abuse', 'Driving Fitness',
+                    'BPSD', 'Dysphagia', 'FIM', 'eolState', 'renderEOLTree']
+          found = []
+          for f in sorted(glob.glob('src/**/*.js', recursive=True)):
+              content = open(f).read()
+              for term in banned:
+                  if term in content:
+                      found.append(f'{f}: "{term}"')
+          if found:
+              print(f'ERROR: Geriatrics-only content found:')
+              for f in found: print(f'  {f}')
+              sys.exit(1)
           print('OK: No geriatrics-only content')
           PYEOF
 
@@ -123,10 +121,10 @@ jobs:
         run: |
           python3 << 'PYEOF'
           import re, sys
-          html = open('pnimit-mega.html').read()
+          constants = open('src/core/constants.js').read()
           sw = open('sw.js').read()
-          m_app = re.search(r"APP_VERSION='([^']+)'", html)
-          m_sw = re.search(r"CACHE='pnimit-v([^']+)'", sw)
+          m_app = re.search(r"APP_VERSION\s*=\s*['\"]([^'\"]+)['\"]", constants)
+          m_sw = re.search(r"CACHE\s*=\s*['\"]pnimit-v([^'\"]+)['\"]", sw)
           if not m_app or not m_sw:
               print('ERROR: Version constants not found'); sys.exit(1)
           if m_app.group(1) != m_sw.group(1):
@@ -137,79 +135,66 @@ jobs:
       # ── Security ──
       - name: Check no eval() calls
         run: |
-          python3 -c "
-          import re, sys
-          html = open('pnimit-mega.html').read()
-          evals = [m.start() for m in re.finditer(r'\beval\s*\(', html)]
-          if evals:
-              print(f'WARNING: {len(evals)} eval() calls found'); sys.exit(1)
+          python3 << 'PYEOF'
+          import re, sys, glob
+          for f in sorted(glob.glob('src/**/*.js', recursive=True)):
+              content = open(f).read()
+              evals = [m.start() for m in re.finditer(r'\beval\s*\(', content)]
+              if evals:
+                  print(f'WARNING: {len(evals)} eval() calls in {f}'); sys.exit(1)
           print('OK: No eval() calls')
-          "
+          PYEOF
 
       - name: Audit innerHTML sanitization
         run: |
           python3 << 'PYEOF'
-          import sys
-          html = open('pnimit-mega.html').read()
-          lines = html.split('\n')
+          import sys, glob
           warnings = []
-          for i, line in enumerate(lines, 1):
-              if '.innerHTML=' in line or '.innerHTML =' in line:
-                  after_eq = line.split('innerHTML')[1]
-                  if ('+' in after_eq or '${' in after_eq) and 'sanitize(' not in after_eq:
-                      warnings.append(f'  Line {i}: {line.strip()[:100]}')
+          for f in sorted(glob.glob('src/**/*.js', recursive=True)):
+              for i, line in enumerate(open(f).readlines(), 1):
+                  if '.innerHTML=' in line or '.innerHTML =' in line:
+                      after = line.split('innerHTML')[1]
+                      if ('+' in after or '${' in after) and 'sanitize(' not in after:
+                          warnings.append(f'  {f}:{i}: {line.strip()[:100]}')
           if warnings:
               print(f'WARNING: {len(warnings)} unsanitized innerHTML:')
-              for w in warnings[:10]:
-                  print(w)
+              for w in warnings[:10]: print(w)
           else:
               print('OK: All dynamic innerHTML uses sanitize()')
           PYEOF
 
-      - name: Check JS brace balance
+      # ── JS Syntax Check (all modules) ──
+      - name: Check JS syntax
         run: |
-          python3 -c "
-          import sys
-          c = open('pnimit-mega.html').read()
-          diff = c.count('{') - c.count('}')
-          if diff != 0:
-              print(f'ERROR: Brace imbalance (diff={diff})'); sys.exit(1)
-          print(f'OK: Braces balanced')
-          "
+          FAIL=0
+          for f in src/core/*.js src/sr/*.js src/quiz/*.js src/ai/*.js src/features/*.js src/ui/*.js shared/*.js; do
+            if ! node --check "$f" 2>/dev/null; then
+              echo "SYNTAX ERROR: $f"
+              node --check "$f" 2>&1 | head -3
+              FAIL=1
+            fi
+          done
+          [ $FAIL -eq 0 ] && echo "OK: All modules pass syntax check" || exit 1
 
-      # ── JS Syntax Check ──
-      - name: Check JS syntax with acorn
-        run: |
-          npm ci
-          node -e "
-          const html = require('fs').readFileSync('pnimit-mega.html','utf8');
-          const start = html.lastIndexOf('<script>');
-          const end = html.lastIndexOf('</script>');
-          const js = html.substring(start+8, end);
-          try {
-            require('acorn').parse(js, { ecmaVersion: 2022, sourceType: 'script' });
-            console.log('OK: JS parses without errors');
-          } catch(e) {
-            console.error('JS SYNTAX ERROR at line', e.loc?.line, ':', e.message);
-            process.exit(1);
-          }
-          "
-
-      # ── Tests ──
+      # ── Tests + Build ──
+      - name: Install dependencies
+        run: npm ci
       - name: Run Vitest tests
         run: npx vitest run
+      - name: Verify production build
+        run: npx vite build
 
       # ── Documentation Drift ──
       - name: Check CLAUDE.md version matches app
         run: |
           python3 << 'PYEOF'
           import re, sys
-          html = open('pnimit-mega.html').read()
-          claude = open('CLAUDE.md').read()
-          m = re.search(r"APP_VERSION='([^']+)'", html)
+          constants = open('src/core/constants.js').read()
+          m = re.search(r"APP_VERSION\s*=\s*['\"]([^'\"]+)['\"]", constants)
           if not m:
               print('ERROR: APP_VERSION not found'); sys.exit(1)
           ver = m.group(1)
+          claude = open('CLAUDE.md').read()
           if f'v{ver}' not in claude and ver not in claude:
               print(f'WARNING: CLAUDE.md may be stale (app is v{ver})')
           else:
