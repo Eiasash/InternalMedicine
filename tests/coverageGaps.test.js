@@ -5,9 +5,10 @@ const html = readFileSync('pnimit-mega.html', 'utf-8');
 const constantsJs = readFileSync('src/core/constants.js', 'utf-8');
 const utilsJs = readFileSync('src/core/utils.js', 'utf-8');
 const stateJs = readFileSync('src/core/state.js', 'utf-8');
+const srJs = readFileSync('src/sr/spaced-repetition.js', 'utf-8');
 const aiClientJs = readFileSync('src/ai/client.js', 'utf-8');
 // Combined source: HTML + external JS for constant/function lookups
-const allSource = html + '\n' + constantsJs + '\n' + utilsJs + '\n' + stateJs + '\n' + aiClientJs;
+const allSource = html + '\n' + constantsJs + '\n' + utilsJs + '\n' + stateJs + '\n' + srJs + '\n' + aiClientJs;
 
 // Extract JS between first <script> and last </script>
 const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/);
@@ -148,7 +149,7 @@ describe('SRS / FSRS Edge Cases', () => {
 
   it('confidence rating maps to FSRS ratings', () => {
     // Should have rating values for Again/Hard/Good/Easy
-    expect(html).toMatch(/fsrsRating|rating.*[1234]/);
+    expect(allSource).toMatch(/fsrsRating|rating.*[1234]/);
   });
 
   it('streak calculation uses dailyAct data', () => {
