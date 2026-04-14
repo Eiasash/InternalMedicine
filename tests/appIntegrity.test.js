@@ -40,7 +40,8 @@ describe('pnimit-mega.html', () => {
   });
 
   test('registers service worker (sw.js)', () => {
-    expect(html).toMatch(/sw\.js/);
+    const appJs = readFile('src/ui/app.js');
+    expect(appJs).toMatch(/sw\.js/);
   });
 });
 
