@@ -82,7 +82,7 @@ h+=`<div style="display:flex;gap:6px;margin-bottom:12px">
 <span class="badge badge-y">📖 Learning: ${fcLearning}</span>
 <span class="badge" style="background:#f1f5f9;color:#64748b">🆕 New: ${fcNew}</span>
 </div>`;
-h+=`<div class="fc" onclick="G.S.fcFlip=!G.S.fcFlip;G.save();G.render()" style="border-color:${S.fcFlip?'rgb(var(--em))':'rgb(var(--sky))'}" role="button" tabindex="0" aria-label="${S.fcFlip?'Show question':'Show answer'}">
+h+=`<div class="fc" onclick="G.S.fcFlip=!G.S.fcFlip;G.save();G.render()" style="border-color:${G.S.fcFlip?'rgb(var(--em))':'rgb(var(--sky))'}" role="button" tabindex="0" aria-label="${G.S.fcFlip?'Show question':'Show answer'}">
 <p style="font-size:${G.S.fcFlip?'12px':'14px'};font-weight:${G.S.fcFlip?'400':'700'};line-height:1.7;color:${G.S.fcFlip?'#334155':'#1e293b'}">
 ${G.S.fcFlip?f.b:f.f}</p>
 <p style="font-size:9px;color:#94a3b8;margin-top:12px">${G.S.fcFlip?'Tap for question':'Tap to reveal answer'} · ${G.S.fci%G.FLASH.length+1}/${G.FLASH.length}</p>
