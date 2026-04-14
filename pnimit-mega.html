@@ -512,57 +512,7 @@ _sessionOk=0;_sessionNo=0;_sessionBest={};_sessionWorse={};_sessionStart=Date.no
 
 
 
-// ===== MED BASKET STATE =====
-let medBasket=[];
-function toggleMedBasket(drugName){
-const idx=medBasket.indexOf(drugName);
-if(idx>=0)medBasket.splice(idx,1);else medBasket.push(drugName);
-render();
-}
-function filterMedList(v){
-const list=document.getElementById('mblist');
-if(!list)return;
-list.style.display=v.length>=2?'block':'none';
-const lv=v.toLowerCase();
-list.querySelectorAll('.mb-item').forEach(el=>{
-el.style.display=el.dataset.drug.includes(lv)?'':'none';
-});
-}
-function calcACBTotal(){return medBasket.reduce((sum,name)=>{const d=DRUGS.find(x=>x.name===name);return sum+(d?d.acb:0);},0);}
-function getSTOPPWarnings(){
-const warnings=[];const names=medBasket.map(n=>n.toLowerCase());
-const cats=medBasket.map(n=>{const d=DRUGS.find(x=>x.name===n);return d?d.cat:'';}).filter(Boolean);
-// Dual anticholinergic
-const acDrugs=medBasket.filter(n=>{const d=DRUGS.find(x=>x.name===n);return d&&d.acb>=2;});
-if(acDrugs.length>=2)warnings.push({level:'high',text:`Dual anticholinergic burden: ${acDrugs.join(' + ')} — cumulative cognitive/fall risk`});
-// Benzo + opioid
-const hasBenzo=cats.some(c=>c.toLowerCase().includes('benzo'));
-const hasOpioid=cats.some(c=>c.toLowerCase().includes('opioid'));
-if(hasBenzo&&hasOpioid)warnings.push({level:'high',text:'Benzodiazepine + Opioid — respiratory depression risk'});
-// Dual antiplatelet
-const antiPlat=medBasket.filter(n=>/aspirin|clopidogrel|prasugrel|ticagrelor/i.test(n));
-if(antiPlat.length>=2)warnings.push({level:'med',text:`Dual antiplatelet: ${antiPlat.join(' + ')} — bleeding risk, especially with anticoagulant`});
-// NSAID + anticoagulant
-const hasNSAID=cats.some(c=>c.toLowerCase().includes('nsaid'));
-const hasAnticoag=cats.some(c=>c.toLowerCase().includes('anticoag'));
-if(hasNSAID&&hasAnticoag)warnings.push({level:'high',text:'NSAID + Anticoagulant — major GI bleed risk'});
-// ACEi/ARB + K-sparing + NSAID (triple whammy)
-const hasACE=names.some(n=>/enalapril|ramipril|lisinopril|losartan|valsartan|candesartan/i.test(n));
-const hasKsparing=names.some(n=>/spironolactone|eplerenone|amiloride/i.test(n));
-if(hasACE&&hasKsparing)warnings.push({level:'med',text:'ACEi/ARB + K-sparing diuretic — hyperkalemia risk'});
-if(hasACE&&hasNSAID)warnings.push({level:'med',text:'ACEi/ARB + NSAID — AKI risk, reduced BP efficacy'});
-// Anticholinergic opposing cholinesterase inhibitor
-const hasAntiChol=medBasket.some(n=>{const d=DRUGS.find(x=>x.name===n);return d&&d.acb>=2;});
-const hasChEI=names.some(n=>/donepezil|rivastigmine|galantamine/i.test(n));
-if(hasAntiChol&&hasChEI)warnings.push({level:'high',text:'Anticholinergic opposes cholinesterase inhibitor — pharmacological conflict'});
-// Metformin + CKD
-const hasMet=names.some(n=>/metformin/i.test(n));
-if(hasMet)warnings.push({level:'low',text:'Metformin — verify eGFR >30; contraindicated in severe CKD'});
-// PPI long-term
-const hasPPI=names.some(n=>/omeprazole|pantoprazole|esomeprazole|lansoprazole/i.test(n));
-if(hasPPI)warnings.push({level:'low',text:'PPI — long-term use: Mg/Ca malabsorption, C. difficile risk, consider step-down'});
-return warnings;
-}
+
 
 // ===== VOICE-TO-TEXT CASE PARSER =====
 let voiceListening=false,voiceTranscript='';
@@ -3302,7 +3252,6 @@ try{
 render();
 }
 // ===== END FEEDBACK =====
-const _SB_URL='https://krmlzwwelqvlfslwltol.supabase.co';
 const _SB_KEY=SUPA_ANON;
 function _sbDeviceId(){let id=localStorage.getItem('pnimit_devid');if(!id){id='dev_'+Math.random().toString(36).slice(2,12);localStorage.setItem('pnimit_devid',id);}return id;}
 async function cloudBackup(){
@@ -3310,7 +3259,7 @@ async function cloudBackup(){
   if(btn){btn.disabled=true;btn.textContent='☁️ Saving...';}
   try{
     const payload={id:_sbDeviceId(),data:S,updated_at:new Date().toISOString()};
-    const res=await fetch(_SB_URL+'/rest/v1/pnimit_backups',{
+    const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups',{
       method:'POST',
       headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
       body:JSON.stringify(payload)
@@ -3318,7 +3267,7 @@ async function cloudBackup(){
     if(res.ok||res.status===409){
       // If 409, try upsert
       if(res.status===409){
-        const patchRes=await fetch(_SB_URL+'/rest/v1/pnimit_backups?id=eq.'+_sbDeviceId(),{
+        const patchRes=await fetch(SUPA_URL+'/rest/v1/pnimit_backups?id=eq.'+_sbDeviceId(),{
           method:'PATCH',
           headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json'},
           body:JSON.stringify({data:S,updated_at:new Date().toISOString()})
@@ -3337,7 +3286,7 @@ async function cloudRestore(){
   const id=prompt('Enter device ID to restore from (leave blank for this device):',_sbDeviceId())||_sbDeviceId();
   if(!id)return;
   try{
-    const res=await fetch(_SB_URL+'/rest/v1/pnimit_backups?id=eq.'+encodeURIComponent(id)+'&select=data,updated_at',{
+    const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups?id=eq.'+encodeURIComponent(id)+'&select=data,updated_at',{
       headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}
     });
     if(!res.ok){alert('❌ Restore failed: '+res.status);return;}
