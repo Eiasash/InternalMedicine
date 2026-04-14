@@ -1,19 +1,25 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  // Dev server config — app still works as plain static files
+  // GitHub Pages: https://eiasash.github.io/InternalMedicine/
+  base: '/InternalMedicine/',
+
   server: {
     port: 3737,
     open: '/pnimit-mega.html',
   },
-  // Build config for future use (Phase 2 will wire this up)
+
   build: {
     rollupOptions: {
       input: 'pnimit-mega.html',
     },
     outDir: 'dist',
+    emptyOutDir: true,
   },
-  // Vitest config
+
+  // Disable default publicDir — build script copies static assets
+  publicDir: false,
+
   test: {
     globals: true,
   },
