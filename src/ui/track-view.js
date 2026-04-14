@@ -3,6 +3,8 @@ import { TOPICS, EXAM_FREQ, IMA_WEIGHTS, APP_VERSION, HARRISON_PDF_MAP, LS, BUIL
 import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey } from '../core/utils.js';
 import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, isExamTrap, getChaptersDueForReading } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
+import { setFilt, startTopicMiniExam, buildPool } from '../quiz/engine.js';
+import { buildRescuePool } from '../sr/spaced-repetition.js';
 import { renderWrongAnswerLog } from './library-view.js';
 
 function getTopicTrend(ti){
@@ -55,7 +57,7 @@ export function renderPriorityMatrix(){
       </div>
     </div>`;
   });
-  h+=`<div onclick="var el=document.getElementById('pmFull');el.style.display=el.style.display==='none'?'block':'none'" style="font-size:10px;color:rgb(var(--sky));cursor:pointer;margin-top:6px">Show all 24 topics ▾</div>`;
+  h+=`<div data-action="toggle-pm-full" style="font-size:10px;color:rgb(var(--sky));cursor:pointer;margin-top:6px">Show all 24 topics ▾</div>`;
   h+=`<div id="pmFull" style="display:none">`;
   rows.slice(15).forEach((r,rank)=>{
     const accStr=r.acc===null?'untested':`${Math.round(r.acc*100)}%`;
@@ -79,10 +81,10 @@ const age=G.calcVals.age||75,wt=G.calcVals.wt||55,cr=G.calcVals.cr||1.0,fem=G.ca
 const crcl=Math.max(0,Math.round(((140-age)*wt*fem)/(72*cr)));
 h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">Cockcroft-Gault CrCl</h3>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-<div><label style="font-size:10px;color:#64748b">Age</label><input class="calc-in" type="number" value="${age}" onchange="calcUp('age',this.value)"></div>
-<div><label style="font-size:10px;color:#64748b">Weight (kg)</label><input class="calc-in" type="number" value="${wt}" onchange="calcUp('wt',this.value)"></div>
-<div><label style="font-size:10px;color:#64748b">Creatinine</label><input class="calc-in" type="number" step="0.1" value="${cr}" onchange="calcUp('cr',this.value)"></div>
-<div><label style="font-size:10px;color:#64748b">Sex</label><select class="calc-in" onchange="calcUp('fem',this.value)">
+<div><label style="font-size:10px;color:#64748b">Age</label><input class="calc-in" type="number" value="${age}" data-action="calc-num" data-key="age"></div>
+<div><label style="font-size:10px;color:#64748b">Weight (kg)</label><input class="calc-in" type="number" value="${wt}" data-action="calc-num" data-key="wt"></div>
+<div><label style="font-size:10px;color:#64748b">Creatinine</label><input class="calc-in" type="number" step="0.1" value="${cr}" data-action="calc-num" data-key="cr"></div>
+<div><label style="font-size:10px;color:#64748b">Sex</label><select class="calc-in" data-action="calc-num" data-key="fem">
 <option value="0.85" ${fem<1?'selected':''}>Female (×0.85)</option><option value="1" ${fem>=1?'selected':''}>Male (×1)</option></select></div>
 </div>
 <div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center">
@@ -99,7 +101,7 @@ h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight
 const on=G.calcVals[k]||0;
 h+=`<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:11px;cursor:pointer">
 <span>${l} (+${pts})</span>
-<input type="checkbox" ${on?'checked':''} onchange="calcUp('${k}',this.checked?${pts}:0)" style="width:16px;height:16px">
+<input type="checkbox" ${on?'checked':''} data-action="calc-check" data-key="${k}" data-pts="${pts}" style="width:16px;height:16px">
 </label>`;
 });
 h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center">
@@ -116,7 +118,7 @@ h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight
 const on=G.calcVals[k]||0;
 h+=`<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:11px;cursor:pointer">
 <span>${l} (+${pts})</span>
-<input type="checkbox" ${on?'checked':''} onchange="calcUp('${k}',this.checked?${pts}:0)" style="width:16px;height:16px">
+<input type="checkbox" ${on?'checked':''} data-action="calc-check" data-key="${k}" data-pts="${pts}" style="width:16px;height:16px">
 </label>`;
 });
 const curbRisk=curb<=1?'Low risk (<2% mortality) — consider outpatient':curb===2?'Moderate (9%) — short inpatient or supervised outpatient':'High (15-40%) — ICU if 4-5';
@@ -139,7 +141,7 @@ paduaItems.forEach(([k,l,pts])=>{
 const on=G.calcVals[k]||0;
 h+=`<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:11px;cursor:pointer">
 <span>${l} (+${pts})</span>
-<input type="checkbox" ${on?'checked':''} onchange="calcUp('${k}',this.checked?${pts}:0)" style="width:16px;height:16px">
+<input type="checkbox" ${on?'checked':''} data-action="calc-check" data-key="${k}" data-pts="${pts}" style="width:16px;height:16px">
 </label>`;
 });
 h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center" class="calc-result">
@@ -261,18 +263,18 @@ let h=`<div class="card" style="padding:14px;margin-bottom:10px;border-left:4px 
 if(daysLeft!==null)h+=`<div style="font-size:10px;color:#64748b;margin-bottom:10px">${daysLeft} days to exam · ${new Date(examDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>`;
 h+=`<div style="font-size:11px;line-height:2">`;
 // Step 1: Due questions
-if(dueN>0)h+=`<div>1️⃣ <b>${dueN} due questions</b> (~${Math.round(dueN*1.5)} min) <button onclick="setFilt('due');G.tab='quiz';G.render()" style="font-size:9px;padding:2px 8px;background:#eff6ff;color:#3b82f6;border:none;border-radius:6px;cursor:pointer">▶ Start</button></div>`;
+if(dueN>0)h+=`<div>1️⃣ <b>${dueN} due questions</b> (~${Math.round(dueN*1.5)} min) <button data-action="goto-quiz" data-filt="due" style="font-size:9px;padding:2px 8px;background:#eff6ff;color:#3b82f6;border:none;border-radius:6px;cursor:pointer">▶ Start</button></div>`;
 else h+=`<div>1️⃣ ✅ No questions due — you're caught up!</div>`;
 // Step 2: Weakest topic
 if(weakest.length){
 const w=weakest[0];
 const wPct=w.s.tot?Math.round(w.s.ok/w.s.tot*100):0;
 const ref=TOPIC_REF[w.i];
-h+=`<div>2️⃣ Read: <b>${w.name}</b> (${wPct}% accuracy, ${G.QZ.filter(q=>q.ti===w.i).length} questions) ${ref?`<button onclick="G.tab='lib';G.libSec='harrison';G.render()" style="font-size:9px;padding:2px 8px;background:#ede9fe;color:#7c3aed;border:none;border-radius:6px;cursor:pointer">📖 Open</button>`:''}</div>`;
-h+=`<div>3️⃣ Drill: <b>20q mini-exam on ${w.name}</b> <button onclick="startTopicMiniExam(${w.i})" style="font-size:9px;padding:2px 8px;background:#dcfce7;color:#166534;border:none;border-radius:6px;cursor:pointer">🎯 Start</button></div>`;
+h+=`<div>2️⃣ Read: <b>${w.name}</b> (${wPct}% accuracy, ${G.QZ.filter(q=>q.ti===w.i).length} questions) ${ref?`<button data-action="goto-lib-harrison" style="font-size:9px;padding:2px 8px;background:#ede9fe;color:#7c3aed;border:none;border-radius:6px;cursor:pointer">📖 Open</button>`:''}</div>`;
+h+=`<div>3️⃣ Drill: <b>20q mini-exam on ${w.name}</b> <button data-action="start-mini-exam" data-ti="${w.i}" style="font-size:9px;padding:2px 8px;background:#dcfce7;color:#166534;border:none;border-radius:6px;cursor:pointer">🎯 Start</button></div>`;
 }
 // Step 3: Traps
-if(trapCount>0)h+=`<div>4️⃣ Review <b>${trapCount} trap questions</b> <button onclick="setFilt('traps');G.tab='quiz';G.render()" style="font-size:9px;padding:2px 8px;background:#fffbeb;color:#92400e;border:none;border-radius:6px;cursor:pointer">🪤 Start</button></div>`;
+if(trapCount>0)h+=`<div>4️⃣ Review <b>${trapCount} trap questions</b> <button data-action="goto-quiz" data-filt="traps" style="font-size:9px;padding:2px 8px;background:#fffbeb;color:#92400e;border:none;border-radius:6px;cursor:pointer">🪤 Start</button></div>`;
 h+=`</div></div>`;
 return h;
 }
@@ -330,7 +332,7 @@ export function renderSessionCard(){
 </div>
 ${last.best?`<div style="font-size:10px;margin-bottom:2px">✅ Best: <b>${last.best.name}</b> (${last.best.n} correct)</div>`:''}
 ${last.worse?`<div style="font-size:10px">🔴 Worst: <b>${last.worse.name}</b> (${last.worse.n} wrong)</div>`:''}
-<button onclick="this.parentElement.style.display='none'" style="margin-top:8px;font-size:9px;color:#94a3b8;background:none;border:none;cursor:pointer" aria-label="Dismiss notification">dismiss</button>
+<button data-action="dismiss" style="margin-top:8px;font-size:9px;color:#94a3b8;background:none;border:none;cursor:pointer" aria-label="Dismiss notification">dismiss</button>
 </div>`;
   }catch(e){return '';}
 }
@@ -529,7 +531,7 @@ export function renderStudyPlan(){
   const spPct = totalTopics > 0 ? Math.round(checkedTopics / totalTopics * 100) : 0;
 
   let h = `<div class="card" style="margin-bottom:12px">
-  <div style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="G.S.spOpen=!G.S.spOpen;G.save();G.render()" role="button" tabindex="0" aria-expanded="${spOpen?'true':'false'}" aria-label="Study Plan">
+  <div style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" data-action="sp-toggle" role="button" tabindex="0" aria-expanded="${spOpen?'true':'false'}" aria-label="Study Plan">
     <div style="display:flex;align-items:center;gap:8px;flex:1">
       <div style="font-size:16px">📅</div>
       <div style="flex:1">
@@ -562,7 +564,7 @@ export function renderStudyPlan(){
       });
 
       h += `<div style="border-top:1px solid #f1f5f9;padding:0">
-      <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:#f8fafc" onclick="G.S['sp_t${tier.tier}']=!G.S['sp_t${tier.tier}'];G.save();G.render()" role="button" tabindex="0" aria-expanded="${tierOpen?'true':'false'}">
+      <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:#f8fafc" data-action="sp-tier" data-tier="${tier.tier}" role="button" tabindex="0" aria-expanded="${tierOpen?'true':'false'}">
         <div style="display:flex;align-items:center;gap:8px;flex:1">
           <div style="width:20px;height:20px;border-radius:8px;background:${tier.color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700">${tier.tier}</div>
           <div style="flex:1">
@@ -593,17 +595,17 @@ export function renderStudyPlan(){
             }
 
             h += `<div style="border-radius:8px;margin-bottom:4px;background:${isChecked?'#f8fafc':'transparent'}">
-            <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:10px;cursor:pointer" onclick="event.stopPropagation();G.S.sp=G.S.sp||{};G.S.sp['${topic.n.replace(/'/g,"\\'")}']=!G.S.sp['${topic.n.replace(/'/g,"\\'")}']; G.save();G.render()" role="checkbox" aria-checked="${isChecked?'true':'false'}" tabindex="0">
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:10px;cursor:pointer" data-action="sp-topic" data-topic="${topic.n.replace(/'/g,'&apos;')}" role="checkbox" aria-checked="${isChecked?'true':'false'}" tabindex="0">
             <input type="checkbox" ${isChecked?'checked':''} readonly style="width:14px;height:14px;flex-shrink:0;cursor:pointer" tabindex="-1">
             <span style="flex:1;${isChecked?'color:#94a3b8;text-decoration:line-through':'color:#1e293b'}">${topic.n}</span>
             ${accBadge}
             <span style="color:#94a3b8;font-size:9px;white-space:nowrap">${topic.hrs}</span>
             </div>
             <div style="display:flex;gap:4px;padding:0 8px 6px 36px;flex-wrap:wrap">
-            ${HAR_CHAPTERS[topic.n]?`<button onclick="event.stopPropagation();G.libSec=\"harrison\";G.tab=\"lib\";G.render()" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#b45309;cursor:pointer;white-space:nowrap">📕 Ch ${HAR_CHAPTERS[topic.n].ch}</button>`:""}
-            <button onclick="event.stopPropagation();G.openNote=${topic.ti};go('study')" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#0D7377;cursor:pointer;white-space:nowrap" aria-label="Open notes for ${topic.n.replace(/'/g,'')}">📖 Notes</button>
-            <button onclick="event.stopPropagation();setTopicFilt(${topic.ti});go('quiz')" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#3b82f6;cursor:pointer;white-space:nowrap" aria-label="Quiz ${topic.n.replace(/'/g,'')}">📝 Quiz</button>
-            <button onclick="event.stopPropagation();G.S.chat=[];go('chat');setTimeout(function(){sendChatStarter('Give me a concise board-review summary of ${topic.n.replace(/'/g,"\\'")} in internal medicine. Cover: key definitions, diagnostic criteria, management pearls, exam traps, and must-know numbers. Format with bold headings.')},100)" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#7c3aed;cursor:pointer;white-space:nowrap" aria-label="AI summary of ${topic.n.replace(/'/g,'')}">🤖 Summarize</button>
+            ${HAR_CHAPTERS[topic.n]?`<button data-action="sp-open-chapter" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#b45309;cursor:pointer;white-space:nowrap">📕 Ch ${HAR_CHAPTERS[topic.n].ch}</button>`:""}
+            <button data-action="sp-open-notes" data-ti="${topic.ti}" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#0D7377;cursor:pointer;white-space:nowrap" aria-label="Open notes for ${topic.n.replace(/'/g,'')}">📖 Notes</button>
+            <button data-action="sp-quiz" data-ti="${topic.ti}" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#3b82f6;cursor:pointer;white-space:nowrap" aria-label="Quiz ${topic.n.replace(/'/g,'')}">📝 Quiz</button>
+            <button data-action="sp-summarize" data-topic="${topic.n.replace(/'/g,'&apos;')}" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#7c3aed;cursor:pointer;white-space:nowrap" aria-label="AI summary of ${topic.n.replace(/'/g,'')}">🤖 Summarize</button>
             </div>
             </div>`;
           });
@@ -653,7 +655,7 @@ h+=`<div class="card" style="padding:12px;margin-bottom:8px;background:#fef2f2;b
 <span style="font-size:18px">🔔</span>
 <div style="flex:1"><div style="font-size:12px;font-weight:700;color:#dc2626">${dueN} questions due for review</div>
 <div style="font-size:10px;color:#64748b">Spaced repetition items ready now</div></div>
-<button onclick="G.filt='due';buildPool();G.tab='quiz';G.render()" class="btn" style="font-size:10px;padding:6px 12px;background:#dc2626;color:#fff;border:none;border-radius:8px">▶ Review</button>
+<button data-action="goto-quiz-build" data-filt="due" class="btn" style="font-size:10px;padding:6px 12px;background:#dc2626;color:#fff;border:none;border-radius:8px">▶ Review</button>
 </div></div>`;
 }
 // Topic mastery heatmap
@@ -666,7 +668,7 @@ ti=Number(ti);if(!TOPICS[ti])return;
 const _p=s.tot>=2?Math.round(s.ok/s.tot*100):null;
 const color=_p===null?'#e2e8f0':_p>=80?'#059669':_p>=60?'#84cc16':_p>=40?'#f59e0b':'#ef4444';
 const bg=_p===null?'#f8fafc':_p>=80?'#ecfdf5':_p>=60?'#f7fee7':_p>=40?'#fffbeb':'#fef2f2';
-h+=`<div onclick="G.tab='quiz';G.filt='topic';G.topicFilt=${ti};buildPool();G.render()" style="padding:4px 6px;border-radius:6px;font-size:8px;background:${bg};color:${color};font-weight:700;cursor:pointer;border:1px solid ${color}30;min-width:28px;text-align:center" title="${TOPICS[ti]}: ${_p!==null?_p+'%':'no data'} (${s.tot} Qs)">${_p!==null?_p+'%':'·'}</div>`;
+h+=`<div data-action="goto-quiz-topic" data-ti="${ti}" style="padding:4px 6px;border-radius:6px;font-size:8px;background:${bg};color:${color};font-weight:700;cursor:pointer;border:1px solid ${color}30;min-width:28px;text-align:center" title="${TOPICS[ti]}: ${_p!==null?_p+'%':'no data'} (${s.tot} Qs)">${_p!==null?_p+'%':'·'}</div>`;
 });
 h+=`</div></div>`;
 h+=renderStudyPlan();
@@ -674,7 +676,7 @@ h+=renderStudyPlan();
 if(!G.S.examDate&&!localStorage.getItem('pnimit_exam_date')){
 h+=`<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
 <div style="font-size:12px;font-weight:700;margin-bottom:6px">📅 When is your exam?</div>
-<button class="btn btn-p" onclick="setExamDate()" style="font-size:11px">Set Exam Date</button>
+<button class="btn btn-p" data-action="set-exam-date" style="font-size:11px">Set Exam Date</button>
 </div>`;
 }else{
 h+=renderDailyPlan();
@@ -700,12 +702,12 @@ ${_blindSpots>0?`<div style="margin-top:8px;font-size:10px;color:#dc2626;font-we
 }
 // Feature 10: Cheat sheet export button
 h+=`<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
-<button class="btn btn-d" onclick="exportCheatSheet()" style="font-size:11px" aria-label="Export cheat sheet">📄 Export Weak Topics Cheat Sheet</button>
+<button class="btn btn-d" data-action="export-cheat-sheet" style="font-size:11px" aria-label="Export cheat sheet">📄 Export Weak Topics Cheat Sheet</button>
 <div style="font-size:9px;color:#94a3b8;margin-top:4px">Print-ready 2-page summary of your 15 weakest topics</div>
 </div>`;
 // Feature 5: Change exam date
 if(G.S.examDate||localStorage.getItem('pnimit_exam_date')){
-h+=`<div style="text-align:center;margin-bottom:10px"><button onclick="setExamDate()" style="font-size:9px;color:#94a3b8;background:none;border:none;cursor:pointer;text-decoration:underline">📅 Change exam date</button></div>`;
+h+=`<div style="text-align:center;margin-bottom:10px"><button data-action="set-exam-date" style="font-size:9px;color:#94a3b8;background:none;border:none;cursor:pointer;text-decoration:underline">📅 Change exam date</button></div>`;
 }
 h+=renderExamTrendCard();
 // Rescue Drill CTA
@@ -718,7 +720,7 @@ h+=`<div class="card" style="padding:14px;margin-bottom:10px;background:linear-g
 <div style="font-weight:700;font-size:12px;color:#dc2626">Rescue Drill</div>
 <div style="font-size:10px;color:#64748b">${_weakTopics.map(w=>TOPICS[w.ti]+' ('+w.pct+'%)').join(' \u00b7 ')}</div>
 </div>
-<button onclick="buildRescuePool();G.tab='quiz';G.render()" class="btn" style="font-size:11px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:10px;font-weight:700">GO</button>
+<button data-action="rescue-drill" class="btn" style="font-size:11px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:10px;font-weight:700">GO</button>
 </div></div>`;
 }
 // Activity Calendar (30 days)
@@ -743,7 +745,7 @@ h+=`<div class="card" style="padding:14px;margin-bottom:10px">
 _harDue.slice(0,5).forEach(c=>{
   const _chData=G._harData&&G._harData[c.ch];
   const _title=_chData?_chData.title:'Ch '+c.ch;
-  h+=`<div onclick="G.tab='lib';G.libSec='harrison';openHarrisonChapter(${c.ch})" style="font-size:10px;padding:4px 0;cursor:pointer;color:#64748b;border-bottom:1px solid #f8fafc">📗 Ch ${c.ch}: ${_title} <span style="color:#7c3aed;font-weight:700">(${c.daysSince}d ago)</span></div>`;
+  h+=`<div data-action="open-chapter-due" data-ch="${c.ch}" style="font-size:10px;padding:4px 0;cursor:pointer;color:#64748b;border-bottom:1px solid #f8fafc">📗 Ch ${c.ch}: ${_title} <span style="color:#7c3aed;font-weight:700">(${c.daysSince}d ago)</span></div>`;
 });
 h+=`</div>`;
 }
@@ -752,7 +754,7 @@ h+=`<div class="card" style="padding:14px;margin-bottom:10px">
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
 <span style="font-size:14px">🏆</span>
 <div style="font-size:12px;font-weight:700;flex:1">Leaderboard</div>
-<button onclick="showLeaderboard()" style="font-size:9px;padding:4px 10px;background:#f59e0b;color:#fff;border:none;border-radius:6px;cursor:pointer">Refresh</button>
+<button data-action="show-leaderboard" style="font-size:9px;padding:4px 10px;background:#f59e0b;color:#fff;border:none;border-radius:6px;cursor:pointer">Refresh</button>
 </div>
 <div id="leaderboard-box" style="font-size:10px;color:#94a3b8;text-align:center">Tap refresh to load</div>
 </div>`;
@@ -782,7 +784,7 @@ var fk='bkf_'+topic.replace(/[^a-z0-9]/gi,'_');
 var open=G.S[fk];
 var qs=_byTopic[topic];
 h+='<div style="margin-bottom:6px">';
-h+='<div onclick="G.S[\''+fk+'\']=' + '!G.S[\''+fk+'\'];G.save();G.render()" style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#f8fafc;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600" role="button" tabindex="0" aria-expanded="'+(open?'true':'false')+'" aria-label="'+topic+'">';
+h+='<div data-action="bk-toggle" data-key="'+fk+'" style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#f8fafc;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600" role="button" tabindex="0" aria-expanded="'+(open?'true':'false')+'" aria-label="'+topic+'">';
 h+='<span>📁 '+topic+' ('+qs.length+')</span><span>'+(open?'▼':'▶')+'</span></div>';
 if(open){qs.forEach(function(e){h+='<div style="padding:6px 12px;font-size:10px;border-bottom:1px solid #f1f5f9" class="heb" dir="rtl">'+e.q.q.substring(0,90)+'...</div>';});}
 h+='</div>';
@@ -859,9 +861,9 @@ h+=`</div>`;}
 // ROI Matrix and Radar chart removed — accuracy bars above are sufficient
 h+=renderPriorityMatrix();
 
-TOPICS.forEach((t,i)=>{h+=`<div class="topic${G.S.ck[i]?' done':''}" onclick="G.S.ck[${i}]=!G.S.ck[${i}];G.save();G.render()" style="display:${G.S._sylOpen?'flex':'none'}" role="checkbox" aria-checked="${G.S.ck[i]?'true':'false'}" tabindex="0" aria-label="${t}">
+TOPICS.forEach((t,i)=>{h+=`<div class="topic${G.S.ck[i]?' done':''}" data-action="syl-check" data-i="${i}" style="display:${G.S._sylOpen?'flex':'none'}" role="checkbox" aria-checked="${G.S.ck[i]?'true':'false'}" tabindex="0" aria-label="${t}">
 <input type="checkbox" ${G.S.ck[i]?'checked':''} readonly style="width:13px;height:13px" tabindex="-1"><span>${t}</span></div>`;});
-h+=`<div onclick="G.S._sylOpen=!G.S._sylOpen;G.render()" style="text-align:center;padding:8px;cursor:pointer;font-size:10px;color:rgb(var(--sky));font-weight:600" role="button" tabindex="0" aria-expanded="${G.S._sylOpen}" aria-label="Toggle syllabus topics">${G.S._sylOpen?'▲ Collapse':'▼ Show '+TOPICS.length+' topics'}</div>`;
+h+=`<div data-action="syl-toggle" style="text-align:center;padding:8px;cursor:pointer;font-size:10px;color:rgb(var(--sky));font-weight:600" role="button" tabindex="0" aria-expanded="${G.S._sylOpen}" aria-label="Toggle syllabus topics">${G.S._sylOpen?'▲ Collapse':'▼ Show '+TOPICS.length+' topics'}</div>`;
 h+=`</div>`;
 // IMA Links
 h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">📥 IMA Exam Archive</div><div style="font-size:10px">`;
@@ -877,20 +879,20 @@ h+=`</div></div>`;
 h+=`<div class="card" style="padding:14px;text-align:center;margin-top:12px">
 <div style="font-weight:700;font-size:12px;margin-bottom:8px">🔗 Share with Friends</div>
 <div style="font-size:10px;color:#64748b;margin-bottom:10px">Share this app with fellow internal medicine residents</div>
-<button class="btn btn-p" onclick="shareApp()" style="margin-bottom:8px" aria-label="Share app link">📤 Share App Link</button>
+<button class="btn btn-p" data-action="share-app" style="margin-bottom:8px" aria-label="Share app link">📤 Share App Link</button>
 </div>`;
 // Data management
 h+=`<div class="card" style="padding:14px;margin-top:12px">
 <div style="font-weight:700;font-size:12px;margin-bottom:8px">💾 Data Management</div>
 <div style="font-size:10px;color:#64748b;margin-bottom:10px">Your progress is saved automatically in your browser. Export to backup or transfer between devices.</div>
 <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
-<button class="btn btn-p" onclick="exportProgress()" aria-label="Export progress">📥 Export Progress</button>
-<button class="btn btn-g" onclick="importProgress()" aria-label="Import progress">📤 Import Progress</button>
-<button class="btn btn-o" onclick="if(confirm('Reset ALL data? This cannot be undone.')){localStorage.removeItem('${LS}');location.reload()}" aria-label="Reset all data">🗑️ Reset</button>
+<button class="btn btn-p" data-action="export-progress" aria-label="Export progress">📥 Export Progress</button>
+<button class="btn btn-g" data-action="import-progress" aria-label="Import progress">📤 Import Progress</button>
+<button class="btn btn-o" data-action="reset-all" aria-label="Reset all data">🗑️ Reset</button>
 </div>
 <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:8px">
-<button id="cloud-backup-btn" class="btn" style="background:#e0f2fe;color:#0284c7" onclick="cloudBackup()" aria-label="Backup to cloud">☁️ Backup to Cloud</button>
-<button class="btn" style="background:#f0fdf4;color:#15803d" onclick="cloudRestore()" aria-label="Restore from cloud">☁️ Restore from Cloud</button>
+<button id="cloud-backup-btn" class="btn" style="background:#e0f2fe;color:#0284c7" data-action="cloud-backup" aria-label="Backup to cloud">☁️ Backup to Cloud</button>
+<button class="btn" style="background:#f0fdf4;color:#15803d" data-action="cloud-restore" aria-label="Restore from cloud">☁️ Restore from Cloud</button>
 </div>
 <div style="font-size:9px;color:#94a3b8;text-align:center;margin-top:6px">Cloud sync · progress keyed by device ID</div>
 </div></div>`;
@@ -908,12 +910,12 @@ if(!_storedKey){h+='<div style="padding:8px 10px;background:#ecfdf5;border:1px s
 if(_storedKey){
   h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
   h+='<div style="flex:1;font-size:11px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;padding:6px 10px;color:#065f46">✅ API key מוגדר (sk-...'+_storedKey.slice(-6)+')</div>';
-  h+='<button class="btn btn-o" style="font-size:11px" onclick="setApiKey(\'\');G.render()" aria-label="Remove API key">הסר</button>';
+  h+='<button class="btn btn-o" style="font-size:11px" data-action="remove-api-key" aria-label="Remove API key">הסר</button>';
   h+='</div>';
 } else {
   h+='<div style="display:flex;gap:8px;margin-bottom:8px">';
   h+='<input id="apiKeyInput" type="password" placeholder="sk-ant-..." class="calc-in" style="flex:1;margin:0;font-size:11px" aria-label="Claude API key">';
-  h+='<button class="btn btn-p" style="font-size:11px" onclick="var v=document.getElementById(\'apiKeyInput\').value.trim();if(v){setApiKey(v);G.render();}" aria-label="Save API key">שמור</button>';
+  h+='<button class="btn btn-p" style="font-size:11px" data-action="save-api-key" aria-label="Save API key">שמור</button>';
   h+='</div>';
 }
 h+='<div style="font-size:9px;color:#94a3b8">API key נשמר ב-localStorage בלבד · לא נשלח לשרתים של האפליקציה</div></div>';
@@ -922,7 +924,7 @@ h+=`<div style="text-align:center;margin-top:20px;padding:12px;font-size:9px;col
 <div>Pnimit Mega v${APP_VERSION} · ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})} · build ${BUILD_HASH}</div>
 <div>Harrison's 22e · ${G.QZ.length} Questions</div>
 <div style="margin-top:8px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-<button onclick="applyUpdate()" style="font-size:10px;padding:5px 14px;background:#4f46e5;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">🔄 Force Update</button>
+<button data-action="force-update" style="font-size:10px;padding:5px 14px;background:#4f46e5;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">🔄 Force Update</button>
 <a href="https://eiasash.github.io/Geriatrics/" target="_blank" style="font-size:10px;padding:5px 14px;background:#0D7377;color:#fff;border:none;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">🩺 Geriatrics App →</a>
 </div>
 <div style="margin-top:6px">صدقة جارية الى من نحب</div></div>`;
@@ -930,3 +932,130 @@ return h;
 }
 
 // ===== SEARCH =====
+
+// Event delegation for Track tab — set up once on #ct container
+export function initTrackEvents(container) {
+  container.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    const action = el.dataset.action;
+
+    // Priority Matrix
+    if (action === 'toggle-pm-full') {
+      const pm = document.getElementById('pmFull');
+      if (pm) pm.style.display = pm.style.display === 'none' ? 'block' : 'none';
+    }
+    // Daily Plan
+    else if (action === 'goto-quiz') {
+      const filt = el.dataset.filt;
+      if (el.dataset.build) { G.filt = filt; buildPool(); }
+      else { setFilt(filt); }
+      G.tab = 'quiz'; G.render();
+    }
+    else if (action === 'goto-lib-harrison') {
+      G.tab = 'lib'; G.libSec = 'harrison'; G.render();
+    }
+    else if (action === 'start-mini-exam') {
+      startTopicMiniExam(parseInt(el.dataset.ti, 10));
+    }
+    // Session dismiss
+    else if (action === 'dismiss') {
+      el.parentElement.style.display = 'none';
+    }
+    // Study Plan
+    else if (action === 'sp-toggle') {
+      G.S.spOpen = !G.S.spOpen; G.save(); G.render();
+    }
+    else if (action === 'sp-tier') {
+      const key = 'sp_t' + el.dataset.tier;
+      G.S[key] = !G.S[key]; G.save(); G.render();
+    }
+    else if (action === 'sp-topic') {
+      e.stopPropagation();
+      const name = el.dataset.topic.replace(/&apos;/g, "'");
+      if (!G.S.sp) G.S.sp = {};
+      G.S.sp[name] = !G.S.sp[name]; G.save(); G.render();
+    }
+    else if (action === 'sp-open-chapter') {
+      e.stopPropagation();
+      G.libSec = 'harrison'; G.tab = 'lib'; G.render();
+    }
+    else if (action === 'sp-open-notes') {
+      e.stopPropagation();
+      G.openNote = parseInt(el.dataset.ti, 10); window.go('study');
+    }
+    else if (action === 'sp-quiz') {
+      e.stopPropagation();
+      window.setTopicFilt(parseInt(el.dataset.ti, 10)); window.go('quiz');
+    }
+    else if (action === 'sp-summarize') {
+      e.stopPropagation();
+      const name = el.dataset.topic.replace(/&apos;/g, "'");
+      G.S.chat = []; window.go('chat');
+      setTimeout(() => { window.sendChatStarter('Give me a concise board-review summary of ' + name + ' in internal medicine. Cover: key definitions, diagnostic criteria, management pearls, exam traps, and must-know numbers. Format with bold headings.'); }, 100);
+    }
+    // Heatmap tile
+    else if (action === 'goto-quiz-topic') {
+      G.tab = 'quiz'; G.filt = 'topic';
+      G.topicFilt = parseInt(el.dataset.ti, 10);
+      buildPool(); G.render();
+    }
+    else if (action === 'goto-quiz-build') {
+      G.filt = el.dataset.filt; buildPool();
+      G.tab = 'quiz'; G.render();
+    }
+    // Exam date / cheat sheet
+    else if (action === 'set-exam-date') { setExamDate(); }
+    else if (action === 'export-cheat-sheet') { exportCheatSheet(); }
+    // Rescue drill
+    else if (action === 'rescue-drill') {
+      buildRescuePool(); G.tab = 'quiz'; G.render();
+    }
+    // Chapter due for reading
+    else if (action === 'open-chapter-due') {
+      G.tab = 'lib'; G.libSec = 'harrison';
+      window.openHarrisonChapter(parseInt(el.dataset.ch, 10));
+    }
+    // Leaderboard
+    else if (action === 'show-leaderboard') { window.showLeaderboard(); }
+    // Bookmark folder toggle
+    else if (action === 'bk-toggle') {
+      const key = el.dataset.key;
+      G.S[key] = !G.S[key]; G.save(); G.render();
+    }
+    // Syllabus
+    else if (action === 'syl-check') {
+      const i = parseInt(el.dataset.i, 10);
+      G.S.ck[i] = !G.S.ck[i]; G.save(); G.render();
+    }
+    else if (action === 'syl-toggle') {
+      G.S._sylOpen = !G.S._sylOpen; G.render();
+    }
+    // Settings
+    else if (action === 'share-app') { window.shareApp(); }
+    else if (action === 'export-progress') { window.exportProgress(); }
+    else if (action === 'import-progress') { window.importProgress(); }
+    else if (action === 'reset-all') {
+      if (confirm('Reset ALL data? This cannot be undone.')) {
+        localStorage.removeItem(LS); location.reload();
+      }
+    }
+    else if (action === 'cloud-backup') { window.cloudBackup(); }
+    else if (action === 'cloud-restore') { window.cloudRestore(); }
+    else if (action === 'remove-api-key') { setApiKey(''); G.render(); }
+    else if (action === 'save-api-key') {
+      const v = document.getElementById('apiKeyInput')?.value?.trim();
+      if (v) { setApiKey(v); G.render(); }
+    }
+    else if (action === 'force-update') { window.applyUpdate(); }
+  });
+
+  container.addEventListener('change', (e) => {
+    if (e.target.dataset.action === 'calc-num') {
+      calcUp(e.target.dataset.key, e.target.value);
+    }
+    else if (e.target.dataset.action === 'calc-check') {
+      calcUp(e.target.dataset.key, e.target.checked ? parseInt(e.target.dataset.pts, 10) : 0);
+    }
+  });
+}
