@@ -74,7 +74,7 @@ h+='<option value="ux">🎨 UX/Design Improvement</option>';
 h+='<option value="other">💬 Other</option>';
 h+='</select>';
 h+='<textarea id="fb-text" dir="auto" placeholder="Describe your feedback in detail..." style="width:100%;min-height:100px;padding:10px;border:1px solid #e2e8f0;border-radius:10px;font-size:12px;font-family:inherit;resize:vertical;margin-bottom:8px"></textarea>';
-h+='<button onclick="submitFeedbackForm()" class="btn" style="width:100%;padding:10px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer">📤 Submit Feedback</button>';
+h+='<button data-action="submit-feedback" class="btn" style="width:100%;padding:10px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer">📤 Submit Feedback</button>';
 h+='</div>';
 let fb=[];try{fb=JSON.parse(localStorage.getItem('pnimit_fb_sent')||'[]');}catch(e){}
 if(fb.length){

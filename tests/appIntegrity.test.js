@@ -119,4 +119,80 @@ describe('security checks', () => {
   test('has Content-Security-Policy meta tag', () => {
     expect(html).toMatch(/Content-Security-Policy/);
   });
+
+  test('no inline onclick= in HTML shell', () => {
+    expect(html).not.toMatch(/\sonclick\s*=/i);
+  });
+
+  test('no inline <script> blocks in HTML shell', () => {
+    // Allow <script src="..."> but not <script> with inline code
+    const inlineScripts = html.match(/<script(?![^>]*\bsrc\b)[^>]*>[\s\S]*?<\/script>/gi);
+    expect(inlineScripts).toBeNull();
+  });
+
+  test('CSP script-src does not allow unsafe-inline', () => {
+    const csp = html.match(/script-src\s+([^;]+)/);
+    expect(csp).not.toBeNull();
+    expect(csp[1]).not.toContain('unsafe-inline');
+  });
+});
+
+describe('inline handler hygiene — source files', () => {
+  const glob = require('fs');
+  const path = require('path');
+
+  function allJsFiles(dir) {
+    const results = [];
+    for (const entry of glob.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) results.push(...allJsFiles(full));
+      else if (entry.name.endsWith('.js')) results.push(full);
+    }
+    return results;
+  }
+
+  const srcFiles = allJsFiles(resolve(rootDir, 'src'));
+
+  test('no inline onclick= attributes in template strings', () => {
+    const violations = [];
+    for (const f of srcFiles) {
+      const content = readFileSync(f, 'utf-8');
+      const lines = content.split('\n');
+      lines.forEach((line, i) => {
+        // Match onclick="..." in template strings — skip programmatic .onclick= assignments
+        if (/onclick\s*=\s*"/.test(line) || /onclick\s*=\s*'/.test(line) || /onclick\s*=\s*\\/.test(line)) {
+          violations.push(`${path.relative(rootDir, f)}:${i + 1}`);
+        }
+      });
+    }
+    expect(violations).toEqual([]);
+  });
+
+  test('no inline onchange= attributes in template strings', () => {
+    const violations = [];
+    for (const f of srcFiles) {
+      const content = readFileSync(f, 'utf-8');
+      const lines = content.split('\n');
+      lines.forEach((line, i) => {
+        if (/onchange\s*=\s*"/.test(line) || /onchange\s*=\s*'/.test(line)) {
+          violations.push(`${path.relative(rootDir, f)}:${i + 1}`);
+        }
+      });
+    }
+    expect(violations).toEqual([]);
+  });
+
+  test('no inline oninput= attributes in template strings', () => {
+    const violations = [];
+    for (const f of srcFiles) {
+      const content = readFileSync(f, 'utf-8');
+      const lines = content.split('\n');
+      lines.forEach((line, i) => {
+        if (/oninput\s*=\s*"/.test(line) || /oninput\s*=\s*'/.test(line)) {
+          violations.push(`${path.relative(rootDir, f)}:${i + 1}`);
+        }
+      });
+    }
+    expect(violations).toEqual([]);
+  });
 });

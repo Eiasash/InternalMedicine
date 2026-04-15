@@ -3,6 +3,7 @@ import { sanitize, getApiKey, setApiKey } from '../core/utils.js';
 import { callAI } from '../ai/client.js';
 import { AI_PROXY, AI_SECRET } from '../core/constants.js';
 import { startVoiceParser } from '../quiz/modes.js';
+import { submitFeedbackForm } from '../features/cloud.js';
 
 export function renderSearch(){
 let h=`<div class="sec-t">🔍 Search</div><div class="sec-s">Search across all ${G.QZ.length} questions + ${G.NOTES.length} study notes + ${G.DRUGS.length} drugs</div>`;
@@ -145,6 +146,7 @@ export function initMoreEvents(container) {
     else if (action === 'clear-chat') { clearChat(); }
     else if (action === 'chat-starter') { const t = btn.getAttribute('data-t'); if (t) sendChatStarter(t); }
     else if (action === 'send-chat') { sendChat(); }
+    else if (action === 'submit-feedback') { submitFeedbackForm(); }
   });
   container.addEventListener('input', (e) => {
     if (e.target.dataset.action === 'search-input') {

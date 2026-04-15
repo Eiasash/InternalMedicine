@@ -32,7 +32,7 @@ import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
 
 export function renderTabs(){
 document.getElementById('tb').innerHTML=G.TABS.map(t=>
-`<button class="${t.id===G.tab?'on':''}" onclick="go('${t.id}')" aria-label="${t.l}"><span class="ic">${t.ic}</span>${t.l}</button>`
+`<button class="${t.id===G.tab?'on':''}" data-action="go" data-tab="${t.id}" aria-label="${t.l}"><span class="ic">${t.ic}</span>${t.l}</button>`
 ).join('');
 }
 export function go(t){G.tab=t;renderTabs();render()}
@@ -47,7 +47,7 @@ case'quiz':el.innerHTML=G.onCallMode?renderOnCall():renderQuiz();break;
 case'learn':
   {const _subBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
   [{id:'study',ic:'📚',l:'Study'},{id:'flash',ic:'🃏',l:'Cards'},{id:'drugs',ic:'💊',l:'Drugs'}].map(s=>
-    '<button onclick="G.learnSub=\''+s.id+'\';render()" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(G.learnSub===s.id?'700':'400')+';cursor:pointer;background:'+(G.learnSub===s.id?'#fff':'transparent')+';color:'+(G.learnSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(G.learnSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
+    '<button data-action="learn-sub" data-sub="'+s.id+'" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(G.learnSub===s.id?'700':'400')+';cursor:pointer;background:'+(G.learnSub===s.id?'#fff':'transparent')+';color:'+(G.learnSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(G.learnSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
   let _body='';
   if(G.learnSub==='study')_body=renderStudy();
@@ -67,7 +67,7 @@ case'track':
 case'more':
   {const _moreBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
   [{id:'calc',ic:'🧮',l:'Calc'},{id:'search',ic:'🔍',l:'Search'},{id:'chat',ic:'💬',l:'Chat'},{id:'feedback',ic:'💡',l:'Feedback'}].map(s=>
-    '<button onclick="G.moreSub=\''+s.id+'\';render()" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(G.moreSub===s.id?'700':'400')+';cursor:pointer;background:'+(G.moreSub===s.id?'#fff':'transparent')+';color:'+(G.moreSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(G.moreSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
+    '<button data-action="more-sub" data-sub="'+s.id+'" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(G.moreSub===s.id?'700':'400')+';cursor:pointer;background:'+(G.moreSub===s.id?'#fff':'transparent')+';color:'+(G.moreSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(G.moreSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
   let _mBody='';
   if(G.moreSub==='calc')_mBody=renderCalc();
@@ -157,7 +157,7 @@ const sec=(title,icon,color,items)=>`<div style="margin-bottom:14px">
 ov.innerHTML=`<div style="max-width:420px;margin:0 auto;background:#fff;border-radius:16px;padding:20px;color:#1e293b;font-size:11px;line-height:1.7">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
 <div style="font-size:16px;font-weight:800">🏥 Pnimit Mega</div>
-<button onclick="this.closest('#help-overlay').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8" aria-label="Close help">✕</button>
+<button data-action="close-help" style="background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8" aria-label="Close help">✕</button>
 </div>
 <div style="font-size:10px;color:#64748b;margin-bottom:16px">Israeli Internal Medicine Board Exam Prep (שלב א׳ פנימית) · P0064-2025 · Harrison's 22e · Works Offline</div>
 <div style="padding:10px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:10px;margin-bottom:14px">
@@ -203,7 +203,7 @@ ${sec('Progress Tracking','📊','#f59e0b',
 </div>
 <div style="text-align:center;font-size:9px;color:#94a3b8;line-height:1.5">
 صدقة جارية الى من نحب<br>Ceaseless Charity — To the People That We Love<br><br>
-<button onclick="shareApp()" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:6px 16px;font-size:10px;font-weight:600;cursor:pointer" aria-label="Share app with friends">📤 Share with Friends</button>
+<button data-action="share-app" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:6px 16px;font-size:10px;font-weight:600;cursor:pointer" aria-label="Share app with friends">📤 Share with Friends</button>
 </div>
 </div>`;
 document.body.appendChild(ov);
@@ -233,8 +233,8 @@ b.id='update-banner';
 b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;padding:12px 16px;font-size:12px;display:flex;align-items:center;gap:10px;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,.3)';
 b.innerHTML=`<div><b>🆕 עדכון זמין!</b> גרסה חדשה מוכנה</div>
 <div style="display:flex;gap:6px;flex-shrink:0">
-<button onclick="applyUpdate()" style="background:#fff;color:#4f46e5;border:none;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer">🔄 עדכן עכשיו</button>
-<button onclick="this.closest('#update-banner').remove()" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer">✕</button>
+<button data-action="apply-update" style="background:#fff;color:#4f46e5;border:none;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer">🔄 עדכן עכשיו</button>
+<button data-action="close-update-banner" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer">✕</button>
 </div>`;
 document.body.prepend(b);
 }
@@ -328,11 +328,44 @@ _w.shareQ = shareQ;
 _w.sendChatStarter = sendChatStarter;
 
 // === Event delegation (set up once, survives innerHTML changes) ===
-initMoreEvents(document.getElementById('ct'));
-initLibraryEvents(document.getElementById('ct'));
-initLearnEvents(document.getElementById('ct'));
-initTrackEvents(document.getElementById('ct'));
-initQuizEvents(document.getElementById('ct'));
+// Tab bar (outside #ct)
+document.getElementById('tb').addEventListener('click', (e) => {
+  const el = e.target.closest('[data-action="go"]');
+  if (el) go(el.dataset.tab);
+});
+// Sub-tab + view delegation (inside #ct)
+const _ct = document.getElementById('ct');
+_ct.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  if (el.dataset.action === 'learn-sub') { G.learnSub = el.dataset.sub; render(); }
+  else if (el.dataset.action === 'more-sub') { G.moreSub = el.dataset.sub; render(); }
+});
+initMoreEvents(_ct);
+initLibraryEvents(_ct);
+initLearnEvents(_ct);
+initTrackEvents(_ct);
+initQuizEvents(_ct);
+
+// === Header button delegation (outside #ct) ===
+document.querySelector('.hdr').addEventListener('click', (e) => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  if (el.dataset.action === 'toggle-dark') toggleDark();
+  else if (el.dataset.action === 'toggle-study') toggleStudyMode();
+  else if (el.dataset.action === 'show-help') showHelp();
+});
+
+// === Body-level delegation for overlays, banners, modals ===
+document.body.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  if (el.dataset.action === 'close-help') { const ov = document.getElementById('help-overlay'); if (ov) ov.remove(); }
+  else if (el.dataset.action === 'share-app') shareApp();
+  else if (el.dataset.action === 'apply-update') applyUpdate();
+  else if (el.dataset.action === 'close-update-banner') { const b = document.getElementById('update-banner'); if (b) b.remove(); }
+  else if (el.dataset.action === 'close-mock-modal') { const m = document.getElementById('mexModal'); if (m) m.remove(); }
+});
 
 // === Boot ===
 // Wake lock

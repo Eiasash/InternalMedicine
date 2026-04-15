@@ -179,4 +179,4 @@ jobs:
       - name: Run tests
         run: npx vitest run
       - name: Verify production build
-        run: npx vite build
+        run: bash scripts/build.sh
