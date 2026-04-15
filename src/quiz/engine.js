@@ -130,12 +130,12 @@ export function renderOnCall(){
   // Header
   h+=`<div style="display:flex;justify-content:space-between;align-items:center">
     <div style="font-size:11px;color:#64748b">${G.qi+1}/${G.pool.length} · ${G.filt}</div>
-    <button onclick="exitOnCallMode()" style="font-size:11px;padding:4px 10px;background:#f1f5f9;border:none;border-radius:8px;cursor:pointer" aria-label="Exit on-call mode">✕ Exit</button>
+    <button data-action="exit-oncall" style="font-size:11px;padding:4px 10px;background:#f1f5f9;border:none;border-radius:8px;cursor:pointer" aria-label="Exit on-call mode">✕ Exit</button>
   </div>`;
   // Topic tag
   if(topic)h+=`<div style="font-size:10px;background:#f0fdf4;color:#166534;padding:3px 10px;border-radius:20px;display:inline-block;align-self:flex-start;font-weight:600">${topic}</div>`;
   // Question card - large text
-  h+=`<div style="background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.08);flex:1;cursor:${G.flipRevealed?'default':'pointer'}" ${G.flipRevealed?'':'onclick="flipCard()" role="button" tabindex="0" aria-label="Flip card to reveal answer"'}>
+  h+=`<div style="background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.08);flex:1;cursor:${G.flipRevealed?'default':'pointer'}" ${G.flipRevealed?'':'data-action="flip-card" role="button" tabindex="0" aria-label="Flip card to reveal answer"'}>
     <div style="font-size:16px;line-height:1.6;font-weight:500;direction:rtl;text-align:right;margin-bottom:${G.flipRevealed?'16px':'0'}">${q.q}</div>`;
   if(!G.flipRevealed){
     h+=`<div style="text-align:center;margin-top:20px;color:#94a3b8;font-size:13px">👆 tap to reveal answer</div>`;
@@ -148,14 +148,14 @@ export function renderOnCall(){
     // Explanation if available
     const ex=G._exCache&&G._exCache[qIdx];
     if(ex){h+=`<div style="font-size:12px;color:#475569;line-height:1.7;direction:rtl;text-align:right;border-top:1px solid #e2e8f0;padding-top:10px">${ex}</div>`;}
-    else{h+=`<button onclick="runExplainOnCall(${qIdx})" id="oc-exp-${qIdx}" style="font-size:11px;padding:5px 12px;background:#eff6ff;color:#3b82f6;border:none;border-radius:8px;cursor:pointer;margin-bottom:8px">🤖 הסבר AI</button><div id="oc-exp-box-${qIdx}"></div>`;}
+    else{h+=`<button data-action="explain-oncall" data-idx="${qIdx}" id="oc-exp-${qIdx}" style="font-size:11px;padding:5px 12px;background:#eff6ff;color:#3b82f6;border:none;border-radius:8px;cursor:pointer;margin-bottom:8px">🤖 הסבר AI</button><div id="oc-exp-box-${qIdx}"></div>`;}
   }
   h+=`</div>`;
   // Rate buttons (only after flip)
   if(G.flipRevealed){
     h+=`<div style="display:flex;gap:12px">
-      <button onclick="onCallPick(false)" style="flex:1;padding:18px;background:#fef2f2;color:#dc2626;border:none;border-radius:16px;font-size:28px;font-weight:700;cursor:pointer;min-height:64px" aria-label="Wrong answer">✗</button>
-      <button onclick="onCallPick(true)" style="flex:1;padding:18px;background:#f0fdf4;color:#16a34a;border:none;border-radius:16px;font-size:28px;font-weight:700;cursor:pointer;min-height:64px" aria-label="Correct answer">✓</button>
+      <button data-action="oncall-pick" data-correct="false" style="flex:1;padding:18px;background:#fef2f2;color:#dc2626;border:none;border-radius:16px;font-size:28px;font-weight:700;cursor:pointer;min-height:64px" aria-label="Wrong answer">✗</button>
+      <button data-action="oncall-pick" data-correct="true" style="flex:1;padding:18px;background:#f0fdf4;color:#16a34a;border:none;border-radius:16px;font-size:28px;font-weight:700;cursor:pointer;min-height:64px" aria-label="Correct answer">✓</button>
     </div>`;
   }
   h+=`</div>`;
@@ -314,7 +314,7 @@ ${rows.map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0
   </div>
   <div style="font-size:10px;font-weight:700;color:${r.acc>=70?'#059669':r.acc>=50?'#d97706':'#dc2626'};min-width:28px;text-align:right">${r.acc}%</div>
 </div>`).join('')}
-<button onclick="document.getElementById('mexModal').remove()" style="margin-top:16px;width:100%;padding:10px;background:#0f172a;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer" aria-label="Close exam results">Close</button>
+<button data-action="close-mock-modal" style="margin-top:16px;width:100%;padding:10px;background:#0f172a;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer" aria-label="Close exam results">Close</button>
 </div></div>`;
   document.body.insertAdjacentHTML('beforeend',html);
 }

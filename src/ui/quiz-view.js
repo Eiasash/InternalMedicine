@@ -3,9 +3,9 @@ import { SUPA_URL, SUPA_ANON, TOPICS, EXAM_FREQ } from '../core/constants.js';
 import { sanitize, fmtT, safeJSONParse, getOptShuffle, remapExplanationLetters, isMetaOption } from '../core/utils.js';
 import { getDueQuestions, getWeakTopics, isExamTrap, srScore, getTopicStats } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
-import { renderExplainBox } from '../ai/explain.js';
+import { renderExplainBox, toggleFlagExplain } from '../ai/explain.js';
 import { TOPIC_REF } from './track-view.js';
-import { buildPool, check, next, pick, checkMockIntercept } from '../quiz/engine.js';
+import { buildPool, check, next, pick, checkMockIntercept, exitOnCallMode, flipCard, runExplainOnCall, onCallPick } from '../quiz/engine.js';
 
 export function toggleBk(){G.S.bk[G.pool[G.qi]]=!G.S.bk[G.pool[G.qi]];G.save();G.render();}
 
@@ -494,6 +494,15 @@ export function initQuizEvents(container) {
     else if (action === 'speak-q') { speakQuestion(); }
     else if (action === 'share-q') { window.shareQ(); }
     else if (action === 'dismiss') { el.parentElement.style.display = 'none'; }
+
+    // === On-call mode ===
+    else if (action === 'exit-oncall') { exitOnCallMode(); }
+    else if (action === 'flip-card') { flipCard(); }
+    else if (action === 'explain-oncall') { runExplainOnCall(parseInt(el.dataset.idx, 10)); }
+    else if (action === 'oncall-pick') { onCallPick(el.dataset.correct === 'true'); }
+
+    // === AI explain ===
+    else if (action === 'flag-explain') { toggleFlagExplain(parseInt(el.dataset.idx, 10)); }
   });
 
   container.addEventListener('change', (e) => {

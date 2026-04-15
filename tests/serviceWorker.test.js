@@ -181,3 +181,20 @@ describe('sw.js — version alignment with app', () => {
     }
   });
 });
+
+describe('version consistency — APP_VERSION ↔ sw.js CACHE', () => {
+  test('APP_VERSION is exported from src/core/constants.js', () => {
+    const constants = readFile('src/core/constants.js');
+    expect(constants).toMatch(/export\s+const\s+APP_VERSION\s*=\s*['"][^'"]+['"]/);
+  });
+
+  test('sw.js CACHE equals pnimit-v<APP_VERSION>', () => {
+    const constants = readFile('src/core/constants.js');
+    const sw = readFile('sw.js');
+    const appVer = constants.match(/APP_VERSION\s*=\s*['"]([^'"]+)['"]/);
+    const swVer = sw.match(/CACHE\s*=\s*['"]pnimit-v([^'"]+)['"]/);
+    expect(appVer).not.toBeNull();
+    expect(swVer).not.toBeNull();
+    expect(swVer[1]).toBe(appVer[1]);
+  });
+});

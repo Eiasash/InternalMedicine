@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0f172a">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co https://ima-contentfiles.s3.amazonaws.com https://ima-files.s3.amazonaws.com; connect-src 'self' https://*.supabase.co https://api.anthropic.com https://toranot.netlify.app;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co https://ima-contentfiles.s3.amazonaws.com https://ima-files.s3.amazonaws.com; connect-src 'self' https://*.supabase.co https://api.anthropic.com https://toranot.netlify.app;">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
 <link rel="manifest" href="manifest.json">
 <title>Pnimit Mega — Internal Medicine Board Prep</title>
@@ -19,29 +19,14 @@
 <link rel="stylesheet" href="src/styles/chat.css">
 <link rel="stylesheet" href="src/styles/theme.css">
 <link rel="stylesheet" href="src/styles/utilities.css">
-
-<script>
-document.addEventListener('DOMContentLoaded',function(){
-const el=document.getElementById('hdr-sub');
-if(!el)return;
-function upd(){
-const d=new Date();
-const day=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
-const h=String(d.getHours()).padStart(2,'0');
-const m=String(d.getMinutes()).padStart(2,'0');
-const mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
-el.textContent=day+' '+d.getDate()+' '+mon+' · '+h+':'+m;
-}
-upd();setInterval(upd,30000);
-});
-</script>
+<script src="src/clock.js"></script>
 </head>
 <body>
 
 <a href="#ct" class="skip-link">Skip to content</a>
 <div class="hdr" style="position:relative">
 <h1>Pnimit Mega <span style="font-size:9px;font-weight:600;color:#3b82f6;vertical-align:middle;background:#eff6ff;padding:2px 6px;border-radius:6px;margin-right:4px">Internal Medicine</span> <span id="headerVer" style="font-size:9px;font-weight:400;color:#64748b;vertical-align:middle"></span></h1>
-<button class="dm-btn" onclick="toggleStudyMode()" title="Night/Study Mode" aria-label="Toggle night mode" style="right:44px">🕯️</button><button class="dm-btn" onclick="toggleDark()" title="Dark Mode" aria-label="Toggle dark mode">🌓</button><button class="dm-btn" onclick="showHelp()" title="Help" aria-label="Help" style="right:82px;font-size:11px">❓</button>
+<button class="dm-btn" data-action="toggle-study" title="Night/Study Mode" aria-label="Toggle night mode" style="right:44px">🕯️</button><button class="dm-btn" data-action="toggle-dark" title="Dark Mode" aria-label="Toggle dark mode">🌓</button><button class="dm-btn" data-action="show-help" title="Help" aria-label="Help" style="right:82px;font-size:11px">❓</button>
 <p id="hdr-sub">Loading...</p>
 </div>
 
