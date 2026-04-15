@@ -258,12 +258,6 @@ const old=ks.filter(k=>k.startsWith('pnimit-')&&k!=='pnimit-v'+APP_VERSION);
 old.forEach(k=>{caches.delete(k);console.log('Deleted old cache:',k);});
 });
 navigator.serviceWorker.register('sw.js').then(reg=>{
-// Detect waiting worker = update available
-if(reg.waiting){showUpdateBanner();}
-reg.addEventListener('updatefound',()=>{
-const nw=reg.installing;
-if(nw){nw.addEventListener('statechange',()=>{if(nw.state==='installed'&&navigator.serviceWorker.controller){showUpdateBanner();}});}
-});
 // Schedule daily notification at 07:00
 function scheduleDailyNotification(){
 const now=new Date();
