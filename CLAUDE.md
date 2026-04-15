@@ -5,7 +5,7 @@
 **Pnimit Mega** is a Progressive Web App (PWA) for Israeli internal medicine board exam preparation (שלב א פנימית, P0064-2025). It uses a modular ES module architecture with Vite tooling, deployed via GitHub Actions to GitHub Pages.
 
 - **Live URL**: https://eiasash.github.io/InternalMedicine/
-- **App version**: v9.43
+- **App version**: v9.44
 - **Entry point**: `pnimit-mega.html` (59-line HTML shell) → `src/ui/app.js` (ES module)
 - **Deployment**: Push to `main` → GitHub Actions builds with Vite → deploys `dist/` to Pages
 - **Sibling app**: Shlav A Mega (geriatrics) at Eiasash/Geriatrics — same engine, separate data
@@ -42,16 +42,24 @@ data-action="open-chapter" data-ch="42" → Harrison chapter nav
 data-action="fc-rate" data-r="2"        → flashcard SRS rating
 ```
 
-### Remaining Window Bindings (17)
+### Remaining Window Bindings (16)
 
 Functions still on `window` due to circular import constraints or HTML shell usage:
 
 | Reason | Bindings |
 |--------|----------|
-| Core nav (used by all view delegations) | `go`, `render`, `renderTabs` |
-| Track-view delegation (circular: app↔track) | `setTopicFilt`, `openHarrisonChapter`, `showLeaderboard`, `cloudBackup`, `cloudRestore`, `sendChatStarter`, `shareApp`, `exportProgress`, `importProgress`, `applyUpdate` |
+| Core nav (inline onclick in render/renderTabs) | `go`, `render` |
+| Track-view delegation (circular: app↔track) | `setTopicFilt`, `openHarrisonChapter`, `showLeaderboard`, `cloudBackup`, `cloudRestore`, `sendChatStarter`, `exportProgress`, `importProgress` |
 | Quiz-view delegation (circular: app↔quiz) | `shareQ` |
-| HTML shell onclick | `toggleDark`, `toggleStudyMode`, `showHelp` |
+| HTML shell onclick (pnimit-mega.html header) | `toggleDark`, `toggleStudyMode`, `showHelp` |
+| Dynamic UI (created via JS, not delegation-friendly) | `applyUpdate`, `shareApp` |
+
+**Also on window (internal state, not API surface):**
+- `window.G` — global state object, accessed by inline handler strings in `render()`
+- `window._idbSaveTimer` / `window._lsWarnShown` — internal flags in `state.js`
+- `window.save` — IDB save (legacy alias, `G.save()` is preferred)
+
+**Dead reference (harmless):** `window._libData` is read in `library-view.js` but never assigned — the guard prevents errors. Can be removed in a future pass.
 
 ### Storage Layers
 
@@ -263,7 +271,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Source LOC | ~4,120 |
 | Functions | 144 |
 | ES imports | 77 |
-| Window bindings | 17 (down from 72) |
+| Window bindings | 16 (down from 72) |
 | Questions | 1,472 (all with explanations) |
 | AI-generated | 589 (tagged `Harrison`) |
 | Topics | 24 |
