@@ -212,22 +212,12 @@ document.body.appendChild(ov);
 // PWA + Background Sync + Daily Notification
 // ===== UPDATE BANNER =====
 
-// ===== PROACTIVE VERSION CHECK =====
-(async function checkForUpdate(){
-try{
-const r=await fetch('sw.js',{cache:'no-store'});
-const txt=await r.text();
-const m=txt.match(/CACHE='pnimit-v([^']+)'/);
-if(m&&m[1]!==APP_VERSION){
-console.log('Update available: sw='+m[1]+' app='+APP_VERSION);
-setTimeout(showUpdateBanner,1000);
-}
-}catch(e){}
-})();
+// ===== SW UPDATE DETECTION =====
+const UPDATE_DISMISS_KEY='pnimit_update_dismissed_'+APP_VERSION;
 
 export function showUpdateBanner(){
-const existing=document.getElementById('update-banner');
-if(existing)return;
+if(document.getElementById('update-banner'))return;
+if(localStorage.getItem(UPDATE_DISMISS_KEY))return;
 const b=document.createElement('div');
 b.id='update-banner';
 b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;padding:12px 16px;font-size:12px;display:flex;align-items:center;gap:10px;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,.3)';
@@ -239,6 +229,8 @@ b.innerHTML=`<div><b>🆕 עדכון זמין!</b> גרסה חדשה מוכנה<
 document.body.prepend(b);
 }
 export function applyUpdate(){
+// Clear dismissal so fresh version doesn't show stale suppression
+try{localStorage.removeItem(UPDATE_DISMISS_KEY);}catch(e){}
 // Properly await cache deletion before reload
 (async()=>{
 try{
@@ -259,7 +251,22 @@ caches.keys().then(ks=>{
 const old=ks.filter(k=>k.startsWith('pnimit-')&&k!=='pnimit-v'+APP_VERSION);
 old.forEach(k=>{caches.delete(k);console.log('Deleted old cache:',k);});
 });
+function onNewWorkerReady(){
+// Only show banner when a controller already exists (not first install)
+if(navigator.serviceWorker.controller)showUpdateBanner();
+}
 navigator.serviceWorker.register('sw.js').then(reg=>{
+// Detect waiting worker (update installed before this page load)
+if(reg.waiting){onNewWorkerReady();return;}
+// Detect future updates
+reg.addEventListener('updatefound',()=>{
+const nw=reg.installing;if(!nw)return;
+nw.addEventListener('statechange',()=>{
+if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpdateBanner();
+});
+});
+// Proactively check for updates
+reg.update().catch(()=>{});
 // Schedule daily notification at 07:00
 function scheduleDailyNotification(){
 const now=new Date();
@@ -363,7 +370,7 @@ document.body.addEventListener('click', (e) => {
   if (el.dataset.action === 'close-help') { const ov = document.getElementById('help-overlay'); if (ov) ov.remove(); }
   else if (el.dataset.action === 'share-app') shareApp();
   else if (el.dataset.action === 'apply-update') applyUpdate();
-  else if (el.dataset.action === 'close-update-banner') { const b = document.getElementById('update-banner'); if (b) b.remove(); }
+  else if (el.dataset.action === 'close-update-banner') { try{localStorage.setItem(UPDATE_DISMISS_KEY,'1');}catch(e){} const b = document.getElementById('update-banner'); if (b) b.remove(); }
   else if (el.dataset.action === 'close-mock-modal') { const m = document.getElementById('mexModal'); if (m) m.remove(); }
 });
 
