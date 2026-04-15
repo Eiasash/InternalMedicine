@@ -20,8 +20,12 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.43';
+export const APP_VERSION='9.44';
 export const CHANGELOG={
+    '9.44': [
+      'ניקוי window bindings — הסרת renderTabs מיותר (17 → 16)',
+      'עדכון README ו-CLAUDE.md למבנה מודולרי'
+    ],
     '9.43': [
       'העברת כל התמונות המקומיות ל-Supabase',
       'כל 116 התמונות מוגשות כעת מ-Supabase'
@@ -74,7 +78,7 @@ export const CHANGELOG={
 export const SYLLABUS_VERSION='P0064-2025';
 export const SYLLABUS_DATE='2025-01-01';
 
-export const BUILD_HASH=(()=>{const d=new Date('2026-04-11T00:00:00Z');return d.toISOString().slice(0,10).replace(/-/g,'');})();
+export const BUILD_HASH=(()=>{const d=new Date('2026-04-15T00:00:00Z');return d.toISOString().slice(0,10).replace(/-/g,'');})();
 
 // AI proxy
 export const AI_PROXY='https://toranot.netlify.app/api/claude';

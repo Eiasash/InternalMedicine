@@ -300,9 +300,8 @@ G.renderTabs = renderTabs;
 // === Window bindings for onclick/onchange/oninput handlers in HTML strings ===
 const _w = window;
 // Core navigation
-_w.go = go; _w.render = render; _w.renderTabs = renderTabs;
+_w.go = go; _w.render = render;
 // Quiz
-
  _w.setTopicFilt = setTopicFilt;
 
 // AI
