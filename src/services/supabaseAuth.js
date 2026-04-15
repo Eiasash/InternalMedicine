@@ -5,25 +5,31 @@
 //   2. Add your GitHub OAuth App Client ID and Secret
 //   3. Set callback URL to: https://krmlzwwelqvlfslwltol.supabase.co/auth/v1/callback
 
-import { createClient } from '@supabase/supabase-js';
 import { SUPA_URL, SUPA_ANON } from '../core/constants.js';
 
-// Supabase client with auth support
-const supabase = createClient(SUPA_URL, SUPA_ANON, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-  },
-});
+let _supabase = null;
 
-export { supabase };
+async function getSupabase() {
+  if (_supabase) return _supabase;
+  const { createClient } = await import(
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  );
+  _supabase = createClient(SUPA_URL, SUPA_ANON, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
+  });
+  return _supabase;
+}
 
 /**
  * Sign in with GitHub OAuth.
  * Redirects the browser to GitHub for authorization, then back to the app.
  */
 export async function signInWithGitHub() {
+  const supabase = await getSupabase();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'github',
     options: {
@@ -36,12 +42,14 @@ export async function signInWithGitHub() {
 
 /** Sign out the current user. */
 export async function signOut() {
+  const supabase = await getSupabase();
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
 }
 
 /** Get the current session (null if not logged in). */
 export async function getSession() {
+  const supabase = await getSupabase();
   const { data } = await supabase.auth.getSession();
   return data.session;
 }
@@ -54,7 +62,10 @@ export async function getUser() {
 
 /** Subscribe to auth state changes. Returns { data: { subscription } }. */
 export function onAuthStateChange(callback) {
-  return supabase.auth.onAuthStateChange((_event, session) => {
-    callback(session);
+  // Lazy init — getSupabase() is async, so we need to handle this carefully
+  getSupabase().then((supabase) => {
+    supabase.auth.onAuthStateChange((_event, session) => {
+      callback(session);
+    });
   });
 }
