@@ -239,20 +239,22 @@ b.innerHTML=`<div><b>🆕 עדכון זמין!</b> גרסה חדשה מוכנה<
 document.body.prepend(b);
 }
 export function applyUpdate(){
+// Properly await cache deletion before reload
+(async()=>{
+try{
 if(navigator.serviceWorker&&navigator.serviceWorker.controller){
-navigator.serviceWorker.getRegistrations().then(regs=>{
+const regs=await navigator.serviceWorker.getRegistrations();
 regs.forEach(r=>{if(r.waiting)r.waiting.postMessage({type:'SKIP_WAITING'});});
-});
 }
-caches.keys().then(ks=>{ks.forEach(k=>caches.delete(k));});
-setTimeout(()=>window.location.reload(true),500);
+const ks=await caches.keys();
+await Promise.all(ks.map(k=>caches.delete(k)));
+}catch(e){console.warn('Cache clear error:',e);}
+window.location.reload();
+})();
 }
 
 if('serviceWorker' in navigator){
-// Force update — clears old cache-first SW
-navigator.serviceWorker.getRegistrations().then(regs=>{
-regs.forEach(r=>r.update());
-});
+// Clean up old caches on load
 caches.keys().then(ks=>{
 const old=ks.filter(k=>k.startsWith('pnimit-')&&k!=='pnimit-v'+APP_VERSION);
 old.forEach(k=>{caches.delete(k);console.log('Deleted old cache:',k);});
