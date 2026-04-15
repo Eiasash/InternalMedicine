@@ -159,7 +159,7 @@ export async function cloudRestore(){
     if(!rows||!rows.length){alert('No backup found for ID: '+id);return;}
     const row=rows[0];
     if(confirm('Restore backup from '+new Date(row.updated_at).toLocaleString()+'?\nThis will overwrite your current progress.')){
-      Object.assign(G.S,row.data);G.save();G.render();
+      const allowed=new Set(Object.keys(G.S));const validated={};for(const k of Object.keys(row.data)){if(allowed.has(k))validated[k]=row.data[k];}Object.assign(G.S,validated);G.save();G.render();
       alert('✅ Progress restored!');
     }
   }catch(e){alert('❌ Restore failed: '+e.message);}
