@@ -236,7 +236,7 @@ export function buildMockExamPool(){
 export function startExam(){
   // Classic 150q mode (unchanged)
   G.examMode=true;G.filt='all';buildPool();G.pool=G.pool.slice(0,150);
-  G.S.qOk=0;G.S.qNo=0;G.examSec=10800;G.mockExamResults=null;G.save();
+  G._examStartOk=G.S.qOk;G._examStartNo=G.S.qNo;G.examSec=10800;G.mockExamResults=null;G.save();
   G.examTimer=setInterval(()=>{G.examSec--;if(G.examSec<=0)endExam();
   const el=document.getElementById('etimer');if(el)el.textContent=fmtT(G.examSec);},1000);
   G.render();
@@ -249,7 +249,7 @@ export function startMockExam(){
   // per-topic tracking: {ok,no} per ti
   G.mockExamResults={byTopic:{},start:Date.now()};
   EXAM_FREQ.forEach((_,ti)=>{G.mockExamResults.byTopic[ti]={ok:0,no:0};});
-  G.S.qOk=0;G.S.qNo=0;G.examSec=10800;G.save();
+  G._examStartOk=G.S.qOk;G._examStartNo=G.S.qNo;G.examSec=10800;G.save();
   G.examTimer=setInterval(()=>{G.examSec--;if(G.examSec<=0)endMockExam();
   const el=document.getElementById('etimer');if(el)el.textContent=fmtT(G.examSec);},1000);
   G.render();
@@ -267,24 +267,24 @@ export function checkMockIntercept(){
 }
 export function endExam(){
   clearInterval(G.examTimer);G.examMode=false;
-  const tot=G.S.qOk+G.S.qNo,pct=tot?Math.round(G.S.qOk/tot*100):0;
-  alert(`Exam Complete!\n\n✅ ${G.S.qOk}/${tot} (${pct}%)\n${pct>=60?'PASS 🎉':'NEEDS WORK ❌'}\n\nTime: ${fmtT(10800-G.examSec)}`);
+  const examOk=G.S.qOk-(G._examStartOk||0),examNo=G.S.qNo-(G._examStartNo||0);const tot=examOk+examNo,pct=tot?Math.round(examOk/tot*100):0;
+  alert(`Exam Complete!\n\n✅ ${examOk}/${tot} (${pct}%)\n${pct>=60?'PASS 🎉':'NEEDS WORK ❌'}\n\nTime: ${fmtT(10800-G.examSec)}`);
   G.render();
 }
 export function endMockExam(){
   clearInterval(G.examTimer);G.examMode=false;
   if(!G.mockExamResults){G.render();return;}
   // Build analytics
-  const tot=G.S.qOk+G.S.qNo,pct=tot?Math.round(G.S.qOk/tot*100):0;
+  const examOk=G.S.qOk-(G._examStartOk||0),examNo=G.S.qNo-(G._examStartNo||0);const tot=examOk+examNo,pct=tot?Math.round(examOk/tot*100):0;
   const elapsed=Math.floor((Date.now()-G.mockExamResults.start)/1000);
   // Store in history
   try{const hist=JSON.parse(localStorage.getItem('pnimit_mock_hist')||'[]');
-    hist.push({date:new Date().toISOString(),score:pct,correct:G.S.qOk,total:tot,elapsed,byTopic:G.mockExamResults.byTopic});
+    hist.push({date:new Date().toISOString(),score:pct,correct:examOk,total:tot,elapsed,byTopic:G.mockExamResults.byTopic});
     if(hist.length>20)hist.splice(0,hist.length-20);
     localStorage.setItem('pnimit_mock_hist',JSON.stringify(hist));
   }catch(e){}
   // Show in custom modal instead of alert
-  showMockExamResult(pct,G.S.qOk,tot,elapsed,G.mockExamResults.byTopic);
+  showMockExamResult(pct,examOk,tot,elapsed,G.mockExamResults.byTopic);
   G.mockExamResults=null;
   G.render();
 }

@@ -7,7 +7,7 @@ import { renderExplainBox } from '../ai/explain.js';
 import { TOPIC_REF } from './track-view.js';
 import { buildPool, check, next, pick, checkMockIntercept } from '../quiz/engine.js';
 
-export function toggleBk(){S.bk[pool[qi]]=!S.bk[pool[qi]];G.save();G.render();}
+export function toggleBk(){G.S.bk[G.pool[G.qi]]=!G.S.bk[G.pool[G.qi]];G.save();G.render();}
 
 
 export async function uploadQImage(qIdx){
@@ -158,7 +158,7 @@ if(G.timedMode&&!G.ans){
 <div style="flex:1;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden">
   <div id="timed-bar" style="height:100%;width:${Math.round(G.timedSec/90*100)}%;background:${G.timedSec>45?'#10b981':G.timedSec>22?'#f59e0b':'#ef4444'};border-radius:3px;transition:width .9s linear"></div>
 </div>
-<button data-action="pause-timed" style="font-size:9px;padding:2px 7px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;white-space:nowrap" aria-label="${timedPaused?'Resume timer':'Pause timer'}">${timedPaused?'▶ המשך':'⏸ עצור'}</button>
+<button data-action="pause-timed" style="font-size:9px;padding:2px 7px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;white-space:nowrap" aria-label="${G.timedPaused?'Resume timer':'Pause timer'}">${G.timedPaused?'▶ המשך':'⏸ עצור'}</button>
 </div>`;
 }
 const _isFlagQ=(G.S.flagged||{})[G.pool[G.qi]];
@@ -168,7 +168,7 @@ if(!q.img&&!G.examMode){h+=`<div style="margin-bottom:10px"><button data-action=
 q.o.forEach((o,i)=>{
 let cls='qo';
 if(G.ans){cls+=' lk';if(i===q.c)cls+=' ok';else if(i===G.sel)cls+=' no';else cls+=' dim';}
-else if(i===G.sel)cls+=' G.sel';
+else if(i===G.sel)cls+=' sel';
 h+=`<button class="${cls}" data-action="pick" data-i="${i}" aria-label="Option ${i+1}: ${o}">${o}</button>`;
 });
 if(!G.ans)h+=`<button class="btn btn-p" data-action="sd-check"${G.sel===null?' disabled':''} aria-label="Check answer">בדוק</button>`;
@@ -254,7 +254,7 @@ if(G.timedMode&&!G.ans){
 <div style="flex:1;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden">
   <div id="timed-bar" style="height:100%;width:${Math.round(G.timedSec/90*100)}%;background:${G.timedSec>45?'#10b981':G.timedSec>22?'#f59e0b':'#ef4444'};border-radius:3px;transition:width .9s linear"></div>
 </div>
-<button data-action="pause-timed" style="font-size:9px;padding:2px 7px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;white-space:nowrap" aria-label="${timedPaused?'Resume timer':'Pause timer'}">${timedPaused?'▶ המשך':'⏸ עצור'}</button>
+<button data-action="pause-timed" style="font-size:9px;padding:2px 7px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;white-space:nowrap" aria-label="${G.timedPaused?'Resume timer':'Pause timer'}">${G.timedPaused?'▶ המשך':'⏸ עצור'}</button>
 </div>`;
 }
 const topicName=q.ti>=0&&TOPICS[q.ti]?TOPICS[q.ti]:'';
@@ -273,7 +273,7 @@ _shuf.forEach((origI,dispJ)=>{
 const o=q.o[origI];
 let cls='qo';
 if(G.ans){cls+=' lk';if(origI===q.c)cls+=' ok';else if(origI===G.sel)cls+=' no';else cls+=' dim';}
-else if(origI===G.sel)cls+=' G.sel';
+else if(origI===G.sel)cls+=' sel';
 const blurCls=G.blindRecall&&!G.ans&&origI!==G.sel?' qo-blur':'';
 const autopsyCls=(G.autopsyMode&&G.ans&&origI!==q.c&&origI===G.autopsyDistractor)?' distractor-highlight':'';
 h+=`<button class="${cls}${blurCls}${autopsyCls}" data-action="pick" data-i="${origI}" aria-label="Option ${origI+1}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
@@ -411,8 +411,8 @@ h+=`</div>`;
 return h;
 }
 // Sudden Death check/next
-export function sdCheck(){if(sel===null)return;ans=true;const q=G.QZ[sdPool[sdQi]];if(sel===q.c){sdStreak++;S.qOk++;srScore(sdPool[sdQi],true);G.save();G.render();}else{S.qNo++;srScore(sdPool[sdQi],false);G.save();G.render();setTimeout(()=>endSuddenDeath(),800);}}
-export function sdNext(){sdQi++;if(sdQi>=sdPool.length)sdQi=0;sel=null;ans=false;autopsyDistractor=-1;G.render();}
+export function sdCheck(){if(G.sel===null)return;G.ans=true;const q=G.QZ[G.sdPool[G.sdQi]];if(G.sel===q.c){G.sdStreak++;G.S.qOk++;srScore(G.sdPool[G.sdQi],true);G.save();G.render();}else{G.S.qNo++;srScore(G.sdPool[G.sdQi],false);G.save();G.render();setTimeout(()=>endSuddenDeath(),800);}}
+export function sdNext(){G.sdQi++;if(G.sdQi>=G.sdPool.length)G.sdQi=0;G.sel=null;G.ans=false;G.autopsyDistractor=-1;G.render();}
 
 
 
