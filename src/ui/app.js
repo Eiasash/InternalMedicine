@@ -118,7 +118,7 @@ else if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>alert('
 export function importProgress(){
 const input=document.createElement('input');input.type='file';input.accept='.json';
 input.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
-r.onload=ev=>{try{const d=JSON.parse(ev.target.result);Object.assign(G.S,d);G.save();render();
+r.onload=ev=>{try{const d=JSON.parse(ev.target.result);const allowed=new Set(Object.keys(G.S));const validated={};for(const k of Object.keys(d)){if(allowed.has(k))validated[k]=d[k];}Object.assign(G.S,validated);G.save();render();
 alert('✅ Progress imported successfully!');}catch(err){alert('❌ Invalid file');}};r.readAsText(f);};
 input.click();}
 
@@ -368,4 +368,3 @@ document.addEventListener('visibilitychange', function(){
   }
 });
 // Data promise → render after load
-G._dataPromise.then(()=>{renderTabs();render();}).catch(()=>{});

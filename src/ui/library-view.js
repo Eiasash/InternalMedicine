@@ -156,8 +156,8 @@ export function toggleHarrisonAI(){
 export async function submitHarrisonAI(){
   const q=document.getElementById('harrison-ai-q')?.value?.trim();
   const ans=document.getElementById('harrison-ai-answer');
-  if(!q||!G.ans)return;
-  G.ans.style.display='block';G.ans.innerHTML='⏳ ...';
+  if(!q||!ans)return;
+  ans.style.display='block';ans.innerHTML='⏳ ...';
   const prompt=`You are an expert internist helping an Israeli internal medicine resident study Harrison's Internal Medicine 22e for the שלב א׳ internal medicine board exam (P0064-2025).
 
 Question: ${q}
@@ -165,9 +165,9 @@ Question: ${q}
 Answer in HEBREW (4-6 sentences). Cite the relevant Harrison chapter if known. Focus on internal medicine principles and what the exam is likely to test. If a specific threshold/criterion/number is asked, lead with it.`;
   try{
     const txt=await callAI([{role:'user',content:prompt}],600,'sonnet');
-    G.ans.innerHTML=sanitize(txt);
+    ans.innerHTML=sanitize(txt);
     document.getElementById('harrison-ai-q').value='';
-  }catch(e){G.ans.innerHTML='⚠️ Failed: '+sanitize(e.message);}
+  }catch(e){ans.innerHTML='⚠️ Failed: '+sanitize(e.message);}
 }
 export async function aiSummarizeChapter(chNum,chTitle){
   const box=document.getElementById('quiz-me-box');
