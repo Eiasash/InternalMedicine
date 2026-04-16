@@ -38,7 +38,7 @@ try{
 }
 export async function fetchLeaderboard(){
 try{
-  const res=await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard?select=uid,answered,correct,streak,readiness,ts&order=readiness.desc&limit=20',{
+  const res=await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard?select=uid,answered,correct,streak,readiness,accuracy,ts&order=accuracy.desc.nullslast,answered.desc&limit=20',{
     headers:{'apikey':SUPA_ANON}
   });
   return await res.json();

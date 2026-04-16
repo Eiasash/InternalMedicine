@@ -20,8 +20,13 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.46';
+export const APP_VERSION='9.47';
 export const CHANGELOG={
+    '9.47': [
+      'Leaderboard: מיון לפי דיוק אמיתי (accuracy) במקום readiness',
+      'Leaderboard: שליפת accuracy מ-Supabase (generated column)',
+      'ניקוי Supabase: הסרת שורות עם פחות מ-20 תשובות'
+    ],
     '9.46': [
       'Leaderboard: הצגת דיוק אמיתי (correct/answered) במקום readiness מטעה',
       'Leaderboard: guard — דורש ≥20 תשובות + est. score תקף לפני submit',
