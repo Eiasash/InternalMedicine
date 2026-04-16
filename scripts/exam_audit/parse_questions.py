@@ -138,11 +138,50 @@ def split_stem_options(q_text):
         options.append(opt)
     return stem, options
 
-def parse_exam(pdf_path, expected_count=None):
-    """Parse a question PDF into {q_num: {q, o, raw}}."""
+def fill_rtl_digit_gaps(accepted, candidates):
+    """Recover Qs lost to PDF RTL digit-rendering bug (Pnimit 2020 quirk).
+    
+    Some IMA PDFs misrender question numbers containing '0' — Q10 renders
+    as "11" (colliding with real Q11), Q20 as "21", etc. LIS drops the
+    duplicates, losing 13-23 questions.
+    
+    Walks the accepted sequence, detects gaps (e.g., Q9 → Q11 skips Q10),
+    finds unused candidate positions between those gaps, and inserts them
+    with the correct number.
+    """
+    used_positions = {pos for pos,_,_ in accepted}
+    unused = sorted(c for c in candidates if c[0] not in used_positions)
+    filled = sorted(accepted)
+    inserts = []
+    for i in range(len(filled) - 1):
+        pos_a, _, n_a = filled[i]
+        pos_b, _, n_b = filled[i+1]
+        gap = n_b - n_a - 1
+        if gap <= 0:
+            continue
+        between = sorted(u for u in unused if pos_a < u[0] < pos_b)
+        if len(between) < gap:
+            continue
+        for j in range(gap):
+            p, e, _old_n = between[j]
+            new_n = n_a + 1 + j
+            inserts.append((p, e, new_n))
+    return sorted(filled + inserts)
+
+
+def parse_exam(pdf_path, expected_count=None, fill_rtl_gaps=False):
+    """Parse a question PDF into {q_num: {q, o, raw}}.
+    
+    Set fill_rtl_gaps=True ONLY for PDFs with the RTL digit-rendering bug
+    (Pnimit 2020). The gap-fill heuristic can misassign numbers in exams
+    without the quirk, so it is opt-in per-exam via sources.json.
+    """
     full = extract_full_text(pdf_path)
     candidates = find_question_starts(full)
     accepted = monotonic_select(candidates)
+    
+    if fill_rtl_gaps:
+        accepted = fill_rtl_digit_gaps(accepted, candidates)
     
     questions = {}
     for i, (pos, e_pos, n) in enumerate(accepted):

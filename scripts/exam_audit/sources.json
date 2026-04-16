@@ -3,7 +3,7 @@
   "_local": true,
   "_local_base": "../../exams",
   "exams": [
-    {"id": "2020",       "track": "al",    "date": "2020",    "tag_candidates": ["2020"],   "q_pdf": "2020_questions.pdf",      "ans_pdf": "2020_answers.pdf",      "refs_pdf": null,                       "album_pdf": "2020_images.pdf",      "revised_pdf": null},
+    {"id": "2020",       "track": "al",    "date": "2020",    "tag_candidates": ["2020"],   "q_pdf": "2020_questions.pdf",      "ans_pdf": "2020_answers.pdf",      "refs_pdf": null,                       "album_pdf": "2020_images.pdf",      "revised_pdf": null, "fill_rtl_gaps": true},
     {"id": "2021_jun",   "track": "al",    "date": "2021-06", "tag_candidates": ["Jun21"],  "q_pdf": "2021_jun_questions.pdf",  "ans_pdf": "2021_jun_answers.pdf",  "refs_pdf": "2021_jun_references.pdf",  "album_pdf": "2021_jun_images.pdf",  "revised_pdf": null},
     {"id": "2022_jun",   "track": "al",    "date": "2022-06", "tag_candidates": ["Jun22"],  "q_pdf": "2022_jun_questions.pdf",  "ans_pdf": "2022_jun_answers.pdf",  "refs_pdf": "2022_jun_references.pdf",  "album_pdf": "2022_jun_images.pdf",  "revised_pdf": null},
     {"id": "2023_jun",   "track": "al",    "date": "2023-06", "tag_candidates": ["Jun23"],  "q_pdf": "2023_jun_questions.pdf",  "ans_pdf": "2023_jun_answers.pdf",  "refs_pdf": "2023_jun_references.pdf",  "album_pdf": "2023_jun_images.pdf",  "revised_pdf": null},
