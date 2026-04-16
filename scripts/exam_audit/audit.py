@@ -112,7 +112,7 @@ def audit_exam(exam_meta, dataset):
     q_pdf = find_cache(exam_id, 'q_pdf')
     if not q_pdf:
         return {'error': f'No q_pdf cached for {exam_id}'}
-    canonical_qs, stats = parse_exam(q_pdf)
+    canonical_qs, stats = parse_exam(q_pdf, fill_rtl_gaps=exam_meta.get('fill_rtl_gaps', False))
     # Save canonical for reuse
     with open(CANONICAL / f'{exam_id}.json', 'w') as f:
         json.dump({'questions': {str(k): v for k,v in canonical_qs.items()}, 'stats': stats}, f, ensure_ascii=False, indent=1)

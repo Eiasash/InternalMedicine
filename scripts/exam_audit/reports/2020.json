@@ -6,11 +6,11 @@
   "2020"
  ],
  "stats": {
-  "canonical_parsed": 127,
-  "canonical_with_4_opts": 123,
+  "canonical_parsed": 150,
+  "canonical_with_4_opts": 140,
   "answers_parsed": 150,
-  "questions_with_matches": 122,
-  "questions_without_matches": 5
+  "questions_with_matches": 139,
+  "questions_without_matches": 6
  },
  "findings": {
   "c_mismatches": [],
@@ -19,6 +19,10 @@
    [
     28,
     "בת59 ,ברקע יל\"ד .הובאה לחדר המיון בשל הופעת שיתוק חדש בפלג הגוף הימני . איזו בדי"
+   ],
+   [
+    50,
+    "מתי יש לבצע בדיקת סקר אנדוסקופית לסרטן המעי הגס בחולים עם מחלות מעי דלקתיות? מתי"
    ],
    [
     57,
@@ -55,9 +59,21 @@
   "missing_ti": [],
   "truncated_q": [
    {
+    "q_num": 20,
+    "idx": 18,
+    "ds_q_len": 36,
+    "tag": "2020"
+   },
+   {
     "q_num": 68,
     "idx": 58,
     "ds_q_len": 26,
+    "tag": "2020"
+   },
+   {
+    "q_num": 70,
+    "idx": 60,
+    "ds_q_len": 34,
     "tag": "2020"
    },
    {
