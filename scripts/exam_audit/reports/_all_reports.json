@@ -1,0 +1,484 @@
+{
+ "2020": {
+  "exam_id": "2020",
+  "track": "al",
+  "date": "2020",
+  "tag_candidates": [
+   "2020"
+  ],
+  "stats": {
+   "canonical_parsed": 127,
+   "canonical_with_4_opts": 123,
+   "answers_parsed": 150,
+   "questions_with_matches": 122,
+   "questions_without_matches": 5
+  },
+  "findings": {
+   "c_mismatches": [],
+   "tag_mismatches": [],
+   "no_match": [
+    [
+     28,
+     "בת59 ,ברקע יל\"ד .הובאה לחדר המיון בשל הופעת שיתוק חדש בפלג הגוף הימני . איזו בדי"
+    ],
+    [
+     57,
+     "חולה הסובל ממחלתPaget's ומטופל באו פן קבוע ע\" יIV Pamidronate פונה לרופא המטפל ב"
+    ],
+    [
+     64,
+     "מה עלול להיגרם ע״י נגיפים במושתלי מח עצם? נגיף מחלה א EBV B-cell Lymphoma ב CMV "
+    ],
+    [
+     81,
+     "לאיזה מטופל יומלץ על ניתוח בריאטרי להורדה במשקל ? גיל מחלות רקע BMI א 58 סוכרת 5"
+    ],
+    [
+     151,
+     "מה נכון לגבי הטיפול ב- IBD?"
+    ]
+   ],
+   "low_confidence": [
+    {
+     "q_num": 41,
+     "idx": 35,
+     "sim": 0.669,
+     "tag": "2020"
+    },
+    {
+     "q_num": 51,
+     "idx": 44,
+     "sim": 0.726,
+     "tag": "2020"
+    }
+   ],
+   "duplicates": [],
+   "missing_ti": [],
+   "truncated_q": [
+    {
+     "q_num": 68,
+     "idx": 58,
+     "ds_q_len": 26,
+     "tag": "2020"
+    },
+    {
+     "q_num": 112,
+     "idx": 1479,
+     "ds_q_len": 32,
+     "tag": "2020"
+    },
+    {
+     "q_num": 123,
+     "idx": 1489,
+     "ds_q_len": 34,
+     "tag": "2020"
+    },
+    {
+     "q_num": 148,
+     "idx": 1512,
+     "ds_q_len": 38,
+     "tag": "2020"
+    }
+   ]
+  }
+ },
+ "2021_jun": {
+  "exam_id": "2021_jun",
+  "track": "al",
+  "date": "2021-06",
+  "tag_candidates": [
+   "Jun21"
+  ],
+  "stats": {
+   "canonical_parsed": 150,
+   "canonical_with_4_opts": 149,
+   "answers_parsed": 150,
+   "questions_with_matches": 149,
+   "questions_without_matches": 1
+  },
+  "findings": {
+   "c_mismatches": [],
+   "tag_mismatches": [],
+   "no_match": [
+    [
+     62,
+     "לכל החולים הבאים ריכוז נתרן בדם של115 מא\"ק לליטר על רקעSIADH . במי מהם ריכוז הנת"
+    ]
+   ],
+   "low_confidence": [],
+   "duplicates": [
+    {
+     "q_num": 41,
+     "matches": [
+      [
+       126,
+       "Jun21",
+       1.0
+      ],
+      [
+       258,
+       "Jun22",
+       0.970873786407767
+      ]
+     ]
+    }
+   ],
+   "missing_ti": [],
+   "truncated_q": [
+    {
+     "q_num": 61,
+     "idx": 146,
+     "ds_q_len": 22,
+     "tag": "Jun21"
+    },
+    {
+     "q_num": 63,
+     "idx": 147,
+     "ds_q_len": 33,
+     "tag": "Jun21"
+    },
+    {
+     "q_num": 105,
+     "idx": 189,
+     "ds_q_len": 35,
+     "tag": "Jun21"
+    },
+    {
+     "q_num": 122,
+     "idx": 206,
+     "ds_q_len": 26,
+     "tag": "Jun21"
+    },
+    {
+     "q_num": 134,
+     "idx": 218,
+     "ds_q_len": 27,
+     "tag": "Jun21"
+    },
+    {
+     "q_num": 149,
+     "idx": 233,
+     "ds_q_len": 38,
+     "tag": "Jun21"
+    }
+   ]
+  }
+ },
+ "2022_jun": {
+  "exam_id": "2022_jun",
+  "track": "al",
+  "date": "2022-06",
+  "tag_candidates": [
+   "Jun22"
+  ],
+  "stats": {
+   "canonical_parsed": 150,
+   "canonical_with_4_opts": 148,
+   "answers_parsed": 150,
+   "questions_with_matches": 148,
+   "questions_without_matches": 2
+  },
+  "findings": {
+   "c_mismatches": [],
+   "tag_mismatches": [],
+   "no_match": [
+    [
+     77,
+     "בן55, אושפז עקב הפטיטיס חריפה. לדברי אשתו הוא שותה אלכוהול מזה שנים רבות כל יום,"
+    ],
+    [
+     122,
+     "בת18 , הגיעה למלר״ד בגלל חולשה. במעבדה בססת מטבולית ועולה חשד שהיא סובלת מהפרעות"
+    ]
+   ],
+   "low_confidence": [],
+   "duplicates": [
+    {
+     "q_num": 25,
+     "matches": [
+      [
+       258,
+       "Jun22",
+       1.0
+      ],
+      [
+       126,
+       "Jun21",
+       0.970873786407767
+      ]
+     ]
+    }
+   ],
+   "missing_ti": [],
+   "truncated_q": [
+    {
+     "q_num": 12,
+     "idx": 245,
+     "ds_q_len": 38,
+     "tag": "Jun22"
+    },
+    {
+     "q_num": 58,
+     "idx": 291,
+     "ds_q_len": 29,
+     "tag": "Jun22"
+    },
+    {
+     "q_num": 91,
+     "idx": 323,
+     "ds_q_len": 33,
+     "tag": "Jun22"
+    },
+    {
+     "q_num": 104,
+     "idx": 336,
+     "ds_q_len": 30,
+     "tag": "Jun22"
+    },
+    {
+     "q_num": 109,
+     "idx": 341,
+     "ds_q_len": 35,
+     "tag": "Jun22"
+    },
+    {
+     "q_num": 118,
+     "idx": 350,
+     "ds_q_len": 34,
+     "tag": "Jun22"
+    },
+    {
+     "q_num": 139,
+     "idx": 370,
+     "ds_q_len": 32,
+     "tag": "Jun22"
+    },
+    {
+     "q_num": 150,
+     "idx": 381,
+     "ds_q_len": 37,
+     "tag": "Jun22"
+    }
+   ]
+  }
+ },
+ "2023_jun": {
+  "exam_id": "2023_jun",
+  "track": "al",
+  "date": "2023-06",
+  "tag_candidates": [
+   "Jun23"
+  ],
+  "stats": {
+   "canonical_parsed": 150,
+   "canonical_with_4_opts": 148,
+   "answers_parsed": 150,
+   "questions_with_matches": 147,
+   "questions_without_matches": 3
+  },
+  "findings": {
+   "c_mismatches": [],
+   "tag_mismatches": [],
+   "no_match": [
+    [
+     34,
+     "מה לא אופייני כממצא בבדיקה, המופיע בתמונה 4 ?, של חולים עם שחמת כבד"
+    ],
+    [
+     102,
+     "בת55 ה סובלת מקוצר נשימה במאמצים מינימאל ים י, עוברת צנתור ימני לצורך בירור יתר "
+    ],
+    [
+     133,
+     "איזה תרשים נשימה בתמונה19 מתאים ל בת35 , עםGoiter ? א. ב. ג. ד."
+    ]
+   ],
+   "low_confidence": [],
+   "duplicates": [],
+   "missing_ti": [],
+   "truncated_q": [
+    {
+     "q_num": 3,
+     "idx": 383,
+     "ds_q_len": 29,
+     "tag": "Jun23"
+    },
+    {
+     "q_num": 14,
+     "idx": 394,
+     "ds_q_len": 34,
+     "tag": "Jun23"
+    },
+    {
+     "q_num": 15,
+     "idx": 395,
+     "ds_q_len": 33,
+     "tag": "Jun23"
+    },
+    {
+     "q_num": 31,
+     "idx": 411,
+     "ds_q_len": 30,
+     "tag": "Jun23"
+    },
+    {
+     "q_num": 33,
+     "idx": 413,
+     "ds_q_len": 33,
+     "tag": "Jun23"
+    },
+    {
+     "q_num": 71,
+     "idx": 446,
+     "ds_q_len": 39,
+     "tag": "Jun23"
+    },
+    {
+     "q_num": 78,
+     "idx": 453,
+     "ds_q_len": 29,
+     "tag": "Jun23"
+    },
+    {
+     "q_num": 145,
+     "idx": 513,
+     "ds_q_len": 32,
+     "tag": "Jun23"
+    },
+    {
+     "q_num": 150,
+     "idx": 517,
+     "ds_q_len": 37,
+     "tag": "Jun23"
+    }
+   ]
+  }
+ },
+ "2024_may": {
+  "exam_id": "2024_may",
+  "track": "al",
+  "date": "2024-05",
+  "tag_candidates": [
+   "May24"
+  ],
+  "stats": {
+   "canonical_parsed": 100,
+   "canonical_with_4_opts": 99,
+   "answers_parsed": 100,
+   "questions_with_matches": 99,
+   "questions_without_matches": 1
+  },
+  "findings": {
+   "c_mismatches": [],
+   "tag_mismatches": [],
+   "no_match": [
+    [
+     42,
+     "בת74 הסובלת מאוסטאופורוזיס ה לבדיקה בגין כאבי גב עזים. צפיפות העצםðפו הדגימה החמ"
+    ]
+   ],
+   "low_confidence": [],
+   "duplicates": [],
+   "missing_ti": [],
+   "truncated_q": [
+    {
+     "q_num": 39,
+     "idx": 555,
+     "ds_q_len": 20,
+     "tag": "May24"
+    },
+    {
+     "q_num": 78,
+     "idx": 593,
+     "ds_q_len": 29,
+     "tag": "May24"
+    }
+   ]
+  }
+ },
+ "2024_oct": {
+  "exam_id": "2024_oct",
+  "track": "al",
+  "date": "2024-10",
+  "tag_candidates": [
+   "Oct24"
+  ],
+  "stats": {
+   "canonical_parsed": 100,
+   "canonical_with_4_opts": 99,
+   "answers_parsed": 100,
+   "questions_with_matches": 99,
+   "questions_without_matches": 1
+  },
+  "findings": {
+   "c_mismatches": [],
+   "tag_mismatches": [],
+   "no_match": [
+    [
+     90,
+     "בן75 שימה פרוגרסיבי ושיעול יבש. בבדיקתו רזה, סטורציהð ן על קוצרðמעשן כבד. מתלו97"
+    ]
+   ],
+   "low_confidence": [],
+   "duplicates": [],
+   "missing_ti": [],
+   "truncated_q": [
+    {
+     "q_num": 4,
+     "idx": 618,
+     "ds_q_len": 34,
+     "tag": "Oct24"
+    },
+    {
+     "q_num": 30,
+     "idx": 644,
+     "ds_q_len": 22,
+     "tag": "Oct24"
+    }
+   ]
+  }
+ },
+ "2025_jun": {
+  "exam_id": "2025_jun",
+  "track": "al",
+  "date": "2025-06",
+  "tag_candidates": [
+   "Jun25"
+  ],
+  "stats": {
+   "canonical_parsed": 150,
+   "canonical_with_4_opts": 150,
+   "answers_parsed": 150,
+   "questions_with_matches": 150,
+   "questions_without_matches": 0
+  },
+  "findings": {
+   "c_mismatches": [],
+   "tag_mismatches": [],
+   "no_match": [],
+   "low_confidence": [],
+   "duplicates": [],
+   "missing_ti": [],
+   "truncated_q": [
+    {
+     "q_num": 91,
+     "idx": 803,
+     "ds_q_len": 26,
+     "tag": "Jun25"
+    },
+    {
+     "q_num": 146,
+     "idx": 858,
+     "ds_q_len": 35,
+     "tag": "Jun25"
+    },
+    {
+     "q_num": 148,
+     "idx": 860,
+     "ds_q_len": 34,
+     "tag": "Jun25"
+    }
+   ]
+  }
+ }
+}

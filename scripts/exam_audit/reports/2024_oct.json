@@ -1,0 +1,42 @@
+{
+ "exam_id": "2024_oct",
+ "track": "al",
+ "date": "2024-10",
+ "tag_candidates": [
+  "Oct24"
+ ],
+ "stats": {
+  "canonical_parsed": 100,
+  "canonical_with_4_opts": 99,
+  "answers_parsed": 100,
+  "questions_with_matches": 99,
+  "questions_without_matches": 1
+ },
+ "findings": {
+  "c_mismatches": [],
+  "tag_mismatches": [],
+  "no_match": [
+   [
+    90,
+    "בן75 שימה פרוגרסיבי ושיעול יבש. בבדיקתו רזה, סטורציהð ן על קוצרðמעשן כבד. מתלו97"
+   ]
+  ],
+  "low_confidence": [],
+  "duplicates": [],
+  "missing_ti": [],
+  "truncated_q": [
+   {
+    "q_num": 4,
+    "idx": 618,
+    "ds_q_len": 34,
+    "tag": "Oct24"
+   },
+   {
+    "q_num": 30,
+    "idx": 644,
+    "ds_q_len": 22,
+    "tag": "Oct24"
+   }
+  ]
+ }
+}

@@ -1,0 +1,92 @@
+{
+ "exam_id": "2023_jun",
+ "track": "al",
+ "date": "2023-06",
+ "tag_candidates": [
+  "Jun23"
+ ],
+ "stats": {
+  "canonical_parsed": 150,
+  "canonical_with_4_opts": 148,
+  "answers_parsed": 150,
+  "questions_with_matches": 147,
+  "questions_without_matches": 3
+ },
+ "findings": {
+  "c_mismatches": [],
+  "tag_mismatches": [],
+  "no_match": [
+   [
+    34,
+    "מה לא אופייני כממצא בבדיקה, המופיע בתמונה 4 ?, של חולים עם שחמת כבד"
+   ],
+   [
+    102,
+    "בת55 ה סובלת מקוצר נשימה במאמצים מינימאל ים י, עוברת צנתור ימני לצורך בירור יתר "
+   ],
+   [
+    133,
+    "איזה תרשים נשימה בתמונה19 מתאים ל בת35 , עםGoiter ? א. ב. ג. ד."
+   ]
+  ],
+  "low_confidence": [],
+  "duplicates": [],
+  "missing_ti": [],
+  "truncated_q": [
+   {
+    "q_num": 3,
+    "idx": 383,
+    "ds_q_len": 29,
+    "tag": "Jun23"
+   },
+   {
+    "q_num": 14,
+    "idx": 394,
+    "ds_q_len": 34,
+    "tag": "Jun23"
+   },
+   {
+    "q_num": 15,
+    "idx": 395,
+    "ds_q_len": 33,
+    "tag": "Jun23"
+   },
+   {
+    "q_num": 31,
+    "idx": 411,
+    "ds_q_len": 30,
+    "tag": "Jun23"
+   },
+   {
+    "q_num": 33,
+    "idx": 413,
+    "ds_q_len": 33,
+    "tag": "Jun23"
+   },
+   {
+    "q_num": 71,
+    "idx": 446,
+    "ds_q_len": 39,
+    "tag": "Jun23"
+   },
+   {
+    "q_num": 78,
+    "idx": 453,
+    "ds_q_len": 29,
+    "tag": "Jun23"
+   },
+   {
+    "q_num": 145,
+    "idx": 513,
+    "ds_q_len": 32,
+    "tag": "Jun23"
+   },
+   {
+    "q_num": 150,
+    "idx": 517,
+    "ds_q_len": 37,
+    "tag": "Jun23"
+   }
+  ]
+ }
+}

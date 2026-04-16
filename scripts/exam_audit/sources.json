@@ -1,0 +1,14 @@
+{
+  "_meta": "Pnimit Mega exam sources. Files are local under exams/ (not cached from URLs).",
+  "_local": true,
+  "_local_base": "../../exams",
+  "exams": [
+    {"id": "2020",       "track": "al",    "date": "2020",    "tag_candidates": ["2020"],   "q_pdf": "2020_questions.pdf",      "ans_pdf": "2020_answers.pdf",      "refs_pdf": null,                       "album_pdf": "2020_images.pdf",      "revised_pdf": null},
+    {"id": "2021_jun",   "track": "al",    "date": "2021-06", "tag_candidates": ["Jun21"],  "q_pdf": "2021_jun_questions.pdf",  "ans_pdf": "2021_jun_answers.pdf",  "refs_pdf": "2021_jun_references.pdf",  "album_pdf": "2021_jun_images.pdf",  "revised_pdf": null},
+    {"id": "2022_jun",   "track": "al",    "date": "2022-06", "tag_candidates": ["Jun22"],  "q_pdf": "2022_jun_questions.pdf",  "ans_pdf": "2022_jun_answers.pdf",  "refs_pdf": "2022_jun_references.pdf",  "album_pdf": "2022_jun_images.pdf",  "revised_pdf": null},
+    {"id": "2023_jun",   "track": "al",    "date": "2023-06", "tag_candidates": ["Jun23"],  "q_pdf": "2023_jun_questions.pdf",  "ans_pdf": "2023_jun_answers.pdf",  "refs_pdf": "2023_jun_references.pdf",  "album_pdf": "2023_jun_images.pdf",  "revised_pdf": null},
+    {"id": "2024_may",   "track": "al",    "date": "2024-05", "tag_candidates": ["May24"],  "q_pdf": "2024_may_questions.pdf",  "ans_pdf": "2024_may_answers.pdf",  "refs_pdf": "2024_may_references.pdf",  "album_pdf": "2024_may_images.pdf",  "revised_pdf": null},
+    {"id": "2024_oct",   "track": "al",    "date": "2024-10", "tag_candidates": ["Oct24"],  "q_pdf": "2024_oct_questions.pdf",  "ans_pdf": "2024_oct_answers.pdf",  "refs_pdf": "2024_oct_references.pdf",  "album_pdf": "2024_oct_images.pdf",  "revised_pdf": null},
+    {"id": "2025_jun",   "track": "al",    "date": "2025-06", "tag_candidates": ["Jun25"],  "q_pdf": "2025_jun_questions.pdf",  "ans_pdf": "2025_jun_answers.pdf",  "refs_pdf": "2025_jun_references.pdf",  "album_pdf": "2025_jun_images.pdf",  "revised_pdf": null}
+  ]
+}
