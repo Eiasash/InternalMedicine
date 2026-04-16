@@ -20,8 +20,15 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.47';
+export const APP_VERSION='9.48';
 export const CHANGELOG={
+    '9.48': [
+      '39 תמונות נוספות קושרו לשאלות (Pnimit 7.9% → 10.5% צפיפות)',
+      'Oct24 אלבום: 22 עמודים הועלו ל-Supabase, 18 שאלות עם תמונה כעת',
+      'Jun25: 3 תמונות חדשות (שאלות 124, 136, 138)',
+      'May24: 12 תמונות מ-orphaned uploads קושרו',
+      'Jun23: 5 תמונות מ-orphaned uploads קושרו (ECG, פריחות, ספירומטריה, CXR+ECG)'
+    ],
     '9.47': [
       'Leaderboard: מיון לפי דיוק אמיתי (accuracy) במקום readiness',
       'Leaderboard: שליפת accuracy מ-Supabase (generated column)',
