@@ -11,21 +11,30 @@ import { getTopicStats, getDueQuestions } from '../sr/spaced-repetition.js';
 
 // ===== SUPABASE CLOUD SYNC =====
 // ===== FEATURE: LEADERBOARD =====
+// Guard: calcEstScore() returns a 60% neutral default for topics with <3 answers.
+// For users with thin data, readiness collapses to ~60, polluting the global board.
+// Require min answered + real calcEstScore result before submitting.
+const LB_MIN_ANSWERED=20;
 export async function submitLeaderboardScore(){
 const totalAnswered=Object.values(G.S.sr||{}).reduce((a,s)=>a+(s.tot||0),0);
 const totalCorrect=Object.values(G.S.sr||{}).reduce((a,s)=>a+(s.ok||0),0);
+if(totalAnswered<LB_MIN_ANSWERED)return{skipped:'thin_data',answered:totalAnswered};
+const est=calcEstScore();
+if(est==null)return{skipped:'no_est',answered:totalAnswered};
 const streak=G.S.streak||0;
-const readiness=calcEstScore()||0;
+const readiness=est;
 let uid=localStorage.getItem('pnimit_uid');
 if(!uid){uid='u'+Math.random().toString(36).slice(2,10);localStorage.setItem('pnimit_uid',uid);}
 const payload={uid,answered:totalAnswered,correct:totalCorrect,streak,readiness,ts:new Date().toISOString()};
 try{
-  await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard',{
+  const res=await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard',{
     method:'POST',
     headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Prefer':'resolution=merge-duplicates'},
     body:JSON.stringify(payload)
   });
-}catch(e){console.warn('Leaderboard submit failed',e);}
+  if(!res.ok){console.warn('Leaderboard submit non-ok',res.status);return{submitted:false,status:res.status};}
+  return{submitted:true};
+}catch(e){console.warn('Leaderboard submit failed',e);return{submitted:false,error:String(e)};}
 }
 export async function fetchLeaderboard(){
 try{
@@ -49,11 +58,17 @@ if(!data.length){html='<div style="font-size:10px;color:#94a3b8;text-align:cente
 else{
 data.forEach((r,i)=>{
   const isMe=r.uid===myUid;
+  const ans=Math.max(0,Number(r.answered)||0);
+  const cor=Math.max(0,Number(r.correct)||0);
+  const rd=Math.max(0,Math.min(100,Number(r.readiness)||0));
+  const acc=ans>0?Math.round((cor/ans)*100):null;
+  const accStr=acc==null?'—':(acc+'%');
   html+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9;${isMe?'background:#eff6ff;border-radius:8px;padding:6px 8px;margin:-2px -8px':''}">
   <span style="font-size:12px;font-weight:800;color:${i<3?['#f59e0b','#94a3b8','#d97706'][i]:'#64748b'};min-width:20px">${i+1}</span>
   <div style="flex:1;font-size:10px;font-weight:${isMe?'700':'400'}">${isMe?'You \u2b50':'User '+sanitize(r.uid).slice(0,4)}</div>
-  <span style="font-size:10px;color:#64748b">${sanitize(String(r.answered))} Qs</span>
-  <span style="font-size:10px;font-weight:700;color:${Number(r.readiness)>=60?'#059669':'#d97706'}">${sanitize(String(r.readiness))}%</span>
+  <span style="font-size:10px;color:#64748b">${sanitize(String(ans))} Qs</span>
+  <span style="font-size:10px;font-weight:700;color:${acc!=null&&acc>=70?'#059669':acc!=null&&acc>=50?'#d97706':'#64748b'}" title="Accuracy">${accStr}</span>
+  <span style="font-size:10px;color:#94a3b8" title="Readiness (est. exam score)">~${sanitize(String(rd))}</span>
   <span style="font-size:10px">🔥${sanitize(String(r.streak))}d</span>
   </div>`;
 });
