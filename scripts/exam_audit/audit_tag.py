@@ -26,21 +26,30 @@ CANONICAL = HERE / 'canonical'
 
 # Default canonical sources per tag
 TAG_CANONICALS = {
+    # Geriatrics tags
     'ספט 24': ['sept24_al', 'sept24_basis'],
     'מאי 24': ['may24_al', 'may24_basis'],
     'יוני 25': ['2025_al', '2025_basis'],
     '2025-א': ['2025_al', '2025_basis'],
-    '2020': ['2020_al'],
+    '2020': ['2020_al', '2020'],
     'יוני 21': ['2021_al'],
     '2021': ['2021_al'],
     '2022': ['2022_al', '2022_basis'],
     'יוני 23': ['2023_al', '2023_basis'],
     '2023-ב': ['2023_basis'],
+    # Pnimit tags
+    'Jun21': ['2021_jun'],
+    'Jun22': ['2022_jun'],
+    'Jun23': ['2023_jun'],
+    'Jun25': ['2025_jun'],
+    'May24': ['2024_may'],
+    'Oct24': ['2024_oct'],
 }
 
-# All exam canonicals (for cross-tag search)
+# All exam canonicals (for cross-tag search) — combined set
 ALL_EXAMS = ['2020_al','2021_al','2022_al','2022_basis','2023_al','2023_basis',
-             'may24_al','may24_basis','sept24_al','sept24_basis','2025_al','2025_basis']
+             'may24_al','may24_basis','sept24_al','sept24_basis','2025_al','2025_basis',
+             '2020','2021_jun','2022_jun','2023_jun','2024_may','2024_oct','2025_jun']
 
 def norm(s):
     if not s: return ''
