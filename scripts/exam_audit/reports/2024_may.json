@@ -1,0 +1,42 @@
+{
+ "exam_id": "2024_may",
+ "track": "al",
+ "date": "2024-05",
+ "tag_candidates": [
+  "May24"
+ ],
+ "stats": {
+  "canonical_parsed": 100,
+  "canonical_with_4_opts": 99,
+  "answers_parsed": 100,
+  "questions_with_matches": 99,
+  "questions_without_matches": 1
+ },
+ "findings": {
+  "c_mismatches": [],
+  "tag_mismatches": [],
+  "no_match": [
+   [
+    42,
+    "בת74 הסובלת מאוסטאופורוזיס ה לבדיקה בגין כאבי גב עזים. צפיפות העצםðפו הדגימה החמ"
+   ]
+  ],
+  "low_confidence": [],
+  "duplicates": [],
+  "missing_ti": [],
+  "truncated_q": [
+   {
+    "q_num": 39,
+    "idx": 555,
+    "ds_q_len": 20,
+    "tag": "May24"
+   },
+   {
+    "q_num": 78,
+    "idx": 593,
+    "ds_q_len": 29,
+    "tag": "May24"
+   }
+  ]
+ }
+}

@@ -1,0 +1,98 @@
+{
+ "exam_id": "2022_jun",
+ "track": "al",
+ "date": "2022-06",
+ "tag_candidates": [
+  "Jun22"
+ ],
+ "stats": {
+  "canonical_parsed": 150,
+  "canonical_with_4_opts": 148,
+  "answers_parsed": 150,
+  "questions_with_matches": 148,
+  "questions_without_matches": 2
+ },
+ "findings": {
+  "c_mismatches": [],
+  "tag_mismatches": [],
+  "no_match": [
+   [
+    77,
+    "בן55, אושפז עקב הפטיטיס חריפה. לדברי אשתו הוא שותה אלכוהול מזה שנים רבות כל יום,"
+   ],
+   [
+    122,
+    "בת18 , הגיעה למלר״ד בגלל חולשה. במעבדה בססת מטבולית ועולה חשד שהיא סובלת מהפרעות"
+   ]
+  ],
+  "low_confidence": [],
+  "duplicates": [
+   {
+    "q_num": 25,
+    "matches": [
+     [
+      258,
+      "Jun22",
+      1.0
+     ],
+     [
+      126,
+      "Jun21",
+      0.970873786407767
+     ]
+    ]
+   }
+  ],
+  "missing_ti": [],
+  "truncated_q": [
+   {
+    "q_num": 12,
+    "idx": 245,
+    "ds_q_len": 38,
+    "tag": "Jun22"
+   },
+   {
+    "q_num": 58,
+    "idx": 291,
+    "ds_q_len": 29,
+    "tag": "Jun22"
+   },
+   {
+    "q_num": 91,
+    "idx": 323,
+    "ds_q_len": 33,
+    "tag": "Jun22"
+   },
+   {
+    "q_num": 104,
+    "idx": 336,
+    "ds_q_len": 30,
+    "tag": "Jun22"
+   },
+   {
+    "q_num": 109,
+    "idx": 341,
+    "ds_q_len": 35,
+    "tag": "Jun22"
+   },
+   {
+    "q_num": 118,
+    "idx": 350,
+    "ds_q_len": 34,
+    "tag": "Jun22"
+   },
+   {
+    "q_num": 139,
+    "idx": 370,
+    "ds_q_len": 32,
+    "tag": "Jun22"
+   },
+   {
+    "q_num": 150,
+    "idx": 381,
+    "ds_q_len": 37,
+    "tag": "Jun22"
+   }
+  ]
+ }
+}

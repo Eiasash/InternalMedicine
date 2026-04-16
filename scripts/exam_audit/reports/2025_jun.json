@@ -1,0 +1,43 @@
+{
+ "exam_id": "2025_jun",
+ "track": "al",
+ "date": "2025-06",
+ "tag_candidates": [
+  "Jun25"
+ ],
+ "stats": {
+  "canonical_parsed": 150,
+  "canonical_with_4_opts": 150,
+  "answers_parsed": 150,
+  "questions_with_matches": 150,
+  "questions_without_matches": 0
+ },
+ "findings": {
+  "c_mismatches": [],
+  "tag_mismatches": [],
+  "no_match": [],
+  "low_confidence": [],
+  "duplicates": [],
+  "missing_ti": [],
+  "truncated_q": [
+   {
+    "q_num": 91,
+    "idx": 803,
+    "ds_q_len": 26,
+    "tag": "Jun25"
+   },
+   {
+    "q_num": 146,
+    "idx": 858,
+    "ds_q_len": 35,
+    "tag": "Jun25"
+   },
+   {
+    "q_num": 148,
+    "idx": 860,
+    "ds_q_len": 34,
+    "tag": "Jun25"
+   }
+  ]
+ }
+}

@@ -1,0 +1,82 @@
+{
+ "exam_id": "2021_jun",
+ "track": "al",
+ "date": "2021-06",
+ "tag_candidates": [
+  "Jun21"
+ ],
+ "stats": {
+  "canonical_parsed": 150,
+  "canonical_with_4_opts": 149,
+  "answers_parsed": 150,
+  "questions_with_matches": 149,
+  "questions_without_matches": 1
+ },
+ "findings": {
+  "c_mismatches": [],
+  "tag_mismatches": [],
+  "no_match": [
+   [
+    62,
+    "לכל החולים הבאים ריכוז נתרן בדם של115 מא\"ק לליטר על רקעSIADH . במי מהם ריכוז הנת"
+   ]
+  ],
+  "low_confidence": [],
+  "duplicates": [
+   {
+    "q_num": 41,
+    "matches": [
+     [
+      126,
+      "Jun21",
+      1.0
+     ],
+     [
+      258,
+      "Jun22",
+      0.970873786407767
+     ]
+    ]
+   }
+  ],
+  "missing_ti": [],
+  "truncated_q": [
+   {
+    "q_num": 61,
+    "idx": 146,
+    "ds_q_len": 22,
+    "tag": "Jun21"
+   },
+   {
+    "q_num": 63,
+    "idx": 147,
+    "ds_q_len": 33,
+    "tag": "Jun21"
+   },
+   {
+    "q_num": 105,
+    "idx": 189,
+    "ds_q_len": 35,
+    "tag": "Jun21"
+   },
+   {
+    "q_num": 122,
+    "idx": 206,
+    "ds_q_len": 26,
+    "tag": "Jun21"
+   },
+   {
+    "q_num": 134,
+    "idx": 218,
+    "ds_q_len": 27,
+    "tag": "Jun21"
+   },
+   {
+    "q_num": 149,
+    "idx": 233,
+    "ds_q_len": 38,
+    "tag": "Jun21"
+   }
+  ]
+ }
+}

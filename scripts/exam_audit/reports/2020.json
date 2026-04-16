@@ -1,0 +1,83 @@
+{
+ "exam_id": "2020",
+ "track": "al",
+ "date": "2020",
+ "tag_candidates": [
+  "2020"
+ ],
+ "stats": {
+  "canonical_parsed": 127,
+  "canonical_with_4_opts": 123,
+  "answers_parsed": 150,
+  "questions_with_matches": 122,
+  "questions_without_matches": 5
+ },
+ "findings": {
+  "c_mismatches": [],
+  "tag_mismatches": [],
+  "no_match": [
+   [
+    28,
+    "בת59 ,ברקע יל\"ד .הובאה לחדר המיון בשל הופעת שיתוק חדש בפלג הגוף הימני . איזו בדי"
+   ],
+   [
+    57,
+    "חולה הסובל ממחלתPaget's ומטופל באו פן קבוע ע\" יIV Pamidronate פונה לרופא המטפל ב"
+   ],
+   [
+    64,
+    "מה עלול להיגרם ע״י נגיפים במושתלי מח עצם? נגיף מחלה א EBV B-cell Lymphoma ב CMV "
+   ],
+   [
+    81,
+    "לאיזה מטופל יומלץ על ניתוח בריאטרי להורדה במשקל ? גיל מחלות רקע BMI א 58 סוכרת 5"
+   ],
+   [
+    151,
+    "מה נכון לגבי הטיפול ב- IBD?"
+   ]
+  ],
+  "low_confidence": [
+   {
+    "q_num": 41,
+    "idx": 35,
+    "sim": 0.669,
+    "tag": "2020"
+   },
+   {
+    "q_num": 51,
+    "idx": 44,
+    "sim": 0.726,
+    "tag": "2020"
+   }
+  ],
+  "duplicates": [],
+  "missing_ti": [],
+  "truncated_q": [
+   {
+    "q_num": 68,
+    "idx": 58,
+    "ds_q_len": 26,
+    "tag": "2020"
+   },
+   {
+    "q_num": 112,
+    "idx": 1479,
+    "ds_q_len": 32,
+    "tag": "2020"
+   },
+   {
+    "q_num": 123,
+    "idx": 1489,
+    "ds_q_len": 34,
+    "tag": "2020"
+   },
+   {
+    "q_num": 148,
+    "idx": 1512,
+    "ds_q_len": 38,
+    "tag": "2020"
+   }
+  ]
+ }
+}
