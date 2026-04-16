@@ -6,11 +6,11 @@
   "2020"
  ],
  "stats": {
-  "canonical_parsed": 150,
-  "canonical_with_4_opts": 140,
+  "canonical_parsed": 149,
+  "canonical_with_4_opts": 139,
   "answers_parsed": 150,
   "questions_with_matches": 139,
-  "questions_without_matches": 6
+  "questions_without_matches": 5
  },
  "findings": {
   "c_mismatches": [],
@@ -35,10 +35,6 @@
    [
     81,
     "לאיזה מטופל יומלץ על ניתוח בריאטרי להורדה במשקל ? גיל מחלות רקע BMI א 58 סוכרת 5"
-   ],
-   [
-    151,
-    "מה נכון לגבי הטיפול ב- IBD?"
    ]
   ],
   "low_confidence": [
