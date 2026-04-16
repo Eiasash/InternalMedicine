@@ -3205,7 +3205,7 @@
   ],
   "c": 3,
   "t": "Jun22",
-  "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun22_t2.jpeg",
+  "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun22_t2.png",
   "e": "## למה ד נכון:\n\n**1. CAP (Community Acquired Pneumonia) קלאסי:**\nהחולה התקבל מהקהילה עם תמונה קלינית של דלקת ריאות נרכשת בקהילה, ולכן הטיפול המומלץ לפי הגדלינס (IDSA/ATS) ל-CAP המאושפז הוא שילוב של **β-lactam (Ceftriaxone)** לכיסוי פנאומוקוק ובקטריות שכיחות + **Fluoroquinolone נשימתי (Levofloxacin)** לכיסוי אטיפיים (Legionella, Mycoplasma, Chlamydia) — בדיוק מה שמציעה תשובה ד.\n\n**2. אין אינדיקציה לטיפול רחב-",
   "ti": 5
  },
@@ -4928,7 +4928,7 @@
   ],
   "c": 3,
   "t": "Jun22",
-  "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun22_t22.jpeg",
+  "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun22_t22.png",
   "e": "## התשובה הנכונה: ד. Captopril\n\n### הסבר:\n\n**1. אבחנה - Scleroderma Renal Crisis (SRC):**\nהמטופלת עם Systemic Sclerosis מציגה יתר לחץ דם חמור (230 mmHg) עם סימני פגיעה באיברי מטרה (כאב ראש + בלבול) — זוהי **משבר כלייתי סקלרודרמי**, סיבוך אקוטי ומסכן חיים האופייני ל-SSc מוקדמת.\n\n**2. Captopril הוא הטיפול הספציפי והמציל חיים:**\nמנגנון SRC כולל **היפראקטיבציה של ציר RAAS** עם עווית כלי דם כלייתיים ← ACE inhibitor",
   "ti": 13
  },
@@ -5361,7 +5361,7 @@
   ],
   "c": 3,
   "t": "Jun23",
-  "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun23_t2.jpeg",
+  "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun23_t2.png",
   "e": "## התשובה הנכונה היא **ד. Factor Xa inhibitor**\n\n**הסבר:**\n\nב-Hypertrophic Cardiomyopathy (HCM) קיים סיכון מוגבר לפרפור פרוזדורים (AF) ולאירועים תרומבואמבוליים, ולכן קיימת אינדיקציה לאנטיקואגולציה עם מעכב Factor Xa (כגון Rivaroxaban/Apixaban) **ללא תלות בציון CHA₂DS₂-VASc**, שכן HCM כשלעצמו מהווה גורם סיכון עצמאי לשבץ המצדיק טיפול אנטיקואגולנטי.\n\n**מדוע האחרות שגויות בקצרה:**\n- **אספירין (א)** – אינו",
   "ti": 10
  },
@@ -5662,7 +5662,7 @@
   ],
   "c": 0,
   "t": "Jun23",
-  "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun23_t5.jpeg",
+  "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun23_t5.png",
   "e": "## התשובה הנכונה: א. Hypokalemia (היפוקלמיה)\n\n### הסבר בשני משפטים:\n\n**1.** היפוקלמיה גורמת לאי-יציבות חשמלית בתאי שריר הלב על ידי שינוי פוטנציאל המנוחה והארכת שלב הרפולריזציה, מה שמוביל ל**פלפיטציות ואריתמיות** – התסמין המרכזי אצל המטופל.\n\n**2.** היפוקלמיה גורמת גם ל**חולשת שרירים וסחרחורות** עקב פגיעה בפעילות תאי השריר והעצב, ובהיעדר מחלות רקע או טיפול תרופתי – היפוקלמיה",
   "ti": 8
  },
@@ -5794,7 +5794,7 @@
   ],
   "c": 2,
   "t": "Jun23",
-  "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun23_t7.jpeg",
+  "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun23_t7.png",
   "e": "## התשובה הנכונה: ג. Ablation\n\n**הסבר:**\n\n1. **תמונה 7 באק\"ג מציגה WPW (Wolff-Parkinson-White)** – המאופיין בדלתא וייב, PR קצר וקומפלקס QRS רחב, המעיד על מסלול הולכה אביזורי (Bundle of Kent). בחולה עם פלפיטציות חוזרות וסימפטומטיות בגיל 56, הטיפול **המרפא והיעיל ביותר הוא אבלציה בקטטר (Radiofrequency Ablation)**, המשמידה את המסלול האביזורי לצמיתות עם שיעור הצלחה של ~95%.\n\n2. **התרופות (אדנוזין, חוסמי בטא, פרופא",
   "ti": 14
  },
@@ -19288,7 +19288,7 @@
   "ti": 10,
   "t": "Exam",
   "e": "משטח דם מראה תאי blast (גרעין גדול, יחס N:C גבוה, nucleoli, cytoplasm בזופילי) — acute leukemia. AML: Auer rods, MPO positive. ALL: TdT positive, PAS positive. Flow cytometry מבדיל. Pancytopenia + blasts >20% = acute leukemia. Emergency: if WBC >100K → leukostasis risk → emergent leukapheresis + hydroxyurea.",
-  "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_jun21_img16.jpeg"
+  "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun21_t16.jpeg"
  },
  {
   "q": "בן66 ,שסובל מצרבות , בא לבקש מידע עלBarrett's Esophagus .מה יש לומר לו?",
