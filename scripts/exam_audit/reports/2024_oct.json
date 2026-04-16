@@ -22,7 +22,23 @@
    ]
   ],
   "low_confidence": [],
-  "duplicates": [],
+  "duplicates": [
+   {
+    "q_num": 7,
+    "matches": [
+     [
+      1529,
+      "Oct24",
+      0.9973684210526316
+     ],
+     [
+      621,
+      "Oct24",
+      0.9645776566757494
+     ]
+    ]
+   }
+  ],
   "missing_ti": [],
   "truncated_q": [
    {
