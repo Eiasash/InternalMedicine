@@ -138,7 +138,7 @@ def split_stem_options(q_text):
         options.append(opt)
     return stem, options
 
-def fill_rtl_digit_gaps(accepted, candidates):
+def fill_rtl_digit_gaps(accepted, candidates, max_n=150):
     """Recover Qs lost to PDF RTL digit-rendering bug (Pnimit 2020 quirk).
     
     Some IMA PDFs misrender question numbers containing '0' — Q10 renders
@@ -148,6 +148,9 @@ def fill_rtl_digit_gaps(accepted, candidates):
     Walks the accepted sequence, detects gaps (e.g., Q9 → Q11 skips Q10),
     finds unused candidate positions between those gaps, and inserts them
     with the correct number.
+    
+    max_n caps the highest Q number (default 150 — matches IMA exam length).
+    Without this cap, gap-fill can over-count and produce spurious Q151+.
     """
     used_positions = {pos for pos,_,_ in accepted}
     unused = sorted(c for c in candidates if c[0] not in used_positions)
@@ -165,8 +168,12 @@ def fill_rtl_digit_gaps(accepted, candidates):
         for j in range(gap):
             p, e, _old_n = between[j]
             new_n = n_a + 1 + j
+            if new_n > max_n:
+                break
             inserts.append((p, e, new_n))
-    return sorted(filled + inserts)
+    filled_final = sorted(filled + inserts)
+    # Enforce cap: drop any (pos, e, n) where n > max_n
+    return [(p,e,n) for p,e,n in filled_final if n <= max_n]
 
 
 def parse_exam(pdf_path, expected_count=None, fill_rtl_gaps=False):
