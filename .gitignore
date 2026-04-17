@@ -4,3 +4,4 @@ generated-*.json
 *.progress.json
 .DS_Store
 *.log
+scripts/__pycache__/

@@ -23,8 +23,13 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.49';
+export const APP_VERSION='9.50';
 export const CHANGELOG={
+    '9.50': [
+      'תיקון קריטי: 192 שאלות במבחני May24 ו-Oct24 היו מושחתות (הקידוד של ð במקום נ) — כולן שוחזרו במלואן בעברית נקייה',
+      'הסרת שאלה כפולה ב-Oct24 (Tumor Lysis Syndrome)',
+      'סה"כ שאלות: 1,542 (מ-1,543, אחת כפולה הוסרה)'
+    ],
     '9.49': [
       'תיקון באג "setFilt is not defined" — טאבי מבחנים שוב עובדים',
       'בחירה מרובה של שנות מבחן — ניתן לסמן כמה שנים יחד (Jun22+Jun23+May24…)',
