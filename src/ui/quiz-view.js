@@ -223,7 +223,7 @@ const _trapCount=G.QZ.filter((_,i)=>isExamTrap(i)).length;
 const _aiCount=G.QZ.filter(q=>q.t==='Harrison').length;
 const _yearSel=Array.isArray(G.years)?G.years:[];
 const _inYearMode=G.filt==='years'&&_yearSel.length>0;
-const filts=[['all',`הכל (${G.QZ.length})`],['2020','20'],['Jun21','Jun21'],['Jun22','Jun22'],['Jun23','Jun23'],['May24','May24'],['Oct24','Oct24'],['Jun25','Jun25'],['Harrison',`🤖 AI (${_aiCount})`],['hard','🔥 Hard'],['slow','⏱️ Slow'],['weak','🎯 Weak'],['due','🔄 Due'],['traps',`🪤 Traps (${_trapCount})`],['nbs','🎯 Next Best Step']];
+const filts=[['all',`הכל (${G.QZ.length})`],['2020','20'],['2021-Jun','Jun21'],['2022-Jun','Jun22'],['2023-Jun','Jun23'],['2024-May','May24'],['2024-Oct','Oct24'],['2025-Jun','Jun25'],['Harrison',`🤖 AI (${_aiCount})`],['hard','🔥 Hard'],['slow','⏱️ Slow'],['weak','🎯 Weak'],['due','🔄 Due'],['traps',`🪤 Traps (${_trapCount})`],['nbs','🎯 Next Best Step']];
 // Rescue Drill pill
 const _weakForPill=getWeakTopics(3);
 if(_weakForPill.length&&_weakForPill[0].pct!==null&&_weakForPill[0].pct<65)filts.push(['rescue','🚨 Rescue']);
