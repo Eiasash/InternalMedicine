@@ -79,7 +79,7 @@ describe('questions.json — encoding integrity', () => {
 // ─────────────────────────────────────────────────────────────
 describe('questions.json — formatting quality', () => {
   let questions;
-  const PAST_EXAM_TAGS = ['2020', 'Jun21', 'Jun22', 'Jun23', 'May24', 'Oct24', 'Jun25'];
+  const PAST_EXAM_TAGS = ['2020', '2021-Jun', '2022-Jun', '2023-Jun', '2024-May', '2024-Oct', '2025-Jun'];
   beforeAll(() => { questions = loadJSON('data/questions.json'); });
 
   // Catches "בן58" → should be "בן 58"
@@ -245,7 +245,7 @@ describe('questions.json — structural invariants', () => {
   });
 
   test('all tags are from known set', () => {
-    const ALLOWED = new Set(['2020', 'Jun21', 'Jun22', 'Jun23', 'May24', 'Oct24', 'Jun25', 'Harrison', 'Exam']);
+    const ALLOWED = new Set(['2020', '2021-Jun', '2022-Jun', '2023-Jun', '2024-May', '2024-Oct', '2025-Jun', 'Harrison', 'Exam']);
     const unknown = new Set();
     questions.forEach(q => {
       if (q.t && !ALLOWED.has(q.t)) unknown.add(q.t);
@@ -285,8 +285,8 @@ describe('questions.json — per-session counts locked', () => {
   beforeAll(() => { questions = loadJSON('data/questions.json'); });
 
   const EXPECTED = {
-    '2020': 139, 'Jun21': 149, 'Jun22': 148, 'Jun23': 147,
-    'May24': 99, 'Oct24': 99, 'Jun25': 151, 'Harrison': 589, 'Exam': 20,
+    '2020': 139, '2021-Jun': 149, '2022-Jun': 148, '2023-Jun': 147,
+    '2024-May': 99, '2024-Oct': 99, '2025-Jun': 151, 'Harrison': 589, 'Exam': 20,
   };
 
   test.each(Object.entries(EXPECTED))('session %s has exactly %s questions', (tag, n) => {
@@ -305,12 +305,12 @@ describe('questions.json — per-session counts locked', () => {
 describe('canonical JSONs stay in sync with data/questions.json', () => {
   const SESSIONS = [
     { tag: '2020', file: '2020.json' },
-    { tag: 'Jun21', file: '2021_jun.json' },
-    { tag: 'Jun22', file: '2022_jun.json' },
-    { tag: 'Jun23', file: '2023_jun.json' },
-    { tag: 'May24', file: '2024_may.json' },
-    { tag: 'Oct24', file: '2024_oct.json' },
-    { tag: 'Jun25', file: '2025_jun.json' },
+    { tag: '2021-Jun', file: '2021_jun.json' },
+    { tag: '2022-Jun', file: '2022_jun.json' },
+    { tag: '2023-Jun', file: '2023_jun.json' },
+    { tag: '2024-May', file: '2024_may.json' },
+    { tag: '2024-Oct', file: '2024_oct.json' },
+    { tag: '2025-Jun', file: '2025_jun.json' },
   ];
 
   test.each(SESSIONS)('canonical/%s has same question count as data[t=$tag]', ({ tag, file }) => {
