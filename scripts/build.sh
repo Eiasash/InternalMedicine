@@ -29,8 +29,15 @@ sed -i 's|href="[^"]*manifest[^"]*\.json"|href="manifest.json"|' dist/pnimit-meg
 # In production, JS/CSS are content-hashed (immutable) — browser cache handles them.
 # SW only needs to cache: HTML shell (offline access) + data JSON (offline quiz).
 echo "→ Generating production service worker..."
-cat > dist/sw.js << 'SWEOF'
-const CACHE='pnimit-v9.43';
+# Read APP_VERSION from src/core/constants.js so CACHE name always matches
+APP_VER=$(grep -oE "APP_VERSION\s*=\s*'[^']+'" src/core/constants.js | head -1 | sed -E "s/.*'([^']+)'/\1/")
+if [ -z "$APP_VER" ]; then
+  echo "ERROR: could not read APP_VERSION from src/core/constants.js" >&2
+  exit 1
+fi
+echo "  → CACHE=pnimit-v${APP_VER}"
+cat > dist/sw.js << SWEOF
+const CACHE='pnimit-v${APP_VER}';
 const SHELL_URLS=['pnimit-mega.html','manifest.json','shared/fsrs.js'];
 const DATA_URLS=['data/questions.json','data/topics.json','data/notes.json','data/drugs.json','data/flashcards.json','data/tabs.json','harrison_chapters.json'];
 const ALL_URLS=[...SHELL_URLS,...DATA_URLS];

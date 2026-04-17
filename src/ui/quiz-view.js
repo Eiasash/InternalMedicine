@@ -1,11 +1,15 @@
 import G from '../core/globals.js';
-import { SUPA_URL, SUPA_ANON, TOPICS, EXAM_FREQ } from '../core/constants.js';
+import { SUPA_URL, SUPA_ANON, TOPICS, EXAM_FREQ, EXAM_YEARS } from '../core/constants.js';
 import { sanitize, fmtT, safeJSONParse, getOptShuffle, remapExplanationLetters, isMetaOption } from '../core/utils.js';
-import { getDueQuestions, getWeakTopics, isExamTrap, srScore, getTopicStats } from '../sr/spaced-repetition.js';
+import { getDueQuestions, getWeakTopics, isExamTrap, srScore, getTopicStats, buildRescuePool } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
-import { renderExplainBox, toggleFlagExplain } from '../ai/explain.js';
+import { renderExplainBox, toggleFlagExplain, explainWithAI, aiAutopsy, gradeTeachBack, startVoiceTeachBack } from '../ai/explain.js';
 import { TOPIC_REF } from './track-view.js';
-import { buildPool, check, next, pick, checkMockIntercept, exitOnCallMode, flipCard, runExplainOnCall, onCallPick } from '../quiz/engine.js';
+import { buildPool, check, next, pick, checkMockIntercept, exitOnCallMode, flipCard, runExplainOnCall, onCallPick,
+         setFilt, setTopicFilt, toggleYearFilt, clearYearFilt, startExam, startMockExam, startTopicMiniExam,
+         startOnCallMode, _storeDiff } from '../quiz/engine.js';
+import { startPomodoro, stopPomodoro, startSuddenDeath, endSuddenDeath, speakQuestion, startNextBestStep } from '../quiz/modes.js';
+import { showAnswerHardFail } from './more-view.js';
 
 export function toggleBk(){G.S.bk[G.pool[G.qi]]=!G.S.bk[G.pool[G.qi]];G.save();G.render();}
 
@@ -217,6 +221,8 @@ ${!G.pomoActive?'<span class="tt-wrap"><button data-action="start-pomo" class="b
 h+=`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">`;
 const _trapCount=G.QZ.filter((_,i)=>isExamTrap(i)).length;
 const _aiCount=G.QZ.filter(q=>q.t==='Harrison').length;
+const _yearSel=Array.isArray(G.years)?G.years:[];
+const _inYearMode=G.filt==='years'&&_yearSel.length>0;
 const filts=[['all',`הכל (${G.QZ.length})`],['2020','20'],['Jun21','Jun21'],['Jun22','Jun22'],['Jun23','Jun23'],['May24','May24'],['Oct24','Oct24'],['Jun25','Jun25'],['Harrison',`🤖 AI (${_aiCount})`],['hard','🔥 Hard'],['slow','⏱️ Slow'],['weak','🎯 Weak'],['due','🔄 Due'],['traps',`🪤 Traps (${_trapCount})`],['nbs','🎯 Next Best Step']];
 // Rescue Drill pill
 const _weakForPill=getWeakTopics(3);
@@ -225,8 +231,17 @@ if(dueN>0)filts.push(['due',`🔄 Due (${dueN})`]);
 filts.forEach(([f,l])=>{
 if(f==='rescue')h+=`<span class="pill ${G.filt==='rescue'?'on':''}" data-action="filter-rescue">${l}</span>`;
 else if(f==='nbs')h+=`<span class="pill ${G.filt==='nbs'?'on':''}" data-action="filter-nbs">${l}</span>`;
+else if(EXAM_YEARS.includes(f)){
+  const _yOn=_yearSel.includes(f);
+  h+=`<span class="pill ${_yOn?'on':''}" data-action="filter-year" data-f="${f}" title="Click to toggle — multi-select allowed">${l}${_yOn?' ✓':''}</span>`;
+}
+else if(f==='all')h+=`<span class="pill ${G.filt==='all'&&!_inYearMode?'on':''}" data-action="filter" data-f="${f}">${l}</span>`;
 else h+=`<span class="pill ${G.filt===f&&G.filt!=='topic'?'on':''}" data-action="filter" data-f="${f}">${l}</span>`;
 });
+// "Clear years" pill, visible only when ≥2 years are selected to reduce clutter
+if(_yearSel.length>=2){
+  h+=`<span class="pill" style="background:#fef2f2;color:#dc2626" data-action="filter-year-clear" title="Clear exam year filter">✕ ${_yearSel.length} years</span>`;
+}
 h+=`</div>`;
 // Blind recall & Distractor Autopsy toggles
 h+=`<div style="display:flex;gap:8px;margin-bottom:10px;font-size:10px">
@@ -478,6 +493,8 @@ export function initQuizEvents(container) {
 
     // === Filters ===
     else if (action === 'filter') { setFilt(el.dataset.f); }
+    else if (action === 'filter-year') { toggleYearFilt(el.dataset.f); }
+    else if (action === 'filter-year-clear') { clearYearFilt(); }
     else if (action === 'filter-rescue') { buildRescuePool(); }
     else if (action === 'filter-nbs') { startNextBestStep(); }
 

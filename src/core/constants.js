@@ -12,6 +12,9 @@ export const HARRISON_PDF_MAP={"14":"harrison/Ch14_Pain_Pathophysiology_and_Mana
 // Historical exam topic frequency weights (9 real exams, recency-weighted)
 export const EXAM_FREQ=[50,45,40,30,45,60,50,40,35,50,45,35,55,35,40,30,15,15,20,20,15,15,25,20];
 
+// Past-exam session tokens (question `t` field). Order matches filter-pill display.
+export const EXAM_YEARS=['2020','Jun21','Jun22','Jun23','May24','Oct24','Jun25'];
+
 // Supabase
 export const SUPA_URL='https://krmlzwwelqvlfslwltol.supabase.co';
 export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybWx6d3dlbHF2bGZzbHdsdG9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NjQxMDksImV4cCI6MjA4NzU0MDEwOX0.PFSuFgHA-WBnrgs4stmloxvOORSX0CiXDPsW2dinAAQ';
@@ -20,8 +23,14 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.48';
+export const APP_VERSION='9.49';
 export const CHANGELOG={
+    '9.49': [
+      'תיקון באג "setFilt is not defined" — טאבי מבחנים שוב עובדים',
+      'בחירה מרובה של שנות מבחן — ניתן לסמן כמה שנים יחד (Jun22+Jun23+May24…)',
+      'סנכרון גרסת cache של SW עם APP_VERSION בזמן build',
+      'תיקון imports חסרים ב-quiz-view.js (10+ פונקציות)'
+    ],
     '9.48': [
       '39 תמונות נוספות קושרו לשאלות (Pnimit 7.9% → 10.5% צפיפות)',
       'Oct24 אלבום: 22 עמודים הועלו ל-Supabase, 18 שאלות עם תמונה כעת',

@@ -15,7 +15,7 @@ const G = {
   _dataPromise: null,
 
   // === Quiz engine (engine.js) ===
-  qi: 0, sel: null, ans: false, pool: [], filt: 'all', topicFilt: -1,
+  qi: 0, sel: null, ans: false, pool: [], filt: 'all', topicFilt: -1, years: [],
   examMode: false, examTimer: null, examSec: 0,
   onCallMode: false, flipRevealed: false,
   timedMode: false, timedSec: 90, timedInt: null, timedPaused: false,
