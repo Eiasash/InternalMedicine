@@ -4,6 +4,7 @@ import { APP_VERSION, LS, TOPICS, EXAM_FREQ, CHANGELOG, BUILD_HASH } from '../co
 import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey } from '../core/utils.js';
 import { migrateToIDB } from '../core/state.js';
 import '../core/data-loader.js'; // side-effect: populates G.QZ, G.TABS, etc.
+import '../clock.js'; // side-effect: header clock (#hdr-sub)
 import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, buildRescuePool,
          srScore, trackChapterRead, getChaptersDueForReading, isExamTrap } from '../sr/spaced-repetition.js';
 import { buildPool, setFilt, setTopicFilt, startOnCallMode, exitOnCallMode, flipCard,
