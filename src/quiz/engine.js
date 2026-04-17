@@ -1,5 +1,5 @@
 import G from '../core/globals.js';
-import { TOPICS, EXAM_FREQ } from '../core/constants.js';
+import { TOPICS, EXAM_FREQ, EXAM_YEARS } from '../core/constants.js';
 import { sanitize, fmtT } from '../core/utils.js';
 import { getDueQuestions, getTopicStats, isExamTrap, srScore } from '../sr/spaced-repetition.js';
 import { callAI } from '../ai/client.js';
@@ -56,6 +56,9 @@ const due=getDueQuestions();
 let smartShuffled=false;
 if(G.filt==='due'){G.pool=due.length?due:[];}
 else if(G.filt==='topic'&&G.topicFilt>=0){G.QZ.forEach((q,i)=>{if(q.ti===G.topicFilt)G.pool.push(i)});}
+else if(G.filt==='years'&&Array.isArray(G.years)&&G.years.length){
+  G.QZ.forEach((q,i)=>{if(G.years.some(y=>q.t&&q.t.includes(y)))G.pool.push(i)});
+}
 else{
   G.QZ.forEach((q,i)=>{if(G.filt==='all'||q.t.includes(G.filt))G.pool.push(i)});
   if(G.filt==='all'){
@@ -100,8 +103,26 @@ const topicName=TOPICS[G.miniExamTopic]||'Topic';
 alert('🎯 Mini Exam: '+topicName+'\n\n'+pct+'% ('+G._sessionOk+'/'+tot+')\n'+(pct>=70?'Great!':pct>=50?'Getting there':'Needs more work'));
 G.miniExamTopic=-1;G.render();
 }
-export function setFilt(f){G.filt=f;G.topicFilt=-1;buildPool();G.render()}
-export function setTopicFilt(ti){G.filt='topic';G.topicFilt=ti;buildPool();G.render()}
+export function setFilt(f){
+  G.filt=f;G.topicFilt=-1;
+  // Clear multi-year selection unless user is toggling within the year group
+  if(f!=='years')G.years=[];
+  buildPool();G.render();
+}
+export function setTopicFilt(ti){G.filt='topic';G.topicFilt=ti;G.years=[];buildPool();G.render()}
+
+// Multi-select exam-year filter — toggle a year on/off; empty set falls back to "all"
+export function toggleYearFilt(year){
+  if(!Array.isArray(G.years))G.years=[];
+  // Restrict to known exam-year tokens
+  if(!EXAM_YEARS.includes(year))return;
+  const idx=G.years.indexOf(year);
+  if(idx>=0)G.years.splice(idx,1);else G.years.push(year);
+  G.topicFilt=-1;
+  G.filt=G.years.length?'years':'all';
+  buildPool();G.render();
+}
+export function clearYearFilt(){G.years=[];if(G.filt==='years')G.filt='all';buildPool();G.render();}
 
 // ===== ON-CALL FLIP CARD MODE =====
 export function startOnCallMode(){G.onCallMode=true;G.flipRevealed=false;G.filt='due';buildPool();if(!G.pool.length){G.filt='weak';buildPool();}if(!G.pool.length){G.filt='all';buildPool();}G.render();}
