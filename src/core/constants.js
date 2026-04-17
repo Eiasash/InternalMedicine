@@ -13,7 +13,8 @@ export const HARRISON_PDF_MAP={"14":"harrison/Ch14_Pain_Pathophysiology_and_Mana
 export const EXAM_FREQ=[50,45,40,30,45,60,50,40,35,50,45,35,55,35,40,30,15,15,20,20,15,15,25,20];
 
 // Past-exam session tokens (question `t` field). Order matches filter-pill display.
-export const EXAM_YEARS=['2020','Jun21','Jun22','Jun23','May24','Oct24','Jun25'];
+// Canonical format YYYY-Mon. `2020` kept bare — month unresolved (TODO: confirm from source).
+export const EXAM_YEARS=['2020','2021-Jun','2022-Jun','2023-Jun','2024-May','2024-Oct','2025-Jun'];
 
 // Supabase
 export const SUPA_URL='https://krmlzwwelqvlfslwltol.supabase.co';
@@ -23,8 +24,15 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.51';
+export const APP_VERSION='9.52';
 export const CHANGELOG={
+    '9.52': [
+      'סטנדרטיזציית תגיות מבחן לפורמט קנוני YYYY-Mon (Jun21→2021-Jun, Jun22→2022-Jun, Jun23→2023-Jun, May24→2024-May, Oct24→2024-Oct, Jun25→2025-Jun)',
+      'מיגרציית localStorage אוטומטית עם סנטינל __tagMigrationV1 — משתמשים קיימים לא מאבדים נתונים',
+      'סנכרון canonical JSONs תחת scripts/exam_audit/canonical/ לתגיות החדשות',
+      'עדכון pills סינון ב-quiz-view + Track heatmap בהתאם',
+      'בדיקות רגרסיה מעודכנות ל-PAST_EXAM_TAGS החדש'
+    ],
     '9.51': [
       'תיקון קריטי: שוחזרו 603 שאלות נוספות במבחנים ישנים (2020, Jun21-Jun25) — רווחים חסרים, ספרות הפוכות, שברי שאלות שקרו לשאלה הבאה',
       'הסרת שאלה כפולה ב-2020 (Q35/Q1531 עם תשובות נכונות סותרות)',
