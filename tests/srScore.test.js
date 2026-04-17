@@ -186,18 +186,24 @@ describe('srScore — SM-2 → FSRS migration', () => {
 
   it('does not re-migrate once fsrsS/fsrsD exist', () => {
     srScore(0, true);
-    const firstFsrsS = G.S.sr[0].fsrsS;
+    const firstFsrsD = G.S.sr[0].fsrsD;
+    const firstTot = G.S.sr[0].tot;
     srScore(0, true);
-    // Second call updates via fsrsUpdate, not fsrsInitNew / fsrsMigrateFromSM2
-    // So fsrsS should differ (updated) but the code path should not re-init.
-    expect(G.S.sr[0].fsrsS).not.toBe(firstFsrsS); // changed, not reset
+    // fsrsD moves slightly via mean reversion on every fsrsUpdate call.
+    // If re-init had run, it would reset to fsrsInitNew(3).d — i.e. the
+    // same value as firstFsrsD — so "changed" proves fsrsUpdate ran and
+    // re-init did NOT.
+    expect(G.S.sr[0].fsrsD).not.toBe(firstFsrsD);
+    // tot keeps incrementing (entry is not fully reset)
+    expect(G.S.sr[0].tot).toBe(firstTot + 1);
   });
 });
 
 describe('srScore — explicit fsrsRating parameter', () => {
   beforeEach(resetGState);
 
-  it('rating=4 (Easy) grows stability more than rating=3 (Good)', () => {
+  it('rating=4 (Easy) gives higher initial stability than rating=3 (Good)', () => {
+    // First call initializes via fsrsInitNew(rating). Higher rating → higher s.
     srScore(0, true, 3);
     const good = G.S.sr[0].fsrsS;
 
@@ -208,7 +214,7 @@ describe('srScore — explicit fsrsRating parameter', () => {
     expect(easy).toBeGreaterThan(good);
   });
 
-  it('rating=2 (Hard) grows stability less than rating=3 (Good)', () => {
+  it('rating=2 (Hard) gives lower initial stability than rating=3 (Good)', () => {
     srScore(0, true, 3);
     const good = G.S.sr[0].fsrsS;
 
@@ -220,7 +226,7 @@ describe('srScore — explicit fsrsRating parameter', () => {
   });
 
   it('rating=1 (Again) reduces stability on a mature card', () => {
-    // Build up some stability first
+    // Build up some stability first with rating=4 inits
     for (let i = 0; i < 3; i++) srScore(0, true, 4);
     const matureS = G.S.sr[0].fsrsS;
     srScore(0, false, 1);
