@@ -23,8 +23,16 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.50';
+export const APP_VERSION='9.51';
 export const CHANGELOG={
+    '9.51': [
+      'תיקון קריטי: שוחזרו 603 שאלות נוספות במבחנים ישנים (2020, Jun21-Jun25) — רווחים חסרים, ספרות הפוכות, שברי שאלות שקרו לשאלה הבאה',
+      'הסרת שאלה כפולה ב-2020 (Q35/Q1531 עם תשובות נכונות סותרות)',
+      'אבטחת Supabase: הוסרה הרשאת DELETE על pnimit_backups ו-samega_backups — מונע מחיקה זדונית של גיבויי משתמשים',
+      'אבטחת Supabase: איחוד פוליסות כפולות ב-shlav_feedback (3→1)',
+      'תוספת 36 בדיקות רגרסיה חדשות ב-CI — תופסות פגמים כמו mojibake, כפילויות, שבר שאלות, סנכרון canonical',
+      'Canonical JSONs חודשו מ-data/questions.json הנקיה'
+    ],
     '9.50': [
       'תיקון קריטי: 192 שאלות במבחני May24 ו-Oct24 היו מושחתות (הקידוד של ð במקום נ) — כולן שוחזרו במלואן בעברית נקייה',
       'הסרת שאלה כפולה ב-Oct24 (Tumor Lysis Syndrome)',
