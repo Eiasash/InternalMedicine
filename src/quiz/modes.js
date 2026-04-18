@@ -44,6 +44,7 @@ export function renderPomoOverlay(){
 if(!G.pomoBreak)return;
 if(document.getElementById('pomo-overlay'))return;
 const div=document.createElement('div');div.id='pomo-overlay';div.className='pomo-overlay';
+// safe-innerhtml: static copy; only interpolations are fmtT() (formatted timer string) and Math.ceil() of internal timer — no user input.
 div.innerHTML=`<h2>Break Time</h2><p style="font-size:13px;margin-bottom:16px;color:#94a3b8">Rest your eyes. Stand up. Stretch.</p>
 <div class="pomo-break-timer" id="pomo-break-display">${fmtT(G.pomoBreakSec)}</div>
 <p style="font-size:10px;margin-top:12px;color:#64748b">Auto-resumes in ${Math.ceil(G.pomoBreakSec/60)} min</p>`;
