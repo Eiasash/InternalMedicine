@@ -1,34 +1,32 @@
 /**
  * Tests for `srScore` in `src/sr/spaced-repetition.js`.
  *
- * `srScore` is the core SRS mutation: initialises FSRS state, migrates from
- * SM-2 for legacy entries, updates stability/difficulty, schedules the next
- * review, maintains an answer-time moving average, and bumps session counters.
- *
- * Setup strategy:
- *  - `vi.mock` hoists ahead of all imports so that `src/sr/fsrs-bridge.js` is
- *    swapped out with an ESM shape synthesised from `shared/fsrs.js` via
- *    `new Function` (same pattern as `tests/sharedFsrs.test.js`). This runs
- *    the REAL shared FSRS code without the browser-`window` round-trip.
- *  - Module resolution is deferred to `beforeAll` so we don't need top-level
- *    await in the test file.
+ * Setup rationale:
+ *  - `src/sr/fsrs-bridge.js` snapshots `window.fsrsR` (etc.) at module-load
+ *    time. Under jsdom, `window === globalThis`, so we populate globalThis
+ *    by executing `shared/fsrs.js` via `new Function` at the top of THIS
+ *    file, before any test code runs.
+ *  - We never statically import spaced-repetition. Instead beforeAll uses
+ *    `await import(...)`; that way the dynamic import fires AFTER the
+ *    globalThis seeding has executed, so the bridge captures real values.
  */
 
 // @vitest-environment jsdom
 
 import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
-vi.mock('../src/sr/fsrs-bridge.js', async () => {
-  const { readFileSync } = await import('fs');
-  const { resolve } = await import('path');
-  const fsrsSrc = readFileSync(resolve(process.cwd(), 'shared', 'fsrs.js'), 'utf-8');
-  const factory = new Function(
-    fsrsSrc +
-      ';\nreturn { FSRS_W, FSRS_DECAY, FSRS_FACTOR, FSRS_RETENTION,' +
-      ' fsrsR, fsrsInterval, fsrsInitNew, fsrsUpdate, fsrsMigrateFromSM2, isChronicFail };'
-  );
-  return factory();
-});
+// Seed globalThis (= window under jsdom) with fsr* functions BEFORE any
+// dynamic import of spaced-repetition.js triggers bridge.js to load.
+const fsrsSrc = readFileSync(resolve(process.cwd(), 'shared', 'fsrs.js'), 'utf-8');
+const seed = new Function(
+  'target',
+  fsrsSrc +
+    ';Object.assign(target, { FSRS_W, FSRS_DECAY, FSRS_FACTOR, FSRS_RETENTION,' +
+    ' fsrsR, fsrsInterval, fsrsInitNew, fsrsUpdate, fsrsMigrateFromSM2, isChronicFail });'
+);
+seed(globalThis);
 
 let G, srScore, getDueQuestions, isExamTrap;
 
