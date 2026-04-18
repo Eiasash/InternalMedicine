@@ -27,10 +27,9 @@ export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & EC
 export const APP_VERSION='9.55';
 export const CHANGELOG={
     '9.55': [
-      'Flashcards Mode: כרטיסיות עברו ל-FSRS-4.5 עם 4 כפתורי דירוג (שוב / קשה / טוב / קל) במקום 3, ועם תצוגת מרווח הבא ליד כל כפתור.',
-      'מצב חדש "🎯 Due" בכרטיסיות — מציג רק כרטיסים שהגיע זמנם לחזרה (או חדשים), עם queue מעורבבת ו-auto-advance. מצב "📚 Browse all" נשאר לעיון חופשי.',
-      'תצוגת "🎉 All caught up!" כאשר אין כרטיסים להצגה, עם מעבר מהיר ל-Browse.',
-      'המעבר ל-FSRS שומר backward-compat: הכרטיסים הקיימים ממשיכים לעבוד וה-n counter שומר את השפה של Known/Learning/New.'
+      '🔬 Distractor Autopsy — ALWAYS ON: after every reveal you see why each wrong answer is wrong + when it would be correct',
+      'Pre-generated offline (data/distractors.json) via Claude Haiku 4.5 — works offline, zero latency',
+      'AI fallback for any question without cached distractor rationale'
     ],
     '9.54': [
       'UX: "Why did I get it wrong?" (📚 👓 ⚖️ 🤦) כבר לא חוסם את כפתור "הבאה" — הפך לאופציונלי. בסוויט הקודם הפכנו את "How sure are you" לאופציונלי; עכשיו גם שורת ה-why-wrong שלמטה אופציונלית.',
