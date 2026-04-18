@@ -156,6 +156,7 @@ ov.onclick=e=>{if(e.target===ov)ov.remove();};
 const sec=(title,icon,color,items)=>`<div style="margin-bottom:14px">
 <div style="font-weight:700;font-size:12px;margin-bottom:6px;color:${color}">${icon} ${title}</div>
 <div style="font-size:10px;line-height:1.8">${items}</div></div>`;
+// safe-innerhtml: help-overlay content is fully static — only interpolated values are APP_VERSION and CHANGELOG entries (code-controlled constants, no user input).
 ov.innerHTML=`<div style="max-width:420px;margin:0 auto;background:#fff;border-radius:16px;padding:20px;color:#1e293b;font-size:11px;line-height:1.7">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
 <div style="font-size:16px;font-weight:800">🏥 Pnimit Mega</div>
