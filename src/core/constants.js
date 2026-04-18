@@ -24,8 +24,14 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.53';
+export const APP_VERSION='9.54';
 export const CHANGELOG={
+    '9.54': [
+      'UX: "Why did I get it wrong?" (📚 👓 ⚖️ 🤦) כבר לא חוסם את כפתור "הבאה" — הפך לאופציונלי. בסוויט הקודם הפכנו את "How sure are you" לאופציונלי; עכשיו גם שורת ה-why-wrong שלמטה אופציונלית.',
+      'טסט חדש: topicRefCoverage — מוודא שכל entry ב-TOPIC_REF מצביע לפרק שקיים ב-harrison_chapters.json. מונע באגי ניווט כמו זה שתוקן ב-9.53.',
+      'Pre-push hook חדש: `scripts/git-hooks/pre-push` מריץ את שני בודקי innerHTML לפני כל push. התקנה ב-`npm run hooks:install`.',
+      'ניקוי: הוסרה הערה ישנה על src/clock.js ב-sw.js (הבנדלר כבר מטפל).'
+    ],
     '9.53': [
       'UX: "How sure are you?" (😬 🤔 😎) כבר לא חוסם את כפתור בדוק — הפך לאופציונלי. אפשר עדיין ללחוץ על אחת האמוג\'ים כדי לעקוב אחרי ביטחון, אבל לא חייבים.',
       'תיקון: כפתור "Read: Harrison Ch X — you\'re weak here" מנווט עכשיו ישירות לפרק הספציפי (נפתח Harrison chapter viewer עם התוכן) במקום סתם לפתוח את מדף הספרייה'
