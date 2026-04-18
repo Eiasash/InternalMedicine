@@ -32,6 +32,7 @@ import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
          showAnswerHardFail, initMoreEvents } from './more-view.js';
 
 export function renderTabs(){
+// safe-innerhtml: G.TABS is a hardcoded array of tab definitions (id/label/icon); no user input
 document.getElementById('tb').innerHTML=G.TABS.map(t=>
 `<button class="${t.id===G.tab?'on':''}" data-action="go" data-tab="${t.id}" aria-label="${t.l}"><span class="ic">${t.ic}</span>${t.l}</button>`
 ).join('');
@@ -54,7 +55,7 @@ case'learn':
   if(G.learnSub==='study')_body=renderStudy();
   else if(G.learnSub==='flash')_body=renderFlash();
   else if(G.learnSub==='drugs')_body=renderDrugs();
-  el.innerHTML=_subBar+_body;}break;
+  el.innerHTML=_subBar+_body;}break; // safe-innerhtml: _subBar is static HTML; _body from internal render*() functions (no user input)
 case'study':G.tab='learn';G.learnSub='study';el.innerHTML='';render();break;
 case'flash':G.tab='learn';G.learnSub='flash';el.innerHTML='';render();break;
 case'drugs':G.tab='learn';G.learnSub='drugs';el.innerHTML='';render();break;
@@ -75,7 +76,7 @@ case'more':
   else if(G.moreSub==='search')_mBody=renderSearch();
   else if(G.moreSub==='chat')_mBody=renderChat();
   else if(G.moreSub==='feedback')_mBody=renderFeedback();
-  el.innerHTML=_moreBar+_mBody;}break;
+  el.innerHTML=_moreBar+_mBody;}break; // safe-innerhtml: _moreBar is static HTML; _mBody from internal render*() functions (no user input)
 case'calc':G.tab='more';G.moreSub='calc';el.innerHTML='';render();break;
 case'search':G.tab='more';G.moreSub='search';el.innerHTML='';render();break;
 case'chat':G.tab='more';G.moreSub='chat';el.innerHTML='';render();break;
