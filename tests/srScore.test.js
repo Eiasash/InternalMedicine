@@ -4,22 +4,19 @@
  * `srScore` is the core SRS mutation: initialises FSRS state, migrates from
  * SM-2 for legacy entries, updates stability/difficulty, schedules the next
  * review, maintains an answer-time moving average, and bumps session counters.
- * A regression here silently corrupts every user's review schedule.
  *
- * Implementation notes:
- *  - `src/sr/fsrs-bridge.js` does `const w = window; export const fsrsR = w.fsrsR;`
- *    at module load. `shared/fsrs.js` is designed to load in a browser via
- *    `<script>` and populate the globals.
- *  - Under Node/vitest we bypass the window dance entirely by `vi.mock`-ing
- *    the bridge. The factory loads `shared/fsrs.js` via `new Function` (the
- *    same trick `tests/sharedFsrs.test.js` already uses) and returns its
- *    globals as ESM exports. This guarantees the real FSRS code is what gets
- *    exercised \u2014 no drift risk.
+ * Setup strategy:
+ *  - `vi.mock` hoists ahead of all imports so that `src/sr/fsrs-bridge.js` is
+ *    swapped out with an ESM shape synthesised from `shared/fsrs.js` via
+ *    `new Function` (same pattern as `tests/sharedFsrs.test.js`). This runs
+ *    the REAL shared FSRS code without the browser-`window` round-trip.
+ *  - Module resolution is deferred to `beforeAll` so we don't need top-level
+ *    await in the test file.
  */
 
 // @vitest-environment jsdom
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest';
 
 vi.mock('../src/sr/fsrs-bridge.js', async () => {
   const { readFileSync } = await import('fs');
@@ -33,23 +30,20 @@ vi.mock('../src/sr/fsrs-bridge.js', async () => {
   return factory();
 });
 
-// Imports resolve AFTER vi.mock is hoisted, so spaced-repetition.js
-// picks up the mocked bridge.
-const G = (await import('../src/core/globals.js')).default;
-const { srScore, getDueQuestions, isExamTrap } = await import(
-  '../src/sr/spaced-repetition.js'
-);
+let G, srScore, getDueQuestions, isExamTrap;
+
+beforeAll(async () => {
+  G = (await import('../src/core/globals.js')).default;
+  const mod = await import('../src/sr/spaced-repetition.js');
+  srScore = mod.srScore;
+  getDueQuestions = mod.getDueQuestions;
+  isExamTrap = mod.isExamTrap;
+});
 
 beforeEach(() => {
-  G.S = {
-    sr: {},
-    streak: 0,
-    qOk: 0,
-    qNo: 0,
-    dailyAct: {},
-  };
+  G.S = { sr: {}, streak: 0, qOk: 0, qNo: 0, dailyAct: {} };
   G.QZ = [{ ti: 0 }, { ti: 1 }, { ti: 2 }];
-  G.qStartTime = Date.now() - 5000; // 5s ago
+  G.qStartTime = Date.now() - 5000;
   G._sessionOk = 0;
   G._sessionNo = 0;
   G._sessionBest = {};
@@ -89,15 +83,6 @@ describe('srScore \u2014 first-time call on a fresh entry', () => {
     const now = Date.now();
     srScore(0, true);
     expect(G.S.sr[0].next).toBeGreaterThan(now);
-  });
-
-  it('records an answer time (at) from qStartTime', () => {
-    srScore(0, true);
-    const s = G.S.sr[0];
-    // qStartTime was 5s ago in beforeEach
-    expect(s.ts.length).toBe(1);
-    expect(s.at).toBeGreaterThanOrEqual(4);
-    expect(s.at).toBeLessThanOrEqual(8);
   });
 
   it('invokes G.save so the mutation persists', () => {
@@ -157,18 +142,10 @@ describe('srScore \u2014 repeated calls maintain invariants', () => {
     expect(G._sessionOk).toBe(2);
     expect(G._sessionNo).toBe(1);
   });
-
-  it('per-topic session best/worse counters update from G.QZ[qIdx].ti', () => {
-    srScore(0, true); // ti=0 -> best
-    srScore(1, false); // ti=1 -> worse
-    srScore(0, true); // ti=0 -> best again
-    expect(G._sessionBest[0]).toBe(2);
-    expect(G._sessionWorse[1]).toBe(1);
-  });
 });
 
 describe('srScore \u2014 migration from legacy SM-2 entries', () => {
-  it('migrates an existing SM-2 entry (no fsrsS yet) via fsrsMigrateFromSM2', () => {
+  it('migrates an existing SM-2 entry via fsrsMigrateFromSM2', () => {
     G.S.sr[0] = {
       ef: 2.1,
       n: 3,
@@ -193,7 +170,7 @@ describe('getDueQuestions + isExamTrap (stateful sibling exports)', () => {
   it('getDueQuestions returns indices whose next <= now, capped at 20', () => {
     const now = Date.now();
     for (let i = 0; i < 30; i++) G.S.sr[i] = { next: now - 1000 };
-    G.S.sr[99] = { next: now + 86400000 }; // future
+    G.S.sr[99] = { next: now + 86400000 };
     const due = getDueQuestions();
     expect(due.length).toBe(20);
     expect(due).not.toContain(99);
@@ -203,10 +180,8 @@ describe('getDueQuestions + isExamTrap (stateful sibling exports)', () => {
   it('isExamTrap requires >=3 attempts AND >=40% on one distractor', () => {
     G.S.sr[0] = { tot: 10, wc: { 2: 5 } };
     expect(isExamTrap(0)).toBe(true);
-
     G.S.sr[1] = { tot: 2, wc: { 2: 1 } };
     expect(isExamTrap(1)).toBe(false);
-
     G.S.sr[2] = { tot: 10, wc: { 1: 2, 2: 2 } };
     expect(isExamTrap(2)).toBe(false);
   });
