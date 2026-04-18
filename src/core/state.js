@@ -1,31 +1,15 @@
 import G from './globals.js';
 import { LS } from './constants.js';
 import { safeJSONParse } from './utils.js';
+import { migrateStoredTags } from './tagMigration.js';
 
 // State & storage — extracted from pnimit-mega.html
 // Depends on: LS (constants.js), safeJSONParse (utils.js)
 
 // One-time exam-year tag migration. Runs before state is loaded so any
 // persisted filter selections or tag-keyed fields get rewritten.
-// Idempotent via __tagMigrationV1 sentinel inside the state object.
-(function migrateExamYearTags(){
-  const MAP={Jun21:'2021-Jun',Jun22:'2022-Jun',Jun23:'2023-Jun',May24:'2024-May',Oct24:'2024-Oct',Jun25:'2025-Jun'};
-  const rename=(v)=>(typeof v==='string'&&Object.prototype.hasOwnProperty.call(MAP,v))?MAP[v]:v;
-  const walk=(obj)=>{
-    if(Array.isArray(obj)){for(let i=0;i<obj.length;i++){const w=rename(obj[i]);if(w!==obj[i])obj[i]=w;else if(obj[i]&&typeof obj[i]==='object')walk(obj[i]);}return;}
-    if(obj&&typeof obj==='object'){for(const k of Object.keys(obj)){const v=obj[k];const w=rename(v);if(w!==v)obj[k]=w;else if(v&&typeof v==='object')walk(v);}}
-  };
-  try{
-    const raw=localStorage.getItem(LS);
-    if(raw){
-      const s=JSON.parse(raw);
-      if(!s||s.__tagMigrationV1)return;
-      walk(s);
-      s.__tagMigrationV1=true;
-      localStorage.setItem(LS,JSON.stringify(s));
-    }
-  }catch(e){/* corrupt LS — leave as-is, first save will overwrite */}
-})();
+// Contract & idempotency live in src/core/tagMigration.js (tested).
+migrateStoredTags(LS);
 
 G.S=safeJSONParse(LS,{ck:{},qOk:0,qNo:0,bk:{},notes:{},sr:{},fci:0,fcFlip:false,streak:0,lastDay:null,chat:[],studyMode:false,sp:{},spOpen:true});
 if(!G.S.chat)G.S.chat=[];
