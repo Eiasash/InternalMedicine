@@ -1,6 +1,7 @@
 import G from '../core/globals.js';
 import { TOPICS } from '../core/constants.js';
 import { sanitize } from '../core/utils.js';
+import { fsrsR, fsrsInterval, fsrsInitNew, fsrsUpdate } from '../sr/fsrs-bridge.js';
 
 export function toggleNote(i){G.openNote=G.openNote===i?null:i;G.render();}
 export function renderStudy(){
@@ -71,32 +72,121 @@ export function filterNotes(v){G.render();}
 
 // Flashcards + Drug lookup renderers
 
+// ===== Flashcards FSRS helpers =====
+// Returns array of card indices that are either due (next <= now) or unseen.
+export function fcGetDueIndices(){
+  const now=Date.now();
+  const fcsr=G.S.fcsr||{};
+  const due=[];
+  for(let i=0;i<G.FLASH.length;i++){
+    const r=fcsr['fc_'+i];
+    if(!r||!r.next||r.next<=now)due.push(i);
+  }
+  return due;
+}
+
+// Rebuild the due-queue and shuffle (called when entering Due mode or after queue exhausted)
+export function fcRebuildQueue(){
+  const due=fcGetDueIndices();
+  for(let i=due.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[due[i],due[j]]=[due[j],due[i]];}
+  G.S.fcQueue=due;
+  G.S.fcQueuePos=0;
+}
+
+// Score a flashcard via FSRS-4.5 (rating 1=Again, 2=Hard, 3=Good, 4=Easy).
+// Maintains legacy `n` counter for the UI status chips.
+export function fcFsrsScore(key,rating){
+  if(!G.S.fcsr)G.S.fcsr={};
+  if(!G.S.fcsr[key])G.S.fcsr[key]={n:0,next:0};
+  const s=G.S.fcsr[key];
+  const daysSinceReview=s.lastReview?Math.max(0,(Date.now()-s.lastReview)/86400000):0;
+  if(s.fsrsS===undefined||s.fsrsD===undefined){
+    const init=fsrsInitNew(rating);s.fsrsS=init.s;s.fsrsD=init.d;
+  }
+  const rPrev=daysSinceReview>0?fsrsR(daysSinceReview,s.fsrsS):1;
+  const upd=fsrsUpdate(s.fsrsS,s.fsrsD,rPrev,rating);
+  s.fsrsS=Math.round(upd.s*1000)/1000;
+  s.fsrsD=Math.round(upd.d*100)/100;
+  s.lastReview=Date.now();
+  const days=fsrsInterval(s.fsrsS);
+  s.next=Date.now()+days*86400000;
+  // Legacy n counter: 0 on Again, cap at 2 for "known" chip.
+  s.n=rating===1?0:Math.min(2,(s.n||0)+1);
+  s.days=days;
+}
+
 export function renderFlash(){
-const f=G.FLASH[G.S.fci%G.FLASH.length];
+const dueMode=!!G.S.fcDueMode;
+// Build & cache due-queue when entering Due mode or running past queue end.
+if(dueMode){
+  if(!Array.isArray(G.S.fcQueue)||G.S.fcQueue.length===0||G.S.fcQueuePos>=G.S.fcQueue.length){
+    fcRebuildQueue();
+  }
+}
+const queueEmpty=dueMode&&(!G.S.fcQueue||G.S.fcQueue.length===0);
+const activeIdx=dueMode?(G.S.fcQueue[G.S.fcQueuePos]??0):(G.S.fci%G.FLASH.length);
+const f=G.FLASH[activeIdx];
 const fcsr=G.S.fcsr||{};
-let fcKnown=0,fcLearning=0,fcNew=0;
-for(let i=0;i<G.FLASH.length;i++){const r=fcsr['fc_'+i];if(!r)fcNew++;else if(r.n>=2)fcKnown++;else fcLearning++;}
-let h=`<div class="sec-t">🃏 Flashcards</div><div class="sec-s">${G.FLASH.length} high-yield cards · Tap to flip</div>`;
+let fcKnown=0,fcLearning=0,fcNew=0,fcDue=0;
+const now=Date.now();
+for(let i=0;i<G.FLASH.length;i++){
+  const r=fcsr['fc_'+i];
+  if(!r){fcNew++;fcDue++;}
+  else{
+    if(r.n>=2)fcKnown++;else fcLearning++;
+    if(!r.next||r.next<=now)fcDue++;
+  }
+}
+let h=`<div class="sec-t">🃏 Flashcards</div><div class="sec-s">${G.FLASH.length} high-yield cards · FSRS-4.5 scheduling</div>`;
+// Mode toggle
+h+=`<div style="display:flex;gap:6px;margin-bottom:10px">
+<button class="btn ${dueMode?'btn-p':'btn-o'}" data-action="fc-mode" data-mode="due" aria-pressed="${dueMode}">🎯 Due (${fcDue})</button>
+<button class="btn ${dueMode?'btn-o':'btn-p'}" data-action="fc-mode" data-mode="browse" aria-pressed="${!dueMode}">📚 Browse all</button>
+</div>`;
 h+=`<div style="display:flex;gap:6px;margin-bottom:12px">
 <span class="badge badge-g">✅ Known: ${fcKnown}</span>
 <span class="badge badge-y">📖 Learning: ${fcLearning}</span>
 <span class="badge" style="background:#f1f5f9;color:#64748b">🆕 New: ${fcNew}</span>
 </div>`;
+if(queueEmpty){
+  h+=`<div class="card" style="text-align:center;padding:28px 16px"><div style="font-size:32px;margin-bottom:8px">🎉</div>
+<div style="font-weight:700;font-size:13px;margin-bottom:6px">All caught up!</div>
+<div style="font-size:11px;color:#64748b;margin-bottom:12px">No flashcards due right now. Switch to Browse to review anyway.</div>
+<button class="btn btn-p" data-action="fc-mode" data-mode="browse">📚 Browse all</button></div>`;
+  return h;
+}
+// Card
+const _f=sanitize(G.S.fcFlip?f.b:f.f);
 h+=`<div class="fc" data-action="fc-flip" style="border-color:${G.S.fcFlip?'rgb(var(--em))':'rgb(var(--sky))'}" role="button" tabindex="0" aria-label="${G.S.fcFlip?'Show question':'Show answer'}">
-<p style="font-size:${G.S.fcFlip?'12px':'14px'};font-weight:${G.S.fcFlip?'400':'700'};line-height:1.7;color:${G.S.fcFlip?'#334155':'#1e293b'}">
-${G.S.fcFlip?f.b:f.f}</p>
-<p style="font-size:9px;color:#94a3b8;margin-top:12px">${G.S.fcFlip?'Tap for question':'Tap to reveal answer'} · ${G.S.fci%G.FLASH.length+1}/${G.FLASH.length}</p>
+<p style="font-size:${G.S.fcFlip?'12px':'14px'};font-weight:${G.S.fcFlip?'400':'700'};line-height:1.7;color:${G.S.fcFlip?'#334155':'#1e293b'}">${_f}</p>
+<p style="font-size:9px;color:#94a3b8;margin-top:12px">${G.S.fcFlip?'Tap for question':'Tap to reveal answer'} · ${dueMode?(G.S.fcQueuePos+1)+'/'+G.S.fcQueue.length:(activeIdx+1)+'/'+G.FLASH.length}</p>
 </div>`;
-h+=`<div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
+// FSRS rating row (only after flip)
+if(G.S.fcFlip){
+  const _r=fcsr['fc_'+activeIdx];
+  const _nextHint=(rating)=>{
+    // Tiny preview of the next interval for each rating, for label UX
+    const tmpS=_r?.fsrsS;
+    if(!tmpS)return fsrsInterval(fsrsInitNew(rating).s);
+    const upd=fsrsUpdate(tmpS,_r.fsrsD,1,rating);
+    return fsrsInterval(upd.s);
+  };
+  h+=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px">
+<button class="btn" style="background:#fef2f2;color:#dc2626;font-size:10px;padding:8px 4px" data-action="fc-rate" data-r="1" aria-label="Rate: Again">🔄 שוב<br><span style="font-size:8px;opacity:.7">10m</span></button>
+<button class="btn" style="background:#fffbeb;color:#d97706;font-size:10px;padding:8px 4px" data-action="fc-rate" data-r="2" aria-label="Rate: Hard">🤔 קשה<br><span style="font-size:8px;opacity:.7">${_nextHint(2)}d</span></button>
+<button class="btn" style="background:#ecfdf5;color:#059669;font-size:10px;padding:8px 4px" data-action="fc-rate" data-r="3" aria-label="Rate: Good">✅ טוב<br><span style="font-size:8px;opacity:.7">${_nextHint(3)}d</span></button>
+<button class="btn" style="background:#f0f9ff;color:#0369a1;font-size:10px;padding:8px 4px" data-action="fc-rate" data-r="4" aria-label="Rate: Easy">🌟 קל<br><span style="font-size:8px;opacity:.7">${_nextHint(4)}d</span></button>
+</div>`;
+}else if(!dueMode){
+  // Browse mode prev/next when card not yet flipped
+  h+=`<div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
 <button class="btn btn-o" data-action="fc-prev" aria-label="Previous flashcard">← Prev</button>
 <button class="btn btn-p" data-action="fc-next" aria-label="Next flashcard">Next →</button>
 </div>`;
-if(G.S.fcFlip){h+=`<div style="display:flex;gap:6px;justify-content:center;margin-top:8px">
-<button class="btn" style="background:#fef2f2;color:#dc2626" data-action="fc-rate" data-r="0" aria-label="Rate: Again">🔄 שוב</button>
-<button class="btn" style="background:#fffbeb;color:#d97706" data-action="fc-rate" data-r="1" aria-label="Rate: Hard">🤔 קשה</button>
-<button class="btn" style="background:#ecfdf5;color:#059669" data-action="fc-rate" data-r="2" aria-label="Rate: Easy">✅ קל</button>
-</div>`;}
-h+=`<div style="text-align:center;margin-top:8px"><button data-action="fc-random" style="font-size:10px;color:rgb(var(--sky));text-decoration:underline" aria-label="Random flashcard">🔀 Random</button></div>`;
+}
+if(!dueMode){
+  h+=`<div style="text-align:center;margin-top:8px"><button data-action="fc-random" style="font-size:10px;color:rgb(var(--sky));text-decoration:underline" aria-label="Random flashcard">🔀 Random</button></div>`;
+}
 return h;
 }
 
@@ -123,15 +213,27 @@ h+=`</div>`;
 return h;
 }
 
-function fcRate(q) { // q: 0=again, 1=hard, 2=easy
-  const key = 'fc_' + G.S.fci % G.FLASH.length;
-  if (!G.S.fcsr) G.S.fcsr = {};
-  if (!G.S.fcsr[key]) G.S.fcsr[key] = { n: 0, next: 0 };
-  const s = G.S.fcsr[key];
-  const days = q === 0 ? 0 : q === 1 ? 1 : 4;
-  s.n = q === 0 ? 0 : s.n + 1;
-  s.next = Date.now() + days * 86400000;
-  G.S.fci++; G.S.fcFlip = false; G.save(); G.render();
+function fcRate(rating) { // rating: 1=Again, 2=Hard, 3=Good, 4=Easy (FSRS)
+  const dueMode = !!G.S.fcDueMode;
+  const activeIdx = dueMode ? (G.S.fcQueue[G.S.fcQueuePos] ?? 0) : (G.S.fci % G.FLASH.length);
+  const key = 'fc_' + activeIdx;
+  fcFsrsScore(key, rating);
+  if (dueMode) {
+    // Advance within the due queue; on Again, re-append to end of queue for immediate relearn.
+    if (rating === 1) {
+      G.S.fcQueue.push(activeIdx);
+    }
+    G.S.fcQueuePos = (G.S.fcQueuePos || 0) + 1;
+    if (G.S.fcQueuePos >= G.S.fcQueue.length) {
+      // Try to rebuild — maybe more cards became due, or queue is empty
+      fcRebuildQueue();
+    }
+  } else {
+    G.S.fci++;
+  }
+  G.S.fcFlip = false;
+  G.save();
+  G.render();
 }
 
 // Event delegation for Learn tab — set up once on #ct container
@@ -160,6 +262,13 @@ export function initLearnEvents(container) {
     else if (action === 'fc-random') {
       G.S.fci = Math.floor(Math.random() * G.FLASH.length);
       G.S.fcFlip = false; G.save(); G.render();
+    }
+    else if (action === 'fc-mode') {
+      const mode = el.dataset.mode;
+      G.S.fcDueMode = (mode === 'due');
+      G.S.fcFlip = false;
+      if (G.S.fcDueMode) fcRebuildQueue();
+      G.save(); G.render();
     }
   });
   container.addEventListener('input', (e) => {
