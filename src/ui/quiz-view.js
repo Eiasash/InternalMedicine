@@ -335,9 +335,8 @@ h+=`<div style="display:flex;gap:4px;margin-bottom:8px;align-items:center">
 <button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='hard'?'background:#fecaca;color:#991b1b':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="hard">Hard</button>
 </div>`;
 }
-// Next button — blocked if wrong + no classification (non-exam)
-const _blocked=!G.examMode&&G.sel!==q.c&&!G._wrongReason;
-h+=`<button class="btn btn-d" data-action="next-q"${_blocked?' disabled':''} aria-label="${G.examMode&&G.qi+1>=150?'Finish exam':'Next question'}">${G.examMode&&G.qi+1>=150?'סיים':'הבאה ←'}</button>`;
+// Next button — why-wrong classification is a nudge, not a gate
+h+=`<button class="btn btn-d" data-action="next-q" aria-label="${G.examMode&&G.qi+1>=150?'Finish exam':'Next question'}">${G.examMode&&G.qi+1>=150?'סיים':'הבאה ←'}</button>`;
 }
 h+=`</div>`;
 

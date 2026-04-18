@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "bash scripts/build.sh",
+    "hooks:install": "git config core.hooksPath scripts/git-hooks && echo '✓ pre-commit + pre-push hooks active'",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -24,5 +25,5 @@
     "vite": "^6.3.5",
     "vitest": "^4.1.4"
   },
-  "version": "9.53.0"
+  "version": "9.54.0"
 }
