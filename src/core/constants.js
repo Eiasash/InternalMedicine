@@ -24,8 +24,12 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.52';
+export const APP_VERSION='9.53';
 export const CHANGELOG={
+    '9.53': [
+      'UX: "How sure are you?" (😬 🤔 😎) כבר לא חוסם את כפתור בדוק — הפך לאופציונלי. אפשר עדיין ללחוץ על אחת האמוג\'ים כדי לעקוב אחרי ביטחון, אבל לא חייבים.',
+      'תיקון: כפתור "Read: Harrison Ch X — you\'re weak here" מנווט עכשיו ישירות לפרק הספציפי (נפתח Harrison chapter viewer עם התוכן) במקום סתם לפתוח את מדף הספרייה'
+    ],
     '9.52': [
       'סטנדרטיזציית תגיות מבחן לפורמט קנוני YYYY-Mon (Jun21→2021-Jun, Jun22→2022-Jun, Jun23→2023-Jun, May24→2024-May, Oct24→2024-Oct, Jun25→2025-Jun)',
       'מיגרציית localStorage אוטומטית עם סנטינל __tagMigrationV1 — משתמשים קיימים לא מאבדים נתונים',
