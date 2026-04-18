@@ -82,25 +82,23 @@ describe('questions.json — formatting quality', () => {
   const PAST_EXAM_TAGS = ['2020', '2021-Jun', '2022-Jun', '2023-Jun', '2024-May', '2024-Oct', '2025-Jun'];
   beforeAll(() => { questions = loadJSON('data/questions.json'); });
 
-  // Catches "בן58" → should be "בן 58"
-  // Allow a tiny budget for edge cases (e.g., page references "עמוד 3 בתמונה2")
-  test('Hebrew-digit missing-space count stays under budget (<=5)', () => {
+  // Catches "בן58" → should be "בן 58". Ratchet at exact 0 — past-exam
+  // corpus is clean. Any occurrence fails CI.
+  test('Hebrew-digit missing-space (past-exam): locked at 0', () => {
     const bad = [];
     questions.forEach((q, i) => {
       if (!PAST_EXAM_TAGS.includes(q.t)) return;
       const text = [q.q, ...(q.o || [])].join(' | ');
       if (/[\u0590-\u05FF]\d/.test(text)) {
-        bad.push({ i, tag: q.t });
+        bad.push({ i, tag: q.t, preview: q.q?.slice(0, 60) });
       }
     });
-    if (bad.length > 5) {
-      console.error(`Hebrew+digit (no space) in ${bad.length} Qs (budget 5):`, bad.slice(0, 5));
-    }
-    expect(bad.length).toBeLessThanOrEqual(5);
+    expect(bad, `Hebrew+digit adjacency regression (baseline 0): ${JSON.stringify(bad.slice(0, 3))}`).toEqual([]);
   });
 
-  // Catches `?גבוהה` (question mark on wrong side after RTL mangling)
-  test('no question mark immediately before Hebrew letter (wrong-side punct)', () => {
+  // Catches `?גבוהה` (question mark on wrong side after RTL mangling).
+  // Ratchet at exact 0 — past-exam corpus is clean.
+  test('wrong-side ?[Hebrew] (past-exam): locked at 0', () => {
     const bad = [];
     questions.forEach((q, i) => {
       if (!PAST_EXAM_TAGS.includes(q.t)) return;
@@ -109,10 +107,7 @@ describe('questions.json — formatting quality', () => {
         bad.push({ i, tag: q.t, preview: q.q?.slice(0, 60) });
       }
     });
-    if (bad.length > 3) {
-      console.error(`?[Hebrew] in ${bad.length} Qs (budget 3):`, bad.slice(0, 3));
-    }
-    expect(bad.length).toBeLessThanOrEqual(3);
+    expect(bad, `?[Hebrew] regression (baseline 0): ${JSON.stringify(bad.slice(0, 3))}`).toEqual([]);
   });
 
   // Catches content bleed: stem contains a DIGIT-DOT followed by a typical
