@@ -2,23 +2,27 @@
  * Tests for `srScore` in `src/sr/spaced-repetition.js`.
  *
  * Setup rationale:
- *  - `src/sr/fsrs-bridge.js` snapshots `window.fsrsR` (etc.) at module-load
- *    time. Under jsdom, `window === globalThis`, so we populate globalThis
- *    by executing `shared/fsrs.js` via `new Function` at the top of THIS
- *    file, before any test code runs.
- *  - We never statically import spaced-repetition. Instead beforeAll uses
- *    `await import(...)`; that way the dynamic import fires AFTER the
- *    globalThis seeding has executed, so the bridge captures real values.
+ *  - `src/sr/fsrs-bridge.js` snapshots `window.fsrsR` (etc.) at module load,
+ *    but `jsdom` is NOT listed as a devDependency, so we run under the
+ *    default `node` environment and shim `window` ourselves.
+ *  - `globalThis.window = globalThis` makes the bridge's `const w = window;`
+ *    resolve in Node. Then `shared/fsrs.js` is executed via `new Function`
+ *    with its exports assigned to `globalThis`, so the bridge captures the
+ *    real FSRS functions at its load time (triggered by beforeAll below).
+ *  - beforeAll dynamically imports spaced-repetition to guarantee the seed
+ *    runs first; static import wouldn't (ESM hoists imports above other
+ *    top-level code).
  */
-
-// @vitest-environment jsdom
 
 import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
-// Seed globalThis (= window under jsdom) with fsr* functions BEFORE any
-// dynamic import of spaced-repetition.js triggers bridge.js to load.
+// Minimal browser shim so fsrs-bridge.js's `const w = window;` works.
+globalThis.window = globalThis;
+
+// Seed globalThis with fsr* functions BEFORE any dynamic import of
+// spaced-repetition.js triggers bridge.js to load.
 const fsrsSrc = readFileSync(resolve(process.cwd(), 'shared', 'fsrs.js'), 'utf-8');
 const seed = new Function(
   'target',
