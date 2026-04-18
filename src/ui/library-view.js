@@ -202,6 +202,7 @@ Format as clean bullet points. Be concise and high-yield.`;
 export async function quizMeOnChapter(chNum,chTitle){
   // Show loading state in Library
   const el=document.getElementById('quiz-me-box');
+  // safe-innerhtml: chNum is always an integer from parseInt() / G.harChOpen — no user input path.
   if(el){el.innerHTML='<div style="text-align:center;padding:20px;color:#64748b">⏳ Generating questions from Ch '+chNum+'...</div>';}
   // Get chapter text from already-loaded data
   let chapterText='';
