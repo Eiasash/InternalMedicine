@@ -162,6 +162,28 @@ export async function cloudBackup(){
   }catch(e){alert('❌ Backup failed: '+e.message);}
   if(btn){btn.disabled=false;btn.textContent='☁️ Backup to Cloud';}
 }
+// Filter a restore payload to only the keys that already exist in the
+// current state object. Blocks:
+//   - Unknown keys from a compromised or stale backup.
+//   - Inherited / prototype keys (uses Object.hasOwn).
+//   - Prototype pollution via __proto__ / constructor / prototype.
+//   - Non-plain-object payloads (null, arrays, primitives).
+// Analysis doc §3.7 — "cloudRestore whitelist assumption".
+// Invariants locked by tests/cloudRestore.test.js.
+const PROTO_BLOCKLIST = new Set(['__proto__', 'constructor', 'prototype']);
+export function filterRestorePayload(payload, allowedKeys) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return {};
+  const allowed = allowedKeys instanceof Set ? allowedKeys : new Set(allowedKeys || []);
+  const out = {};
+  for (const k of Object.keys(payload)) {
+    if (PROTO_BLOCKLIST.has(k)) continue;
+    if (!allowed.has(k)) continue;
+    if (!Object.prototype.hasOwnProperty.call(payload, k)) continue;
+    out[k] = payload[k];
+  }
+  return out;
+}
+
 export async function cloudRestore(){
   const id=prompt('Enter device ID to restore from (leave blank for this device):',_sbDeviceId())||_sbDeviceId();
   if(!id)return;
@@ -174,7 +196,8 @@ export async function cloudRestore(){
     if(!rows||!rows.length){alert('No backup found for ID: '+id);return;}
     const row=rows[0];
     if(confirm('Restore backup from '+new Date(row.updated_at).toLocaleString()+'?\nThis will overwrite your current progress.')){
-      const allowed=new Set(Object.keys(G.S));const validated={};for(const k of Object.keys(row.data)){if(allowed.has(k))validated[k]=row.data[k];}Object.assign(G.S,validated);G.save();G.render();
+      const validated=filterRestorePayload(row.data,new Set(Object.keys(G.S)));
+      Object.assign(G.S,validated);G.save();G.render();
       alert('✅ Progress restored!');
     }
   }catch(e){alert('❌ Restore failed: '+e.message);}
