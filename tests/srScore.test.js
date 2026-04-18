@@ -6,38 +6,39 @@
  * review, maintains an answer-time moving average, and bumps session counters.
  * A regression here silently corrupts every user's review schedule.
  *
- * `shared/fsrs.js` exposes its functions as browser globals on `window` — the
- * bridge (`src/sr/fsrs-bridge.js`) then re-exports them as ESM. We load
- * `shared/fsrs.js` into the jsdom `window` before the first import of
- * spaced-repetition so the bridge resolves successfully.
+ * Implementation notes:
+ *  - `src/sr/fsrs-bridge.js` does `const w = window; export const fsrsR = w.fsrsR;`
+ *    at module load. `shared/fsrs.js` is designed to load in a browser via
+ *    `<script>` and populate the globals.
+ *  - Under Node/vitest we bypass the window dance entirely by `vi.mock`-ing
+ *    the bridge. The factory loads `shared/fsrs.js` via `new Function` (the
+ *    same trick `tests/sharedFsrs.test.js` already uses) and returns its
+ *    globals as ESM exports. This guarantees the real FSRS code is what gets
+ *    exercised \u2014 no drift risk.
  */
 
 // @vitest-environment jsdom
 
-import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-let G, srScore, getDueQuestions, isExamTrap;
-
-beforeAll(async () => {
-  // Load shared/fsrs.js into the jsdom window so fsrs-bridge.js can
-  // re-export its globals. `new Function` keeps the fsrs.js source
-  // unmodified and matches the pattern already used in sharedFsrs.test.js.
+vi.mock('../src/sr/fsrs-bridge.js', async () => {
+  const { readFileSync } = await import('fs');
+  const { resolve } = await import('path');
   const fsrsSrc = readFileSync(resolve(process.cwd(), 'shared', 'fsrs.js'), 'utf-8');
-  const loader = new Function(
-    'window',
+  const factory = new Function(
     fsrsSrc +
-      ';\nObject.assign(window, { FSRS_W, FSRS_DECAY, FSRS_FACTOR, FSRS_RETENTION,' +
-      ' fsrsR, fsrsInterval, fsrsInitNew, fsrsUpdate, fsrsMigrateFromSM2, isChronicFail });'
+      ';\nreturn { FSRS_W, FSRS_DECAY, FSRS_FACTOR, FSRS_RETENTION,' +
+      ' fsrsR, fsrsInterval, fsrsInitNew, fsrsUpdate, fsrsMigrateFromSM2, isChronicFail };'
   );
-  loader(window);
-
-  G = (await import('../src/core/globals.js')).default;
-  ({ srScore, getDueQuestions, isExamTrap } = await import(
-    '../src/sr/spaced-repetition.js'
-  ));
+  return factory();
 });
+
+// Imports resolve AFTER vi.mock is hoisted, so spaced-repetition.js
+// picks up the mocked bridge.
+const G = (await import('../src/core/globals.js')).default;
+const { srScore, getDueQuestions, isExamTrap } = await import(
+  '../src/sr/spaced-repetition.js'
+);
 
 beforeEach(() => {
   G.S = {
@@ -56,7 +57,7 @@ beforeEach(() => {
   G.save = vi.fn();
 });
 
-describe('srScore — first-time call on a fresh entry', () => {
+describe('srScore \u2014 first-time call on a fresh entry', () => {
   it('creates an sr entry with tot=1, ok=1 for a correct answer', () => {
     srScore(0, true);
     const s = G.S.sr[0];
@@ -105,7 +106,7 @@ describe('srScore — first-time call on a fresh entry', () => {
   });
 });
 
-describe('srScore — repeated calls maintain invariants', () => {
+describe('srScore \u2014 repeated calls maintain invariants', () => {
   it('wrong answer resets n to 0, keeps tot/ok accurate', () => {
     srScore(1, true);
     srScore(1, true);
@@ -166,9 +167,8 @@ describe('srScore — repeated calls maintain invariants', () => {
   });
 });
 
-describe('srScore — migration from legacy SM-2 entries', () => {
+describe('srScore \u2014 migration from legacy SM-2 entries', () => {
   it('migrates an existing SM-2 entry (no fsrsS yet) via fsrsMigrateFromSM2', () => {
-    // Legacy state: SM-2 entry with custom ef/n, no FSRS fields
     G.S.sr[0] = {
       ef: 2.1,
       n: 3,
