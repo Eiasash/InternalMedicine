@@ -5,6 +5,7 @@ import { getDueQuestions, getWeakTopics, isExamTrap, srScore, getTopicStats, bui
 import { isChronicFail } from '../sr/fsrs-bridge.js';
 import { renderExplainBox, toggleFlagExplain, explainWithAI, aiAutopsy, gradeTeachBack, startVoiceTeachBack } from '../ai/explain.js';
 import { TOPIC_REF } from './track-view.js';
+import { openHarrisonChapter } from './library-view.js';
 import { buildPool, check, next, pick, checkMockIntercept, exitOnCallMode, flipCard, runExplainOnCall, onCallPick,
          setFilt, setTopicFilt, toggleYearFilt, clearYearFilt, startExam, startMockExam, startTopicMiniExam,
          startOnCallMode, _storeDiff } from '../quiz/engine.js';
@@ -305,7 +306,7 @@ h+=`<div style="margin-bottom:8px;font-size:10px;color:#64748b;font-weight:600">
 </div>`;
 }
 const _confLabel=G._confidence===0?'😬':G._confidence===1?'🤔':G._confidence===2?'😎':'';
-h+=`<button class="btn btn-p" data-action="check-answer"${G.sel===null||(!G.examMode&&G._confidence===null)?' disabled':''} aria-label="Check answer">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" data-action="give-up" style="background:#fff3e0;color:#d97706;font-size:11px;padding:6px 14px;margin-left:6px" aria-label="Show answer">👁 לא יודע</button>`;}
+h+=`<button class="btn btn-p" data-action="check-answer"${G.sel===null?' disabled':''} aria-label="Check answer">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" data-action="give-up" style="background:#fff3e0;color:#d97706;font-size:11px;padding:6px 14px;margin-left:6px" aria-label="Show answer">👁 לא יודע</button>`;}
 else{
 // Feature 1: Why-wrong classification (required after wrong, non-exam)
 if(!G.examMode&&G.sel!==q.c&&!G._wrongReason){
@@ -462,7 +463,14 @@ export function initQuizEvents(container) {
       G._diffRating = d; _storeDiff(G.pool[G.qi], d);
     }
     else if (action === 'read-chapter') {
-      G.tab = 'lib'; G.libSec = 'harrison'; G.render();
+      G.tab = 'lib'; G.libSec = 'harrison';
+      const q = G.QZ[G.pool[G.qi]];
+      const chRef = q ? TOPIC_REF[q.ti] : null;
+      if (chRef && chRef.s === 'har' && chRef.ch) {
+        openHarrisonChapter(chRef.ch);
+      } else {
+        G.render();
+      }
     }
     else if (action === 'skip-teachback') {
       G.teachBackState = 'skip'; G.render();
