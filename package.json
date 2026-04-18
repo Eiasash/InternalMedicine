@@ -11,7 +11,7 @@
     "lint": "eslint src/ shared/ tests/",
     "format": "prettier --write 'src/**/*.{js,css}' 'shared/**/*.js' 'tests/**/*.js'",
     "format:check": "prettier --check 'src/**/*.{js,css}' 'shared/**/*.js' 'tests/**/*.js'",
-    "verify": "node scripts/sync-sw-version.cjs && python3 scripts/check-innerhtml.py && HARRISON_HEBREW_BASELINE=0 node scripts/harrison-hebrew-baseline.cjs --strict && npm test && bash scripts/build.sh",
+    "verify": "node scripts/sync-sw-version.cjs && python3 scripts/check-innerhtml.py && python3 scripts/check-innerhtml-pieces.py && HARRISON_HEBREW_BASELINE=0 node scripts/harrison-hebrew-baseline.cjs --strict && npm test && bash scripts/build.sh",
     "build:vite": "vite build"
   },
   "devDependencies": {

@@ -192,7 +192,7 @@ Format as clean bullet points. Be concise and high-yield.`;
   try{
     const txt=await callAI([{role:'user',content:prompt}],800,'sonnet');
     box.innerHTML=`<div style="margin-top:12px;padding:14px;background:#f0fdf4;border-radius:10px;border-left:4px solid #059669">
-<div style="font-weight:700;font-size:12px;color:#065f46;margin-bottom:8px">📝 Board Summary — Ch ${chNum}: ${chTitle}</div>
+<div style="font-weight:700;font-size:12px;color:#065f46;margin-bottom:8px">📝 Board Summary — Ch ${sanitize(String(chNum))}: ${sanitize(chTitle)}</div>
 <div style="font-size:11px;line-height:1.8;direction:rtl;text-align:right;white-space:pre-wrap">${sanitize(txt)}</div>
 </div>`;
   }catch(e){box.innerHTML='<div style="color:#dc2626;font-size:11px;padding:8px">⚠️ Failed: '+sanitize(e.message)+'</div>';}
@@ -235,7 +235,7 @@ c = 0-based index of correct answer. No markdown, no preamble.`;
     const qs=JSON.parse(clean);
     // Display the generated questions
     let h='<div style="margin-top:16px;border-top:2px solid #7c3aed;padding-top:12px">';
-    h+='<div style="font-weight:700;font-size:12px;color:#7c3aed;margin-bottom:10px">🧠 AI-Generated Questions — Ch '+chNum+': '+chTitle+'</div>';
+    h+='<div style="font-weight:700;font-size:12px;color:#7c3aed;margin-bottom:10px">🧠 AI-Generated Questions — Ch '+sanitize(String(chNum))+': '+sanitize(chTitle)+'</div>';
     qs.forEach((q,idx)=>{
       h+=`<div style="margin-bottom:14px;padding:12px;background:#faf5ff;border-radius:10px;border-left:3px solid #7c3aed">`;
       h+=`<div style="font-size:12px;font-weight:600;margin-bottom:8px">${idx+1}. ${sanitize(q.q)}</div>`;
