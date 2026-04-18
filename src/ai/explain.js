@@ -48,6 +48,19 @@ export async function explainWithAI(qIdx){
   setTimeout(function(){renderExplainBox(qIdx);},0);
 }
 
+// Post-sanitize formatting for aiAutopsy output.
+// Export-only contract: caller MUST sanitize() before calling. The
+// replace chain injects raw HTML (<b>, <span>, <br>) on top of already-
+// escaped text, so any unescaped input here becomes XSS.
+// Tested by tests/aiAutopsyXss.test.js.
+export function formatAutopsy(safeTxt){
+  return String(safeTxt||'')
+    .replace(/✗/g,'<b style="color:#dc2626">✗</b>')
+    .replace(/Wrong because:/g,'<span style="color:#b91c1c">Wrong because:</span>')
+    .replace(/Would be correct if:/g,'<span style="color:#059669">Would be correct if:</span>')
+    .replace(/\n/g,'<br>');
+}
+
 export async function aiAutopsy(qIdx){
 const q=G.QZ[qIdx];
 const _apKey='autopsy_'+qIdx;
@@ -65,13 +78,8 @@ Format each as:
 ✗ [option] — Wrong because: [reason]. Would be correct if: [scenario].
 
 Be concise. Use English for medical terms, Hebrew for context if relevant.`}],500);
-// Sanitize AI output first, then format
-const safeTxt=sanitize(txt);
-const formatted=safeTxt.replace(/✗/g,'<b style="color:#dc2626">✗</b>')
-  .replace(/Wrong because:/g,'<span style="color:#b91c1c">Wrong because:</span>')
-  .replace(/Would be correct if:/g,'<span style="color:#059669">Would be correct if:</span>')
-  .replace(/\n/g,'<br>');
-G._exCache[_apKey]=formatted;
+// Sanitize AI output first, then format (both steps required — see formatAutopsy).
+G._exCache[_apKey]=formatAutopsy(sanitize(txt));
 localStorage.setItem('pnimit_ex',JSON.stringify(G._exCache));
 }catch(e){
 G._exCache[_apKey]='<span style="color:#dc2626">Error: '+sanitize(e.message).substring(0,40)+'</span>';
