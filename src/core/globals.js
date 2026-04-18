@@ -10,7 +10,7 @@ const G = {
   idb: null,
 
   // === Data arrays (data-loader.js) ===
-  QZ: [], TK: [], NOTES: [], DRUGS: [], FLASH: [], TABS: [],
+  QZ: [], TK: [], NOTES: [], DRUGS: [], FLASH: [], TABS: [], DIS: {},
   _dataReady: false,
   _dataPromise: null,
 
@@ -32,7 +32,9 @@ const G = {
   sdMode: false, sdStreak: 0, sdPool: [], sdQi: 0,
   sdLeaderboard: [],
   blindRecall: false,
-  autopsyMode: false, autopsyIdx: -1, autopsyDistractor: -1,
+  // autopsyMode is always on — distractor autopsy renders whenever G.ans && !G.examMode.
+  // autopsyIdx / autopsyDistractor retained for backwards-compat with legacy highlight CSS.
+  autopsyMode: true, autopsyIdx: -1, autopsyDistractor: -1,
   isSpeaking: false,
   voiceListening: false, voiceTranscript: '',
   pomoActive: false, pomoSec: 3000, pomoBreak: false, pomoBreakSec: 300, pomoInterval: null,

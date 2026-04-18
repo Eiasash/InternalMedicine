@@ -24,14 +24,22 @@ G._dataPromise = (async function loadDataArrays() {
     DRUGS: 'drugs.json',
     FLASH: 'flashcards.json',
     TABS: 'tabs.json',
+    DIS: 'distractors.json',
   };
   try {
     const entries = Object.entries(files);
     const results = await Promise.all(
       entries.map(([varName, fileName]) =>
         fetch(basePath + fileName).then(r => {
-          if (!r.ok) throw new Error(varName + ': ' + r.status);
+          if (!r.ok) {
+            // DIS is optional: missing distractors.json should not break data load
+            if (varName === 'DIS') return {};
+            throw new Error(varName + ': ' + r.status);
+          }
           return r.json();
+        }).catch(err => {
+          if (varName === 'DIS') { console.warn('distractors.json unavailable:', err.message); return {}; }
+          throw err;
         })
       )
     );
@@ -42,6 +50,7 @@ G._dataPromise = (async function loadDataArrays() {
       else if (varName === 'DRUGS') G.DRUGS = results[i];
       else if (varName === 'FLASH') G.FLASH = results[i];
       else if (varName === 'TABS') G.TABS = results[i];
+      else if (varName === 'DIS') G.DIS = results[i];
       });
     G._dataReady = true;
     const _xp=safeJSONParse('pnimit_pending_qs',[]);
