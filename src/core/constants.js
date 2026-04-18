@@ -24,8 +24,13 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.54';
+export const APP_VERSION='9.55';
 export const CHANGELOG={
+    '9.55': [
+      '🔬 Distractor Autopsy — ALWAYS ON: after every reveal you see why each wrong answer is wrong + when it would be correct',
+      'Pre-generated offline (data/distractors.json) via Claude Haiku 4.5 — works offline, zero latency',
+      'AI fallback for any question without cached distractor rationale'
+    ],
     '9.54': [
       'UX: "Why did I get it wrong?" (📚 👓 ⚖️ 🤦) כבר לא חוסם את כפתור "הבאה" — הפך לאופציונלי. בסוויט הקודם הפכנו את "How sure are you" לאופציונלי; עכשיו גם שורת ה-why-wrong שלמטה אופציונלית.',
       'טסט חדש: topicRefCoverage — מוודא שכל entry ב-TOPIC_REF מצביע לפרק שקיים ב-harrison_chapters.json. מונע באגי ניווט כמו זה שתוקן ב-9.53.',

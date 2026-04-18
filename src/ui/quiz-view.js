@@ -244,11 +244,11 @@ if(_yearSel.length>=2){
   h+=`<span class="pill" style="background:#fef2f2;color:#dc2626" data-action="filter-year-clear" title="Clear exam year filter">✕ ${_yearSel.length} years</span>`;
 }
 h+=`</div>`;
-// Blind recall & Distractor Autopsy toggles
-h+=`<div style="display:flex;gap:8px;margin-bottom:10px;font-size:10px">
+// Mode toggles — Distractor Autopsy is always on (rendered on every reveal), no toggle
+h+=`<div style="display:flex;gap:8px;margin-bottom:10px;font-size:10px;align-items:center">
 <span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.blindRecall?'checked':''} data-action="toggle-blind"> 🙈 Cover Options</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">Hides answer choices — forces you to recall the answer before seeing options.</div></span>
-<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.autopsyMode?'checked':''} data-action="toggle-autopsy"> 🔬 Distractor Autopsy</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">After answering, explains WHY each wrong option is wrong — builds distractor recognition skill.</div></span>
 <span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.timedMode?'checked':''} data-action="toggle-timed"> ⏱ Timed (90s)</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">90-second countdown per question. Auto-advances when time runs out — marks as wrong. Builds exam-condition reflexes.</div></span>
+<span style="color:#64748b;font-size:10px" title="After every reveal, you see why each wrong answer is wrong and when it would be correct.">🔬 Distractor Autopsy on</span>
 </div>`;
 h+=`<div style="display:flex;gap:6px;margin-bottom:10px"><select class="calc-in" style="font-size:11px;padding:6px 10px;flex:1" data-action="topic-select">
 <option value="-1"${G.filt!=='topic'?' selected':''}>📂 Filter by topic…</option>`;
@@ -400,25 +400,49 @@ if(G.ans&&!G.examMode){
     h+='<button class="btn btn-g" style="width:100%;margin-top:4px;font-size:11px" data-action="ai-explain" data-idx="'+_aiIdx+'">🤖 הסבר AI ('+(G._exCache[_aiIdx]?'נסה שוב':'קלוד אופוס')+')</button>';
   }
 }
-// Distractor Autopsy — AI-powered explanation of ALL wrong options
-if(G.autopsyMode&&G.ans){
-const wrongIdxs=q.o.map((_,i)=>i).filter(i=>i!==q.c);
-if(G.autopsyDistractor<0||G.autopsyDistractor===q.c)G.autopsyDistractor=wrongIdxs[Math.floor(Math.random()*wrongIdxs.length)];
-const _apKey='autopsy_'+G.pool[G.qi];
-h+=`<div style="padding:12px;margin-top:10px;border:2px solid #f59e0b;border-radius:12px;background:#fffbeb">
-<div style="font-weight:700;font-size:11px;margin-bottom:6px">🔬 Distractor Autopsy</div>`;
-// Check if we have cached AI autopsy
-if(G._exCache[_apKey]){
-h+=`<div style="font-size:11px;line-height:1.7;color:#1e293b" dir="auto">${G._exCache[_apKey]}</div>`;
-} else {
-h+=`<div style="font-size:11px;line-height:1.6;color:#92400e" dir="auto">`;
-wrongIdxs.forEach(wi=>{
-h+=`<div style="margin-bottom:6px"><b style="color:#dc2626">✗ ${q.o[wi]}</b> — <span style="color:#64748b">why wrong here?</span></div>`;
-});
-h+=`</div>`;
-h+=`<button class="btn" style="font-size:10px;background:#fef3c7;color:#92400e;margin-top:6px;width:100%" data-action="ai-autopsy">🤖 AI: Explain why each is wrong</button>`;
-}
-h+=`</div>`;
+// Distractor Autopsy — ALWAYS ON when answer revealed (not a toggle).
+// Renders per-option card: ✓/✗ + rationale from offline G.DIS (pre-generated).
+// Falls back to on-demand AI (G._exCache['autopsy_'+qIdx]) if offline entry missing.
+if(G.ans&&!G.examMode){
+  const _qIdx=G.pool[G.qi];
+  const _dist=(G.DIS&&G.DIS[_qIdx])||null;
+  const _apKey='autopsy_'+_qIdx;
+  const _aiTxt=G._exCache[_apKey];
+  h+=`<div style="padding:12px;margin-top:10px;border:2px solid #f59e0b;border-radius:12px;background:#fffbeb">
+<div style="font-weight:700;font-size:11px;margin-bottom:8px">🔬 Distractor Autopsy — למה כל תשובה שגויה</div>`;
+  if(_dist){
+    // Offline path — render each option with sanitized rationale
+    q.o.forEach((opt,i)=>{
+      const _isCorrect=(i===q.c);
+      const _isUserPick=(i===G.sel);
+      const _rationale=_dist[i];
+      const _bg=_isCorrect?'#dcfce7':(_isUserPick?'#fef2f2':'#fff7ed');
+      const _brd=_isCorrect?'#86efac':(_isUserPick?'#fca5a5':'#fed7aa');
+      const _mark=_isCorrect?'<b style="color:#059669">✓</b>':'<b style="color:#dc2626">✗</b>';
+      const _pickTag=(_isUserPick&&!_isCorrect)?' <span style="color:#64748b;font-size:9px">(הבחירה שלך)</span>':'';
+      h+=`<div style="margin-bottom:6px;padding:8px 10px;background:${_bg};border:1px solid ${_brd};border-radius:8px;font-size:11px;line-height:1.6" dir="auto">`;
+      h+=`<div style="font-weight:700;margin-bottom:3px">${_mark} ${sanitize(opt)}${_pickTag}</div>`;
+      if(_rationale){
+        // sanitize first, then style the literal markers. sanitize() cannot introduce
+        // HTML, and "Wrong because:" / "Would be correct if:" are literal strings.
+        const _formatted=sanitize(_rationale)
+          .replace(/Wrong because:/g,'<b style="color:#b91c1c">Wrong because:</b>')
+          .replace(/Would be correct if:/g,'<b style="color:#059669">Would be correct if:</b>');
+        h+=`<div>${_formatted}</div>`;
+      }else if(_isCorrect){
+        h+=`<div style="color:#059669;font-size:10px">התשובה הנכונה</div>`;
+      }
+      h+=`</div>`;
+    });
+  }else if(_aiTxt){
+    // On-demand AI autopsy was cached previously (legacy path) — already sanitized+formatted
+    h+=`<div style="font-size:11px;line-height:1.7;color:#1e293b" dir="auto">${_aiTxt}</div>`;
+  }else{
+    // No offline data yet — auto-trigger AI once, show loading state
+    h+=`<div style="font-size:11px;color:#64748b;padding:4px 0">⏳ טוען הסבר על מסיחים...</div>`;
+    setTimeout(()=>{ if(!G._exCache['autopsy_'+_qIdx])aiAutopsy(_qIdx); },100);
+  }
+  h+=`</div>`;
 }
 h+=`<div style="display:flex;gap:16px;margin-top:10px;padding-top:8px;border-top:1px solid #f1f5f9;font-size:10px;color:#94a3b8">
 <span>✅ ${G.S.qOk}</span><span>❌ ${G.S.qNo}</span><span>📊 ${pct}</span>${G.S.sr[G.pool[G.qi]]?.at?`<span style="color:#94a3b8">⏱${G.S.sr[G.pool[G.qi]].at}s avg</span>`:""}</div>`;
