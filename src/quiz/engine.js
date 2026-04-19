@@ -23,6 +23,9 @@ import { aiAutopsy } from '../ai/explain.js';
 
 
 export function buildPool(){
+// Defensive: if data hasn't loaded yet (or load failed), return empty pool
+// rather than crashing in one of the filter branches below.
+if(!Array.isArray(G.QZ)||G.QZ.length===0){G.pool=[];G.qi=0;G.sel=null;G.ans=false;return;}
 if(G.filt==='traps'){
 G.pool=G.QZ.map((_,i)=>i).filter(i=>isExamTrap(i));
 for(let i=G.pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[G.pool[i],G.pool[j]]=[G.pool[j],G.pool[i]];}
