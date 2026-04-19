@@ -240,7 +240,11 @@ const labels={bug:'🐛 Bug',wrong_answer:'❌ Wrong Answer',feature:'💡 Featu
 let qObj=null,context='';
 if(G.pool.length&&G.qi<G.pool.length){qObj=G.QZ[G.pool[G.qi]];}
 if(type==='wrong_answer'&&qObj){
-context=`Q#${G.pool[G.qi]}: ${qObj.q.substring(0,100)} | correct: ${qObj.o[qObj.c]}`;
+// Stable content hash survives dedup/reindex. 8-char hash of normalized stem.
+const _hashStem=qObj.q.replace(/[\s\d.,?!:;()\[\]"'\-\u05BE]+/g,'').toLowerCase().slice(0,200);
+let _h=0;for(let i=0;i<_hashStem.length;i++){_h=((_h<<5)-_h+_hashStem.charCodeAt(i))|0;}
+const _qhash=(_h>>>0).toString(16).padStart(8,'0');
+context=`Q#${G.pool[G.qi]} [hash:${_qhash}]: ${qObj.q.substring(0,100)} | correct: ${qObj.o[qObj.c]}`;
 }
 const st=document.getElementById('fbStatus');
 if(st){st.textContent='⏳ שולח...';st.style.display='block';st.style.color='#64748b';}
