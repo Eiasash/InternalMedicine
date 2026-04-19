@@ -288,10 +288,10 @@ const _shuf=getOptShuffle(G.pool[G.qi],q);
 _shuf.forEach((origI,dispJ)=>{
 const o=q.o[origI];
 let cls='qo';
-if(G.ans){cls+=' lk';if(origI===q.c)cls+=' ok';else if(origI===G.sel)cls+=' no';else cls+=' dim';}
+if(G.ans){cls+=' lk';if(!G.examMode){if(origI===q.c)cls+=' ok';else if(origI===G.sel)cls+=' no';else cls+=' dim';}else if(origI===G.sel)cls+=' sel';}
 else if(origI===G.sel)cls+=' sel';
 const blurCls=G.blindRecall&&!G.ans&&origI!==G.sel?' qo-blur':'';
-const autopsyCls=(G.autopsyMode&&G.ans&&origI!==q.c&&origI===G.autopsyDistractor)?' distractor-highlight':'';
+const autopsyCls=(G.autopsyMode&&G.ans&&!G.examMode&&origI!==q.c&&origI===G.autopsyDistractor)?' distractor-highlight':'';
 h+=`<button class="${cls}${blurCls}${autopsyCls}" data-action="pick" data-i="${origI}" aria-label="Option ${origI+1}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
 });
 h+=`<div style="display:flex;gap:6px;margin-top:14px">`;

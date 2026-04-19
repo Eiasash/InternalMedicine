@@ -187,7 +187,7 @@ export const TOPIC_REF={
 };
 
 export function renderExamTrendCard(){
-  const OLD_EX=new Set(['2020','2021-Jun','2022-Jun']);
+  const OLD_EX=new Set(['2020','2021-Jun','2022-Jun','2023-Jun']);
   const NEW_EX=new Set(['2024-May','2024-Oct','2025-Jun']);
   const TOPICS_L=TOPICS;
   const oldTot=G.QZ.filter(q=>OLD_EX.has(q.t)).length||1;
@@ -203,7 +203,7 @@ export function renderExamTrendCard(){
   const shrinking=trends.filter(r=>r.delta<-0.5).sort((a,b)=>a.delta-b.delta).slice(0,4);
 
   let h=`<div class="card" style="padding:14px;margin-bottom:10px;border-left:4px solid #7c3aed">
-<div style="font-weight:700;font-size:12px;margin-bottom:4px;color:#7c3aed">📈 Exam Trend — 2020-22 vs May24–Jun25</div>
+<div style="font-weight:700;font-size:12px;margin-bottom:4px;color:#7c3aed">📈 Exam Trend — 2020-23 vs 2024-25</div>
 <div style="font-size:9px;color:#94a3b8;margin-bottom:10px">Where the exam is heading. Study accordingly.</div>`;
 
   h+=`<div style="font-size:10px;font-weight:700;color:#059669;margin-bottom:5px">▲ GROWING — prioritize</div>`;
@@ -845,9 +845,10 @@ heatData.forEach(row=>{
 h+=`<tr><td style="padding:3px;text-align:right;white-space:nowrap;max-width:100px;overflow:hidden;text-overflow:ellipsis">${row.topic}</td>`;
 row.cells.forEach(c=>{
 if(c.n===0){h+=`<td style="padding:2px;text-align:center;background:#f8fafc;color:#cbd5e1">·</td>`;}
+else if(c.n===1){h+=`<td style="padding:2px;text-align:center;background:#f8fafc;color:#94a3b8;font-size:8px" title="Only 1 attempt — too few for a meaningful score">${c.pct}%<br><span style="font-size:7px">1q</span></td>`;}
 else{
 const bg=c.pct>=75?'#dcfce7':c.pct>=50?'#fef9c3':'#fecaca';
-h+=`<td style="padding:2px;text-align:center;background:${bg};font-weight:600;border-radius:2px">${c.pct}</td>`;}
+h+=`<td style="padding:2px;text-align:center;background:${bg};font-weight:600;border-radius:2px" title="${c.pct}% on ${c.n} attempts">${c.pct}%<br><span style="font-size:7px;opacity:0.7">${c.n}q</span></td>`;}
 });
 h+=`</tr>`;
 });
