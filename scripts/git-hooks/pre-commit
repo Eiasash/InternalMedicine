@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# Pre-commit hook: catch failures CI would catch, but at commit boundary.
+# Mirrors the sibling Geriatrics hook, adapted for Pnimit's modular src/ layout.
+#
+# Install (one-time):
+#   npm run hooks:install
+# Or manually:
+#   git config core.hooksPath scripts/git-hooks
+#
+# Runs on STAGED files only — uncommitted working-tree noise is ignored.
+
+set -e
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR)
+[ -z "$STAGED" ] && exit 0
+
+FAIL=0
+
+# 1. JSON validity on staged data/*.json
+for f in $(echo "$STAGED" | grep -E '^data/.*\.json$' || true); do
+  if ! node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" 2>/dev/null; then
+    echo "❌ pre-commit: $f is not valid JSON"
+    FAIL=1
+  fi
+done
+
+# 2. No geriatrics-only content in staged src/**.js
+#    (same ban list as .github/workflows/weekly-audit.yml)
+STAGED_SRC=$(echo "$STAGED" | grep -E '^src/.*\.js$' || true)
+if [ -n "$STAGED_SRC" ]; then
+  BANNED='GRS|Hazzard'"'"'s|CGA|Elder Abuse|Driving Fitness|BPSD|Dysphagia|FIM|eolState|renderEOLTree'
+  while IFS= read -r f; do
+    [ -z "$f" ] && continue
+    HIT=$(git show ":$f" | grep -nE "$BANNED" || true)
+    if [ -n "$HIT" ]; then
+      echo "❌ pre-commit: geriatrics-only content in $f:"
+      echo "$HIT" | head -5 | sed 's/^/    /'
+      FAIL=1
+    fi
+  done <<< "$STAGED_SRC"
+fi
+
+# 3. APP_VERSION / sw.js pairing reminder (warning only)
+if echo "$STAGED" | grep -q '^src/core/constants\.js$'; then
+  if ! echo "$STAGED" | grep -q '^sw\.js$'; then
+    echo "⚠️  pre-commit: constants.js staged without sw.js — bump CACHE version if APP_VERSION changed"
+  fi
+fi
+
+# 4. Unsafe innerHTML template literals in staged src/**.js
+if [ -n "$STAGED_SRC" ]; then
+  while IFS= read -r f; do
+    [ -z "$f" ] && continue
+    HIT=$(git show ":$f" | grep -nE '\.innerHTML[[:space:]]*=[[:space:]]*[^;]*\$\{' || true)
+    if [ -n "$HIT" ]; then
+      # Allow if sanitize(…) appears in the same assignment — lets existing audited sites through
+      FILTERED=$(echo "$HIT" | grep -vE 'sanitize\s*\(' || true)
+      if [ -n "$FILTERED" ]; then
+        echo "❌ pre-commit: unsanitized innerHTML template literal in $f:"
+        echo "$FILTERED" | head -5 | sed 's/^/    /'
+        FAIL=1
+      fi
+    fi
+  done <<< "$STAGED_SRC"
+fi
+
+if [ "$FAIL" = "1" ]; then
+  echo ""
+  echo "Use 'git commit --no-verify' to override (not recommended)."
+  exit 1
+fi
+
+exit 0
