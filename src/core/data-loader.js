@@ -62,9 +62,15 @@ G._dataPromise = (async function loadDataArrays() {
   } catch (error) {
     console.error('Data load failed:', error);
     var ct = document.getElementById('ct');
-    if (ct) ct.innerHTML = '<div style="padding:20px;color:red;text-align:center">' +
-      '<b>Error loading data</b><br>Please refresh the page or clear cache.' +
-      '<br><small>' + sanitize(error.message) + '</small></div>';
+    if (ct) {
+      ct.innerHTML = '<div style="padding:20px;color:red;text-align:center">' +
+        '<b>Error loading data</b><br>Please refresh or try again.' +
+        '<br><small>' + sanitize(error.message) + '</small>' +
+        '<br><button id="pnimit-retry-btn" style="margin-top:12px;padding:6px 14px;background:#0ea5e9;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px">Retry</button>' +
+        '</div>';
+      var _retryBtn = document.getElementById('pnimit-retry-btn');
+      if (_retryBtn) _retryBtn.addEventListener('click', () => location.reload());
+    }
     throw error;
   }
 })();
