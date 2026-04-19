@@ -17,6 +17,7 @@ if(G.S.studyMode===undefined)G.S.studyMode=false;
 if(!G.S.streak)G.S.streak=0;if(!G.S.lastDay)G.S.lastDay=null;
 if(!G.S.sp)G.S.sp={};
 if(G.S.spOpen===undefined)G.S.spOpen=true;
+if(G.S.notifOptIn===undefined)G.S.notifOptIn=false;
 G.save=function(){clearTimeout(G._saveTimer);G._saveTimer=setTimeout(()=>{
   localStorage.setItem(LS,JSON.stringify(G.S));
   // Warn if localStorage approaching 5MB limit
