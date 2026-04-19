@@ -1,7 +1,7 @@
 {
   "name": "cowork",
-  "version": "0.1.0",
-  "description": "Cowork branch + session-handoff workflow for Pnimit Mega (InternalMedicine): questions.json, flashcards.json, notes.json, drugs.json, plus src/**/*.js modules. Tandem-session safety via /cowork:claim and /cowork:collisions. Ported from the Geriatrics cowork plugin.",
+  "version": "0.2.0",
+  "description": "Cowork branch + session-handoff workflow for Pnimit Mega (InternalMedicine): questions.json, flashcards.json, notes.json, drugs.json, plus src/**/*.js modules. Tandem-session safety via /cowork:claim and /cowork:collisions. v0.2.0 adds Pnimit-tuned distractor-autopsy + schema-guard agents and topic-coverage + hebrew-sweep commands. Ported from the Geriatrics cowork plugin.",
   "author": { "name": "eiasash" },
   "keywords": ["cowork", "handoff", "tandem", "pnimit", "internalmedicine", "harrison", "question-bank"]
 }

@@ -4,7 +4,7 @@ Claude Code plugin that formalizes the `cowork/<topic>` branch workflow for the 
 
 One plugin = consistent start / handoff / resume / status / land commands + tandem-session safety (claim/collisions) + a SessionStart hook that loads the current handoff automatically.
 
-This is the **thin port**: content-agnostic coordination commands only. Pnimit-specific reviewers (distractor-autopsy, topic-coverage, schema-guard) are intentionally omitted — add them per Pnimit's schema (`ti` 0–23, Harrison's 22e) when the need arises.
+**v0.2.0** — adds Pnimit-tuned reviewers (`distractor-autopsy`, `schema-guard`, `topic-coverage`, `hebrew-sweep`) on top of the v0.1.0 thin port.
 
 ## Install
 
@@ -26,6 +26,14 @@ ln -sfn "$PWD/plugins/cowork" .claude/plugins/cowork
 | `/cowork:land` | Rebase, run vitest + Vite build, draft squash message |
 | `/cowork:claim <path…>` | Declare paths the current branch is editing so parallel sessions can see it |
 | `/cowork:collisions` | Report file overlap and claim violations across all active cowork/* branches |
+| `/cowork:distractor-autopsy <index>` | Deep review one MCQ's distractors (by 0-based array index) before approving |
+| `/cowork:topic-coverage` | Report question density per Pnimit topic (ti 0–23); flag gaps and overweighted topics |
+| `/cowork:hebrew-sweep` | Eyeball-review recently-touched Hebrew strings for terminology consistency |
+
+## Agents
+
+- `distractor-autopsy` — second-opinion reviewer for MCQ quality (homogeneity, plausibility, absolute-term red flags, answer-key stability, topic coherence, geriatrics-only leak).
+- `schema-guard` — verifies any change to `data/questions.json` / `notes.json` / `drugs.json` / `flashcards.json` against the Pnimit schema (`ti` 0–23, year tags, no Hazzard/GRS/geriatrics leak, no `q`/`a` legacy flashcard shape).
 
 ## Hook
 
@@ -49,6 +57,8 @@ When multiple Claude sessions run cowork branches in parallel:
 |---|---|---|
 | Main file | `shlav-a-mega.html` (monolith) | `pnimit-mega.html` shell + `src/**/*.js` modules |
 | Topic range | `ti` 0–39 (Hazzard scope) | `ti` 0–23 (Harrison scope) |
-| Content red flags | GRS leak, Hazzard-excluded chapters | geriatrics-only content leak |
+| Question identity | `id` field | 0-based array index in `data/questions.json` |
+| Content red flags | GRS leak, Hazzard-excluded chapters | Hazzard / P005-2026 / גריאטריה / CFS leak (wrong app) |
 | Build | no build step | `npm run build` (Vite) runs in `/land` |
-| Hebrew glossary skill | used in `/land` | not wired; hook available for future |
+| Hebrew glossary skill | `hebrew-medical-glossary` (geriatrics-scoped) | none yet — `/hebrew-sweep` falls back to heuristics |
+| Question-schema skill | external `question-schema` skill | inline schema in agents (self-contained) |
