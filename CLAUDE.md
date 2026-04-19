@@ -59,8 +59,6 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 - `window._idbSaveTimer` / `window._lsWarnShown` — internal flags in `state.js`
 - `window.save` — IDB save (legacy alias, `G.save()` is preferred)
 
-**Dead reference (harmless):** `window._libData` is read in `library-view.js` but never assigned — the guard prevents errors. Can be removed in a future pass.
-
 ### Storage Layers
 
 | Layer | Key / Store | Purpose |
