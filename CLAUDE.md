@@ -115,7 +115,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 │   └── build.sh                # Production build: vite build + copy static assets + generate prod SW
 │
 ├── data/                       # Runtime JSON data
-│   ├── questions.json          # 1472 MCQs
+│   ├── questions.json          # 1541 MCQs
 │   ├── topics.json             # 24 topic definitions
 │   ├── notes.json              # 24 study notes
 │   ├── drugs.json              # 53 drugs (Beers, ACB, STOPP)
@@ -219,16 +219,16 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 
 | Session | Questions | Year Tag |
 |---------|-----------|----------|
-| 2020 | 87 | `2020` |
-| June 2021 | 148 | `Jun21` |
-| June 2022 | 147 | `Jun22` |
-| June 2023 | 136 | `Jun23` |
-| May 2024 | 98 | `May24` |
-| October 2024 | 98 | `Oct24` |
-| June 2025 | 149 | `Jun25` |
+| 2020 | 139 | `2020` |
+| June 2021 | 149 | `2021-Jun` |
+| June 2022 | 148 | `2022-Jun` |
+| June 2023 | 147 | `2023-Jun` |
+| May 2024 | 99 | `2024-May` |
+| October 2024 | 99 | `2024-Oct` |
+| June 2025 | 151 | `2025-Jun` |
 | Exam (misc) | 20 | `Exam` |
 | Harrison (AI) | 589 | `Harrison` |
-| **Total** | **1472** | |
+| **Total** | **1541** | |
 
 ---
 
@@ -271,7 +271,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Functions | 144 |
 | ES imports | 77 |
 | Window bindings | 16 (down from 72) |
-| Questions | 1,472 (all with explanations) |
+| Questions | 1,541 (all with explanations) |
 | AI-generated | 589 (tagged `Harrison`) |
 | Topics | 24 |
 | Notes | 24 |
