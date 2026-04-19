@@ -434,3 +434,30 @@ describe('library-view AI chapter context', () => {
     expect(fn).toMatch(/\.sections/);
   });
 });
+
+// ─────────────────────────────────────────────────────────────
+// Daily-notification opt-in guard. Requesting Notification permission
+// on every page load without user intent gets the prompt dismissed
+// forever. The flow must be: explicit toggle → requestPermission →
+// schedule only if S.notifOptIn + permission=granted.
+describe('notification opt-in flow', () => {
+  const app = readFile('src/ui/app.js');
+  const moreView = readFile('src/ui/more-view.js');
+
+  test('app.js does not auto-call Notification.requestPermission()', () => {
+    expect(app).not.toMatch(/Notification\.requestPermission\s*\(/);
+  });
+
+  test('scheduleDailyNotification is gated on G.S.notifOptIn', () => {
+    expect(app).toMatch(/G\.S\.notifOptIn/);
+    // The gate and the postMessage must appear in the same scheduler closure.
+    const sched = app.match(/function\s+scheduleDailyNotification[\s\S]*?^\s{2}\}/m)?.[0] || '';
+    expect(sched).toMatch(/G\.S\.notifOptIn/);
+    expect(sched).toMatch(/schedule-notification/);
+  });
+
+  test('more-view.js exposes toggleNotifOptIn and requests permission on opt-in', () => {
+    expect(moreView).toMatch(/export\s+async\s+function\s+toggleNotifOptIn/);
+    expect(moreView).toMatch(/Notification\.requestPermission\s*\(/);
+  });
+});
