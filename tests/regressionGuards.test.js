@@ -408,3 +408,29 @@ describe('service worker — dev/build consistency', () => {
     expect(pkg.version).toBe(`${appVer}.0`);
   });
 });
+
+// ─────────────────────────────────────────────────────────────
+// Library AI chapter-context guard (regression for dead window._libData).
+// aiSummarizeChapter + quizMeOnChapter must read chapter text from the
+// actually-loaded G._harData, not the never-assigned window._libData.
+describe('library-view AI chapter context', () => {
+  const src = readFile('src/ui/library-view.js');
+
+  test('no references to dead window._libData', () => {
+    expect(src).not.toMatch(/window\._libData/);
+  });
+
+  test('aiSummarizeChapter reads chapter sections from G._harData', () => {
+    const fn = src.match(/export async function aiSummarizeChapter[\s\S]*?^}/m)?.[0];
+    expect(fn, 'aiSummarizeChapter function').toBeTruthy();
+    expect(fn).toMatch(/G\._harData\s*\[\s*chNum\s*\]/);
+    expect(fn).toMatch(/\.sections/);
+  });
+
+  test('quizMeOnChapter reads chapter sections from G._harData', () => {
+    const fn = src.match(/export async function quizMeOnChapter[\s\S]*?^}/m)?.[0];
+    expect(fn, 'quizMeOnChapter function').toBeTruthy();
+    expect(fn).toMatch(/G\._harData\s*\[\s*chNum\s*\]/);
+    expect(fn).toMatch(/\.sections/);
+  });
+});
