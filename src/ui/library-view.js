@@ -174,9 +174,12 @@ export async function aiSummarizeChapter(chNum,chTitle){
   if(!box)return;
   box.innerHTML='<div style="text-align:center;padding:16px;color:#64748b">⏳ מסכם את הפרק...</div>';
   let chText='';
-  if(window._libData){
-    const ch=window._libData.chapters.find(c=>c.ch===chNum);
-    if(ch&&ch.sections)chText=ch.sections.slice(0,8).map(s=>s.title+(s.content?': '+s.content.slice(0,300):'')).join('\n').slice(0,3500);
+  const harCh=G._harData&&G._harData[chNum];
+  if(harCh&&harCh.sections){
+    chText=harCh.sections.slice(0,8).map(s=>{
+      const body=Array.isArray(s.content)?s.content.join(' '):(s.content||'');
+      return s.title+(body?': '+body.slice(0,300):'');
+    }).join('\n').slice(0,3500);
   }
   const prompt=`You are summarizing Harrison's Internal Medicine Ch ${chNum}: ${chTitle} for the Israeli internal medicine board exam (שלב א׳ פנימית).
 
@@ -206,11 +209,12 @@ export async function quizMeOnChapter(chNum,chTitle){
   if(el){el.innerHTML='<div style="text-align:center;padding:20px;color:#64748b">⏳ Generating questions from Ch '+chNum+'...</div>';}
   // Get chapter text from already-loaded data
   let chapterText='';
-  if(window._libData&&window._libData.chapters){
-    const ch=window._libData.chapters.find(c=>c.ch===chNum);
-    if(ch&&ch.sections){
-      chapterText=ch.sections.slice(0,6).map(s=>s.title+': '+s.content).join('\n').slice(0,3000);
-    }
+  const harCh=G._harData&&G._harData[chNum];
+  if(harCh&&harCh.sections){
+    chapterText=harCh.sections.slice(0,6).map(s=>{
+      const body=Array.isArray(s.content)?s.content.join(' '):(s.content||'');
+      return s.title+': '+body;
+    }).join('\n').slice(0,3000);
   }
   if(!chapterText){
     chapterText="Harrison's Internal Medicine Chapter "+chNum+": "+chTitle;
