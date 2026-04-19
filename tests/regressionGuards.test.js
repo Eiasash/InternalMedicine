@@ -149,11 +149,16 @@ describe('questions.json — duplicates', () => {
   let questions;
   beforeAll(() => { questions = loadJSON('data/questions.json'); });
 
-  test('no duplicate questions by first 80 chars of stem (per tag)', () => {
+  // Normalized stem match: strips whitespace, punctuation, digits, Hebrew maqaf.
+  // Catches near-dupes that differ only in trailing chars on an option, whitespace
+  // drift, or punctuation variation.
+  const normStem = (s) => (s || '').replace(/[\s\d.,?!:;()\[\]"'\-\u05BE]+/g, '').toLowerCase();
+
+  test('no duplicate questions per tag (normalized stem)', () => {
     const byTagKey = new Map();
     const dupes = [];
     questions.forEach((q, i) => {
-      const key = `${q.t}||${(q.q || '').slice(0, 80).trim()}`;
+      const key = `${q.t}||${normStem(q.q)}`;
       if (!key.endsWith('||')) {
         if (byTagKey.has(key)) {
           dupes.push({ first: byTagKey.get(key), second: i, tag: q.t, preview: (q.q || '').slice(0, 60) });
@@ -162,23 +167,23 @@ describe('questions.json — duplicates', () => {
         }
       }
     });
-    if (dupes.length) console.error('Duplicates:', dupes);
+    if (dupes.length) console.error('Within-tag near-duplicates:', dupes.slice(0, 5));
     expect(dupes.length).toBe(0);
   });
 
-  test('no duplicate questions across all tags (by first 100 chars)', () => {
+  test('no duplicate questions across all tags (normalized stem)', () => {
     const seen = new Map();
     const dupes = [];
     questions.forEach((q, i) => {
-      const key = (q.q || '').slice(0, 100).trim();
-      if (!key) return;
+      const key = normStem(q.q);
+      if (!key || key.length < 20) return;
       if (seen.has(key)) {
-        dupes.push({ first: seen.get(key), second: i });
+        dupes.push({ first: seen.get(key), second: i, tags: [questions[seen.get(key)].t, q.t] });
       } else {
         seen.set(key, i);
       }
     });
-    if (dupes.length > 0) console.error('Cross-tag duplicates:', dupes.slice(0, 3));
+    if (dupes.length > 0) console.error('Cross-tag near-duplicates:', dupes.slice(0, 5));
     expect(dupes.length).toBe(0);
   });
 });
