@@ -40,8 +40,11 @@ describe('pnimit-mega.html', () => {
   });
 
   test('registers service worker (sw.js)', () => {
+    // SW registration lives in core/sw-update.js; app.js imports + calls initSWUpdate.
+    const swUpdate = readFile('src/core/sw-update.js');
+    expect(swUpdate).toMatch(/navigator\.serviceWorker\.register\(['"]sw\.js['"]\)/);
     const appJs = readFile('src/ui/app.js');
-    expect(appJs).toMatch(/sw\.js/);
+    expect(appJs).toMatch(/initSWUpdate\s*\(/);
   });
 });
 

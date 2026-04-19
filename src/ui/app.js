@@ -213,85 +213,30 @@ document.body.appendChild(ov);
 }
 
 // PWA + Background Sync + Daily Notification
-// ===== UPDATE BANNER =====
+// SW update banner + registration live in core/sw-update.js.
+// Kept here: daily-notification scheduling that needs getDueQuestions() from the app.
+import { initSWUpdate, applyUpdate } from '../core/sw-update.js';
 
-// ===== SW UPDATE DETECTION =====
-const UPDATE_DISMISS_KEY='pnimit_update_dismissed_'+APP_VERSION;
-
-export function showUpdateBanner(){
-if(document.getElementById('update-banner'))return;
-if(localStorage.getItem(UPDATE_DISMISS_KEY))return;
-const b=document.createElement('div');
-b.id='update-banner';
-b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;padding:12px 16px;font-size:12px;display:flex;align-items:center;gap:10px;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,.3)';
-b.innerHTML=`<div><b>🆕 עדכון זמין!</b> גרסה חדשה מוכנה</div>
-<div style="display:flex;gap:6px;flex-shrink:0">
-<button data-action="apply-update" style="background:#fff;color:#4f46e5;border:none;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer">🔄 עדכן עכשיו</button>
-<button data-action="close-update-banner" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer">✕</button>
-</div>`;
-document.body.prepend(b);
-}
-export function applyUpdate(){
-// Clear dismissal so fresh version doesn't show stale suppression
-try{localStorage.removeItem(UPDATE_DISMISS_KEY);}catch(e){}
-// Properly await cache deletion before reload
-(async()=>{
-try{
-if(navigator.serviceWorker&&navigator.serviceWorker.controller){
-const regs=await navigator.serviceWorker.getRegistrations();
-regs.forEach(r=>{if(r.waiting)r.waiting.postMessage({type:'SKIP_WAITING'});});
-}
-const ks=await caches.keys();
-await Promise.all(ks.map(k=>caches.delete(k)));
-}catch(e){console.warn('Cache clear error:',e);}
-window.location.reload();
-})();
-}
-
-if('serviceWorker' in navigator){
-// Clean up old caches on load
-caches.keys().then(ks=>{
-const old=ks.filter(k=>k.startsWith('pnimit-')&&k!=='pnimit-v'+APP_VERSION);
-old.forEach(k=>{caches.delete(k);console.log('Deleted old cache:',k);});
+initSWUpdate(APP_VERSION).then(reg => {
+  if (!reg) return;
+  function scheduleDailyNotification() {
+    const now = new Date();
+    const target = new Date(now);
+    target.setHours(7, 0, 0, 0);
+    if (now >= target) target.setDate(target.getDate() + 1);
+    setTimeout(() => {
+      const dueN = getDueQuestions().length;
+      if (dueN > 0 && reg.active) {
+        reg.active.postMessage({ type: 'schedule-notification', dueCount: dueN });
+      }
+      scheduleDailyNotification();
+    }, target - now);
+  }
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+  scheduleDailyNotification();
 });
-function onNewWorkerReady(){
-// Only show banner when a controller already exists (not first install)
-if(navigator.serviceWorker.controller)showUpdateBanner();
-}
-navigator.serviceWorker.register('sw.js').then(reg=>{
-// Detect waiting worker (update installed before this page load)
-if(reg.waiting){onNewWorkerReady();return;}
-// Detect future updates
-reg.addEventListener('updatefound',()=>{
-const nw=reg.installing;if(!nw)return;
-nw.addEventListener('statechange',()=>{
-if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpdateBanner();
-});
-});
-// Proactively check for updates
-reg.update().catch(()=>{});
-// Schedule daily notification at 07:00
-function scheduleDailyNotification(){
-const now=new Date();
-const target=new Date(now);
-target.setHours(7,0,0,0);
-if(now>=target)target.setDate(target.getDate()+1);
-const delay=target-now;
-setTimeout(()=>{
-const dueN=getDueQuestions().length;
-if(dueN>0&&reg.active){
-reg.active.postMessage({type:'schedule-notification',dueCount:dueN});
-}
-scheduleDailyNotification();// Reschedule for next day
-},delay);
-}
-// Request notification permission
-if('Notification' in window&&Notification.permission==='default'){
-Notification.requestPermission();
-}
-scheduleDailyNotification();
-}).catch(function(){});
-}
 // queueBackgroundSync removed — dead code
 
 G._dataPromise.then(()=>{renderTabs();render();}).catch(()=>{});

@@ -16,7 +16,7 @@
 
 ### Modular ES Modules
 
-The app is split into 18 ES module source files under `src/`. The HTML shell loads two scripts:
+The app is split into 19 ES module source files under `src/`. The HTML shell loads two scripts:
 ```html
 <script src="shared/fsrs.js"></script>              <!-- plain script, shared with Geriatrics -->
 <script type="module" src="src/ui/app.js"></script>  <!-- ES module entry, imports everything -->
@@ -86,7 +86,8 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 │   │   ├── constants.js        # APP_VERSION, TOPICS, EXAM_FREQ, LS, SUPA_*, AI_*
 │   │   ├── utils.js            # sanitize, fmtT, safeJSONParse, getApiKey, getOptShuffle
 │   │   ├── state.js            # S object, save, IDB migration, updateStreak
-│   │   └── data-loader.js      # Fetches data/*.json → populates G.QZ, G.NOTES, etc.
+│   │   ├── data-loader.js      # Fetches data/*.json → populates G.QZ, G.NOTES, etc.
+│   │   └── sw-update.js        # SW registration, update banner, applyUpdate (mirrors Geriatrics/src/sw-update.js)
 │   ├── sr/
 │   │   ├── fsrs-bridge.js      # Re-exports shared/fsrs.js globals as ES imports
 │   │   └── spaced-repetition.js # srScore, getDue, buildRescuePool, trackDailyActivity
@@ -204,7 +205,7 @@ npm run format       # Prettier
 
 ### Production Build
 `scripts/build.sh` runs:
-1. `npx vite build` → bundles 18 modules into one JS + one CSS (content-hashed)
+1. `npx vite build` → bundles 19 modules into one JS + one CSS (content-hashed)
 2. Copies static assets (data/, harrison_chapters.json, shared/, exams/, articles/, harrison/, questions/, syllabus/)
 3. Fixes manifest.json path (Vite hashes it, sed reverts)
 4. Generates production SW (simplified: caches HTML + data JSON, stale-while-revalidate for hashed assets)
@@ -265,7 +266,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 
 | Metric | Value |
 |--------|-------|
-| Source modules | 18 (under src/) |
+| Source modules | 19 (under src/) |
 | Source LOC | ~4,120 |
 | Functions | 144 |
 | ES imports | 77 |
@@ -291,7 +292,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Workflow | Trigger | Checks |
 |----------|---------|--------|
 | `ci.yml` | Push/PR to main | JSON validation, question schema, SW version sync, topic coverage, no geriatrics content, innerHTML audit, tests, Vite build |
-| `integrity-guard.yml` | Push/PR to main | JS syntax (all 18 modules), 36 critical functions, 22 required files, function count regression, truncated code patterns, SW file refs |
+| `integrity-guard.yml` | Push/PR to main | JS syntax (all 19 modules), 36 critical functions, 22 required files, function count regression, truncated code patterns, SW file refs |
 | `weekly-audit.yml` | Sunday 06:00 UTC | Full data audit + security (eval, innerHTML) + version drift + tests + build |
 | `deploy.yml` | Push to main | Install → test → build → deploy dist/ to GitHub Pages |
 
