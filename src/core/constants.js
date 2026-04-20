@@ -24,8 +24,14 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.57';
+export const APP_VERSION='9.58';
 export const CHANGELOG={
+    '9.58': [
+      '🎨 SZMC Clinical Kit — token layer — sky/emerald skin via data-skin="pnimit"',
+      '🔤 Self-hosted Heebo + Inter (removed Google Fonts dep, offline-ready)',
+      '🛡️ CSP tightened: style-src + font-src both \'self\'-only',
+      '♿ Respects prefers-reduced-motion globally'
+    ],
     '9.57': [
       '🙈 מצב מבחן לא חושף תשובה עד הסוף — Mock ו-Full. האפשרות שנבחרה מודגשת, אבל ירוק/אדום/הסבר מוצגים רק בסיום. תקלה גם ב-Distractor Autopsy highlighting (פרץ דרך examMode guard).',
       '📊 Exam Trend כולל עכשיו 2023-Jun ב-OLD cohort. הטווח הוא 2020-23 מול 2024-25.',

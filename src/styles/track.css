@@ -1,6 +1,6 @@
 /* === Progress Bars === */
 .progress-bar { height: 3px; background: #e2e8f0; border-radius: 2px; margin-bottom: 10px; overflow: hidden }
-.progress-bar .fill { height: 100%; background: rgb(var(--sky)); border-radius: 2px; transition: width .3s ease }
+.progress-bar .fill { height: 100%; background: var(--app-primary); border-radius: 2px; transition: width .3s ease }
 
 /* === Streak Badge === */
 .streak-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #fffbeb; color: #d97706; border: 1px solid #fde68a }
