@@ -29,7 +29,7 @@ import { renderTrack, renderCalc, calcUp, calcEstScore, renderStudyPlan, renderE
          renderDailyPlan, renderSessionCard, setExamDate, exportCheatSheet,
          saveSessionSummary, initTrackEvents } from './track-view.js';
 import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
-         showAnswerHardFail, renderSettings, toggleNotifOptIn,
+         showAnswerHardFail, renderSettings, toggleNotifOptIn, renderNotes,
          initMoreEvents } from './more-view.js';
 
 export function renderTabs(){
@@ -69,12 +69,13 @@ case'track':
   el.innerHTML=renderTrack();break;
 case'more':
   {const _moreBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
-  [{id:'calc',ic:'🧮',l:'Calc'},{id:'search',ic:'🔍',l:'Search'},{id:'chat',ic:'💬',l:'Chat'},{id:'feedback',ic:'💡',l:'Feedback'},{id:'settings',ic:'⚙️',l:'Settings'}].map(s=>
+  [{id:'calc',ic:'🧮',l:'Calc'},{id:'search',ic:'🔍',l:'Search'},{id:'notes',ic:'📝',l:'Notes'},{id:'chat',ic:'💬',l:'Chat'},{id:'feedback',ic:'💡',l:'Feedback'},{id:'settings',ic:'⚙️',l:'Settings'}].map(s=>
     '<button data-action="more-sub" data-sub="'+s.id+'" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(G.moreSub===s.id?'700':'400')+';cursor:pointer;background:'+(G.moreSub===s.id?'#fff':'transparent')+';color:'+(G.moreSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(G.moreSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
   let _mBody='';
   if(G.moreSub==='calc')_mBody=renderCalc();
   else if(G.moreSub==='search')_mBody=renderSearch();
+  else if(G.moreSub==='notes')_mBody=renderNotes();
   else if(G.moreSub==='chat')_mBody=renderChat();
   else if(G.moreSub==='feedback')_mBody=renderFeedback();
   else if(G.moreSub==='settings')_mBody=renderSettings();
