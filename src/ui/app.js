@@ -323,6 +323,7 @@ document.body.addEventListener('click', (e) => {
   else if (el.dataset.action === 'apply-update') applyUpdate();
   else if (el.dataset.action === 'close-update-banner') { try{localStorage.setItem(UPDATE_DISMISS_KEY,'1');}catch(e){} const b = document.getElementById('update-banner'); if (b) b.remove(); }
   else if (el.dataset.action === 'close-mock-modal') { const m = document.getElementById('mexModal'); if (m) m.remove(); }
+  else if (el.dataset.action === 'close-exam-modal') { const m = document.getElementById('examModal'); if (m) m.remove(); }
 });
 
 // === Boot ===
