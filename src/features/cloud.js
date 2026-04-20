@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { SUPA_URL, SUPA_ANON, TOPICS, APP_VERSION } from '../core/constants.js';
-import { sanitize, fmtT } from '../core/utils.js';
+import { sanitize, fmtT, toast } from '../core/utils.js';
 import { callAI } from '../ai/client.js';
 import { calcEstScore } from '../ui/track-view.js';
 import { getTopicStats, getDueQuestions } from '../sr/spaced-repetition.js';
@@ -110,7 +110,7 @@ return h;
 export async function submitFeedbackForm(){
 const type=document.getElementById('fb-type')?.value||'other';
 const text=document.getElementById('fb-text')?.value?.trim();
-if(!text){alert('Please describe your feedback');return;}
+if(!text){toast('Please describe your feedback','info');return;}
 const entry={type,text,ts:Date.now(),version:APP_VERSION,uid:localStorage.getItem('pnimit_uid')||'anon'};
 let fb=[];try{fb=JSON.parse(localStorage.getItem('pnimit_fb_sent')||'[]');}catch(e){}
 fb.push(entry);
@@ -152,14 +152,14 @@ export async function cloudBackup(){
           headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json'},
           body:JSON.stringify({data:G.S,updated_at:new Date().toISOString()})
         });
-        if(!patchRes.ok){const pe=await patchRes.text();alert('❌ Backup update failed: '+patchRes.status+'\n'+pe.slice(0,200));return;}
+        if(!patchRes.ok){const pe=await patchRes.text();toast('❌ Backup update failed: '+patchRes.status+'\n'+pe.slice(0,200),'info');return;}
       }
-      alert('✅ Progress backed up to cloud!\nDevice ID: '+_sbDeviceId().slice(0,12)+'...');
+      toast('✅ Progress backed up to cloud!\nDevice ID: '+_sbDeviceId().slice(0,12)+'...','info');
     } else {
       const err=await res.text();
-      alert('❌ Backup failed: '+res.status+'\n'+err.slice(0,200));
+      toast('❌ Backup failed: '+res.status+'\n'+err.slice(0,200),'info');
     }
-  }catch(e){alert('❌ Backup failed: '+e.message);}
+  }catch(e){toast('❌ Backup failed: '+e.message,'info');}
   if(btn){btn.disabled=false;btn.textContent='☁️ Backup to Cloud';}
 }
 // Filter a restore payload to only the keys that already exist in the
@@ -191,16 +191,24 @@ export async function cloudRestore(){
     const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups?id=eq.'+encodeURIComponent(id)+'&select=data,updated_at',{
       headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}
     });
-    if(!res.ok){alert('❌ Restore failed: '+res.status);return;}
+    if(!res.ok){toast('❌ Restore failed: '+res.status,'info');return;}
     const rows=await res.json();
-    if(!rows||!rows.length){alert('No backup found for ID: '+id);return;}
+    if(!rows||!rows.length){toast('No backup found for ID: '+id,'info');return;}
     const row=rows[0];
-    if(confirm('Restore backup from '+new Date(row.updated_at).toLocaleString()+'?\nThis will overwrite your current progress.')){
+    const msg='Restore backup from '+new Date(row.updated_at).toLocaleString()+'?\nThis will overwrite your current progress.';
+    const ok=await new Promise(res=>{
+      const h=`<div id="rstModal" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:10001;padding:16px"><div style="background:#fff;border-radius:14px;max-width:360px;margin:20vh auto;padding:20px;font-family:Heebo,Inter,sans-serif;text-align:center"><div style="font-size:32px;margin-bottom:6px">☁️</div><div style="font-size:13px;line-height:1.6;margin-bottom:16px;white-space:pre-wrap">${sanitize(msg)}</div><div style="display:flex;gap:8px"><button id="rstYes" style="flex:1;padding:10px;background:#0ea5e9;color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer">Restore</button><button id="rstNo" style="flex:1;padding:10px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-weight:700;cursor:pointer">Cancel</button></div></div></div>`;
+      const d=document.createElement('div');d.innerHTML=h;document.body.appendChild(d.firstChild);
+      const close=(v)=>{const m=document.getElementById('rstModal');if(m)m.remove();res(v);};
+      document.getElementById('rstYes').addEventListener('click',()=>close(true));
+      document.getElementById('rstNo').addEventListener('click',()=>close(false));
+    });
+    if(ok){
       const validated=filterRestorePayload(row.data,new Set(Object.keys(G.S)));
       Object.assign(G.S,validated);G.save();G.render();
-      alert('✅ Progress restored!');
+      toast('✅ Progress restored!','success');
     }
-  }catch(e){alert('❌ Restore failed: '+e.message);}
+  }catch(e){toast('❌ Restore failed: '+e.message,'info');}
 }
 
 export function getDiagnostics(){

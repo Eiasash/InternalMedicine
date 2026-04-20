@@ -1,6 +1,7 @@
 import G from '../core/globals.js';
 import { fsrsR, fsrsInterval, fsrsInitNew, fsrsUpdate, fsrsMigrateFromSM2, isChronicFail } from './fsrs-bridge.js';
 
+import { toast } from '../core/utils.js';
 // Spaced repetition, SRS scoring, activity tracking — extracted from pnimit-mega.html
 // Depends on: G.S, G.save (state.js), FSRS functions (shared/fsrs.js), G.QZ (data)
 // References globals at runtime: G.pool, G.qi, G.sel, G.ans, G.filt, G.render, G.qStartTime,
@@ -89,7 +90,7 @@ return streak;
 }
 export function buildRescuePool(){
 const weak=getWeakTopics(3);
-if(!weak.length){alert('Not enough data yet \u2014 answer more questions first');return;}
+if(!weak.length){toast('Not enough data yet \u2014 answer more questions first','info');return;}
 const rescueQs=[];
 weak.forEach(w=>{
   const topicQs=G.QZ.map((q,i)=>({i,q})).filter(x=>x.q.ti===w.ti);

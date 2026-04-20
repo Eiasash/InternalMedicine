@@ -1,7 +1,7 @@
 // App entry point — orchestrates all modules, wires up window bindings for onclick handlers
 import G from '../core/globals.js';
 import { APP_VERSION, LS, TOPICS, EXAM_FREQ, CHANGELOG, BUILD_HASH } from '../core/constants.js';
-import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey } from '../core/utils.js';
+import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey, toast } from "../core/utils.js";
 import { migrateToIDB } from '../core/state.js';
 import '../core/data-loader.js'; // side-effect: populates G.QZ, G.TABS, etc.
 import '../clock.js'; // side-effect: header clock (#hdr-sub)
@@ -114,7 +114,7 @@ else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>{const b
 export function shareApp(){
 const url=location.href;
 if(navigator.share){navigator.share({title:'Pnimit Mega — Internal Medicine Board Prep',text:'Internal Medicine Board Prep — Harrison\'s 22e + Required Articles + Calculators + Spaced Repetition',url:url}).catch(()=>{});}
-else if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>alert('✅ Link copied!'));}
+else if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>toast('✅ Link copied!','success'));}
 }
 
 // ===== EXPORT PROGRESS =====
@@ -123,7 +123,7 @@ export function importProgress(){
 const input=document.createElement('input');input.type='file';input.accept='.json';
 input.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
 r.onload=ev=>{try{const d=JSON.parse(ev.target.result);const allowed=new Set(Object.keys(G.S));const validated={};for(const k of Object.keys(d)){if(allowed.has(k))validated[k]=d[k];}Object.assign(G.S,validated);G.save();render();
-alert('✅ Progress imported successfully!');}catch(err){alert('❌ Invalid file');}};r.readAsText(f);};
+toast('✅ Progress imported successfully!','success');}catch(err){toast('❌ Invalid file','error');}};r.readAsText(f);};
 input.click();}
 
 export function exportProgress(){

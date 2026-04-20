@@ -1,5 +1,5 @@
 import G from '../core/globals.js';
-import { sanitize } from '../core/utils.js';
+import { sanitize, toast } from '../core/utils.js';
 import { callAI } from './client.js';
 
 // AI explain, autopsy, teach-back — extracted from pnimit-mega.html
@@ -89,14 +89,14 @@ G.render();
 
 export function startVoiceTeachBack(){
   const SpeechRec=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SpeechRec){alert('קול לא נתמך בדפדפן זה');return;}
+  if(!SpeechRec){toast('קול לא נתמך בדפדפן זה','info');return;}
   const rec=new SpeechRec();
   rec.lang='he-IL';
   rec.continuous=false;
   rec.interimResults=false;
   const btn=document.getElementById('tb-mic-btn');
   const inp=document.getElementById('tbInput');
-  if(!inp){alert('עדכן את הדף');return;}
+  if(!inp){toast('עדכן את הדף','info');return;}
   if(btn){btn.textContent='🔴';btn.disabled=true;}
   rec.onresult=function(e){
     const transcript=e.results[0][0].transcript;
