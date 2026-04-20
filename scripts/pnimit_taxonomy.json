@@ -1,0 +1,652 @@
+{
+  "10": {
+    "name": "Hypertension",
+    "subtopics": [
+      {
+        "key": "primary_htn",
+        "name": "Primary Hypertension",
+        "desc": "Essential hypertension diagnosis, classification, and risk stratification"
+      },
+      {
+        "key": "secondary_htn",
+        "name": "Secondary Hypertension",
+        "desc": "Causes of secondary hypertension including renal, endocrine, and vascular etiologies"
+      },
+      {
+        "key": "htn_management",
+        "name": "Hypertension Management",
+        "desc": "Pharmacologic and non-pharmacologic treatment strategies, drug selection, and monitoring"
+      },
+      {
+        "key": "htn_complications",
+        "name": "Hypertensive Complications",
+        "desc": "Hypertensive emergencies, urgencies, and end-organ damage including renal and cardiac complications"
+      }
+    ]
+  },
+  "6": {
+    "name": "Pulmonology & VTE",
+    "subtopics": [
+      {
+        "key": "venous_thromboembolism",
+        "name": "Venous Thromboembolism",
+        "desc": "DVT, PE, risk stratification, anticoagulation, and prophylaxis"
+      },
+      {
+        "key": "obstructive_lung",
+        "name": "Obstructive Lung Disease",
+        "desc": "COPD, asthma, bronchiectasis diagnosis and management"
+      },
+      {
+        "key": "interstitial_lung",
+        "name": "Interstitial Lung Disease",
+        "desc": "ILD patterns, pulmonary fibrosis, and restrictive pathology"
+      },
+      {
+        "key": "respiratory_failure",
+        "name": "Respiratory Failure",
+        "desc": "Acute and chronic respiratory failure, mechanical ventilation, and oxygen therapy"
+      }
+    ]
+  },
+  "9": {
+    "name": "Valvular Heart Disease",
+    "subtopics": [
+      {
+        "key": "aortic_valve",
+        "name": "Aortic Valve Disease",
+        "desc": "Aortic stenosis and regurgitation: pathophysiology, diagnosis, and management"
+      },
+      {
+        "key": "mitral_valve",
+        "name": "Mitral Valve Disease",
+        "desc": "Mitral stenosis and regurgitation: evaluation, symptoms, and treatment"
+      },
+      {
+        "key": "tricuspid_pulmonic",
+        "name": "Tricuspid & Pulmonic",
+        "desc": "Right-sided valve disorders: clinical features and management"
+      },
+      {
+        "key": "endocarditis",
+        "name": "Infective Endocarditis",
+        "desc": "Diagnosis, prophylaxis, and treatment of valve infections"
+      },
+      {
+        "key": "intervention",
+        "name": "Surgical Management",
+        "desc": "Timing and indications for valve repair or replacement"
+      }
+    ]
+  },
+  "13": {
+    "name": "Hematology & Coagulation",
+    "subtopics": [
+      {
+        "key": "anemia_rbc",
+        "name": "Anemia & RBC Disorders",
+        "desc": "Iron deficiency, megaloblastic anemia, hemolytic anemias, polycythemia, and other red cell disorders"
+      },
+      {
+        "key": "wbc_heme_malig",
+        "name": "WBC & Hematologic Malignancies",
+        "desc": "Leukemias, lymphomas, multiple myeloma, and other white blood cell disorders"
+      },
+      {
+        "key": "coagulation",
+        "name": "Coagulation Disorders",
+        "desc": "Hemophilia, von Willebrand disease, platelet disorders, thrombophilia, and bleeding/clotting abnormalities"
+      },
+      {
+        "key": "transfusion",
+        "name": "Transfusion Medicine",
+        "desc": "Blood products, transfusion reactions, compatibility testing, and transfusion indications"
+      }
+    ]
+  },
+  "0": {
+    "name": "Required Articles — Key Takeaways",
+    "subtopics": [
+      {
+        "key": "cardiology_key",
+        "name": "Cardiology Essentials",
+        "desc": "Ischemic heart disease, arrhythmias, valvular disease, and cardiac interventions"
+      },
+      {
+        "key": "gastro_hepato",
+        "name": "GI & Hepatobiliary",
+        "desc": "Peptic ulcers, IBD, pancreatic masses, and gastrointestinal disorders"
+      },
+      {
+        "key": "electrolytes_endo",
+        "name": "Electrolytes & Endocrine",
+        "desc": "Hyponatremia, hypokalemia, diabetes diagnosis, and metabolic disturbances"
+      },
+      {
+        "key": "pharmacology_adrs",
+        "name": "Pharmacology & ADRs",
+        "desc": "Drug-induced arrhythmias, delirium-inducing medications, and adverse drug reactions"
+      }
+    ]
+  },
+  "15": {
+    "name": "Critical Care & Shock",
+    "subtopics": [
+      {
+        "key": "shock_types",
+        "name": "Shock Classification & Hemodynamics",
+        "desc": "Types of shock (septic, cardiogenic, hypovolemic, distributive), hemodynamic parameters, and differentiation"
+      },
+      {
+        "key": "sepsis_management",
+        "name": "Sepsis & Septic Shock",
+        "desc": "Sepsis recognition (qSOFA), resuscitation bundles, vasopressors, antibiotics, and corticosteroids"
+      },
+      {
+        "key": "resp_failure_ards",
+        "name": "Respiratory Failure & ARDS",
+        "desc": "Mechanical ventilation strategies, ARDS management, lung-protective ventilation, and gas exchange abnormalities"
+      },
+      {
+        "key": "resuscitation_acls",
+        "name": "Resuscitation & ACLS",
+        "desc": "Cardiac arrest algorithms (PEA, VF/VT), reversible causes (H's and T's), and emergency interventions"
+      },
+      {
+        "key": "icu_complications",
+        "name": "ICU Complications",
+        "desc": "Acute kidney injury, fluid management, GI bleeding requiring urgent endoscopy, and organ support"
+      }
+    ]
+  },
+  "3": {
+    "name": "Electrolytes & Acid-Base",
+    "subtopics": [
+      {
+        "key": "sodium_disorders",
+        "name": "Sodium Disorders",
+        "desc": "Hyponatremia and hypernatremia: causes, diagnosis, and management"
+      },
+      {
+        "key": "potassium_disorders",
+        "name": "Potassium Disorders",
+        "desc": "Hypokalemia and hyperkalemia: etiology, ECG findings, and treatment"
+      },
+      {
+        "key": "acid_base_analysis",
+        "name": "Acid-Base Analysis",
+        "desc": "Metabolic and respiratory acidosis/alkalosis, compensation, and ABG interpretation"
+      },
+      {
+        "key": "other_electrolytes",
+        "name": "Other Electrolytes",
+        "desc": "Calcium, magnesium, phosphate disorders and clinical manifestations"
+      }
+    ]
+  },
+  "7": {
+    "name": "Rheumatology & Vasculitis",
+    "subtopics": [
+      {
+        "key": "vasculitis",
+        "name": "Vasculitis Syndromes",
+        "desc": "Classification, presentation, and management of systemic and organ-specific vasculitides"
+      },
+      {
+        "key": "rheum_diseases",
+        "name": "Rheumatic Diseases",
+        "desc": "Autoimmune rheumatologic conditions including connective tissue diseases and inflammatory arthropathies"
+      },
+      {
+        "key": "ckd_complications",
+        "name": "CKD & Complications",
+        "desc": "Chronic kidney disease staging, electrolyte management, and metabolic complications"
+      },
+      {
+        "key": "dialysis_transplant",
+        "name": "Dialysis & Transplant",
+        "desc": "Renal replacement therapy indications, complications, and post-transplant management"
+      },
+      {
+        "key": "fluid_electrolytes",
+        "name": "Fluid & Electrolytes",
+        "desc": "Sodium disorders, volume assessment, and acid-base disturbances"
+      }
+    ]
+  },
+  "22": {
+    "name": "Pain Management & Palliative Care",
+    "subtopics": [
+      {
+        "key": "pain_assessment",
+        "name": "Pain Assessment & Mechanisms",
+        "desc": "Pain evaluation tools, acute vs chronic pain, neuropathic vs nociceptive pain classification"
+      },
+      {
+        "key": "analgesic_pharm",
+        "name": "Analgesic Pharmacology",
+        "desc": "Opioids, NSAIDs, adjuvant analgesics, side effects, and dose titration strategies"
+      },
+      {
+        "key": "palliative_symptoms",
+        "name": "Symptom Management",
+        "desc": "Non-pain symptoms in palliative care including dyspnea, nausea, delirium, and cachexia"
+      },
+      {
+        "key": "eol_care",
+        "name": "End-of-Life Care",
+        "desc": "Hospice care, advance directives, withdrawing treatment, death determination, and family support"
+      }
+    ]
+  },
+  "1": {
+    "name": "Cardiology — ACS & Coronary Disease",
+    "subtopics": [
+      {
+        "key": "acs_stemi_nstemi",
+        "name": "ACS & MI Types",
+        "desc": "STEMI, NSTEMI, unstable angina presentation, diagnosis, and acute management"
+      },
+      {
+        "key": "coronary_intervention",
+        "name": "Revascularization",
+        "desc": "PCI, CABG indications, antiplatelet therapy, and post-intervention care"
+      },
+      {
+        "key": "stable_cad",
+        "name": "Stable Coronary Disease",
+        "desc": "Chronic stable angina, medical management, risk stratification, and stress testing"
+      },
+      {
+        "key": "acs_complications",
+        "name": "Post-MI Complications",
+        "desc": "Mechanical complications, arrhythmias, heart failure, and secondary prevention"
+      }
+    ]
+  },
+  "8": {
+    "name": "Arrhythmias & ECG",
+    "subtopics": [
+      {
+        "key": "ecg_interpretation",
+        "name": "ECG Interpretation",
+        "desc": "Reading ECG strips, identifying rhythm patterns and diagnostic features"
+      },
+      {
+        "key": "tachy_arrhythmias",
+        "name": "Tachyarrhythmias",
+        "desc": "Supraventricular and ventricular tachycardias, acute management protocols"
+      },
+      {
+        "key": "brady_blocks",
+        "name": "Bradycardias & Blocks",
+        "desc": "Sinus bradycardia, AV blocks, and conduction disturbances"
+      },
+      {
+        "key": "electrolyte_effects",
+        "name": "Electrolyte Effects",
+        "desc": "Impact of potassium, calcium, and magnesium imbalances on cardiac rhythm"
+      }
+    ]
+  },
+  "5": {
+    "name": "Nephrology — AKI & CKD",
+    "subtopics": [
+      {
+        "key": "aki_etiology",
+        "name": "AKI Etiology & Diagnosis",
+        "desc": "Prerenal, intrinsic, and postrenal causes; diagnostic approach and urinalysis interpretation"
+      },
+      {
+        "key": "aki_management",
+        "name": "AKI Management",
+        "desc": "Acute management, fluid therapy, electrolyte correction, and indications for dialysis"
+      },
+      {
+        "key": "ckd_staging",
+        "name": "CKD Staging & Progression",
+        "desc": "GFR classification, risk factors for progression, and monitoring strategies"
+      },
+      {
+        "key": "ckd_complications",
+        "name": "CKD Complications",
+        "desc": "Anemia, mineral bone disease, cardiovascular risk, and metabolic complications"
+      },
+      {
+        "key": "dialysis_transplant",
+        "name": "Dialysis & Transplant",
+        "desc": "RRT modalities, timing of initiation, access, and transplant considerations"
+      }
+    ]
+  },
+  "12": {
+    "name": "Endocrinology & Diabetes",
+    "subtopics": [
+      {
+        "key": "diabetes_mgmt",
+        "name": "Diabetes Management",
+        "desc": "Diabetes diagnosis, treatment, complications including diabetic foot infections"
+      },
+      {
+        "key": "thyroid_adrenal",
+        "name": "Thyroid & Adrenal",
+        "desc": "Thyroid disorders, adrenal insufficiency, Cushing syndrome, pheochromocytoma"
+      },
+      {
+        "key": "pituitary_calcium",
+        "name": "Pituitary & Calcium",
+        "desc": "Pituitary disorders, hypercalcemia, hypocalcemia, parathyroid disorders"
+      },
+      {
+        "key": "repro_endocrine",
+        "name": "Reproductive Endocrine",
+        "desc": "Hypogonadism, PCOS, amenorrhea, gynecomastia, endocrine causes of infertility"
+      }
+    ]
+  },
+  "4": {
+    "name": "Infectious Disease — Core Principles",
+    "subtopics": [
+      {
+        "key": "antimicrobial_rx",
+        "name": "Antimicrobial Therapy",
+        "desc": "Selection, dosing, duration, and resistance patterns of antibiotics, antivirals, antifungals, and antiparasitics for various infections"
+      },
+      {
+        "key": "sepsis_critical",
+        "name": "Sepsis and Critical Infections",
+        "desc": "Recognition, management, and complications of sepsis, septic shock, and severe systemic infections in hospitalized patients"
+      },
+      {
+        "key": "infection_control",
+        "name": "Infection Prevention and Control",
+        "desc": "Healthcare-associated infections, isolation precautions, sterilization, antimicrobial stewardship, and outbreak management"
+      },
+      {
+        "key": "host_defense",
+        "name": "Host Defense and Immunity",
+        "desc": "Immune response to pathogens, immunocompromised states, vaccination principles, and prophylaxis strategies"
+      },
+      {
+        "key": "diagnostic_micro",
+        "name": "Diagnostic Microbiology",
+        "desc": "Interpretation of cultures, serologies, molecular tests, and imaging findings for infectious disease diagnosis"
+      }
+    ]
+  },
+  "23": {
+    "name": "Vascular Disease",
+    "subtopics": [
+      {
+        "key": "venous_disease",
+        "name": "Venous Disease",
+        "desc": "DVT, PE, chronic venous insufficiency, diagnosis and anticoagulation management"
+      },
+      {
+        "key": "arterial_occlusive",
+        "name": "Arterial Occlusive Disease",
+        "desc": "Peripheral arterial disease, acute limb ischemia, carotid stenosis, mesenteric ischemia"
+      },
+      {
+        "key": "aortic_disease",
+        "name": "Aortic Disease",
+        "desc": "Aortic aneurysms (AAA, thoracic), aortic dissection, screening and intervention criteria"
+      },
+      {
+        "key": "vasculitis",
+        "name": "Vasculitis",
+        "desc": "Large vessel vasculitis (Takayasu, GCA), systemic vasculitis affecting vascular system"
+      }
+    ]
+  },
+  "21": {
+    "name": "Fluids & Volume Management",
+    "subtopics": [
+      {
+        "key": "fluid_resuscitation",
+        "name": "Fluid Resuscitation",
+        "desc": "Crystalloids, colloids, blood products, and resuscitation strategies in shock and hypovolemia"
+      },
+      {
+        "key": "electrolyte_disorders",
+        "name": "Electrolyte Disorders",
+        "desc": "Sodium, potassium, calcium, magnesium imbalances and their acute management"
+      },
+      {
+        "key": "acid_base_disorders",
+        "name": "Acid-Base Disorders",
+        "desc": "Metabolic and respiratory acidosis/alkalosis, anion gap, and compensation mechanisms"
+      },
+      {
+        "key": "toxicology",
+        "name": "Toxicology & Poisoning",
+        "desc": "Toxidromes, specific poisonings, antidotes, and overdose management including acetaminophen, organophosphates, alcohols"
+      }
+    ]
+  },
+  "2": {
+    "name": "Heart Failure",
+    "subtopics": [
+      {
+        "key": "hf_diagnosis",
+        "name": "Heart Failure Diagnosis & Classification",
+        "desc": "Diagnostic criteria, clinical presentation, imaging findings, HFrEF vs HFpEF classification, hemodynamic assessment, and biomarkers in heart failure patients"
+      },
+      {
+        "key": "hf_arrhythmias",
+        "name": "Arrhythmias in Heart Failure",
+        "desc": "ECG interpretation, atrial fibrillation, ventricular arrhythmias, conduction disorders, device therapy (ICD/CRT), and rhythm management in heart failure patients"
+      },
+      {
+        "key": "hf_pharmacology",
+        "name": "Heart Failure Pharmacotherapy",
+        "desc": "Medical management including ACEi, ARB, beta-blockers, MRA, SGLT2i, diuretics, digoxin, drug interactions, and medication optimization in heart failure"
+      },
+      {
+        "key": "hf_etiology",
+        "name": "Etiology & Pathophysiology",
+        "desc": "Underlying causes of heart failure including ischemic, valvular, cardiomyopathies, myocarditis, infiltrative diseases, and cardiotoxicity from medications or cancer therapies"
+      },
+      {
+        "key": "hf_complications",
+        "name": "Acute Decompensation & Complications",
+        "desc": "Acute heart failure syndromes, cardiogenic shock, elevated JVP, congestion management, hemodynamic instability, and acute management strategies"
+      }
+    ]
+  },
+  "11": {
+    "name": "GI & Hepatology",
+    "subtopics": [
+      {
+        "key": "esophagus_stomach",
+        "name": "Esophagus & Stomach",
+        "desc": "GERD, esophageal disorders, PUD, gastritis, gastroparesis, esophageal and gastric malignancies"
+      },
+      {
+        "key": "intestinal",
+        "name": "Intestinal Disorders",
+        "desc": "IBD, IBS, celiac disease, malabsorption, diarrhea, constipation, diverticular disease, colorectal cancer"
+      },
+      {
+        "key": "hepatobiliary",
+        "name": "Liver & Biliary",
+        "desc": "Hepatitis, cirrhosis, liver failure, cholestasis, gallbladder disease, biliary obstruction, hepatocellular carcinoma"
+      },
+      {
+        "key": "pancreatic",
+        "name": "Pancreatic Disorders",
+        "desc": "Acute and chronic pancreatitis, pancreatic insufficiency, pancreatic cysts and malignancies"
+      },
+      {
+        "key": "gi_procedures",
+        "name": "GI Procedures & Emergency",
+        "desc": "Endoscopy, colonoscopy, ERCP, GI bleeding, bowel obstruction, acute abdomen, nutritional support"
+      }
+    ]
+  },
+  "14": {
+    "name": "Neurology & Stroke",
+    "subtopics": [
+      {
+        "key": "acute_stroke",
+        "name": "Acute Stroke Management",
+        "desc": "Ischemic and hemorrhagic stroke diagnosis, thrombolysis, thrombectomy, acute intervention timing"
+      },
+      {
+        "key": "carotid_vascular",
+        "name": "Carotid & Vascular Disease",
+        "desc": "Carotid stenosis evaluation, endarterectomy indications, antiplatelet therapy, stroke prevention"
+      },
+      {
+        "key": "peripheral_neuropathy",
+        "name": "Peripheral Neuropathy",
+        "desc": "Guillain-Barré syndrome, chronic inflammatory demyelinating polyneuropathy, CSF findings, IVIG/plasmapheresis"
+      },
+      {
+        "key": "seizures_epilepsy",
+        "name": "Seizures & Epilepsy",
+        "desc": "Status epilepticus management, antiepileptic drug selection, refractory seizures, focal vs generalized"
+      }
+    ]
+  },
+  "19": {
+    "name": "Dermatology — Board Essentials",
+    "subtopics": [
+      {
+        "key": "inflammatory_derm",
+        "name": "Inflammatory & Immunologic Dermatoses",
+        "desc": "Psoriasis, eczema, atopic dermatitis, contact dermatitis, urticaria, drug eruptions, autoimmune bullous diseases, lupus, dermatomyositis, and vasculitis"
+      },
+      {
+        "key": "skin_cancer",
+        "name": "Skin Malignancies & Premalignant Lesions",
+        "desc": "Melanoma, basal cell carcinoma, squamous cell carcinoma, actinic keratosis, Bowen's disease, cutaneous lymphomas, and skin cancer screening and management"
+      },
+      {
+        "key": "infections",
+        "name": "Infectious Dermatology",
+        "desc": "Bacterial, viral, fungal, and parasitic skin infections including cellulitis, HSV, HPV, dermatophyte infections, candidiasis, and sexually transmitted infections"
+      },
+      {
+        "key": "hair_nail_disorders",
+        "name": "Hair, Nail & Pigmentation Disorders",
+        "desc": "Alopecia, hirsutism, nail dystrophies, vitiligo, melasma, and other pigmentary disorders"
+      },
+      {
+        "key": "procedural_pharm",
+        "name": "Dermatologic Procedures & Pharmacology",
+        "desc": "Biopsies, cryotherapy, excisions, topical and systemic dermatologic therapeutics including corticosteroids, retinoids, biologics, and adverse effects"
+      }
+    ]
+  },
+  "17": {
+    "name": "Perioperative Medicine",
+    "subtopics": [
+      {
+        "key": "preop_assessment",
+        "name": "Preoperative Assessment & Risk Stratification",
+        "desc": "Preoperative evaluation, medical optimization, cardiac risk assessment, pulmonary function testing, medication management, and surgical risk stratification"
+      },
+      {
+        "key": "intraop_mgmt",
+        "name": "Intraoperative Management & Anesthesia",
+        "desc": "Anesthetic techniques, airway management, hemodynamic monitoring, fluid management, drug allergies and adverse reactions, anaphylaxis management, and intraoperative complications"
+      },
+      {
+        "key": "postop_complications",
+        "name": "Postoperative Complications & Recovery",
+        "desc": "Postoperative pain management, PONV, respiratory complications, cardiovascular events, acute kidney injury, delirium, wound complications, and enhanced recovery protocols"
+      },
+      {
+        "key": "special_populations",
+        "name": "Special Populations & Comorbidities",
+        "desc": "Perioperative management of patients with specific conditions: cardiovascular disease, pulmonary disease, renal/hepatic dysfunction, diabetes, immunosuppression, transplant patients, and elderly patients"
+      }
+    ]
+  },
+  "18": {
+    "name": "Toxicology — Key Syndromes",
+    "subtopics": [
+      {
+        "key": "anticholinergic",
+        "name": "Anticholinergic Syndrome",
+        "desc": "Clinical features, agents causing anticholinergic toxicity (antihistamines, TCAs, atropine), diagnosis, and management of anticholinergic syndrome"
+      },
+      {
+        "key": "cholinergic",
+        "name": "Cholinergic Syndrome",
+        "desc": "Organophosphate and carbamate poisoning, muscarinic and nicotinic effects, SLUDGE syndrome, pralidoxime and atropine use"
+      },
+      {
+        "key": "sympathomimetic",
+        "name": "Sympathomimetic Syndrome",
+        "desc": "Cocaine, amphetamines, and other stimulant toxicity; clinical presentation with hypertension, tachycardia, hyperthermia, agitation, and management"
+      },
+      {
+        "key": "sedative_hypnotic",
+        "name": "Sedative-Hypnotic/Opioid Syndromes",
+        "desc": "CNS depression from benzodiazepines, barbiturates, opioids; respiratory depression, miosis, altered mental status, naloxone and flumazenil use"
+      },
+      {
+        "key": "serotonin_nms",
+        "name": "Serotonin Syndrome & NMS",
+        "desc": "Serotonin syndrome from SSRIs/MAOIs, neuroleptic malignant syndrome from antipsychotics; differentiation, clinical features, and treatment approaches"
+      }
+    ]
+  },
+  "16": {
+    "name": "Oncologic Emergencies",
+    "subtopics": [
+      {
+        "key": "metabolic_crises",
+        "name": "Metabolic Emergencies",
+        "desc": "Hypercalcemia, tumor lysis syndrome, SIADH, and electrolyte disturbances"
+      },
+      {
+        "key": "compressive_emergencies",
+        "name": "Compressive Syndromes",
+        "desc": "Spinal cord compression, SVC syndrome, airway obstruction, increased ICP"
+      },
+      {
+        "key": "hematologic_crises",
+        "name": "Hematologic Emergencies",
+        "desc": "Febrile neutropenia, hyperviscosity, leukostasis, severe thrombocytopenia"
+      },
+      {
+        "key": "toxicity_reactions",
+        "name": "Treatment Toxicities",
+        "desc": "Chemotherapy complications, immunotherapy adverse events, radiation emergencies"
+      }
+    ]
+  },
+  "20": {
+    "name": "Allergy & Immunology",
+    "subtopics": [
+      {
+        "key": "allergic_disorders",
+        "name": "Allergic Disorders",
+        "desc": "Food allergies, drug allergies, anaphylaxis, allergic rhinitis, atopic dermatitis, urticaria, angioedema, insect venom allergies, latex allergy"
+      },
+      {
+        "key": "asthma",
+        "name": "Asthma & Respiratory Allergies",
+        "desc": "Asthma diagnosis and management, exercise-induced bronchoconstriction, allergic bronchopulmonary aspergillosis, occupational asthma, environmental triggers"
+      },
+      {
+        "key": "immunodeficiency",
+        "name": "Immunodeficiency Disorders",
+        "desc": "Primary immunodeficiency diseases (CVID, SCID, complement deficiencies, phagocytic disorders), secondary immunodeficiency, recurrent infections evaluation"
+      },
+      {
+        "key": "autoimmune",
+        "name": "Autoimmune & Autoinflammatory",
+        "desc": "Autoimmune conditions relevant to immunology, autoinflammatory syndromes, immune dysregulation, immunologic aspects of systemic diseases"
+      },
+      {
+        "key": "diagnostic_therapy",
+        "name": "Diagnostics & Immunotherapy",
+        "desc": "Allergy testing (skin tests, serum IgE, component testing), immunotherapy (subcutaneous, sublingual), biologic therapies, desensitization protocols"
+      }
+    ]
+  }
+}
