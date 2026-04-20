@@ -30,12 +30,6 @@
       "confidence": 0.85,
       "why": "Explanation contradicts itself saying ratio rises then β-blocker also rises"
     },
-    "52": {
-      "fix": "flip_c",
-      "new_c": 0,
-      "confidence": 0.95,
-      "why": "Explanation endorses COPD but marked answer is asthma (option 0)"
-    },
     "18": {
       "fix": "flip_c",
       "new_c": 3,
@@ -418,12 +412,6 @@
       "confidence": 0.95,
       "why": "Explanation describes factitious thyrotoxicosis from taking levothyroxine, which is option 2"
     },
-    "495": {
-      "fix": "flip_c",
-      "new_c": 0,
-      "confidence": 1.0,
-      "why": "Explanation explicitly says COPD is correct, asthma is not correct"
-    },
     "498": {
       "fix": "flip_c",
       "new_c": 1,
@@ -501,13 +489,6 @@
       "new_e": "## הסבר מדוע א' נכון\n\nהמקרה מתאר **גרנולומטוזיס עם פוליאנגיטיס (GPA, Granulomatosis with Polyangiitis)** — מחלה אוטואימונית המאופיינת ב-ANCA חיובי (במקרה זה PR3+), מעורבות ריאתית (ground glass opacities וגרנולומות), כליה (crescentic glomerulonephritis), וסימפטומים סיסטמיים.\n\n---\n\n### הממצא האופייני באימונופלורסנציה:\n\n**ב-GPA**, הנזק הוא **pauci-immune** — כלומר, אין שקיעה משמעותית של קומפלקסים חיסוניים בגלומרולי. הפתוגנזה היא באמצעות נוגדנים אנטי-ניטרופילים (ANCA) שמפעילים ניטרופילים ישירות, גורמים לנמק פיברינואידי ו-crescents, **ללא צורך בשקיעת קומפלקסים**.\n\nבאימונופלורסנציה צפוי: **העדר שקיעה או שקיעה מינימלית** של אימונוגלובולינים וקומפלמנט.\n\n---\n\n### שלילת אופציות אחרות:\n\n- **אופציה ב'** (IgG, IgM, C3, C1q): אופיינית ל-lupus nephritis — אך כאן ANA שלילי ומשלים תקין.\n- **אופציה ג'** (שקיעה ליניארית של IgG): אופיינית ל-Goodpasture או anti-GBM disease — לא מתאים לתמונה הקלינית ול-PR3 חיובי.\n- **אופציה ד'** (משקעים מזנגיאליים של IgA): אופיינית ל-IgA nephropathy/Henoch-Schönlein — לא מתאים לתמונה.",
       "confidence": 0.95,
       "why": "Clinical presentation clearly GPA (PR3+ANCA, crescentic GN), pauci-immune expected"
-    },
-    "580": {
-      "fix": "flip_c",
-      "new_c": 3,
-      "confidence": 0.3,
-      "why": "Explanation is incomplete and confusing but seems to support option 3",
-      "note": "Actually, the current answer IS 3, but the explanation contradicts itself by saying cefazolin has 'longer half-life (2 hours)' when gentamicin's is 3-4 hours. The real issue is gentamicin (not cefazolin) should get once-daily dosing due to concentration-dependent killing + PAE, while cefazolin needs multiple daily doses due to time-dependent killing without significant PAE. The explanation seems backwards - it should explain why gentamicin gets once-daily dosing despite shorter cefazolin half-life."
     },
     "546": {
       "fix": "rewrite_e",
@@ -617,12 +598,6 @@
       "new_c": 2,
       "confidence": 0.95,
       "why": "Explanation explicitly states Amiodarone causes this pulmonary toxicity presentation"
-    },
-    "650": {
-      "fix": "flip_c",
-      "new_c": 0,
-      "confidence": 0.95,
-      "why": "Explanation argues option 3 is NOT allergic while options 0,1,2 ARE"
     },
     "627": {
       "fix": "rewrite_e",
@@ -942,12 +917,6 @@
       "confidence": 0.85,
       "why": "RCRI excludes age; dental surgery is low-risk; 2 points correct"
     },
-    "1023": {
-      "fix": "flip_c",
-      "new_c": 3,
-      "confidence": 0.0,
-      "why": "Explanation already supports option 3 (ד. MELD >25) which is marked correct"
-    },
     "1380": {
       "fix": "flip_c",
       "new_c": 1,
@@ -971,12 +940,6 @@
       "new_e": "## היפונתרמיה ב-CHF\n\nמטופל עם אי ספיקת לב + Na 126 + euvolemic clinically + אוסמולריות שתן 400 (>100) + אוסמולריות סרום 260 → **SIADH-like picture** במסגרת CHF.\n\n**למרות שקלינית נראה euvolemic**, מדובר ב-**hypervolemic hyponatremia** פתופיזיולוגית: effective arterial underfilling → ADH non-osmotic release → water retention.\n\n## הטיפול הנכון\n**הגבלת נוזלים (<1-1.5 L/d) + אופטימיזציה של טיפול ב-CHF** (loop diuretics).\n\n- **3% NaCl** - מסוכן בהיפרוולמיה, יחמיר את העומס; שמור להיפונתרמיה חמורה סימפטומטית בלבד\n- **NS bolus** - יחמיר את ההיפונתרמיה והעומס הנוזלי\n- **Tolvaptan** - second-line בלבד; יקר, סיכון ל-overcorrection, לא קו ראשון\n\nLoop diuretics מסייעים להפרשת free water ומטפלים בעומס. הגבלת נוזלים חיונית למניעת החמרה.",
       "confidence": 0.85,
       "why": "Explanation describes hypervolemic hyponatremia in CHF, matches marked option 0"
-    },
-    "959": {
-      "fix": "flip_c",
-      "new_c": 1,
-      "confidence": 0.0,
-      "why": "Explanation matches marked answer - both indicate valsartan (ARB)"
     },
     "1239": {
       "fix": "rewrite_e",

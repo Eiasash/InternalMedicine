@@ -784,7 +784,6 @@
     "t": "2020",
     "e": "# למה התשובה היא ב' - COPD\n\n## רגע - יש כאן בעיה!\n\nלפני שאסביר, חשוב לציין: **COPD בגבר ללא עישון היא תשובה מפתיעה**, אך הנה ההסבר הסביר:\n\n---\n\n## 3 משפטים להסבר:\n\n1. **גיל 58 + קוצר נשימה מתקדם במאמץ** מתאים לדפוס של COPD, שמתפתח בהדרגה לאורך שנים ומתבטא תחילה רק במאמץ - בדיוק כפי שמתואר בשאלה (\"קוצר נשימה שמופיע במאמץ\").\n\n2. **לא כל COPD קשור לעישון** - כ-25-30% מחולי COPD הם לא מעשנים; גורמי סיכון נ",
     "ti": 5,
-    "eFlag": "Explanation explicitly states answer is COPD, contradicts marked asthma",
     "e_issue": true,
     "st": "ckd_complications"
   },
@@ -7313,8 +7312,7 @@
     "t": "2023-Jun",
     "e": "## למה התשובה היא א' - Bronchial Asthma **אינה** הנכונה, והתשובה הנכונה היא **ב' - COPD**\n\n---\n\n## הסבר בשני משפטים:\n\n**1.** הספירומטריה מראה דפוס **חסימתי** (FEV1/FVC < 0.7) עם ירידה ב-FEV1 ללא ירידה יחסית ב-FVC, שהוא הממצא האופייני ל-COPD ולא לפיברוזיס (שם יהיה דפוס **רסטריקטיבי**) ולא ליתר לחץ דם ריאתי (שם הספירומטריה תקינה לרוב).\n\n**2.** הרקע של **עישון מצטבר** (pack-years) בגב",
     "ti": 5,
-    "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun23_t18.png",
-    "eFlag": "Explanation states correct answer is COPD, contradicting marked asthma"
+    "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun23_t18.png"
   },
   {
     "q": "בת 55, ללא רקע ידוע, התקבלה בשל מחנק ודקירות בחזה בזמן טיפול שיניים. באק\"ג תבנית של STEMI. בצנתור הודגמה מחלה כלילית לא משמעותית. מה מאפיין את מצבה?",
@@ -8586,7 +8584,6 @@
     "t": "2024-May",
     "e": "## הסבר מדוע ד' נכון:\n\n### פעילות תלוית זמן (Time-dependent) של Cefazolin\n\n**משפט 1:**\nCefazolin הוא בטא-לקטם שפעילותו **תלוית זמן** – כלומר, האפקט הבקטריציידלי תלוי בכך שרמת התרופה תישאר **מעל ה-MIC למשך זמן ממושך** (לפחות 50-70% מהמרווח בין המנות), ולכן **זמן מחצית החיים הארוך יותר (כ-2 שעות)** מאפשר לשמור על ריכוז טיפולי לאורך זמן ועדיין לתת מנה חד-יומית.\n\n**משפט 2:**\nלעומת זאת,",
     "ti": 12,
-    "eFlag": "Explanation claims cefazolin allows once-daily dosing; requires multiple daily doses",
     "e_issue": true,
     "st": "diabetes_mgmt"
   },
@@ -9632,7 +9629,6 @@
     "t": "2024-Oct",
     "e": "## התשובה הנכונה: **ד**\n\n### הסבר בשני משפטים:\n\n**1.** אובדן הכרה לאחר הזרקת יוד **רדיואקטיבי** (כגון בסריקת בלוטת התריס) אינו מהווה תגובה אלרגית אמיתית לחומר ניגוד יודי המשמש לצנתור, מאחר שמדובר במנגנון שונה לחלוטין ואין עדות לרגישות יתר לחומר ניגוד אינטרווסקולרי.\n\n**2.** בניגוד לאפשרויות א', ב', ו-ג' – שכולן מייצגות רגישות יתר מוכחת ליוד או לחומרים קשורים (תגובה קודמת",
     "ti": 22,
-    "eFlag": "Explanation endorses option ד, marked answer is option 0",
     "e_issue": true,
     "st": "analgesic_pharm"
   },
@@ -14139,7 +14135,6 @@
     "e": "אנגיואדמה הקשורה למעכבי ACE דורשת הפסקת התרופה ומעבר לחוסם קולטני אנגיוטנסין (ARB) שאינו גורם לאנגיואדמה.",
     "ti": 17,
     "t": "Harrison",
-    "eFlag": "Explanation claims ARBs don't cause angioedema; clinically they can",
     "e_issue": true,
     "st": "intraop_mgmt"
   },
@@ -15041,7 +15036,6 @@
     "e": "MELD score >25 מעיד על שחמת חמורה עם תמותה גבוהה ב-3 חודשים (~20%) ואינדיקציה להערכה להשתלת כבד.",
     "ti": 6,
     "t": "Harrison",
-    "eFlag": "Question describes pancreatitis case, asks about cirrhosis MELD prognosis instead",
     "st": "respiratory_failure"
   },
   {
