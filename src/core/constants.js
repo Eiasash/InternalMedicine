@@ -30,6 +30,11 @@ export const CHANGELOG={
       '🔬 AI scan של 1,541 שאלות — 206 סומנו ב-eFlag (ההסבר אולי לא מתאים לתשובה הנכונה). באדג׳ אדום עם סיבת ה-AI + כפתור ✓ לניקוי לאחר בדיקה ידנית.',
       '⚠️ 8 שאלות תלויות-תמונה (imgDep) מסומנות גם הן עם כפתור ✓ מאומת.',
     ],
+    '9.71': [
+      '🔍 AI audit על 1,541 הסברים: 206 סומנו עם eFlag (ההסבר לא תואם לתשובה הנכונה). באדג\' אדום + כפתור "✓ אמת" לאחר חשיפת התשובה.',
+      '⚠️ 8 שאלות תלויות-תמונה סומנו עם באדג\' אמבר (imgDep) + כפתור "✓ מאומת" לניקוי.',
+      '✓ Mark-verified buttons: imgDep + eFlag — לחיצה אחת לניקוי הסימון.',
+    ],
     '9.70': [
       '↔️ BIDI audit מקיף: heDir מיושם בכל render site של תוכן עברית/אנגלית מעורב — flashcards, אופציות quiz + on-call, הסברים q.e, AI explain, autopsy cards + fallback, chat (user + assistant), teach-back, qnotes, library preview, search results, note previews.',
       '🔒 סיבוב unicode-bidi:plaintext על בלוקים רב-פסקתיים כדי שפסקאות המתחילות באנגלית (IgG4-RD, MEN1, CT) לא יהפכו את הצד של שאר הפסקה.',
