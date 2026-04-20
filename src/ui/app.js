@@ -172,40 +172,41 @@ ov.innerHTML=`<div style="max-width:420px;margin:0 auto;background:#fff;border-r
 ${(CHANGELOG[APP_VERSION]||CHANGELOG[Object.keys(CHANGELOG).sort().pop()]||['No changelog available']).map(c=>'<b>'+c.split(' — ')[0]+'</b>'+(c.includes(' — ')?' — '+c.split(' — ').slice(1).join(' — '):'')).join('<br>')}
 </div></div>
 ${sec('Quiz Filters','📝','#059669',
-'<b>הכל</b> — All questions, shuffled<br>'+
-'<b>2020–Jun25</b> — Filter by exam session<br>'+
-'<b>🔥 Hard</b> — Questions you got wrong, worst-first<br>'+
-'<b>⏱️ Slow</b> — Questions that took you &gt;60s<br>'+
-'<b>🎯 Weak</b> — Your weakest topics<br>'+
-'<b>🔄 Due</b> — Spaced repetition review (SM-2)<br>'+
-'<b>📋 Exam</b> — 150q timed mock (3 hours)<br>'+
-'<b>💀 Sudden Death</b> — One wrong = game over'
+'<b>הכל</b> — כל '+G.QZ.length.toLocaleString()+' השאלות, מעורבב<br>'+
+'<b>2020–Jun25</b> — סינון לפי מועד מבחן<br>'+
+'<b>🔥 Hard</b> — שאלות שטעית בהן, הגרועות קודם<br>'+
+'<b>⏱️ Slow</b> — שאלות שלקחו לך יותר מ־60 שניות<br>'+
+'<b>🎯 Weak</b> — הנושאים החלשים שלך<br>'+
+'<b>🔄 Due</b> — חזרה מרווחת (SM-2)<br>'+
+'<b>📋 Exam</b> — מבחן מדומה 150 שאלות (3 שעות)<br>'+
+'<b>💀 Sudden Death</b> — טעות אחת = סוף המשחק'
 )}
 ${sec('AI Study Tools','🤖','#8b5cf6',
-'All AI features work without an API key — powered by shared proxy.<br><br>'+
-'<b>🤖 AI Explain</b> — Hebrew explanation of the correct answer<br>'+
-'<b>🔬 Distractor Autopsy</b> — AI explains why EACH wrong option is wrong and when it would be correct<br>'+
-'<b>🎓 Teach-Back</b> — Type your own explanation, AI grades it<br>'+
-'<b>❌ Wrong Answer</b> — Report errors, AI verifies the answer key'
+'כל יכולות ה-AI עובדות בלי מפתח API — דרך פרוקסי משותף.<br><br>'+
+'<b>🤖 AI Explain</b> — הסבר בעברית לתשובה הנכונה<br>'+
+'<b>🔬 Distractor Autopsy</b> — AI מסביר למה כל הסחות דעת שגויה ומתי הייתה נכונה<br>'+
+'<b>🎓 Teach-Back</b> — הקלד הסבר משלך, ה-AI נותן ציון<br>'+
+'<b>❌ Wrong Answer</b> — דווח שגיאות, ה-AI מוודא את מפתח התשובות'
 )}
 ${sec('Study Modes','📚','#dc2626',
-'<b>🙈 Cover Options</b> — Hides choices, forces free recall<br>'+
-'<b>⏱️ Pomodoro</b> — 25min focus / 5min break timer<br>'+
-'<b>📖 Library</b> — Read Harrison chapters in-app (no PDF needed)<br>'+
-'<b>🃏 Flashcards</b> — Cards with spaced repetition<br>'+
-'<b>📄 Articles</b> — 10 required NEJM/Lancet articles<br>'+
+'<b>🙈 Cover Options</b> — מסתיר תשובות, מכריח היזכרות חופשית<br>'+
+'<b>⏱️ Pomodoro</b> — טיימר 25 דקות פוקוס / 5 דקות הפסקה<br>'+
+'<b>📖 Library</b> — פרקי Harrison נקראים באפליקציה<br>'+
+'<b>📝 Notes</b> — הערות אישיות כלליות + לכל שאלה<br>'+
+'<b>🃏 Flashcards</b> — '+G.FLASH.length+' כרטיסים עם חזרה מרווחת<br>'+
+'<b>📄 Articles</b> — 10 מאמרים נדרשים מ-NEJM/Lancet<br>'+
 '<b>🧮 Calculators</b> — CrCl, CHA₂DS₂-VASc, CURB-65, Wells, PADUA'
 )}
 ${sec('Progress Tracking','📊','#f59e0b',
-'<b>⏱️ Answer Timer</b> — Silently tracks time per question<br>'+
-'<b>🗺️ Weak Spots Map</b> — Topic × Year heatmap (Track G.tab)<br>'+
-'<b>📊 Accuracy Bars</b> — Per-topic accuracy sorted worst-first<br>'+
-'<b>☁️ Cloud Sync</b> — Backup/restore progress across devices<br>'+
-'<b>🔥 Streak</b> — Daily study streak'
+'<b>⏱️ Answer Timer</b> — מעקב שקט אחרי זמן לכל שאלה<br>'+
+'<b>🗺️ Weak Spots Map</b> — מפת חום נושא × שנה (לשונית Track)<br>'+
+'<b>📊 Accuracy Bars</b> — דיוק לכל נושא, הגרועים קודם<br>'+
+'<b>☁️ Cloud Sync</b> — גיבוי ושחזור בין מכשירים<br>'+
+'<b>🔥 Streak</b> — רצף לימוד יומי'
 )}
 <div style="padding:10px;background:#f0fdf4;border-radius:10px;margin-bottom:12px">
 <div style="font-weight:700;font-size:11px;margin-bottom:4px">🚀 Quick Start</div>
-<div style="font-size:10px;line-height:1.7">1. Tap <b>Quiz</b> → answer questions<br>2. Check <b>🔬 Distractor Autopsy</b> for AI analysis<br>3. Review <b>Track</b> G.tab for weak spots<br>4. Use <b>🔥 Hard</b> filter to drill mistakes<br>5. Read <b>Library → Harrison</b> for chapter content</div>
+<div style="font-size:10px;line-height:1.7">1. לחץ <b>Quiz</b> ← ענה על שאלות<br>2. עיין ב-<b>🔬 Distractor Autopsy</b> לניתוח AI<br>3. בלשונית <b>Track</b> ראה נקודות תורפה<br>4. סנן לפי <b>🔥 Hard</b> כדי לתרגל טעויות<br>5. קרא <b>Library → Harrison</b> לתוכן הפרק</div>
 </div>
 <div style="text-align:center;font-size:9px;color:#94a3b8;line-height:1.5">
 صدقة جارية الى من نحب<br>Ceaseless Charity — To the People That We Love<br><br>

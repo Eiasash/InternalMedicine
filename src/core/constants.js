@@ -24,50 +24,64 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.65';
+export const APP_VERSION='9.66';
 export const CHANGELOG={
+    '9.65': [
+      '📝 הערות אישיות — כפתור 📝 בכל שאלה פותח הערה פרטית',
+      '📓 פנקס כללי ב-More → Notes עם ייצוא לקובץ',
+      '🔖 רשימה של כל ההערות עם כפתור מעבר לשאלה'
+    ],
+    '9.64': [
+      '🔔 התראות לא חוסמות — toast ו-confirmModal במקום alert/confirm',
+      '🧹 ניקוי handlers יתומים ו-imports לא בשימוש'
+    ],
+    '9.63': [
+      '🔀 חצי "קודמת" ו"הבאה" תוקנו לכיוון עברי',
+      '📱 סיום מבחן במודאל מעוצב במקום חלונית מערכת'
+    ],
+    '9.62': [
+      '🌙 מצב כהה ומצב לימוד — תיקוני צבע לכל הכפתורים אחרי מענה'
+    ],
     '9.61': [
-      '⬅️ כפתור "קודמת" נוסף — אפשר לחזור לשאלה קודמת ולראות את התשובה שבחרת (לא במצב מבחן)',
-      '🍎 iOS: status bar black-translucent, text-size-adjust:100% — מונע זום לא רצוי',
-      '🔤 גופן הגוף Heebo-first ב-base.css'
+      '⬅️ כפתור "קודמת" נוסף — אפשר לחזור לשאלה קודמת ולראות את התשובה שבחרת',
+      '🍎 תאימות iOS — שורת סטטוס כהה, מניעת זום לא רצוי',
+      '🔤 גופן Heebo ראשי לרינדור עברי איכותי'
     ],
     '9.60': [
-      '🐛 הסר פרומפט "How sure are you?" שחסם את זרימת המענה — האפקרציה כעת עוברת ישר מבחירה ל-"בדוק"',
-      '📏 כפתורי Why-wrong, Difficulty ו-Read-chapter: גדלים מותאמים ל-44px מינימום למגע — ניתנים ללחיצה בקלות',
-      '📏 כפתורי Easy/Medium/Hard: פונט 11px (היה 9px), padding גדול יותר, flex-wrap למקרי overflow'
+      '🚫 הפרומפט לדירוג ביטחון הוסר — זרימת המענה ישירה',
+      '📏 כפתורים גדולים יותר (44 פיקסל) למגע במובייל'
     ],
     '9.59': [
-      '🐛 תיקון קריטי: פריסת flex אחרי מענה — Why-wrong, Read-chapter, Difficulty וכפתור הבאה היו נדחסים לעמודות בנות תו אחד בגלל display:flex ללא flex-direction:column',
-      '🐛 תיקון קריטי: הסבר ה-💡 היה מראה נושא שגוי ב-21 מתוך 24 נושאים (notes.json לא מסודר לפי TOPICS[]). בניית מפה NOTES_BY_TI בעת טעינת הנתונים',
-      '⬆️ כפתור הבאה ← עכשיו רוחב מלא, גובה 44px, פונט 13px מודגש — ברור לזיהוי',
-      '⬆️ שורת בדוק+"לא יודע" עוטפה ב-flex-row משלה כדי לעבוד עם הפריסה החדשה'
+      '🐛 פריסה אחרי מענה — הכפתורים לא נדחסים לעמודה צרה',
+      '🗺️ הסבר הנושא הנכון מוצג אחרי תשובה',
+      '⬆️ כפתור "הבאה" ברור ובולט'
     ],
     '9.58': [
-      '🎨 SZMC Clinical Kit — token layer — sky/emerald skin via data-skin="pnimit"',
-      '🔤 Self-hosted Heebo + Inter (removed Google Fonts dep, offline-ready)',
-      '🛡️ CSP tightened: style-src + font-src both \'self\'-only',
-      '♿ Respects prefers-reduced-motion globally'
+      '🎨 מערכת עיצוב חדשה — ערכת צבעים כחול/ירוק לפנימית',
+      '🔤 גופנים מקומיים (ללא תלות ב-Google Fonts, עובד אופליין)',
+      '🛡️ הידוק CSP',
+      '♿ כיבוד prefers-reduced-motion'
     ],
     '9.57': [
-      '🙈 מצב מבחן לא חושף תשובה עד הסוף — Mock ו-Full. האפשרות שנבחרה מודגשת, אבל ירוק/אדום/הסבר מוצגים רק בסיום. תקלה גם ב-Distractor Autopsy highlighting (פרץ דרך examMode guard).',
-      '📊 Exam Trend כולל עכשיו 2023-Jun ב-OLD cohort. הטווח הוא 2020-23 מול 2024-25.',
-      '🗺 Weak Spots Map: תאים עם n=1 מוצגים באפור עם תגית 1q במקום אדום מטעה. n≥2 מציג גם את מספר הניסיונות.',
-      '🍎 תאימות iOS: viewport-fit=cover ו-apple-mobile-web-app-status-bar-style — תמיכה מלאה במכשירים עם notch.'
+      '🙈 מצב מבחן לא חושף תשובה עד הסוף',
+      '📊 Exam Trend כולל 2023-Jun',
+      '🗺 Weak Spots Map — תאים עם ניסיון אחד מוצגים באפור',
+      '🍎 תאימות iOS למכשירים עם notch'
     ],
     '9.56': [
-      '🔒 Dedup guard normalized-stem + cross-tag tripwire (parity with Geri v9.71).',
-      '📮 Feedback reports לוכדים [hash:xxxxxxxx] — 8-char content-hash יציב לזיהוי דיווחים חוזרים.'
+      '🔒 הגנת דה-דופ חזקה יותר',
+      '📮 דיווחי פידבק כוללים hash לזיהוי דיווחים חוזרים'
     ],
     '9.55': [
-      '🔬 Distractor Autopsy — ALWAYS ON: after every reveal you see why each wrong answer is wrong + when it would be correct',
-      'Pre-generated offline (data/distractors.json) via Claude Haiku 4.5 — works offline, zero latency',
-      'AI fallback for any question without cached distractor rationale'
+      '🔬 Distractor Autopsy — פעיל תמיד: אחרי כל תשובה רואים למה כל דיסטרקטור שגוי',
+      'נתונים מוכנים מראש לאופליין',
+      'גיבוי AI לשאלות ללא ניתוח מוכן'
     ],
     '9.54': [
-      'UX: "Why did I get it wrong?" (📚 👓 ⚖️ 🤦) כבר לא חוסם את כפתור "הבאה" — הפך לאופציונלי. בסוויט הקודם הפכנו את "How sure are you" לאופציונלי; עכשיו גם שורת ה-why-wrong שלמטה אופציונלית.',
-      'טסט חדש: topicRefCoverage — מוודא שכל entry ב-TOPIC_REF מצביע לפרק שקיים ב-harrison_chapters.json. מונע באגי ניווט כמו זה שתוקן ב-9.53.',
-      'Pre-push hook חדש: `scripts/git-hooks/pre-push` מריץ את שני בודקי innerHTML לפני כל push. התקנה ב-`npm run hooks:install`.',
-      'ניקוי: הוסרה הערה ישנה על src/clock.js ב-sw.js (הבנדלר כבר מטפל).'
+      '"Why did I get it wrong?" — כבר לא חוסם את כפתור "הבאה"',
+      'טסט חדש: בדיקת כיסוי TOPIC_REF',
+      'Pre-push hook לבדיקות innerHTML',
+      'ניקוי הערות ישנות'
     ],
     '9.53': [
       'UX: "How sure are you?" (😬 🤔 😎) כבר לא חוסם את כפתור בדוק — הפך לאופציונלי. אפשר עדיין ללחוץ על אחת האמוג\'ים כדי לעקוב אחרי ביטחון, אבל לא חייבים.',
