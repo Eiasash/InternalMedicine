@@ -77,3 +77,25 @@ body.study .search-box, body.study .calc-in { background: #221508; border-color:
 body.study .stat { background: #221508; border-color: #3d2a12 }
 body.study .fc { background: #221508; border-color: #3d2a12; color: #e8d5b0 }
 body.study .sec-t { color: #e8d5b0 }
+
+/* ========================================
+   Dark/Study overrides for inline-styled buttons added in v9.59-v9.61
+   Post-answer UI: Why-wrong, Read-chapter, Difficulty, Prev, Give-up
+   ======================================== */
+body.dark [data-action="wrong-reason"][data-r="no_knowledge"] { background: #450a0a !important; color: #fca5a5 !important }
+body.dark [data-action="wrong-reason"][data-r="misread"]      { background: #451a03 !important; color: #fde68a !important }
+body.dark [data-action="wrong-reason"][data-r="between_2"]    { background: #172554 !important; color: #93c5fd !important }
+body.dark [data-action="wrong-reason"][data-r="silly"]        { background: #2e1065 !important; color: #c4b5fd !important }
+body.dark [data-action="read-chapter"]                        { background: #2e1065 !important; color: #c4b5fd !important }
+body.dark [data-action="diff-rating"]                         { background: #1e293b !important; color: #94a3b8 !important }
+body.dark [data-action="diff-rating"][data-d="easy"][style*="dcfce7"] { background: #064e3b !important; color: #6ee7b7 !important }
+body.dark [data-action="diff-rating"][data-d="med"][style*="fef9c3"]  { background: #451a03 !important; color: #fde68a !important }
+body.dark [data-action="diff-rating"][data-d="hard"][style*="fecaca"] { background: #450a0a !important; color: #fca5a5 !important }
+body.dark [data-action="prev-q"]                              { background: #1e293b !important; color: #cbd5e1 !important; border-color: #334155 !important }
+body.dark [data-action="give-up"]                             { background: #451a03 !important; color: #fde68a !important }
+
+body.study [data-action="wrong-reason"] { background: #2a1e0d !important; color: #e8d5b0 !important }
+body.study [data-action="read-chapter"] { background: #2a1e0d !important; color: #e8d5b0 !important }
+body.study [data-action="diff-rating"]  { background: #2a1e0d !important; color: #a08060 !important }
+body.study [data-action="prev-q"]       { background: #2a1e0d !important; color: #a08060 !important; border-color: #3d2a12 !important }
+body.study [data-action="give-up"]      { background: #2a1e0d !important; color: #c48a3a !important }
