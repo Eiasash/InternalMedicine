@@ -294,7 +294,7 @@ const blurCls=G.blindRecall&&!G.ans&&origI!==G.sel?' qo-blur':'';
 const autopsyCls=(G.autopsyMode&&G.ans&&!G.examMode&&origI!==q.c&&origI===G.autopsyDistractor)?' distractor-highlight':'';
 h+=`<button class="${cls}${blurCls}${autopsyCls}" data-action="pick" data-i="${origI}" aria-label="Option ${origI+1}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
 });
-h+=`<div style="display:flex;gap:6px;margin-top:14px">`;
+h+=`<div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">`;
 if(!G.ans){
 if(!G.examMode&&G.sel!==null&&G._confidence===null){
 // Feature 9: Confidence before reveal
@@ -306,7 +306,7 @@ h+=`<div style="margin-bottom:8px;font-size:10px;color:#64748b;font-weight:600">
 </div>`;
 }
 const _confLabel=G._confidence===0?'😬':G._confidence===1?'🤔':G._confidence===2?'😎':'';
-h+=`<button class="btn btn-p" data-action="check-answer"${G.sel===null?' disabled':''} aria-label="Check answer">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" data-action="give-up" style="background:#fff3e0;color:#d97706;font-size:11px;padding:6px 14px;margin-left:6px" aria-label="Show answer">👁 לא יודע</button>`;}
+h+=`<div style="display:flex;gap:6px;align-items:center"><button class="btn btn-p" data-action="check-answer"${G.sel===null?' disabled':''} aria-label="Check answer" style="flex:1;min-height:44px">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" data-action="give-up" style="background:#fff3e0;color:#d97706;font-size:11px;padding:6px 14px;min-height:44px" aria-label="Show answer">👁 לא יודע</button>`;h+=`</div>`;}
 else{
 // Feature 1: Why-wrong classification (required after wrong, non-exam)
 if(!G.examMode&&G.sel!==q.c&&!G._wrongReason){
@@ -336,7 +336,7 @@ h+=`<div style="display:flex;gap:4px;margin-bottom:8px;align-items:center">
 </div>`;
 }
 // Next button — why-wrong classification is a nudge, not a gate
-h+=`<button class="btn btn-d" data-action="next-q" aria-label="${G.examMode&&G.qi+1>=150?'Finish exam':'Next question'}">${G.examMode&&G.qi+1>=150?'סיים':'הבאה ←'}</button>`;
+h+=`<button class="btn btn-d" data-action="next-q" aria-label="${G.examMode&&G.qi+1>=150?'Finish exam':'Next question'}" style="width:100%;min-height:44px;font-size:13px;font-weight:700">${G.examMode&&G.qi+1>=150?'סיים':'הבאה ←'}</button>`;
 }
 h+=`</div>`;
 
@@ -367,7 +367,7 @@ h+='</div>';
 }
 }
 if(G.ans&&!G.examMode){
-const note=q.ti>=0&&G.NOTES[q.ti]?G.NOTES[q.ti]:null;
+const note=q.ti>=0?(G.NOTES_BY_TI&&G.NOTES_BY_TI[q.ti])||null:null;
 if(note){
 const correctText=q.o[q.c];
 const sentences=note.notes.split(/\.\s+/);

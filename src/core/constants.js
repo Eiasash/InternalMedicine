@@ -24,8 +24,14 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.58';
+export const APP_VERSION='9.59';
 export const CHANGELOG={
+    '9.59': [
+      '🐛 תיקון קריטי: פריסת flex אחרי מענה — Why-wrong, Read-chapter, Difficulty וכפתור הבאה היו נדחסים לעמודות בנות תו אחד בגלל display:flex ללא flex-direction:column',
+      '🐛 תיקון קריטי: הסבר ה-💡 היה מראה נושא שגוי ב-21 מתוך 24 נושאים (notes.json לא מסודר לפי TOPICS[]). בניית מפה NOTES_BY_TI בעת טעינת הנתונים',
+      '⬆️ כפתור הבאה ← עכשיו רוחב מלא, גובה 44px, פונט 13px מודגש — ברור לזיהוי',
+      '⬆️ שורת בדוק+"לא יודע" עוטפה ב-flex-row משלה כדי לעבוד עם הפריסה החדשה'
+    ],
     '9.58': [
       '🎨 SZMC Clinical Kit — token layer — sky/emerald skin via data-skin="pnimit"',
       '🔤 Self-hosted Heebo + Inter (removed Google Fonts dep, offline-ready)',
