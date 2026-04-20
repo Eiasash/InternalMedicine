@@ -190,8 +190,10 @@ if(G.timedMode&&!G.ans){
 </div>`;
 }
 const _isFlagQ=(G.S.flagged||{})[G.pool[G.qi]];
+const _eFlagQ=q.eFlag;
 h+=`<p class="heb" style="font-size:13px;font-weight:700;line-height:1.7;margin-bottom:${q.img?'10':'16'}px">${_isFlagQ?'<span style="color:#dc2626;font-size:11px" title="Explanation flagged — verify">⚑ </span>':''  }${q.q}</p>`;
-if(q.img){h+=`<div style="margin-bottom:14px;text-align:center;position:relative"><img src="${q.img}" alt="Question image" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer" data-action="view-img" loading="lazy"><button data-action="remove-img" data-idx="${G.pool[G.qi]}" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:12px;cursor:pointer">✕</button></div>`;}
+if(_eFlagQ&&G.ans){h+=`<div style="margin:6px 0;padding:6px 10px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:10px;color:#991b1b;text-align:right;line-height:1.4;display:flex;align-items:center;gap:6px;justify-content:space-between" dir="rtl"><span style="flex:1">⚠️ AI flagged: ההסבר עשוי לא להתאים לתשובה הנכונה (${sanitize(_eFlagQ)})</span><button data-action="clear-eflag" data-idx="${G.pool[G.qi]}" style="font-size:9px;padding:3px 8px;background:#991b1b;color:#fff;border:none;border-radius:6px;cursor:pointer;flex:0 0 auto">✓ אמת</button></div>`;}
+if(q.img){h+=`<div style="margin-bottom:14px;text-align:center;position:relative"><img src="${q.img}" alt="Question image" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer" data-action="view-img" loading="lazy"><button data-action="remove-img" data-idx="${G.pool[G.qi]}" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:12px;cursor:pointer">✕</button>${q.imgDep?'<div style="margin-top:6px;padding:6px 10px;background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;font-size:10px;color:#92400e;text-align:right;line-height:1.4;display:flex;align-items:center;gap:6px;justify-content:space-between" dir="rtl"><span style="flex:1">⚠️ שאלה תלוית-תמונה: ההסבר עלול להיות שגוי.</span><button data-action="mark-verified" data-idx="'+G.pool[G.qi]+'" style="font-size:9px;padding:3px 8px;background:#d97706;color:#fff;border:none;border-radius:6px;cursor:pointer;flex:0 0 auto">✓ מאומת</button></div>':''}</div>`;}
 if(!q.img&&!G.examMode){h+=`<div style="margin-bottom:10px"><button data-action="upload-img" data-idx="${G.pool[G.qi]}" style="font-size:10px;padding:4px 12px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">📷 Attach Image</button><span id="img-status-${G.pool[G.qi]}" style="font-size:10px;color:#94a3b8;margin-left:6px"></span></div>`;}
 q.o.forEach((o,i)=>{
 let cls='qo';
@@ -404,7 +406,9 @@ h+=`</div>`;
 }
 // Built-in explanation (every question has one)
 if(G.ans&&!G.examMode&&q.e){
-h+=`<div style="margin-top:8px;padding:10px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;font-size:11px;line-height:1.7;color:#1e40af;text-align:right" dir="${heDir(q.e)}">`;
+const _eIss=q.e_issue;
+h+=`<div style="margin-top:8px;padding:10px 12px;background:${_eIss?'#fffbeb':'#eff6ff'};border:1px solid ${_eIss?'#fcd34d':'#bfdbfe'};border-radius:10px;font-size:11px;line-height:1.7;color:${_eIss?'#92400e':'#1e40af'};text-align:right" dir="${heDir(q.e)}">`;
+if(_eIss){h+=`<div style="font-size:10px;font-weight:700;margin-bottom:6px;padding:4px 8px;background:#fef3c7;border-radius:6px;display:flex;align-items:center;gap:6px;justify-content:space-between"><span>⚠️ ההסבר הזה עלול להיות שגוי — AI איתר חוסר עקביות מול התשובה הנכונה</span><button data-action="mark-e-verified" data-idx="${G.pool[G.qi]}" style="font-size:9px;padding:3px 8px;background:#d97706;color:#fff;border:none;border-radius:6px;cursor:pointer;flex:0 0 auto">✓ מאומת</button></div>`;}
 h+=`<div style="font-weight:700;margin-bottom:4px;font-size:10px">📝 הסבר</div>`;
 h+=`<div style="unicode-bidi:plaintext" dir="${heDir(q.e)}">${remapExplanationLetters(q.e,_shuf).replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')}</div>`;
 h+=`</div>`;
@@ -563,6 +567,18 @@ export function initQuizEvents(container) {
       if (img) viewImg(img.src);
     }
     else if (action === 'remove-img') { removeQImage(parseInt(el.dataset.idx, 10)); }
+    else if (action === 'mark-e-verified') {
+      const idx=parseInt(el.dataset.idx,10);
+      if(!isNaN(idx)&&G.QZ[idx]){delete G.QZ[idx].e_issue;G.render();}
+    }
+    else if (action === 'mark-verified') {
+      const idx=parseInt(el.dataset.idx,10);
+      if(!isNaN(idx)&&G.QZ[idx]){delete G.QZ[idx].imgDep;G.render();}
+    }
+    else if (action === 'clear-eflag') {
+      const idx=parseInt(el.dataset.idx,10);
+      if(!isNaN(idx)&&G.QZ[idx]){delete G.QZ[idx].eFlag;G.render();}
+    }
     else if (action === 'upload-img') { uploadQImage(parseInt(el.dataset.idx, 10)); }
     else if (action === 'speak-q') { speakQuestion(); }
     else if (action === 'share-q') { window.shareQ(); }

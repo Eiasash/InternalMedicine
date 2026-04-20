@@ -24,8 +24,12 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.70';
+export const APP_VERSION='9.71';
 export const CHANGELOG={
+    '9.71': [
+      '🔬 AI scan של 1,541 שאלות — 206 סומנו ב-eFlag (ההסבר אולי לא מתאים לתשובה הנכונה). באדג׳ אדום עם סיבת ה-AI + כפתור ✓ לניקוי לאחר בדיקה ידנית.',
+      '⚠️ 8 שאלות תלויות-תמונה (imgDep) מסומנות גם הן עם כפתור ✓ מאומת.',
+    ],
     '9.70': [
       '↔️ BIDI audit מקיף: heDir מיושם בכל render site של תוכן עברית/אנגלית מעורב — flashcards, אופציות quiz + on-call, הסברים q.e, AI explain, autopsy cards + fallback, chat (user + assistant), teach-back, qnotes, library preview, search results, note previews.',
       '🔒 סיבוב unicode-bidi:plaintext על בלוקים רב-פסקתיים כדי שפסקאות המתחילות באנגלית (IgG4-RD, MEN1, CT) לא יהפכו את הצד של שאר הפסקה.',
