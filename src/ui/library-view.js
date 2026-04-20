@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { TOPICS, HARRISON_PDF_MAP, APP_VERSION, SYLLABUS_VERSION } from '../core/constants.js';
-import { sanitize, safeJSONParse, toast } from "../core/utils.js";
+import { sanitize, heDir, safeJSONParse, toast } from "../core/utils.js";
 import { callAI } from '../ai/client.js';
 import { getTopicStats, trackChapterRead, getChaptersDueForReading } from '../sr/spaced-repetition.js';
 import { TOPIC_REF } from './track-view.js';
@@ -124,7 +124,7 @@ export function renderWrongAnswerLog(){
       const acc=Math.round(s.ok/s.tot*100);
       const topic=q.ti>=0?TOPICS_L[q.ti]:'';
       h+=`<div style="padding:8px;background:#fef2f2;border-radius:8px;margin-bottom:6px;cursor:pointer" data-action="goto-q" data-idx="${idx}" data-flip="1">
-<div style="font-size:10px;font-weight:600;line-height:1.4" dir="auto">${q.q.slice(0,80)}${q.q.length>80?'…':''}</div>
+<div style="font-size:10px;font-weight:600;line-height:1.4" dir="${heDir(q.q)}">${q.q.slice(0,80)}${q.q.length>80?'…':''}</div>
 <div style="display:flex;gap:8px;margin-top:4px"><span style="font-size:9px;color:#dc2626">${s.ok}/${s.tot} (${acc}%) · D=${s.fsrsD?s.fsrsD.toFixed(1):'?'}</span><span style="font-size:9px;color:#94a3b8">${topic}</span></div>
 </div>`;
     });
@@ -137,7 +137,7 @@ export function renderWrongAnswerLog(){
     shown.forEach(({idx,q,s})=>{
       const topic=q.ti>=0?TOPICS_L[q.ti]:'';
       h+=`<div style="padding:8px;background:#fffbeb;border-radius:8px;margin-bottom:4px;cursor:pointer" data-action="goto-q" data-idx="${idx}">
-<div style="font-size:10px;line-height:1.4" dir="auto">${q.q.slice(0,75)}${q.q.length>75?'…':''}</div>
+<div style="font-size:10px;line-height:1.4" dir="${heDir(q.q)}">${q.q.slice(0,75)}${q.q.length>75?'…':''}</div>
 <div style="font-size:9px;color:#94a3b8;margin-top:2px">${topic}</div>
 </div>`;
     });

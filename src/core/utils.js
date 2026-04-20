@@ -21,6 +21,7 @@ export function toast(msg,type='info',ms=3500){
 
 // XSS-safe string escaping
 export function sanitize(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+export function heDir(s){s=String(s||'');if(!s)return'auto';let he=0,en=0;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);if(c>=0x0590&&c<=0x05FF)he++;else if((c>=0x41&&c<=0x5A)||(c>=0x61&&c<=0x7A))en++;}const t=he+en;if(!t)return'auto';return he/t>=0.25?'rtl':'ltr';}
 
 // API key management
 export function getApiKey(){return localStorage.getItem('pnimit_apikey')||'';}
