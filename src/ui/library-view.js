@@ -239,12 +239,12 @@ c = 0-based index of correct answer. No markdown, no preamble.`;
     h+='<div style="font-weight:700;font-size:12px;color:#7c3aed;margin-bottom:10px">🧠 AI-Generated Questions — Ch '+sanitize(String(chNum))+': '+sanitize(chTitle)+'</div>';
     qs.forEach((q,idx)=>{
       h+=`<div style="margin-bottom:14px;padding:12px;background:#faf5ff;border-radius:10px;border-left:3px solid #7c3aed">`;
-      h+=`<div style="font-size:12px;font-weight:600;margin-bottom:8px">${idx+1}. ${sanitize(q.q)}</div>`;
+      h+=`<div style="font-size:12px;font-weight:600;margin-bottom:8px" dir="${heDir(q.q)}">${idx+1}. ${sanitize(q.q)}</div>`;
       q.o.forEach((opt,oi)=>{
         const isCorrect=oi===q.c;
         h+=`<div style="font-size:11px;padding:4px 8px;margin-bottom:3px;border-radius:6px;background:${isCorrect?'#dcfce7':'#f8fafc'};color:${isCorrect?'#166534':'#475569'};font-weight:${isCorrect?'700':'400'}">${sanitize(opt)}${isCorrect?' ✓':''}</div>`;
       });
-      if(q.e)h+=`<div style="font-size:10px;color:#6d28d9;margin-top:8px;direction:rtl;text-align:right;line-height:1.6;border-top:1px solid #e9d5ff;padding-top:6px">💡 ${sanitize(q.e)}</div>`;
+      if(q.e)h+=`<div style="font-size:10px;color:#6d28d9;margin-top:8px;text-align:right;line-height:1.6;border-top:1px solid #e9d5ff;padding-top:6px;unicode-bidi:plaintext" dir="${heDir(q.e)}">💡 ${sanitize(q.e)}</div>`;
       h+='</div>';
     });
     _pendingAiQs=JSON.stringify(qs);h+='<button data-action="add-qs" style="font-size:10px;padding:6px 14px;background:#059669;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:4px">➕ Add to my question bank</button>';

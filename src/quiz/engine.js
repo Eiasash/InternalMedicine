@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { TOPICS, EXAM_FREQ, EXAM_YEARS } from '../core/constants.js';
-import { sanitize, fmtT, toast } from "../core/utils.js";
+import { sanitize, fmtT, toast, heDir } from "../core/utils.js";
 import { getDueQuestions, getTopicStats, isExamTrap, srScore } from '../sr/spaced-repetition.js';
 import { callAI } from '../ai/client.js';
 import { buildRescuePool } from '../sr/spaced-repetition.js';
@@ -160,18 +160,18 @@ export function renderOnCall(){
   if(topic)h+=`<div style="font-size:10px;background:#f0fdf4;color:#166534;padding:3px 10px;border-radius:20px;display:inline-block;align-self:flex-start;font-weight:600">${topic}</div>`;
   // Question card - large text
   h+=`<div style="background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.08);flex:1;cursor:${G.flipRevealed?'default':'pointer'}" ${G.flipRevealed?'':'data-action="flip-card" role="button" tabindex="0" aria-label="Flip card to reveal answer"'}>
-    <div style="font-size:16px;line-height:1.6;font-weight:500;direction:rtl;text-align:right;margin-bottom:${G.flipRevealed?'16px':'0'}">${q.q}</div>`;
+    <div style="font-size:16px;line-height:1.6;font-weight:500;text-align:right;margin-bottom:${G.flipRevealed?'16px':'0'}" dir="${heDir(q.q)}">${q.q}</div>`;
   if(!G.flipRevealed){
     h+=`<div style="text-align:center;margin-top:20px;color:#94a3b8;font-size:13px">👆 tap to reveal answer</div>`;
   } else {
     // Show correct answer prominently
     h+=`<div style="background:#dcfce7;border-radius:12px;padding:14px;margin-bottom:12px">
       <div style="font-size:10px;color:#166534;font-weight:700;margin-bottom:6px">✓ CORRECT ANSWER</div>
-      <div style="font-size:14px;font-weight:600;direction:rtl;text-align:right">${correct}</div>
+      <div style="font-size:14px;font-weight:600;text-align:right" dir="${heDir(correct)}">${correct}</div>
     </div>`;
     // Explanation if available
     const ex=G._exCache&&G._exCache[qIdx];
-    if(ex){h+=`<div style="font-size:12px;color:#475569;line-height:1.7;direction:rtl;text-align:right;border-top:1px solid #e2e8f0;padding-top:10px">${ex}</div>`;}
+    if(ex){h+=`<div style="font-size:12px;color:#475569;line-height:1.7;text-align:right;border-top:1px solid #e2e8f0;padding-top:10px;unicode-bidi:plaintext" dir="${heDir(ex)}">${ex}</div>`;}
     else{h+=`<button data-action="explain-oncall" data-idx="${qIdx}" id="oc-exp-${qIdx}" style="font-size:11px;padding:5px 12px;background:#eff6ff;color:#3b82f6;border:none;border-radius:8px;cursor:pointer;margin-bottom:8px">🤖 הסבר AI</button><div id="oc-exp-box-${qIdx}"></div>`;}
   }
   h+=`</div>`;
@@ -194,7 +194,7 @@ export async function runExplainOnCall(qIdx){
   try{
     const txt=await callAI([{role:'user',content:'ANSWER KEY: The correct answer is DEFINITIVELY "'+correct+'".\n\nהסבר בעברית (3-4 משפטים) למה זו התשובה הנכונה. עגן בתשובה הנכונה. שאלה: '+q.q+'\nתשובה נכונה: '+correct}],400,'sonnet');
     G._exCache[qIdx]=txt;try{localStorage.setItem('pnimit_ex',JSON.stringify(G._exCache));}catch(e){}
-    box.innerHTML='<div style="font-size:12px;color:#475569;line-height:1.7;direction:rtl;text-align:right;margin-top:8px">'+sanitize(txt)+'</div>';
+    box.innerHTML='<div style="font-size:12px;color:#475569;line-height:1.7;text-align:right;margin-top:8px;unicode-bidi:plaintext" dir="'+heDir(txt)+'">'+sanitize(txt)+'</div>';
     btn.remove();
   }catch(e){btn.textContent='🤖 הסבר AI';btn.disabled=false;}
 }

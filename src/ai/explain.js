@@ -1,5 +1,5 @@
 import G from '../core/globals.js';
-import { sanitize, toast } from '../core/utils.js';
+import { sanitize, toast, heDir } from '../core/utils.js';
 import { callAI } from './client.js';
 
 // AI explain, autopsy, teach-back — extracted from pnimit-mega.html
@@ -26,7 +26,7 @@ export function renderExplainBox(qIdx){
   if(!ex)return;
   if(ex.err){container.innerHTML='<div style="color:#dc2626;font-size:11px;padding:8px 0">⚠️ '+sanitize(ex.err)+'</div>';return;}
   const _isFlagged=(G.S.flagged||{})[qIdx];
-  container.innerHTML='<div class="explain-box" style="margin-top:8px;padding:10px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:11px;line-height:1.7;color:#166534;direction:rtl;text-align:right"><div style="font-weight:700;margin-bottom:4px">🤖 הסבר AI</div><div>'+sanitize(ex.text)+'</div></div>'+
+  container.innerHTML='<div class="explain-box" style="margin-top:8px;padding:10px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:11px;line-height:1.7;color:#166534;text-align:right;unicode-bidi:plaintext" dir="'+heDir(ex.text)+'"><div style="font-weight:700;margin-bottom:4px">🤖 הסבר AI</div><div dir="'+heDir(ex.text)+'">'+sanitize(ex.text)+'</div></div>'+
     '<button data-action="flag-explain" data-idx="'+sanitize(String(qIdx))+'" style="font-size:9px;padding:2px 8px;margin-top:3px;background:'+(_isFlagged?'#fef2f2':'#f8fafc')+';color:'+(_isFlagged?'#dc2626':'#94a3b8')+';border:1px solid '+(_isFlagged?'#fecaca':'#e2e8f0')+';border-radius:6px;cursor:pointer">'+(_isFlagged?'⚑ Flagged — verify':'⚐ Flag as unreliable')+'</button>';
 }
 export async function explainWithAI(qIdx){

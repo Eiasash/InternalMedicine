@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { TOPICS, EXAM_FREQ, IMA_WEIGHTS, APP_VERSION, HARRISON_PDF_MAP, LS, BUILD_HASH } from '../core/constants.js';
-import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey } from '../core/utils.js';
+import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey, heDir } from '../core/utils.js';
 import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, isExamTrap, getChaptersDueForReading } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
 import { setFilt, startTopicMiniExam, buildPool } from '../quiz/engine.js';
@@ -788,14 +788,14 @@ var qs=_byTopic[topic];
 h+='<div style="margin-bottom:6px">';
 h+='<div data-action="bk-toggle" data-key="'+fk+'" style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#f8fafc;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600" role="button" tabindex="0" aria-expanded="'+(open?'true':'false')+'" aria-label="'+topic+'">';
 h+='<span>📁 '+topic+' ('+qs.length+')</span><span>'+(open?'▼':'▶')+'</span></div>';
-if(open){qs.forEach(function(e){h+='<div style="padding:6px 12px;font-size:10px;border-bottom:1px solid #f1f5f9" class="heb" dir="rtl">'+e.q.q.substring(0,90)+'...</div>';});}
+if(open){qs.forEach(function(e){h+='<div style="padding:6px 12px;font-size:10px;border-bottom:1px solid #f1f5f9" class="heb" dir="'+heDir(e.q.q)+'">'+e.q.q.substring(0,90)+'...</div>';});}
 h+='</div>';
 });
 h+='</div>';
 }else{
 h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">🔖 Bookmarked (${bkCount})</div>`;
 Object.entries(G.S.bk).filter(([,v])=>v).slice(0,10).forEach(([k])=>{
-const q=G.QZ[k];if(q)h+=`<div style="font-size:10px;padding:6px 0;border-bottom:1px solid #f8fafc" class="heb" dir="rtl">${q.q.substring(0,80)}...</div>`;
+const q=G.QZ[k];if(q)h+=`<div style="font-size:10px;padding:6px 0;border-bottom:1px solid #f8fafc" class="heb" dir="${heDir(q.q)}">${q.q.substring(0,80)}...</div>`;
 });
 h+=`</div>`;
 }

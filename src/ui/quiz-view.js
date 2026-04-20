@@ -197,7 +197,7 @@ q.o.forEach((o,i)=>{
 let cls='qo';
 if(G.ans){cls+=' lk';if(i===q.c)cls+=' ok';else if(i===G.sel)cls+=' no';else cls+=' dim';}
 else if(i===G.sel)cls+=' sel';
-h+=`<button class="${cls}" data-action="pick" data-i="${i}" aria-label="Option ${i+1}: ${o}">${o}</button>`;
+h+=`<button class="${cls}" data-action="pick" data-i="${i}" aria-label="Option ${i+1}: ${o}" dir="${heDir(o)}">${o}</button>`;
 });
 if(!G.ans)h+=`<button class="btn btn-p" data-action="sd-check"${G.sel===null?' disabled':''} aria-label="Check answer">בדוק</button>`;
 else h+=`<button class="btn btn-d" data-action="sd-next" aria-label="Next question">הבאה ←</button>`;
@@ -306,7 +306,7 @@ h+=`<div style="display:flex;justify-content:space-between;align-items:center;ma
 <span style="color:#94a3b8;font-size:10px">${G.qi+1}/${G.pool.length}</span>
 </div></div>`;
 h+=`<p class="heb" style="font-size:13px;font-weight:700;line-height:1.7;margin-bottom:${q.img?'10':'16'}px" dir="${heDir(q.q)}">${q.q}</p>`;
-if(G.S.qnotes&&G.S.qnotes[G.pool[G.qi]]){h+=`<div style="margin:0 0 12px;padding:8px 10px;background:#fffbeb;border-right:3px solid #d97706;border-radius:8px;font-size:11px;line-height:1.6;color:#475569;direction:rtl;text-align:right;cursor:pointer" data-action="toggle-qnote" title="Click to edit">📝 ${sanitize(G.S.qnotes[G.pool[G.qi]])}</div>`;}
+if(G.S.qnotes&&G.S.qnotes[G.pool[G.qi]]){h+=`<div style="margin:0 0 12px;padding:8px 10px;background:#fffbeb;border-right:3px solid #d97706;border-radius:8px;font-size:11px;line-height:1.6;color:#475569;text-align:right;cursor:pointer" dir="${heDir(G.S.qnotes[G.pool[G.qi]])}" data-action="toggle-qnote" title="Click to edit">📝 ${sanitize(G.S.qnotes[G.pool[G.qi]])}</div>`;}
 if(q.img){h+=`<div style="margin-bottom:14px;text-align:center"><img src="${q.img}" alt="Question image" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer" data-action="view-img" loading="lazy"></div>`;}
 const _shuf=getOptShuffle(G.pool[G.qi],q);
 _shuf.forEach((origI,dispJ)=>{
@@ -316,7 +316,7 @@ if(G.ans){cls+=' lk';if(!G.examMode){if(origI===q.c)cls+=' ok';else if(origI===G
 else if(origI===G.sel)cls+=' sel';
 const blurCls=G.blindRecall&&!G.ans&&origI!==G.sel?' qo-blur':'';
 const autopsyCls=(G.autopsyMode&&G.ans&&!G.examMode&&origI!==q.c&&origI===G.autopsyDistractor)?' distractor-highlight':'';
-h+=`<button class="${cls}${blurCls}${autopsyCls}" data-action="pick" data-i="${origI}" aria-label="Option ${origI+1}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
+h+=`<button class="${cls}${blurCls}${autopsyCls}" data-action="pick" data-i="${origI}" aria-label="Option ${origI+1}" dir="${heDir(o)}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
 });
 h+=`<div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">`;
 if(!G.ans){
@@ -380,7 +380,7 @@ if(G.teachBackState.feedback){
   const axes=[['mechanism','מנגנון'],['criteria','קריטריון'],['exception','חריג']];
   const axesDots=axes.map(([k,l])=>{const v=G.teachBackState[k];return v===undefined?'':`<span style="font-size:10px;padding:1px 6px;border-radius:10px;background:${v?'#dcfce7':'#fee2e2'};color:${v?'#166534':'#991b1b'}">${l} ${v?'✓':'✗'}</span>`;}).join(' ');
   if(axesDots)h+='<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">'+axesDots+'</div>';
-  h+='<div style="font-size:11px;line-height:1.7;direction:rtl;text-align:right">'+sanitize(G.teachBackState.feedback)+'</div>';
+  h+='<div style="font-size:11px;line-height:1.7;text-align:right;unicode-bidi:plaintext" dir="'+heDir(G.teachBackState.feedback)+'">'+sanitize(G.teachBackState.feedback)+'</div>';
 }
 h+='</div>';
 }
@@ -404,9 +404,9 @@ h+=`</div>`;
 }
 // Built-in explanation (every question has one)
 if(G.ans&&!G.examMode&&q.e){
-h+=`<div style="margin-top:8px;padding:10px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;font-size:11px;line-height:1.7;color:#1e40af;direction:rtl;text-align:right">`;
+h+=`<div style="margin-top:8px;padding:10px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;font-size:11px;line-height:1.7;color:#1e40af;text-align:right" dir="${heDir(q.e)}">`;
 h+=`<div style="font-weight:700;margin-bottom:4px;font-size:10px">📝 הסבר</div>`;
-h+=`<div style="unicode-bidi:plaintext">${remapExplanationLetters(q.e,_shuf).replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')}</div>`;
+h+=`<div style="unicode-bidi:plaintext" dir="${heDir(q.e)}">${remapExplanationLetters(q.e,_shuf).replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')}</div>`;
 h+=`</div>`;
 }
 // AI Explain button
@@ -439,7 +439,7 @@ if(G.ans&&!G.examMode){
       const _brd=_isCorrect?'#86efac':(_isUserPick?'#fca5a5':'#fed7aa');
       const _mark=_isCorrect?'<b style="color:#059669">✓</b>':'<b style="color:#dc2626">✗</b>';
       const _pickTag=(_isUserPick&&!_isCorrect)?' <span style="color:#64748b;font-size:9px">(הבחירה שלך)</span>':'';
-      h+=`<div style="margin-bottom:6px;padding:8px 10px;background:${_bg};border:1px solid ${_brd};border-radius:8px;font-size:11px;line-height:1.6" dir="rtl">`;
+      h+=`<div style="margin-bottom:6px;padding:8px 10px;background:${_bg};border:1px solid ${_brd};border-radius:8px;font-size:11px;line-height:1.6" dir="${heDir((_rationale||'')+' '+opt)}">`;
       h+=`<div style="font-weight:700;margin-bottom:3px">${_mark} <bdi>${sanitize(opt)}</bdi>${_pickTag}</div>`;
       if(_rationale){
         // sanitize first, then style the literal markers. sanitize() cannot introduce
@@ -455,7 +455,7 @@ if(G.ans&&!G.examMode){
     });
   }else if(_aiTxt){
     // On-demand AI autopsy was cached previously (legacy path) — already sanitized+formatted
-    h+=`<div style="font-size:11px;line-height:1.7;color:#1e293b" dir="rtl">${_aiTxt}</div>`;
+    h+=`<div style="font-size:11px;line-height:1.7;color:#1e293b;unicode-bidi:plaintext" dir="${heDir(_aiTxt)}">${_aiTxt}</div>`;
   }else{
     // No offline data yet — auto-trigger AI once, show loading state
     h+=`<div style="font-size:11px;color:#64748b;padding:4px 0">⏳ טוען הסבר על מסיחים...</div>`;
