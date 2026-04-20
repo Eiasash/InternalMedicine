@@ -53,6 +53,26 @@ G._dataPromise = (async function loadDataArrays() {
       else if (varName === 'DIS') G.DIS = results[i];
       });
     G._dataReady = true;
+    // Build NOTES_BY_TI: map topic index → note object
+    // notes.json is NOT aligned with TOPICS[] positional index (21/24 mismatches).
+    // Match by normalized topic-name string (strip " — suffix", case-insensitive).
+    try {
+      const { TOPICS } = await import('./constants.js');
+      const normalize = s => String(s||'').split('—')[0].trim().toLowerCase();
+      G.NOTES_BY_TI = {};
+      const topicKeys = TOPICS.map(normalize);
+      (G.NOTES||[]).forEach(note => {
+        const nk = normalize(note.topic);
+        // exact match
+        let ti = topicKeys.indexOf(nk);
+        // loose match (substring both ways) if no exact
+        if (ti < 0) ti = topicKeys.findIndex(tk => tk && nk && (tk.includes(nk) || nk.includes(tk)));
+        if (ti >= 0 && G.NOTES_BY_TI[ti] === undefined) G.NOTES_BY_TI[ti] = note;
+      });
+    } catch (e) {
+      console.warn('NOTES_BY_TI build failed:', e);
+      G.NOTES_BY_TI = {};
+    }
     const _xp=safeJSONParse('pnimit_pending_qs',[]);
     const _xc=safeJSONParse('pnimit_custom_qs',[]);
     const _xAll=[..._xp,..._xc].filter(q=>q&&typeof q.q==='string'&&Array.isArray(q.o)&&q.o.length===4&&Number.isInteger(q.c)&&q.c>=0&&q.c<=3&&typeof q.ti==='number');
