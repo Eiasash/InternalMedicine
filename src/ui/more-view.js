@@ -1,5 +1,5 @@
 import G from '../core/globals.js';
-import { sanitize, getApiKey, setApiKey, toast } from '../core/utils.js';
+import { sanitize, getApiKey, setApiKey, toast, heDir } from '../core/utils.js';
 import { callAI } from '../ai/client.js';
 import { AI_PROXY, AI_SECRET } from '../core/constants.js';
 import { startVoiceParser } from '../quiz/modes.js';
@@ -27,8 +27,8 @@ export function renderNotes(){
       const q=G.QZ[idx];if(!q)return;
       const preview=(q.q||'').slice(0,80);
       h+=`<div style="padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:10px">
-        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;direction:rtl;text-align:right">${sanitize(preview)}${q.q.length>80?'…':''}</div>
-        <div style="font-size:11px;color:#0f172a;direction:rtl;text-align:right;line-height:1.6;margin-bottom:6px;white-space:pre-wrap">${sanitize(txt)}</div>
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;text-align:right" dir="${heDir(preview)}">${sanitize(preview)}${q.q.length>80?'…':''}</div>
+        <div style="font-size:11px;color:#0f172a;text-align:right;line-height:1.6;margin-bottom:6px;white-space:pre-wrap" dir="${heDir(txt)}">${sanitize(txt)}</div>
         <div style="display:flex;gap:6px">
           <button class="btn" data-action="jump-to-q" data-idx="${idx}" style="font-size:10px;padding:6px 10px;min-height:32px;background:var(--app-primary);color:var(--app-on-primary)">↵ עבור לשאלה</button>
           <button class="btn" data-action="del-qnote-idx" data-idx="${idx}" style="font-size:10px;padding:6px 10px;min-height:32px;background:#fef2f2;color:#991b1b">🗑️ מחק</button>
@@ -96,7 +96,7 @@ dRes.forEach(d=>{h+=`<div class="card" style="padding:10px"><span style="font-we
 }
 if(qRes.length){
 h+=`<div style="font-weight:700;font-size:12px;margin:8px 0 6px">📝 Questions (${Math.min(qRes.length,15)} shown)</div>`;
-qRes.slice(0,15).forEach(i=>{h+=`<div class="card heb" dir="rtl" style="padding:10px;font-size:11px;line-height:1.5"><span class="badge" style="background:${G.QZ[i].t==='Harrison'?'#faf5ff':'#eff6ff'};color:${G.QZ[i].t==='Harrison'?'#7c3aed':'#1d4ed8'}">${G.QZ[i].t==='Harrison'?'🤖 AI':'📝 '+G.QZ[i].t}</span> ${G.QZ[i].q.substring(0,120)}...</div>`;});
+qRes.slice(0,15).forEach(i=>{h+=`<div class="card heb" dir="${heDir(G.QZ[i].q)}" style="padding:10px;font-size:11px;line-height:1.5"><span class="badge" style="background:${G.QZ[i].t==='Harrison'?'#faf5ff':'#eff6ff'};color:${G.QZ[i].t==='Harrison'?'#7c3aed':'#1d4ed8'}">${G.QZ[i].t==='Harrison'?'🤖 AI':'📝 '+G.QZ[i].t}</span> ${G.QZ[i].q.substring(0,120)}...</div>`;});
 }
 }
 return h;
@@ -207,8 +207,8 @@ h+='</div>';
 }else{
 G.S.chat.forEach(function(m){
 var cls=m.role==='user'?'chat-msg-user':m.role==='error'?'chat-msg-err':'chat-msg-ai';
-if(m.role==='user'){h+='<div class="'+cls+' heb" dir="rtl" style="text-align:right">'+sanitize(m.text)+'</div>';}
-else{h+='<div class="'+cls+'">'+sanitize(m.text)+'</div>';}
+if(m.role==='user'){h+='<div class="'+cls+' heb" dir="'+heDir(m.text)+'" style="text-align:right">'+sanitize(m.text)+'</div>';}
+else{h+='<div class="'+cls+'" dir="'+heDir(m.text)+'" style="unicode-bidi:plaintext">'+sanitize(m.text)+'</div>';}
 });
 if(G.chatLoading){h+='<div class="chat-msg-ai" style="padding:6px 12px"><div class="typing-dots"><span></span><span></span><span></span></div></div>';}
 }
