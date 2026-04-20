@@ -1,5 +1,5 @@
 import G from '../core/globals.js';
-import { fmtT } from '../core/utils.js';
+import { fmtT, toast } from "../core/utils.js";
 
 try{G.sdLeaderboard=JSON.parse(localStorage.getItem('pnimit_sd_lb')||'[]')}catch(e){}
 // Quiz modes & peripherals — extracted from pnimit-mega.html
@@ -66,7 +66,7 @@ G.sdLeaderboard.sort((a,b)=>b.streak-a.streak);
 G.sdLeaderboard=G.sdLeaderboard.slice(0,10);
 localStorage.setItem('pnimit_sd_lb',JSON.stringify(G.sdLeaderboard));
 G.sdMode=false;
-alert(`Sudden Death Over!\n\n💀 Streak: ${G.sdStreak} questions\n${G.sdStreak>=20?'Legendary!':G.sdStreak>=10?'Impressive!':'Keep practicing!'}`);
+toast(`Sudden Death Over!\n\n💀 Streak: ${G.sdStreak} questions\n${G.sdStreak>=20?'Legendary!':G.sdStreak>=10?'Impressive!':'Keep practicing!'}`,'info');
 G.render();
 }
 
@@ -103,7 +103,7 @@ G._sessionOk=0;G._sessionNo=0;G._sessionBest={};G._sessionWorse={};G._sessionSta
 
 // ===== VOICE-TO-TEXT CASE PARSER =====
 export function startVoiceParser(){
-if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){alert('Speech Recognition not supported in this browser');return;}
+if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){toast('Speech Recognition not supported in this browser','info');return;}
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 const rec=new SR();rec.lang='he-IL';rec.interimResults=false;rec.maxAlternatives=1;
 G.voiceListening=true;G.render();

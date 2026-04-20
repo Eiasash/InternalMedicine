@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { TOPICS, EXAM_FREQ, EXAM_YEARS } from '../core/constants.js';
-import { sanitize, fmtT } from '../core/utils.js';
+import { sanitize, fmtT, toast } from "../core/utils.js";
 import { getDueQuestions, getTopicStats, isExamTrap, srScore } from '../sr/spaced-repetition.js';
 import { callAI } from '../ai/client.js';
 import { buildRescuePool } from '../sr/spaced-repetition.js';
@@ -103,7 +103,7 @@ export function endMiniExam(){
 clearInterval(G.examTimer);G.examTimer=null;G.examMode=false;
 const tot=G._sessionOk+G._sessionNo;const pct=tot?Math.round(G._sessionOk/tot*100):0;
 const topicName=TOPICS[G.miniExamTopic]||'Topic';
-alert('🎯 Mini Exam: '+topicName+'\n\n'+pct+'% ('+G._sessionOk+'/'+tot+')\n'+(pct>=70?'Great!':pct>=50?'Getting there':'Needs more work'));
+toast('🎯 Mini Exam: '+topicName+'\n'+pct+'% ('+G._sessionOk+'/'+tot+')\n'+(pct>=70?'Great!':pct>=50?'Getting there':'Needs more work'),'info');
 G.miniExamTopic=-1;G.render();
 }
 export function setFilt(f){

@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { TOPICS, HARRISON_PDF_MAP, APP_VERSION, SYLLABUS_VERSION } from '../core/constants.js';
-import { sanitize, safeJSONParse } from '../core/utils.js';
+import { sanitize, safeJSONParse, toast } from "../core/utils.js";
 import { callAI } from '../ai/client.js';
 import { getTopicStats, trackChapterRead, getChaptersDueForReading } from '../sr/spaced-repetition.js';
 import { TOPIC_REF } from './track-view.js';
@@ -263,8 +263,8 @@ export function addChapterQsToBank(jsonStr){
     const existing=JSON.parse(localStorage.getItem('pnimit_custom_qs')||'[]');
     qs.forEach(q=>{q.t='AI-Ch';q.ti=-1;existing.push(q);});
     localStorage.setItem('pnimit_custom_qs',JSON.stringify(existing));
-    alert('✅ '+qs.length+' questions added! Reload to see them in the AI-Ch filter.');
-  }catch(e){alert('Failed: '+e.message);}
+    toast('✅ '+qs.length+' questions added! Reload to see them in the AI-Ch filter.','info');
+  }catch(e){toast('Failed: '+e.message,'info');}
 }
 export function renderLibrary(){
 let h=`<div class="sec-t">📖 Library</div>
