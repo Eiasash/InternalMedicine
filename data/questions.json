@@ -146,7 +146,7 @@
     "t": "2020",
     "e": "## הסבר:\n\n**למה ג' נכונה – עיכוב IL-2:**\nIL-2 הוא ציטוקין מרכזי להפעלה והתרבות של לימפוציטים T, שהם שחקן מפתח בפתוגנזה של דלקת מפרקים שגרונית (RA). עיכובו מפחית את התגובה האוטואימונית הכוללת. תרופות כמו **Basiliximab** (נוגדן לרצפטור IL-2) משמשות לעיכוב תגובות חיסוניות.\n\n**למה האחרות שגויות:**\n- **א' ו-ב' – IL-6 ורצפטורו:** למרות ש-IL-6 אכן מעורב ב-RA ויש תרופות כמו Tocilizumab (עיכוב רצפטור IL-6) שמשמשות ב-RA, בהשוואה לעיכוב IL-2 – IL-2 נחשב מרכזי יותר להפעלת התגובה האוטואימונית הראשונית.\n- **ד' – עיכו",
     "ti": 13,
-    "eFlag": "Explanation supports IL-2 inhibition, not IL-5",
+    "eFlag": "Explanation supports IL-2 inhibition, marked answer is IL-5 receptor",
     "e_issue": true,
     "st": "anemia_rbc"
   },
@@ -220,7 +220,7 @@
     "t": "2020",
     "e": "## הסבר:\n\n**למה ד נכונה:**\nגוש אדרנל עם צפיפות **≤10 HU** ב-CT נחשב לאדנומה שומנית שפירה (lipid-rich adenoma) – ממצא זה לבדו מספיק לאבחנה. בנוסף, כל הבירור ההורמונלי שנעשה (כולל איסוף שתן לקורטיזול, כימיה ואלקטרוליטים) **תקין**, כלומר הגוש הוא **non-functioning incidentaloma** שפיר. במצב זה ההנחיות אינן מחייבות בירור נוסף, רק מעקב הדמיה.\n\n**למה האחרות שגויות:**\n\n- **א (רנין/אלדוסטרון)** – נבדק כאשר יש **יתר לחץ דם או היפוקלמיה**. המטופל בריא וללא ממצאים אלה, אין אינדיקציה.\n\n- **ב (העמסת סליין)** – זוהי בדיקת אישור להיפראלדוסט",
     "ti": 6,
-    "eFlag": "Explanation mentions follow-up imaging is needed",
+    "eFlag": "Explanation recommends follow-up imaging, contradicting no further workup option",
     "e_issue": true,
     "st": "obstructive_lung"
   },
@@ -279,7 +279,7 @@
     "t": "2020",
     "e": "## Tocilizumab - הסבר\n\n**א. נכון** - Tocilizumab (נוגדן anti-IL-6R) אושר כטיפול קו ראשון ב-Giant Cell Arteritis, ומשמש כ**תחליף לסטרואידים** (או בשילוב עמם להפחתת מינון הסטרואידים - steroid sparing effect). זהו אחד השימושים המרכזיים והמאושרים של התרופה.\n\n**ב. טעות** - Tocilizumab **כן עלול לגרום לאקטיבציה של שחפת סמויה** (latent TB), בדומה לביולוגיים אחרים. לכן נדרש סקירה ל-latent TB לפני תחילת הטיפול.\n\n**ג. טעות** - מעקב אחר רמות סוכר אינו המעקב האופייני ל-Tocilizumab (זה יותר רלוונטי לסטרואידים). המעקב הנדרש כולל תפקודי כבד, ספירת דם וליפידים.\n\n**ד. טעות** - פרפורצי",
     "ti": 13,
-    "eFlag": "Explanation says addition/substitute, not pure first-line replacement",
+    "eFlag": "Explanation says substitute OR combination, not pure first-line replacement",
     "e_issue": true,
     "st": "anemia_rbc"
   },
@@ -440,7 +440,7 @@
     "t": "2020",
     "e": "## הסבר לתשובה ד - ביצוע אקו לב\n\n**רקע קליני:**\nהמטופלת בת 80 עם קוצר נשימה במאמץ מחמיר, ללא עישון וללא גורמי סיכון איסכמיים - תבנית זו מכוונת למחלה **לא-חסימתית** של מערכת הנשימה או הלב.\n\n**למה אקו לב?**\nתפקודי נשימה עם דפוס **רסטריקטיבי** (FVC ירד, FEV1/FVC תקין או גבוה) בגיל מבוגר ללא סיבה ריאתית ברורה - מעלה חשד ל**אי ספיקת לב דיאסטולית (HFpEF)**, שכיחה מאוד בנשים מבוגרות, וגורמת לדפוס רסטריקטיבי בתפקודי הנשימה ע",
     "ti": 5,
-    "eFlag": "Explanation describes restrictive pattern, tests show normal",
+    "eFlag": "Explanation describes restrictive pattern but tests show normal spirometry",
     "e_issue": true,
     "st": "ckd_complications"
   },
@@ -543,7 +543,7 @@
     "t": "2020",
     "e": "## הסבר:\n\n**α-Blocker** חוסם את הרצפטורים האדרנרגיים מסוג α, מה שגורם לירידה בלחץ דם (וזודילטציה).\n\nהירידה בלחץ דם מפעילה את ה-**RAAS** דרך הכליה, כך שה-**Renin עולה** → עולה אנגיוטנסין II → עולה אלדוסטרון.\n\nמכיוון שה-α-Blocker **לא חוסם את ציר ה-RAAS עצמו**, האלדוסטרון עולה **באופן פרופורציונלי יותר מה-Renin** (הציר שלם ופעיל), ולכן **היחס Aldosterone/Renin עולה**.\n\n---\n\n**למה האחרים לא נכונים:**\n- **β-Blocker** → מוריד Renin (חוסם את שחרורו מהכליה) → היחס **עולה",
     "ti": 6,
-    "eFlag": "Explanation contradicts itself about beta-blocker effect",
+    "eFlag": "Explanation says α-blocker raises ratio, but contradicts: β-blocker also raises",
     "e_issue": true,
     "st": "obstructive_lung"
   },
@@ -664,7 +664,7 @@
     "t": "2020",
     "e": "# הסבר: למה תשובה א נכונה\n\n## הקשר השאלה\nהשאלה עוסקת בזיהום של **קוצב לב** (Pacemaker infection) - מצב רפואי חמור.\n\n## למה א נכונה\n\n**1. זיהום קוצב לב = אינדיקציה מוחלטת להוצאה מיידית**\nזיהום של קוצב לב ואלקטרודות הוא **biofilm infection** - החיידקים יוצרים שכבת הגנה על הגוף הזר, ואנטיביוטיקה לבדה **לא מסוגלת** לעקר את הזיהום ללא הוצאת הגוף הזר.\n\n**2. הוצאה + טיפול אנטיביוטי = הטיפול הסטנדרטי המלא**\nעל פי הנחיות (AHA/ESC), הטיפול המקובל כולל הוצאת **כל",
     "ti": 6,
-    "eFlag": "Explanation discusses pacemaker infection, not colonoscopy screening",
+    "eFlag": "Explanation discusses pacemaker infection, question asks about colonoscopy screening",
     "e_issue": true,
     "st": "obstructive_lung"
   },
@@ -681,7 +681,6 @@
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_img_2020_11.jpg",
     "e": "## הסבר לתשובה ב׳\n\n**הבעיה המרכזית - אנדוקרדיטיס על מסתם פרוסתטי (מלאכותי):**\nכאשר יש זיהום על מסתם מלאכותי, האנטיביוטיקה לבדה לרוב **אינה מספיקה** להשמדת הזיהום - החיידקים יוצרים ביופילם על המסתם המלאכותי שהאנטיביוטיקה לא חודרת אליו ביעילות, ולכן גם אם ה-MIC מתאים ומינון הפניצילין נכון, **הטיפול הרפואי בלבד ייכשל**.\n\n**למה לא מחליפים אנטיביוטיקה (ג׳ ו-ד׳ שגויות):**\nה-Streptococcus anginosus רגיש לפניצילין עם MIC מתאים -",
     "ti": 0,
-    "eFlag": "Explanation describes answer ב, marked answer is surgery",
     "st": "pharmacology_adrs"
   },
   {
@@ -697,7 +696,7 @@
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_img_2020_11.jpg",
     "e": "## הסבר:\n\n**האבחנה:** המטופל סובל מ**COPD** (מחלת ריאות חסימתית כרונית) - שיעול כרוני + אקספיריום מאורך + חירחורים גסים מפוזרים.\n\n**למה ב' נכון - AV Block:**\n\nב-COPD כרוני מתפתח **Cor Pulmonale** - לב ימני כרוני עקב יתר לחץ דם ריאתי. בצילום החזה (תמונה 11) רואים ככל הנראה **היפר-אינפלציה** עם לב בצורת טיפה ודיאפרגמה שטוחה. ה**היפראינפלציה** גורמת ללב לנוע כלפי מטה ולהסתובב, מה שמביא ל**עיוות מכני של מערכת ההולכה** - בפרט ה-AV node סובל מהלחץ המ",
     "ti": 2,
-    "eFlag": "Explanation describes COPD/Cor Pulmonale, not AV block",
+    "eFlag": "Explanation describes COPD/Cor Pulmonale causing AV block mechanically, unsupported claim",
     "e_issue": true,
     "st": "hf_complications"
   },
@@ -785,7 +784,7 @@
     "t": "2020",
     "e": "# למה התשובה היא ב' - COPD\n\n## רגע - יש כאן בעיה!\n\nלפני שאסביר, חשוב לציין: **COPD בגבר ללא עישון היא תשובה מפתיעה**, אך הנה ההסבר הסביר:\n\n---\n\n## 3 משפטים להסבר:\n\n1. **גיל 58 + קוצר נשימה מתקדם במאמץ** מתאים לדפוס של COPD, שמתפתח בהדרגה לאורך שנים ומתבטא תחילה רק במאמץ - בדיוק כפי שמתואר בשאלה (\"קוצר נשימה שמופיע במאמץ\").\n\n2. **לא כל COPD קשור לעישון** - כ-25-30% מחולי COPD הם לא מעשנים; גורמי סיכון נ",
     "ti": 5,
-    "eFlag": "Explanation supports COPD not Bronchial asthma",
+    "eFlag": "Explanation explicitly states answer is COPD, contradicts marked asthma",
     "e_issue": true,
     "st": "ckd_complications"
   },
@@ -903,7 +902,7 @@
     "t": "2020",
     "e": "## הסבר לתשובה ב':\n\n**\"העדר רטינופטיה בחולה עם סוכרת סוג 1 שולל מעל ל-90% נפרופטיה סוכרתית\"**\n\n---\n\n### למה ב' נכון:\n\n1. **קשר הדוק בין רטינופטיה לנפרופטיה בסוג 1** – בסוכרת סוג 1, שתי הסיבוכים (רטינופטיה ונפרופטיה) נגרמים מאותו מנגנון של מיקרואנגיופתיה, ולכן הם מתפתחים באופן מקביל ומתואם מאוד.\n\n2. **ערך ניבוי שלילי גבוה של העדר רטינופטיה** – אם לחולה סוכרת סוג 1 אין רטינופטיה, הסבירות ש",
     "ti": 7,
-    "eFlag": "Explanation describes different answer about retinopathy",
+    "eFlag": "Explanation endorses option 1, but option 0 is marked correct",
     "e_issue": true,
     "st": "ckd_complications"
   },
@@ -949,7 +948,7 @@
     "t": "2020",
     "e": "## הסבר לתשובה ג' - Prednisone 30 mg\n\n**סיבה 1 - אי ספיקת כליות שוללת Colchicine:**\nקריאטינין 0.6 מ\"ג/ד\"ל בגבר בן 81 מייצג למעשה **אי ספיקת כליות משמעותית** (eGFR נמוך מאוד בשל גיל וגוף), ולכן Colchicine אסורה/מסוכנת - היא מצטברת ועלולה לגרום לרעילות קשה (מיופתיה, ציטופניה).\n\n**סיבה 2 - קורטיקוסטרואידים הם הבחירה הבטוחה:**\nPrednisone 30 mg דרך הפה הוא **טיפול קו ראשון מקובל** בהתקף גאוט חד כאשר",
     "ti": 7,
-    "eFlag": "Explanation states creatinine 0.6, question states 6.0",
+    "eFlag": "Explanation states creatinine 0.6, question states 6.0 - contradictory values",
     "e_issue": true,
     "st": "rheum_diseases"
   },
@@ -980,7 +979,7 @@
     "t": "2020",
     "e": "## הסבר לתשובה ד':\n\n**הטיפול הסטנדרטי במיימת על רקע שחמת** מבוסס על **Spironolactone** (אנטגוניסט אלדוסטרון) כקו ראשון, מכיוון שבשחמת יש היפראלדוסטרוניזם משני שגורם לאצירת נתרן ומים.\n\n**טווח המינון של Spironolactone** הוא **100-400 מ\"ג ליום** (כנראה שבשאלה המקורית כתוב 100-400), כאשר מתחילים ב-100 מ\"ג ומעלים בהדרגה לפי תגובה קלינית ורמות אלקטרוליטים - זהו פרוטוקול מקובל ומוכר בהנחיות.\n\n**הסיבה שהאחרות שגוי",
     "ti": 1,
-    "eFlag": "Explanation says 100-400 mg, answer says 511-511 mg",
+    "eFlag": "Explanation says 100-400 mg, answer marked says 511-511 mg",
     "e_issue": true
   },
   {
@@ -1039,7 +1038,7 @@
     "t": "2020",
     "e": "## הסבר לתשובה ב' - Metoprolol\n\n**הקשר הקליני:**\nהמטופלת מציגה תמונה קלאסית של **אי ספיקת לב** (גודש ורידי צווארי + בצקות היקפיות + קוצר נשימה פרוגרסיבי) על רקע יתר לחץ דם והשמנת יתר.\n\n---\n\n**משפט 1 - למה Metoprolol נכון:**\nבטא-בלוקרים כמו Metoprolol הם **טיפול ראשון במעלה באי ספיקת לב עם ירידה בתפקוד סיסטולי (HFrEF)**, והוכחו במחקרים גדולים (MERIT-HF) כמפחיתי תמותה משמעותית.\n\n**משפט 2 - למה האחרים פחות נכונים:**\nVerap",
     "ti": 1,
-    "eFlag": "Explanation supports Metoprolol not Candesartan",
+    "eFlag": "Explanation explicitly recommends Metoprolol, contradicts marked answer Candesartan",
     "e_issue": true
   },
   {
@@ -1169,7 +1168,7 @@
     "t": "2020",
     "e": "## הסבר מדוע ג נכון:\n\n**1. שיגלה מצריכה טיפול אנטיביוטי:**\nבניגוד לחיידקים אחרים הגורמים שלשול (כמו סלמונלה לא-טיפואידית), שיגלוזיס **תמיד מטופלת אנטיביוטית** כאשר היא מאושרת בתרבית - הטיפול מקצר את משך המחלה ומפחית הדבקה של אחרים.\n\n**2. Trimethoprim-Sulfamethoxazole (TMP-SMX) הוא טיפול הבחירה:**\nTMP-SMX (קוטרימוקסזול) הוא האנטיביוטיקה המקובלת ביותר לטיפול בשיגלה - פעיל כנגד החיידק, זמין פומי, וזול. האלטר",
     "ti": 2,
-    "eFlag": "Explanation contradicts answer - recommends antibiotic treatment",
+    "eFlag": "Explanation recommends antibiotic treatment; marked answer says no antibiotics needed",
     "e_issue": true,
     "st": "hf_pharmacology"
   },
@@ -1230,7 +1229,7 @@
     "t": "2020",
     "e": "## הסבר לתשובה ג':\n\n**תופעת Osler's Sign** היא הבסיס לתשובה הנכונה. כאשר מנפחים את שרוול מד-הלחץ מעל לערך הסיסטולי הנמדד, דופק רדיאלי תקין **אמור להיעלם לחלוטין** - מפני שהעורק הברכיאלי נחסם והזרימה נעצרת.\n\n**במקרה של Pseudohypertension**, דפנות העורקים **מסוידות וקשיחות מאוד** (Mönckeberg's sclerosis) - כך שהשרוול אינו מצליח לכווץ את העורק באמת, למרות שמד-הלחץ מראה לחץ גבוה. לכן הדופק הרדיאלי **ממשיך להימשש** גם אחרי \"חס",
     "ti": 4,
-    "eFlag": "Explanation describes palpable pulse, answer says non-palpable",
+    "eFlag": "Explanation describes palpable pulse, answer says non-palpable pulse",
     "e_issue": true,
     "st": "diagnostic_micro"
   },
@@ -1289,7 +1288,7 @@
     "t": "2020",
     "e": "## הסבר לתשובה ג' - Levofloxacin כהתווית נגד מוחלטת\n\n**1. אלרגיה לפניצילין = אלרגיה לאמוקסיציל:**\nהמטופל פיתח פריחה מגרדת (תגובה אלרגית) ל-Amoxycillin-Clavulonate, שהוא אנטיביוטיקה מסוג **בטא-לקטאם (פניצילין)**. זוהי אלרגיה מוכחת לפניצילין.\n\n**2. ריאקציה צולבת עם צפלוספורינים אך לא עם פלואורוקינולונים:**\nל-Levofloxacin (פלואורוקינולון) **אין** כל קשר לאלרגיית פניצילין — אז למה הוא התווית נגד? כי **ל-Fluoroquin",
     "ti": 1,
-    "eFlag": "Explanation contradicts itself about Levofloxacin contraindication",
+    "eFlag": "Explanation calls Levofloxacin absolute contraindication, contradicts marked answer",
     "e_issue": true
   },
   {
@@ -1304,7 +1303,7 @@
     "t": "2021-Jun",
     "e": "# הסבר מדוע ד נכון\n\n## תשובה ד: Aldosterone Antagonist מעלה תמותה ב-HFrEF כשהחולים בדרגה NYHA IV\n\n---\n\n### משפט 1 – הבסיס ממחקר RALES\nבמחקר RALES נבדק **Spironolactone** בחולי HFrEF בדרגה NYHA III-IV, ואכן נמצאה ירידה בתמותה הכוללת – **אך רק בחולים בדרגה NYHA III**, בעוד שבחולים בדרגה **NYHA IV** (הקשים ביותר עם אי ספיקה מתקדמת מאוד) נצפתה דווקא **עלייה בתמותה**, ככל הנראה בשל סיכון מוגבר להיפרקלמיה ופגיעת כליות בחולים עם",
     "ti": 1,
-    "eFlag": "Explanation says increases mortality, answer says decreases",
+    "eFlag": "Explanation endorses option 3, marked answer is option 1",
     "e_issue": true
   },
   {
@@ -1319,7 +1318,7 @@
     "t": "2021-Jun",
     "e": "## הסבר לתשובה ב'\n\n### האבחנה: DKA אאוגליקמיק (Euglycemic DKA)\n\nמדובר בסיבוך ידוע של **SGLT2 inhibitors (Empagliflozin)** - DKA עם גלוקוז **תקין/כמעט תקין** (לכן המעבדה מציגה גלוקוז תקין למרות חמצת קטוטית).\n\n---\n\n### למה ב' נכון - 3 משפטים:\n\n1. **דקסטרוז** ניתן למרות שהגלוקוז תקין, כי בטיפול ב-DKA יש לתת אינסולין שידרוש סובסטרט גלוקוז - בלי זה הגלוקוז יצנח לרמות מסוכנות, ולכן ה-Dextrose הכרחי לאפשר מת",
     "ti": 1,
-    "eFlag": "Explanation says glucose is normal, question shows 160",
+    "eFlag": "Explanation says glucose normal, lab shows 160 elevated non-euglycemic",
     "e_issue": true
   },
   {
@@ -1377,7 +1376,6 @@
     "t": "2021-Jun",
     "e": "## הסבר למה א' נכון:\n\n**1. מנגנון המחלה מצריך חסימת RAAS:**\nבהיצרות חד-צדדית של עורק הכליה, הכליה האיסכמית מפרישה **רנין מוגבר** → עודף אנגיוטנסין II → יתר לחץ דם רנין-תלוי. מעכבי ACE חוסמים ישירות את המנגנון הפתופיזיולוגי הזה ולכן הם הטיפול הרציונלי ביותר.\n\n**2. הכליה הנגדית (הבריאה) מגנה:**\nבניגוד להיצרות **דו-צדדית** (שם מעכבי ACE אסורים כי יגרמו לאי-ספיקת כליות חריפה), בהיצרות **חד-צדדית** הכליה ה",
     "ti": 22,
-    "eFlag": "Explanation contradicts itself - says ACE inhibitors prohibited",
     "e_issue": true,
     "st": "analgesic_pharm"
   },
@@ -1393,7 +1391,7 @@
     "t": "2021-Jun",
     "e": "## הסבר לתשובה ג' - כריתת טחול (Splenectomy)\n\n**1. האבחנה והמנגנון:**\nהמטופל סובל מ**ספרוציטוזיס תורשתי** - מחלה בה כדוריות הדם האדומות בעלות צורה כדורית לא תקינה, ולכן נהרסות בטחול בקצב מוגבר. הסימנים הקלאסיים - חוורון, צהבת וטכיקרדיה - מעידים על **המוליזה כרונית** עם אנמיה משמעותית.\n\n**2. הטיפול הסיבתי היחיד:**\nבספרוציטוזיס, הטחול הוא האיבר האחראי להרס הכדוריות הפגומות. **כריתת הטחול מסירה את מנגנון ההרס** ומ",
     "ti": 10,
-    "eFlag": "Patient has reticulocytopenia suggesting aplastic crisis",
+    "eFlag": "Explanation supports splenectomy; reticulocytopenia indicates aplastic crisis needing transfusion",
     "e_issue": true,
     "st": "htn_complications"
   },
@@ -1672,7 +1670,7 @@
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun21_t4.jpeg",
     "e": "## הסבר לתשובה א'\n\nהתמונה מתארת **Pyoderma Gangrenosum** – נגע עורי המוכר כביטוי אקסטרה-אינטסטינלי של מחלות מעי דלקתיות (IBD).\n\n---\n\n### למה א' נכון:\n\n1. **שכיחות גבוהה יותר ב-Crohn's** – Pyoderma Gangrenosum מופיע בכ-1-2% מחולי UC, אך **שכיח יותר בחולי Crohn's**, שם הוא מופיע בשיעור גבוה יותר ומתפשט באזורים נרחבים יותר.\n\n2. **ביטוי אקסטרה-אינטסטינלי קלאסי של IBD** – הנגעים **כן קשורים** למחלת המעי הדלקתית (שולל ב'), אך הקשר",
     "ti": 6,
-    "eFlag": "Explanation confirms UC association contradicting Crohn's claim",
+    "eFlag": "Explanation confirms Crohn's association, contradicting UC patient scenario",
     "st": "venous_thromboembolism"
   },
   {
@@ -1701,7 +1699,7 @@
     "t": "2021-Jun",
     "e": "## הסבר לתשובה א' - דיאליזה\n\n**1. אבחנה: קטואצידוזיס אלכוהולי עם רמת אלכוהול גבוהה מסכנת חיים**\nהמטופלת מציגה תמונה קלאסית של הרעלת אלכוהול קשה עם חמצת מטבולית (טאכיפנאה כנשימה מפצה), וכאשר האלכוהול בדם מגיע לרמות מסכנות חיים עם אי יציבות המודינמית - דיאליזה היא הטיפול המהיר והיעיל ביותר להוצאת האלכוהול מהדם.\n\n**2. דיאליזה מסירה ישירות את האתנול ומטבוליטיו הרעילים**\nהאתנול הוא מולקולה קטנה ודיאלי",
     "ti": 21,
-    "eFlag": "Explanation cut off, seems incomplete/inconsistent",
+    "eFlag": "Explanation diagnoses alcoholic ketoacidosis; marked answer is dialysis not insulin",
     "e_issue": true,
     "st": "acid_base_disorders"
   },
@@ -1762,7 +1760,7 @@
     "t": "2021-Jun",
     "e": "## הסבר לתשובה ב':\n\n**שיפור ב-FEV1 לפי קריטריונים לאחר שבועיים טיפול.**\n\n1. **אבחנת אסתמה דורשת הוכחת חסימה הפיכה** - הקריטריון המקובל הוא שיפור של **≥12% ו-≥200ml ב-FEV1** לאחר מתן ברונכודילטור (או קורס סטרואידים), וזה בדיוק מה שתשובה ב' מתארת.\n\n2. **תשובה ג' שגויה** כי בתגר מטאכולין, ירידה של **12% אינה מספיקה** - הקריטריון לתגובתיות יתר חייב להיות ירידה של **≥20% ב-FEV1** (PC20), כך שהנתון בתשובה ג' אינ",
     "ti": 5,
-    "eFlag": "Explanation describes bronchodilator response, answer says Prednisone",
+    "eFlag": "Explanation describes bronchodilator response, answer says Prednisone treatment",
     "e_issue": true,
     "st": "ckd_staging"
   },
@@ -1865,7 +1863,7 @@
     "t": "2021-Jun",
     "e": "## הסבר מדוע א נכון:\n\n**1. מנגנון: היפונתרמיה מחוסר נתרן (Hypovolemic Hyponatremia)**\nאישה בת 90 המתגוררת לבד, ללא תרופות, סביר מאוד שסובלת מ**תת-תזונה ודה-הידרציה** (אכילה ושתייה לקויות) → ירידה בנפח הדם → הגוף מגיב בשימור נתרן מרבי בכליות.\n\n**2. תגובת הכליות: שימור נתרן = נתרן נמוך בשתן**\nכאשר יש היפוvolemia, מופעל ציר **RAAS (אלדוסטרון)** → הכליות סופגות נתרן בחזרה בצורה אגרסיבית → **Na בשתן < 20 mEq/L",
     "ti": 8,
-    "eFlag": "Explanation describes LOW urine sodium, question asks HIGH",
+    "eFlag": "Explanation describes hypovolemia causing LOW urine sodium, contradicts HIGH",
     "e_issue": true,
     "st": "electrolyte_effects"
   },
@@ -2010,7 +2008,6 @@
     "t": "2021-Jun",
     "e": "## הסבר מדוע א נכון:\n\n### עיקרון \"מים חופשיים\"\n**מים חופשיים** הם המים שאינם נושאים אלקטרוליטים ביחס לפלזמה (אוסמולריות ~308 mOsm/L). חצי סליין (0.45% NaCl) הוא תמיסה **היפוטונית** — כל ליטר מכיל כ-154 mOsm, כלומר **חצי** מהנדרש. לכן מחצית מנפח חצי הסליין = \"מים חופשיים.\"\n\n### חישוב תרומת KCL\nתמיסת KCl בריכוז **2 מאק\"א אשלגן/מ\"ל** = 2,000 mOsm/L — זוהי תמיסה **היפרטונית מאוד**. כאשר מוסיפים 20 ",
     "ti": 22,
-    "eFlag": "Explanation incomplete, calculation not finished or verified",
     "e_issue": true,
     "st": "analgesic_pharm"
   },
@@ -2157,7 +2154,7 @@
     "t": "2021-Jun",
     "e": "## הסבר מדוע ג' נכון:\n\n**1. קולכיצין וחסר פקטורי קרישה:**\nחולי FMF מטופלים בקולכיצין לטווח ארוך, ותרופה זו עלולה לגרום לירידה בספיגת ויטמין B12 ופולאט, אך החשוב יותר - קולכיצין מעכב את הכבד מלייצר פקטורי קרישה תלויי ויטמין K, ובכך עלול לגרום לדיאתזה דימומית המתבטאת בדימום ספונטני בכליה.\n\n**2. דימום פריכלייתי/תוך-כלייתי ספונטני:**\nדימום ספונטני בכליה (Spontaneous renal hematoma) ללא טראומה הוא ביטוי קלאסי לחסר פקטורי",
     "ti": 7,
-    "eFlag": "Colchicine doesn't cause vitamin K-dependent clotting deficiency",
+    "eFlag": "Colchicine doesn't cause vitamin K-dependent clotting factor deficiency",
     "e_issue": true,
     "st": "rheum_diseases"
   },
@@ -2187,7 +2184,7 @@
     "t": "2021-Jun",
     "e": "## הסבר לתשובה ב':\n\n**FGF23 גורם להגברת הפרשת PTH באופן ישיר.**\n\n1. **FGF23 פועל ישירות על בלוטות הפאראתירואיד** דרך קולטנים (FGFR) הנמצאים עליהן, וגורם לעלייה בשחרור PTH מהבלוטה.\n\n2. **בנוסף, FGF23 גורם להיפופוספטמיה והיפוקלצמיה** (על ידי הפחתת ספיגת זרחן וויטמין D בכליה), ומצבים אלו כשלעצמם מהווים גירוי נוסף לשחרור PTH.\n\n3. **שאר התשובות שגויות** כי FGF23 דווקא **מגביר** הפרשת זרחן בכליה (לא מפח",
     "ti": 7,
-    "eFlag": "Explanation contradicts itself - states FGF23 increases PTH",
+    "eFlag": "FGF23 suppresses PTH, not increases it - explanation contradicts reality",
     "e_issue": true,
     "st": "ckd_complications"
   },
@@ -2525,7 +2522,7 @@
     "e": "## הסבר:\n\n**זיהוי המצב:** משטח ליחה המראה **Actinomyces** (גרגירי גופרית צהובים - \"sulfur granules\") → הטיפול הוא **פניצילין במינון גבוה** לתקופה ארוכה, או לחלופין **Amoxicillin-Clavulanate**.\n\nאך אם מדובר בעמידות או אלרגיה, הטיפול החלופי הוא **Doxycycline** - אולם התשובה מכוונת ל**Rifampin** בשילוב, או יותר סביר - מדובר ב**Isoniazid/Rifampin** כלומר מצב של **TB** (גרנולומות בכיח) → טיפול **RIPE** → תופעת הלוואי השכיחה ביותר היא **Hepatotoxicity** (בעיקר מ-Isoniaz",
     "ti": 13,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun21_p84_img1.png",
-    "eFlag": "Explanation contradicts itself: describes Actinomyces then TB",
+    "eFlag": "Explanation describes Actinomyces treatment then switches to TB diagnosis",
     "e_issue": true,
     "st": "anemia_rbc"
   },
@@ -2656,7 +2653,7 @@
     "t": "2021-Jun",
     "e": "## התשובה הנכונה: ב. IL-2 receptor (CD25)\n\n### הסבר:\n\n**1. האבחנה המבדלת המרכזית:**\nהתמונה הקלינית – חום ממושך (10 ימים), **ספלנומגליה**, ואנמיה עם **MCV גבוה (מקרוציטית)** – מכוונת ל**לימפומה** (בפרט Hodgkin או NHL), שבה IL-2 receptor מסיס (sCD25) משמש כסמן פעילות מחלה אמין ומבוסס, ומהווה חלק מקריטריוני HScore לאבחון HLH שגם הוא באבחנה המבדלת.\n\n**2. למה לא האחרות:**\n- **JAK2** – רלוונטי למחלות מיאלופ",
     "ti": 10,
-    "eFlag": "Explanation describes lymphoma; CD25 indicates HLH",
+    "eFlag": "Explanation diagnoses lymphoma; CD25 indicates HLH per explanation itself",
     "e_issue": true,
     "st": "primary_htn"
   },
@@ -2995,7 +2992,7 @@
     "e": "## הסבר מדוע ג' נכון\n\n**Cannon A-waves** ב-JVP נגרמות כאשר הפרעה קצב עם **דיסוציאציה אטריו-ונטריקולרית (AV dissociation)** — כלומר, הפרוזדור מתכווץ כנגד שסתום טריקוספידלי סגור (כי הפרוזדור והחדר פועלים באופן עצמאי ולא מסונכרן.\n\nבמקרה זה, **העדר גלי P בא-ריתמיה + רקע של מחלת לב + תסמינים** — הממצא של Cannon waves מכוון לאבחנה של **Complete AV Block (חסם AV מלא)**, שבו הפרוזדורים מתכווצים באופן עצמאי",
     "ti": 2,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun21_p116_img1.jpeg",
-    "eFlag": "Explanation describes AV block, not ventricular origin",
+    "eFlag": "Explanation diagnoses Complete AV Block, not ventricular tachycardia origin",
     "e_issue": true,
     "st": "hf_arrhythmias"
   },
@@ -3042,7 +3039,6 @@
     "t": "2021-Jun",
     "e": "## התשובה הנכונה היא **ב. Chemoembolization (TACE)**\n\n### הסבר בשני משפטים:\n\n1. **Chemoembolization (TACE)** היא טכניקת **חסימת כלי הדם** המזינים את הגידול תוך הזרקת כימותרפיה מקומית, אך היא **אינה מוציאה את הגידול לחלוטין** מהגוף ולכן נחשבת לטיפול **פליאטיבי / גישרי** (Palliative/Bridge therapy) ולא מרפא.\n\n2. שלוש האפשרויות האחרות — השתלת כבד, כריתה חלקית של הכבד, ו-RFA — כולן מטרתן **הוצאה מוחלטת או השמדה מוחלטת**",
     "ti": 19,
-    "eFlag": "Explanation says TACE is NOT curative treatment",
     "e_issue": true,
     "st": "procedural_pharm"
   },
@@ -3216,7 +3212,7 @@
     "t": "2021-Jun",
     "e": "## למה א' נכון: Dexamethasone ב-Bacterial Meningitis\n\n### התשובה הנכונה: א - יש לתת את הטיפול **15-20 דקות לפני** מתן האנטיביוטיקה\n\n---\n\n### הסבר בשני משפטים:\n\n1. **מנגנון הפעולה תלוי עיתוי:** Dexamethasone מפחית את התגובה הדלקתית הנגרמת משחרור רכיבי דופן החיידק בעת **ליזיס** מהאנטיביוטיקה - לכן חייבים לתת אותו *לפני* שהאנטיביוטיקה מתחילה להרוג את החיידקים ומשחררת ציטוקינים (TNF, IL-1) שגורמים לנזק.",
     "ti": 12,
-    "eFlag": "Explanation says 15-20 minutes, answer incomplete",
+    "eFlag": "Explanation says 15-20 minutes, option says only 'minutes before'",
     "st": "thyroid_adrenal"
   },
   {
@@ -3291,7 +3287,7 @@
     "t": "2021-Jun",
     "e": "## למה ב' נכון: **Acute Pre-renal Kidney Injury**\n\n**משפט 1 – הקליניקה מצביעה על היפובולמיה:**\nהחולה בן 80 סובל מ**מיעוט באכילה ושתייה** (intake ירוד), מה שגורם לדהידרציה והיפובולמיה → ירידה בנפח הדם הזורם לכליות → ירידה ב-GFR → אי ספיקת כליות **פרה-רנלית**.\n\n**משפט 2 – הממצאים האובייקטיביים תואמים Pre-renal:**\n**אוראה 250 מ\"ג/ד\"ל** עם עלייה **בלתי פרופורציונלית** יחסית לקרייאטינין (BUN/Cr ratio גבוה",
     "ti": 7,
-    "eFlag": "Explanation describes pre-renal injury not myeloma nephropathy",
+    "eFlag": "Explanation diagnoses pre-renal injury, marked answer is myeloma nephropathy",
     "e_issue": true,
     "st": "dialysis_transplant"
   },
@@ -3337,7 +3333,7 @@
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun21_t22.jpeg",
     "e": "## הסבר מדוע א' נכון\n\nמהתיאור הקליני: בן 76 עם נוירופתיה, בצקות היקפיות וקוצר נשימה → **אמילואידוזיס לבבי** (ATTR או AL) עם **אי ספיקת לב עם EF שמור (HFpEF)**.\n\n---\n\n### למה א' נכון – הפרוגנוזה טובה יותר:\n\n1. **באמילואידוזיס ATTR (transthyretin)** – שהוא הסביר יותר בגיל 76 – הפרוגנוזה **טובה משמעותית** בהשוואה לאמילואידוזיס AL, מאחר ש-AL אמילואידוזיס הוא אגרסיבי הרבה יותר עם מעורב",
     "ti": 1,
-    "eFlag": "Explanation discusses amyloidosis, not comparing prognoses correctly",
+    "eFlag": "Explanation compares ATTR vs AL, not ATTR vs hypertensive HFpEF",
     "e_issue": true,
     "st": "stable_cad"
   },
@@ -3481,7 +3477,7 @@
     "t": "2022-Jun",
     "e": "## למה ב' נכון: Aciclovir מפחית שכיחות מחלות ממאירות במושתלי כליה\n\n### משפט 1 – המנגנון:\n**EBV (Epstein-Barr Virus)** הוא הגורם המרכזי ל-**PTLD (Post-Transplant Lymphoproliferative Disease)** – אחת המחלות הממאירות השכיחות ביותר אחרי השתלה. **Aciclovir** מעכב את שכפול ה-EBV (ו-HSV/VZV) בשלב ה-lytic, ובכך מפחית את העומס הויראלי ואת הסיכון להתפתחות לימפומה.\n\n### משפט 2 – ההבדל מול Valganciclovir:\n**Valganciclovir** (תשוב",
     "ti": 22,
-    "eFlag": "Explanation discusses Aciclovir, not mTOR inhibitors",
+    "eFlag": "Explanation endorses Aciclovir (option 1), marked answer is mTOR inhibitors (option 2)",
     "e_issue": true,
     "st": "palliative_symptoms"
   },
@@ -3512,7 +3508,7 @@
     "t": "2022-Jun",
     "e": "## התשובה הנכונה היא ב'\n\n**ריכוזי Ciprofloxacin בדם נמוכים בשל הפרעת ספיגה**\n\n### הסבר בשני משפטים:\n\n1. **סותרי חומצה (אנטציד/PPI)** מעלים את ה-pH בקיבה, ו-Ciprofloxacin דורש סביבה חומצית לספיגה תקינה — לכן ספיגתו במעי יורדת משמעותית כאשר נלקח במקביל לתרופות אלו.\n\n2. כתוצאה מירידה בספיגה, ריכוז התרופה בדם (ולכן גם ברקמות ובשתן) נמוך מה-MIC הנדרש לטיפול יעיל ב-UTI, מ",
     "ti": 6,
-    "eFlag": "Ciprofloxacin absorption not pH-dependent like explanation claims",
+    "eFlag": "Ciprofloxacin absorption is not pH-dependent; explanation is incorrect",
     "e_issue": true,
     "st": "obstructive_lung"
   },
@@ -3601,7 +3597,6 @@
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun22_t2.png",
     "e": "## למה ד נכון:\n\n**1. CAP (Community Acquired Pneumonia) קלאסי:**\nהחולה התקבל מהקהילה עם תמונה קלינית של דלקת ריאות נרכשת בקהילה, ולכן הטיפול המומלץ לפי הגדלינס (IDSA/ATS) ל-CAP המאושפז הוא שילוב של **β-lactam (Ceftriaxone)** לכיסוי פנאומוקוק ובקטריות שכיחות + **Fluoroquinolone נשימתי (Levofloxacin)** לכיסוי אטיפיים (Legionella, Mycoplasma, Chlamydia) — בדיוק מה שמציעה תשובה ד.\n\n**2. אין אינדיקציה לטיפול רחב-",
     "ti": 5,
-    "eFlag": "Explanation supports combination therapy, answer lists same drug",
     "e_issue": true,
     "st": "aki_management"
   },
@@ -3898,7 +3893,7 @@
     "t": "2022-Jun",
     "e": "## התשובה הנכונה היא ג - בדיקת רמות ויטמין D\n\n### הסבר:\n\n**1. אבחנה מבדלת של המבנה האובאלי:**\nמבנה אובאלי בצוואר בUS, בנוכחות בלוטת תריס **תקינה**, מעלה חשד ל**בלוטת לימפה תגובתית** - שהיא הסיבה הנפוצה ביותר למצב זה, ולא גידול ממאיר או בלוטת פאראתירואיד.\n\n**2. הצעד ההגיוני הבא:**\nבלוטת לימפה תגובתית מוגדלת יכולה לנבוע מחסר ויטמין D (הגורם לדיסרגולציה של מערכת החיס",
     "ti": 9,
-    "eFlag": "Explanation discusses lymph node, not parathyroid management",
+    "eFlag": "Explanation diagnoses lymph node, not parathyroid adenoma management",
     "e_issue": true,
     "st": "intervention"
   },
@@ -4043,7 +4038,7 @@
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun22_t6.jpeg",
     "e": "## התשובה הנכונה: א. חום C° 38.6\n\n## הסבר:\n\n**קריטריוני Duke לאבחון אנדוקרדיטיס חיידקית (IE):**\n\nהחולה עם **HCM** (גורם סיכון מרכזי ל-IE בשל הפרעה בזרימת הדם ופגיעה במסתמים) מציגה תסמינים קלאסיים של IE — ירידה במשקל, גרד והזעות לילות.\n\n**חום ≥38°C הוא קריטריון מינורי אחד בלבד** לפי Duke, ולכן **אינו מספיק לבדו** לאבחון — הוא אינו הממצא **האבחנתי** הספציפי ביותר.\n\n---\n\n**לעומת זאת, התש",
     "ti": 12,
-    "eFlag": "Explanation contradicts answer - fever alone insufficient",
+    "eFlag": "Explanation states fever alone insufficient, contradicts marked answer",
     "e_issue": true,
     "st": "thyroid_adrenal"
   },
@@ -4075,7 +4070,7 @@
     "t": "2022-Jun",
     "e": "## התשובה הנכונה: **א. הורדה מיידית של לח\"ד סיסטולי מתחת ל- 100 ממ\"כ**\n\n❌ **זו למעשה התשובה השגויה והמסוכנת!**\n\n---\n\n## התשובה הנכונה היא **ג. ביצוע CT מוח**\n\n### הסבר בשני משפטים:\n\n1. **הפער הדרמטי בלחץ הדם בין שתי הידיים (220 לעומת 100 ממ\"כ) מעיד על דיסקציה של אאורטה** – מצב בו קרע בדופן אבי העורקים חוסם את זרימת הדם לצד שמאל, ובלבול עשוי לנבוע מאיסכמיה מוחית הנל",
     "ti": 22,
-    "eFlag": "Explanation says marked answer is wrong",
+    "eFlag": "Explanation explicitly says marked answer is wrong, endorses CT",
     "e_issue": true,
     "st": "palliative_symptoms"
   },
@@ -4149,7 +4144,7 @@
     "t": "2022-Jun",
     "e": "## תשובה: א - קצב סינון גלומרולרי (GFR) של כ-1 מ\"ל לדקה\n\n### הסבר בשני משפטים:\n\n1. **נוסחת Cockcroft-Gault** לחישוב קצב הסינון הגלומרולרי (CrCl) היא:\n**CrCl = [(140 - גיל) × משקל] / (72 × קריאטינין)**,\nובמטופל בן **72** עם קריאטינין **2.5**, הגיל (140-72=68) כמעט מתבטל עם המכנה, ומתקבל ערך נמוך מאוד של סביב **20-28 מ\"ל/דקה** — אך בנוכחות **אי ספיקת כליות חדה (AKI) עם ספס",
     "ti": 7,
-    "eFlag": "Calculation shows 20-28 ml/min not 1 ml/min",
+    "eFlag": "Explanation calculates 20-28 ml/min, contradicts marked 1 ml/min answer",
     "e_issue": true,
     "st": "ckd_complications"
   },
@@ -4482,7 +4477,7 @@
     "t": "2022-Jun",
     "e": "## התשובה הנכונה היא ד' - CKD 5 לא בדיאליזה\n\n### הסבר בשני משפטים:\n\n1. **Metformin אסור לשימוש ב-CKD 5** (GFR < 15 מ\"ל/דקה) בשל סכנת **לקטיק אצידוזיס** - התרופה מופרשת דרך הכליות ובאי-ספיקת כליות חמורה היא מצטברת ברקמות ומעכבת את מטבוליזם הלקטט במיטוכונדריה.\n\n2. **Dulaglutide (GLP-1)** אינו מומלץ ב-CKD 5 מכיוון שעלול להחמיר את תפקוד הכליות עקב **גרימת בחילות, ה",
     "ti": 9,
-    "eFlag": "Explanation discusses Metformin/GLP-1, not SGLT2 inhibitors",
+    "eFlag": "Explanation discusses Metformin/GLP-1 contraindications, not SGLT2 inhibitors contraindications",
     "e_issue": true,
     "st": "intervention"
   },
@@ -4558,7 +4553,6 @@
     "t": "2022-Jun",
     "e": "## מיקרואלבומינוריה - תשובה ד נכונה\n\n**מיקרואלבומינוריה מוגדרת כיחס אלבומין/קריאטינין בשתן בין 30-300 מ\"ג/ג.**\n\nתשובה ד' (מ\"ג/ג) נכונה כי היחידות הנכונות לביטוי יחס אלבומין/קריאטינין הן **מ\"ג אלבומין לגרם קריאטינין**, וערך הנמצא בטווח 30–300 מ\"ג/ג מגדיר מיקרואלבומינוריה — בניגוד לתשובות עם יחידות מ\"ג/מ\"ג שהן יחידות שגויות לחלוטין למדידה זו, ומספרית",
     "ti": 22,
-    "eFlag": "Explanation defines 30-300 mg/g range, answer is 50",
     "st": "palliative_symptoms"
   },
   {
@@ -4615,7 +4609,7 @@
     "t": "2022-Jun",
     "e": "## התשובה היא ב - לאחר שבוע\n\n**הסבר:**\n\n1. **בדיקת מאמץ לאחר STEMI עם PCI מוצלח** מומלצת לאחר **שבוע עד שבועיים** מהשחרור (בחולה יציב ללא סיבוכים), כדי להעריך את תפקוד הלב, סבילות למאמץ, ולאשר הצלחת ההתערבות לפני חזרה לפעילות יומיומית.\n\n2. **המתנה ארוכה יותר אינה מוצדקת** בחולה שעבר PCI מוצלח ללא סיבוכים ונמצא במצב טוב — בדיקה לאחר חודש, חודשיים או שישה חודשים עלולה **",
     "ti": 0,
-    "eFlag": "Explanation discusses stress test timing, not sexual activity",
+    "eFlag": "Explanation discusses stress test timing, not sexual activity resumption",
     "e_issue": true,
     "st": "cardiology_key"
   },
@@ -4646,7 +4640,7 @@
     "t": "2022-Jun",
     "e": "## התשובה הנכונה: ג\n\n**הסבר:**\n\nמדובר בדלקת שופכה (Urethritis) לאחר יחסים לא מוגנים — הגורמים הנפוצים ביותר הם **N. gonorrhoeae** ו-**C. trachomatis**, ולכן הגישה היא **טיפול אמפירי כפול**.\n\n**Azithromycin 1g פומי במינון חד-פעמי** הוא הטיפול הסטנדרטי ל-**Chlamydia trachomatis**, וניתן **בשילוב** עם Ceftriaxone לכיסוי גונוקוק — זהו הפרוטוקול המקובל (CDC guidelines) לטיפול אמפירי ב-urethritis.\n\n> ❌ א' שגוי — Amoxic",
     "ti": 1,
-    "eFlag": "Explanation requires combination therapy, not monotherapy alone",
+    "eFlag": "Explanation requires combination therapy, marked answer states monotherapy only",
     "e_issue": true
   },
   {
@@ -4820,7 +4814,7 @@
     "t": "2022-Jun",
     "e": "## התשובה הנכונה: ב - להשהות מיידית את הטיפול ב-Mercaptizol\n\n### הסבר:\n\n**1. חום הוא סימן אזהרה ל-Agranulocytosis**\nתרופות מקבוצת ה-Thionamides (כולל Mercaptizol/Methimazole) גורמות ב-~0.5% מהמקרים ל**Agranulocytosis** (ירידה חמורה בנויטרופילים), וחום הוא הסימן הקליני הראשון והמרכזי לכך - ולכן יש להפסיק את התרופה **מיידית** עד לשלילת הסיבוך.\n\n**2. המשך הטיפול עלול לסכן חיים**\nלפני שמוסיפים אנטיביוט",
     "ti": 0,
-    "eFlag": "Explanation supports stopping Mercaptizol, not continuing it",
+    "eFlag": "Explanation recommends stopping Mercaptizol, marked answer says continue it",
     "e_issue": true,
     "st": "pharmacology_adrs"
   },
@@ -4865,7 +4859,7 @@
     "t": "2022-Jun",
     "e": "## למה ד נכון: TMP-SMX IV הוא טיפול הבחירה\n\n**1. כיסוי של Listeria monocytogenes:**\nבמטופלת מדוכאת חיסון (מושתלת כליה + טיפול אימונוסופרסיבי), עם תמונה של מנינגיטיס ו-700 תאים בנוזל CSF, **Listeria היא חשד קריטי** – והיא **עמידה לצפלוספורינים** (Ceftriaxone לא מכסה אותה), ולכן TMP-SMX הוא הכיסוי האלטרנטיבי המועדף ל-Listeria.\n\n**2. אלרגיה לפניצילין שוללת Ampicillin:**\nהטיפול הסטנדרטי ל-Listeria הוא",
     "ti": 1,
-    "eFlag": "TMP-SMX doesn't cover gram-positive cocci on smear",
+    "eFlag": "Gram-positive cocci on smear contradicts Listeria treatment recommendation",
     "e_issue": true
   },
   {
@@ -4894,7 +4888,7 @@
     "t": "2022-Jun",
     "e": "## התשובה: א. שלשול\n\n### הסבר:\n\n**1. היפוקלמיה עם היפוכלורמיה ואצידוזיס מטבולי:**\nשלשול גורם לאיבוד ישיר של אשלגן ו**ביקרבונט** דרך הצואה, מה שמוביל לאצידוזיס מטבולי היפוכלורמי עם היפוקלמיה – תמונה המתאימה לערכי הכלוריד הנמוכים שצוינו (הכלוריד לא הושלם בשאלה, אך ההקשר מרמז על ירידה).\n\n**2. שלילת האפשרויות האחרות:**\n- **RTA type 1** – גורם אצידוזיס אך עם **כלוריד תקין",
     "ti": 5,
-    "eFlag": "Explanation shows hyperchloremia (114), contradicts diarrhea hypothesis",
+    "eFlag": "Explanation states hypochloremia; labs show hyperchloremia (114 vs normal ~102)",
     "e_issue": true,
     "st": "aki_etiology"
   },
@@ -4952,7 +4946,7 @@
     "t": "2022-Jun",
     "e": "## הסבר מדוע ד' נכון: הרעלת דיגוקסין\n\n### הרקע הפיזיולוגי\n\nדיגוקסין מעכב את משאבת **Na⁺/K⁺-ATPase** בממברנת התא.\n\n---\n\n### 2 משפטי הסבר:\n\n**משפט 1:**\nעיכוב Na⁺/K⁺-ATPase מונע מאשלגן **להיכנס לתוך התאים** – כלומר האשלגן \"נשאר\" בחוץ בדם, ולכן רמת האשלגן הגבוהה בדם (5.8) **אינה משקפת מחסור אמיתי בפוטסיום תוך-תאי** – ה-Total Body Potassium **(TBK) תקין או אף גב",
     "ti": 8,
-    "eFlag": "Explanation cut off, logic unclear or incomplete",
+    "eFlag": "Explanation cut off mid-sentence, logic incomplete and unclear",
     "e_issue": true,
     "st": "electrolyte_effects"
   },
@@ -5132,7 +5126,6 @@
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun22_t17.jpeg",
     "e": "## הסבר מדוע ג נכון\n\nהצילום מראה **פלאוריטיס/תפליט פלאורלי** בחולה מבוגרת ילידת ברה\"מ לשעבר – תמונה קלאסית החשודה ל**שחפת (TB)**.\n\n---\n\n### שתי סיבות מדוע ג נכונה:\n\n1. **רגישות גבוהה יותר של RT-PCR מביופסיה פלאורלית לעומת בדיקת תרבית מנוזל פלאורלי** – נוזל פלאורלי ב-TB הוא לרוב **פאוצי-בצילרי** (מעט חיידקים), ולכן תרביות מנוזל פלאורלי חיוביות ב-**20-40% בלבד**.",
     "ti": 12,
-    "eFlag": "Explanation mentions culture, answer mentions RT-PCR technique",
     "e_issue": true,
     "st": "thyroid_adrenal"
   },
@@ -5221,7 +5214,7 @@
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun22_t18.jpeg",
     "e": "## הסבר מדוע ד נכון:\n\n### 1. אין אינדיקציה לאשפוז / טיפול אמפירי לדלקת ריאות נרכשת בקהילה (CAP) קל-בינוני\nבן 38 ללא מחלות רקע עם חום ושיעול פרודוקטיבי של שבועיים — התמונה תואמת **דלקת ריאות נרכשת בקהילה (CAP)**. לפי קריטריוני החומרה (PSI/CURB-65) מדובר בחולה **בסיכון נמוך**, שאינו מצריך טיפול אמפירי עם כיסוי רחב כמו Ceftriaxone, אלא **Amoxicillin-Clavulanate** המכסה את הפתוגנ",
     "ti": 5,
-    "eFlag": "Explanation says low-risk outpatient CAP, contradicts hospitalization",
+    "eFlag": "Explanation says low-risk outpatient CAP, contradicts hospitalized patient scenario",
     "e_issue": true,
     "st": "aki_etiology"
   },
@@ -5266,7 +5259,7 @@
     "t": "2022-Jun",
     "e": "## התשובה הנכונה: ד. Pulsus alternans\n\n### הסבר:\n\n**Pulsus alternans** הוא סימן קלאסי של **אי ספיקת לב שמאלי חמורה** – דפוס בו הדופק מתחלף בין פעימות חזקות לחלשות בקצב סינוס סדיר.\n\n1. **הקשר הקליני:** חולה עם סרטן שד גרורתי + ירידה בהכרה + **JVP מוגבר מאוד + לחץ דם ירוד** = תמונה של **טמפונדה לבבית** (גרורות פריקרדיאליות שכיחות בסרטן שד), או קרדיומיופתיה חמורה – שתיהן גורמות לירידה דרמטית",
     "ti": 2,
-    "eFlag": "Explanation describes tamponade not alternans condition",
+    "eFlag": "Explanation diagnoses tamponade, not alternans condition from marked answer",
     "e_issue": true,
     "st": "hf_complications"
   },
@@ -5296,7 +5289,7 @@
     "t": "2022-Jun",
     "e": "## התשובה הנכונה היא **ב. Corticosteroids**\n\n### הסבר:\n\n**1. האבחנה המשתמעת:**\nהמצב הקליני – גבר בן 60, כאב גב תחתון כרוני, בצקת ברגליים ואי ספיקת כליות מתקדמת – מתאים מאוד ל**Amyloidosis (עמילואידוזיס)** משני ל-**Multiple Myeloma** או מחלה דלקתית כרונית, או ישירות **Multiple Myeloma** עם מעורבות כלייתית. האבחנה המובילה היא **AA Amyloidosis** או מיאלומה.\n\n---\n\n**2. למה קורטיקוסטרואידים נכונים:**\n\n- **קו ראשון לטיפול במיאלומה נ",
     "ti": 10,
-    "eFlag": "Explanation describes Amyloidosis/Myeloma not peri-aortitis treatment",
+    "eFlag": "Explanation diagnoses Amyloidosis/Myeloma, not peri-aortitis requiring corticosteroids",
     "e_issue": true,
     "st": "htn_complications"
   },
@@ -5445,7 +5438,7 @@
     "t": "2022-Jun",
     "e": "## הסבר מדוע ד נכון:\n\n### 1. חישוב לחץ סיסטולי ריאתי (RVSP/PASP):\n\nהגרדיאנט הטריקוספידלי של **55 mmHg** + לחץ אטריום ימין (RAP ~ 5-10 mmHg) = **~60-65 mmHg**\n\nלחץ סיסטולי ריאתי **>25 mmHg** = יתר לחץ דם ריאתי (PAH), וערך זה **גבוה משמעותית** → מדובר ביל\"ד ריאתי.\n\n---\n\n### 2. מדוע פוסט-קפילרי?\n\nהמטופל בן **68** עם קוצר נשימה מחמיר בהדרגה – הגיל והפרופיל הקליני מ",
     "ti": 5,
-    "eFlag": "Explanation incomplete, cannot verify post-capillary determination",
+    "eFlag": "Explanation incomplete - missing PCWP values needed for classification",
     "e_issue": true,
     "st": "aki_etiology"
   },
@@ -5461,7 +5454,7 @@
     "t": "2022-Jun",
     "e": "## למה ג' (Beer Potomania) נכון:\n\n**1. האוסמולליות הנמוכה תואמת צריכת נוזלים מסיבית עם מעט מאוד סולוטים:**\nב-Beer Potomania, המטופל שותה כמויות עצומות של בירה (עשירה במים אך דלה מאוד בחלבון ומלחים), מה שגורם לעומס נוזלים ללא מספיק סולוטים לאפשר הפרשת שתן תקינה — התוצאה היא היפונתרמיה עם **אוסמולליות סרום נמוכה (265)**, בדיוק כפי שמוצג.\n\n**2. ההיפונתרמיה אינה יכולה להיות SIADH כי ב-SIADH האו",
     "ti": 7,
-    "eFlag": "SIADH has concentrated urine, not dilute 80",
+    "eFlag": "Explanation says SIADH has concentrated urine, question shows dilute",
     "st": "fluid_electrolytes"
   },
   {
@@ -5490,7 +5483,7 @@
     "t": "2022-Jun",
     "e": "## למה ג נכון:\n\n**פרפור עליות** = העליות **אינן מתכווצות** בצורה מאורגנת ← אין גל A בלחץ הוורידי הוורידי.\n\nבמעבר ל**קצב סינוס** — העליות חוזרות להתכווץ בצורה מאורגנת ← מופיע מחדש **גל A בולט** בוורידים הצוואריים (JVP), הנראה כ**פולסציות בולטות** בהסתכלות על הוריד הג'וגולרי.\n\n---\n\n> בקצר: חזרת קצב סינוס = חזרת כיווץ עלייתי מאורגן = גל A חוזר ונראה כפולסציות בוורידי הצוואר.",
     "ti": 0,
-    "eFlag": "Explanation describes normal physiology, not pacemaker problem",
+    "eFlag": "Explanation describes normal sinus rhythm physiology, not pacemaker malfunction",
     "e_issue": true,
     "st": "cardiology_key"
   },
@@ -5507,7 +5500,7 @@
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun22_t21.jpeg",
     "e": "## התשובה הנכונה היא ד - Colchicine\n\n**הסיבה:**\n\nהמטופלת סובלת מהתקפים חוזרים של **דלקת מפרקים גאוטית (Gout)** – ארתריטיס מיקרוגבישית קלאסית המתאפיינת בהתקפים חוזרים של נפיחות וכאב חריפים.\n\n**Colchicine היא תרופת הבחירה הראשונה לטיפול באקוטי של התקף גאוט**, שכן היא מעכבת את הנדידה של נויטרופילים ואת התגובה הדלקתית המושרית על ידי גבישי אורט חומצה, ובכך מקצרת ומקלה על ההתקף האקוטי ביעילות ג",
     "ti": 13,
-    "eFlag": "Explanation describes acute treatment not prevention",
+    "eFlag": "Explanation describes acute treatment; question asks about prevention",
     "e_issue": true,
     "st": "coagulation"
   },
@@ -5655,7 +5648,7 @@
     "t": "2023-Jun",
     "e": "## למה ד' נכון: Meropenem\n\n### הסבר בשני משפטים:\n\n1. **בגלל אי ספיקת כליות חמורה (קריאטינין 3 מ\"ג/ד\"ל)** – השילוב הסטנדרטי של **Ampicillin + Ceftriaxone** (תשובה ב') הוא אמנם הטיפול המועדף ב-Enterococcal endocarditis, אך Ceftriaxone תלוי בהפרשה כלייתית ודורש התאמת מינון, ואילו **Meropenem מכסה Enterococcus** ומהווה חלופה יעילה עם פרופיל בטיחותי טוב יותר בחולה עם פגיעה כלייתית קשה.\n\n2. **Meropenem ה",
     "ti": 12,
-    "eFlag": "Explanation supports Meropenem, answer is Ampicillin+Ceftriaxone",
+    "eFlag": "Explanation recommends Meropenem, marked answer is Ampicillin+Ceftriaxone",
     "e_issue": true,
     "st": "pituitary_calcium"
   },
@@ -5685,7 +5678,7 @@
     "t": "2023-Jun",
     "e": "## התשובה הנכונה היא ד' - המשך מעקב\n\n**הסבר קצר:**\n\nהמטופל בן 85 עם NSTEMI לאחרונה מגיע עם בלבול - התמונה הקלינית מתאימה ל**דמנציה/דליריום** על רקע גיל מבוגר ואשפוז אחרון, **ולא למחלה אימונולוגית** הדורשת התערבות כמו סטרואידים, Rituximab או Plasmapheresis.\n\nבמטופל קשיש עם רקע קרדיאלי, הגישה הנכונה היא **שמרנית** - מעקב, בירור גורמי הבלבול (זיהום, תרופות, הפרעות מטבוליות) **ללא טיפולים אג",
     "ti": 0,
-    "eFlag": "Explanation describes delirium, ignores cholesterol emboli syndrome",
+    "eFlag": "Explanation diagnoses delirium, ignores cholesterol emboli syndrome requiring monitoring",
     "e_issue": true,
     "st": "pharmacology_adrs"
   },
@@ -5701,7 +5694,7 @@
     "t": "2023-Jun",
     "e": "## תשובה: א. היצרות בהשקה העורקית (Transplant Renal Artery Stenosis - TRAS)\n\n---\n\n### הסבר בשני משפטים:\n\n**1.** בן 42 עם השתלת כליה לפני **3 חודשים בלבד** — זהו החלון הזמני הקלאסי להתפתחות TRAS (בד\"כ **1-6 חודשים** לאחר ההשתלה), כאשר ההיצרות נוצרת באתר האנסטומוזה העורקית עקב טכניקה כירורגית, טרשת עורקים, או תגובה פיברוטית — וביטויה הקליני הטיפוסי הוא **יתר לחץ דם עמיד וחמור**.\n\n**2.** רקע של **ADP",
     "ti": 3,
-    "eFlag": "Explanation describes TRAS, not thrombotic microangiopathy",
+    "eFlag": "Explanation describes TRAS; presentation actually suggests thrombotic microangiopathy/HUS",
     "e_issue": true,
     "st": "other_electrolytes"
   },
@@ -5717,7 +5710,7 @@
     "t": "2023-Jun",
     "e": "## התשובה הנכונה: א. רמת ויטמין B3 (ניאצין)\n\n---\n\n### הסבר בשני משפטים:\n\n**1.** המצגת הקלינית — שלשול, דרמטיטיס (המטומות/פריחה בעור) ובמטופל עם **תסמונת נפרוטית** (הגורמת לאיבוד חלבונים בשתן, כולל טריפטופן-נשא) — מתאימה בדיוק ל**פלגרה** (מחסור בויטמין B3/ניאצין), המאופיינת בשלישיית ה-3D: *Dermatitis, Diarrhea, Dementia*.\n\n**2.** תסמונת נפרוטית גורמת לאיבוד מוגבר של **טריפט",
     "ti": 22,
-    "eFlag": "Explanation supports vitamin B3, not fat aspiration",
+    "eFlag": "Explanation concludes vitamin B3 deficiency, contradicts marked fat aspiration answer",
     "e_issue": true,
     "st": "pain_assessment"
   },
@@ -5909,7 +5902,6 @@
     "t": "2023-Jun",
     "e": "## האבחנה: Polymyalgia Rheumatica (PMR)\n\n**למה א' נכון – Prednisone 10-20 מ\"ג:**\n\nPMR מטופל בסטרואידים במינון **נמוך-בינוני** (10-20 מ\"ג/יום), שכן המחלה מגיבה באופן דרמטי למינון זה תוך 24-72 שעות, והתגובה המהירה היא בפני עצמה קריטריון אבחנתי.\n\n---\n\n**למה התשובות האחרות שגויות (בקצרה):**\n\n- **ב'** – מינון 1 מ\"ג/ק\"ג שמור ל-**GCA (Giant Cell Arteritis)** עם סכנת עיוורון – כאן אין כאב ראש או מעורבות כלי",
     "ti": 13,
-    "eFlag": "Explanation recommends 10-20mg but for different condition",
     "st": "anemia_rbc"
   },
   {
@@ -6055,7 +6047,7 @@
     "t": "2023-Jun",
     "e": "## התשובה הנכונה היא **ב'**\n\n### הסבר בשני משפטים:\n\n**Methylphenidate הוא מעכב של CYP2D6, אך החשוב יותר הוא שהוא גורם לאינדוקציה של נתיבי חמצון בכבד** – דבר זה מגביר את ייצור **NAPQI** (המטבוליט הרעיל של פרצטמול) דרך CYP2E1/CYP1A2, ולכן בחולה הזה הרעילות הכבדית **גבוהה יותר מהצפוי** לפי נומוגרם Rumack-Matthew הסטנדרטי.\n\nבמצב של רעילות מוגברת, **אנזימי הכבד (AST/ALT) עשויים לעלות מוקד",
     "ti": 0,
-    "eFlag": "Explanation describes enhanced toxicity, not other pathology",
+    "eFlag": "Explanation says enhanced toxicity; marked answer says other pathology",
     "e_issue": true,
     "st": "pharmacology_adrs"
   },
@@ -6458,7 +6450,7 @@
     "t": "2023-Jun",
     "e": "## הסבר מדוע א' נכון\n\nהתמונה הקלינית המתוארת – חולשה, יתר פיגמנטציה (כולל ריריות וכפות ידיים) ויתר אשלגן עם נתרן נמוך – מאפיינת **אי-ספיקת יותרת הכליה הראשונית (מחלת אדיסון)**.\n\n**משפט 1:**\nהעובדה שהאח הוא יהודי ממוצא איראני ולאחותו אירועים חוזרים (ככל הנראה **APS-1 / APECED**) מצביעה על מוטציה ב-**AIRE**, הגורמת לתסמונת פוליאנדוקרינית אוטואימונית מסוג 1 – שהיא **שכיחה",
     "ti": 5,
-    "eFlag": "Explanation cut off, incomplete for verification",
+    "eFlag": "Explanation cut off mid-sentence, cannot verify marked answer support",
     "e_issue": true,
     "st": "aki_etiology"
   },
@@ -6535,7 +6527,6 @@
     "t": "2023-Jun",
     "e": "## תשובה ד' נכונה\n\n**ארתריטיס ספטית (MSSA) ללא סיבוכים סיסטמיים:**\n\n1. **משך הטיפול הכולל המקובל הוא 3-4 שבועות** – לאחר שבועיים של IV Oxacillin (להשגת ריכוזים גבוהים ומהירים לניקוי הזיהום החריף), ניתן לעבור לטיפול אוראלי יעיל (step-down therapy) להשלמת הקורס, בהתאם לתגובה קלינית טובה ותוצאות תרביות שליליות.\n\n2. **שישה שבועות IV (תשובה ב') שמורים לאוסטאומיאליטיס** או לזיהומים עם סיבוכים, ",
     "ti": 14,
-    "eFlag": "Explanation says 3-4 weeks total, answer says 4 weeks",
     "e_issue": true,
     "st": "peripheral_neuropathy"
   },
@@ -6579,7 +6570,7 @@
     "t": "2023-Jun",
     "e": "## התשובה הנכונה: ג. Tofacitinib\n\n**הסבר:**\n\n1. **Tofacitinib הוא מעכב JAK** (מנגנון פעולה אינטרא-צלולרי, לא ביולוגי קלאסי), ולכן מתאים ל-RA **עמיד לביולוגיים** — הוא מהווה אלטרנטיבה אפקטיבית כאשר כל הטיפולים הקודמים נכשלו, כולל TNF-inhibitors וביולוגיים אחרים.\n\n2. **התוויות הנגד של האפשרויות האחרות** במחלת לב: Adalimumab (TNF-α inhibitor) וגם Abatacept נחשבים **פחות מומלצים** בכשל לבבי משמע",
     "ti": 13,
-    "eFlag": "Explanation recommends Tofacitinib, question asks avoid what",
+    "eFlag": "Explanation endorses Tofacitinib as appropriate, contradicts marked avoidance answer",
     "e_issue": true,
     "st": "coagulation"
   },
@@ -6624,7 +6615,7 @@
     "t": "2023-Jun",
     "e": "## התשובה הנכונה: א. Endoscopic Capsule (קפסולה אנדוסקופית)\n\n---\n\n### שני משפטים להסבר:\n\n1. **המצגת הקלינית מצביעה על מחלת קרוהן בדק דקה** (צעירה, שלשול כרוני + כאבי בטן + ירידה במשקל + אנמיית חסר ברזל + CRP מוגבר + **קלפרוטקטין מוגבר**), וכאשר קולונוסקופיה ואנדוסקופיה עליונה תקינות, קפסולה אנדוסקופית היא **הבדיקה הרגישה ביותר לזיהוי נגעים מוקוזליים בדק דקה** (כיבים אפטואידים, א",
     "ti": 0,
-    "eFlag": "Explanation mentions elevated calprotectin, question states normal",
+    "eFlag": "Explanation states elevated calprotectin, question clearly states normal calprotectin",
     "e_issue": true,
     "st": "gastro_hepato"
   },
@@ -6671,7 +6662,6 @@
     "t": "2023-Jun",
     "e": "## התשובה הנכונה: א\n\n### הסבר בשני משפטים:\n\n**EBUS-TBNA** היא טכניקה שבה ברונכוסקופ עם גלישת אולטרסאונד מאפשרת **ויזואליזציה ובדיקה בזמן אמת של בלוטות לימפה מדיאסטינליות** הגובלות בדרכי האוויר, ולכן האינדיקציה העיקרית שלה היא **דגימה (sampling) של בלוטות לימפה מדיאסטינליות מוגדלות** — בין אם לצורך **staging של סרטן ריאה** ובין אם לאבחון **לימפומה, סרקואידוזיס** או גרורות.\n\nהבחירה דווקא **בהגד",
     "ti": 5,
-    "eFlag": "Explanation cut off, cannot verify complete match",
     "e_issue": true,
     "st": "aki_etiology"
   },
@@ -6731,7 +6721,7 @@
     "t": "2023-Jun",
     "e": "## למה ב' נכון:\n\n**\"רגישות תרבית כיח עשויה להיות נמוכה גם במחלה קשה\"**\n\n### הסבר בשני משפטים:\n\n1. **זיהום דגימה וגורמים טכניים** – כיח עובר דרך חלל הפה ועלול להיות מזוהם בפלורה תקינה של הפה/גרון, ובנוסף חיידקים מסוימים (כמו *Legionella*, *Mycoplasma*, וירוסים) **אינם גדלים כלל בתרבית רגילה**, מה שמוריד משמעותית את הרגישות.\n\n2. **גורמים קליניים** – מטופלים רבים **כבר מטופלים באנטיביוטיקה** לפני לקי",
     "ti": 6,
-    "eFlag": "Explanation discusses 'במחלה קשה' not 'בקטרמיה'",
+    "eFlag": "Explanation discusses 'במחלה קשה', marked option says 'בקטרמיה' - different concepts",
     "e_issue": true,
     "st": "respiratory_failure"
   },
@@ -6806,7 +6796,7 @@
     "t": "2023-Jun",
     "e": "## למה ג נכון:\n\n**היפוגליקמיה עם גופי קטו נמוכים:**\n\n1. **האינסולין מעכב ליפוליזה** – רמת אינסולין גבוהה (בין אם אקסוגנית או עקב סולפונילאוריאה) מדכאת פירוק שומן ולכן **מעכבת יצירת גופי קטו**. בניגוד להיפוגליקמיה מרעב/אי-ספיקת קורטיזול שם הקטונים יהיו גבוהים, כאן הם יהיו **נמוכים באופן אופייני**.\n\n2. **זהו סמן אבחנתי חשוב** – היפוגליקמיה היפר-אינסולינמית (ממקור חיצוני",
     "ti": 5,
-    "eFlag": "Explanation describes high insulin, patient has normal",
+    "eFlag": "Explanation says high insulin; patient has normal insulin levels",
     "e_issue": true,
     "st": "aki_etiology"
   },
@@ -6850,7 +6840,7 @@
     "t": "2023-Jun",
     "e": "## למה ד' נכון: JAK2 Exon 12\n\nהתמונה הקלינית של אישה בת 43 עם **כאב ראש, חולשה, עייפות, ירידה בתפקוד וכאב בטן עז** עם מדדים חיוניים תקינים מעלה חשד ל**פוליציטמיה ורה (PV)**.\n\n### 2 משפטים:\n\n1. **כאב הבטן העז** עשוי להצביע על **טרומבוזיס של ורידי הכבד (Budd-Chiari Syndrome)** או של וריד הפורטל – סיבוכים קלאסיים של PV הנגרמים מהיפרוויסקוזיות והיפרקואגולביליות; מוטציית **JAK2 Exon 12** (",
     "ti": 0,
-    "eFlag": "Explanation discusses JAK2 V617F, not Exon 12",
+    "eFlag": "Explanation discusses JAK2 V617F, not JAK2 Exon 12",
     "e_issue": true,
     "st": "gastro_hepato"
   },
@@ -6866,7 +6856,7 @@
     "t": "2023-Jun",
     "e": "## הסבר מדוע ד נכון:\n\n### 1. מין נשי = סיכון נמוך יותר לאירוע מוחי מהצרות קרוטיד\nנשים עם היצרות קרוטיד **א-סימפטומטית** מרוויחות פחות מאנדרטרקטומיה ובעלות **שיעור אירועים שנתי נמוך יותר** בהשוואה לגברים עם אותה דרגת היצרות – לכן הסיכון האבסולוטי שלהן לאירוע מוחי נמוך יותר.\n\n### 2. היצרות חמורה מאוד (95%) = זרימה כמעט אפסית = פרדוקס ה\"near occlusion\"\nהיצרות של **95% (\"near occlusion\")** ג",
     "ti": 22,
-    "eFlag": "Explanation contradicts answer - claims lowest risk",
+    "eFlag": "Explanation claims lowest risk, contradicts marked answer's highest stenosis",
     "e_issue": true,
     "st": "pain_assessment"
   },
@@ -6968,7 +6958,7 @@
     "e": "## התשובה הנכונה היא ב'\n\n### הסבר:\n\nהמצגת הקלינית (צעיר, חום, פריחה פטכיאלית/פוסטולרית, ארתריטיס) מתאימה ל**זיהום גונוקוקלי מפושט (DGI - Disseminated Gonococcal Infection)**.\n\n**למה ב' נכון - נוזל סינוביאלי תמיד שלילי:**\n\nב-DGI קיימים שני מנגנונים לפגיעה מפרקית - **ארתריטיס ספטית** (חיידק בנוזל) ו**ארתריטיס ריאקטיבית/אימונית** (ללא חיידק בנוזל). ברוב מקרי ה-DGI עם הפריחה",
     "ti": 12,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun23_t11.jpeg",
-    "eFlag": "Explanation contradicts itself - says always negative wrong",
+    "eFlag": "Explanation says synovial fluid mostly negative, not always negative",
     "e_issue": true,
     "st": "thyroid_adrenal"
   },
@@ -6984,7 +6974,7 @@
     "t": "2023-Jun",
     "e": "## התשובה הנכונה: ב. שבר בחוליה\n\n### הסבר בשני משפטים:\n\n**שבר בחוליה** (vertebral fracture) מהווה **אינדיקציה מוחלטת לניתוח** (parathyroidectomy) בהיפרפאראתירואידיזם ראשוני, ללא תלות בגיל או ערכי סידן, מאחר שהוא מעיד על **נזק אוסטיאופורוטי משמעותי** שכבר התרחש לעצמות.\n\nבניגוד לשבר בחוליה, שאר הפרמטרים כאן **אינם עומדים בקריטריונים לניתוח** — הגיל (52) מעל 50 ולא מתחת לו, ערכי הסידן (",
     "ti": 9,
-    "eFlag": "Explanation discusses vertebral fracture, not age",
+    "eFlag": "Explanation says fracture IS indication; marked answer says NOT indication",
     "e_issue": true,
     "st": "intervention"
   },
@@ -7000,7 +6990,7 @@
     "t": "2023-Jun",
     "e": "## תשובה ג נכונה – הסבר:\n\n**שלשול מוחמר בשעות הלילה** הוא **דגל אדום (Red Flag)** המצביע על מחלה אורגנית אמיתית (כגון IBD, זיהום, ממאירות), ולא על תסמונת המעי הרגיז (IBS).\n\n**הסיבה:** ב-IBS הסימפטומים **אינם מעירים את המטופל משנתו** – מכיוון שהמנגנון הוא פונקציונלי ומושפע ממערכת העצבים הסומטית/רגשית. כאשר שלשול מתרחש בלילה (כשהמטופל ישן), משמעות הדבר שיש **תהליך אורגני פעיל** שאינו תל",
     "ti": 6,
-    "eFlag": "Explanation discusses diarrhea at night, not menstruation",
+    "eFlag": "Explanation discusses nighttime diarrhea, marked answer is menstruation",
     "e_issue": true,
     "st": "respiratory_failure"
   },
@@ -7278,7 +7268,7 @@
     "t": "2023-Jun",
     "e": "## התשובה הנכונה היא **א. Ankylosing Spondylitis** - לא נכון!\n\nבואו נחשוב מחדש:\n\n---\n\n## התשובה הנכונה היא **FMF (Familial Mediterranean Fever)**\n\nהמוטציה **M694V בגן MEFV** היא המוטציה הקלאסית ביותר של **קדחת ים תיכונית משפחתית (FMF)**.\n\n---\n\n## למה **א. Ankylosing Spondylitis שגוי** (ולמה שאר התשובות שגויות):\n\n### ❌ כל התשובות שגויות כי:\n\n1. **הממצא הגנטי** (הומוזיגוט M694V בגן MEFV) הוא **פתוגנומוני ל-FMF** ואינו קשור ל-",
     "ti": 0,
-    "eFlag": "Explanation contradicts marked answer, states it's incorrect",
+    "eFlag": "Explanation explicitly states marked answer is incorrect and wrong",
     "e_issue": true,
     "st": "gastro_hepato"
   },
@@ -7324,7 +7314,7 @@
     "e": "## למה התשובה היא א' - Bronchial Asthma **אינה** הנכונה, והתשובה הנכונה היא **ב' - COPD**\n\n---\n\n## הסבר בשני משפטים:\n\n**1.** הספירומטריה מראה דפוס **חסימתי** (FEV1/FVC < 0.7) עם ירידה ב-FEV1 ללא ירידה יחסית ב-FVC, שהוא הממצא האופייני ל-COPD ולא לפיברוזיס (שם יהיה דפוס **רסטריקטיבי**) ולא ליתר לחץ דם ריאתי (שם הספירומטריה תקינה לרוב).\n\n**2.** הרקע של **עישון מצטבר** (pack-years) בגב",
     "ti": 5,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun23_t18.png",
-    "eFlag": "Explanation supports COPD, contradicts marked answer"
+    "eFlag": "Explanation states correct answer is COPD, contradicting marked asthma"
   },
   {
     "q": "בת 55, ללא רקע ידוע, התקבלה בשל מחנק ודקירות בחזה בזמן טיפול שיניים. באק\"ג תבנית של STEMI. בצנתור הודגמה מחלה כלילית לא משמעותית. מה מאפיין את מצבה?",
@@ -7338,7 +7328,7 @@
     "t": "2023-Jun",
     "e": "## התשובה הנכונה: א\n\n### הסבר:\n\nהמצב המתואר הוא **התכווצות עורק כלילי (Coronary Vasospasm / Prinzmetal Angina)** — מכיוון שהאירוע התרחש **בזמן לחץ/גירוי** (טיפול שיניים), ללא רקע ידוע, עם תבנית STEMI באק\"ג, אך בצנתור נמצאו **עורקים תקינים**.\n\n---\n\n### למה א' נכון — שיעור הסיבוכים והתמותה **בתוך בית החולים נמוך**:\n\n1. **הספאזם הוא הפיך** — בניגוד לאוטם אמיתי, אין נמק שריר לב משמעותי; הספאזם חולף (ספונ",
     "ti": 0,
-    "eFlag": "Explanation says mortality is LOW, answer says SAME",
+    "eFlag": "Explanation says mortality LOW, marked answer says mortality SAME",
     "e_issue": true,
     "st": "cardiology_key"
   },
@@ -7368,7 +7358,7 @@
     "t": "2023-Jun",
     "e": "## למה ד' נכון: דופלקס קרוטידים\n\n**משפט 1 – נזק איבר מטרה בהיפרטנציה:**\nביל\"ד כרוני, במיוחד בגיל צעיר יחסית (35) שאובחן לפני 3 חודשים, יש לחפש **נזק סאב-קליני לאיברי מטרה** – ובדיקת דופלקס קרוטידים מאפשרת הערכת **עיבוי IMT (Intima-Media Thickness)** וחיפוש פלאקים, שהם מדד מבוסס ומומלץ להערכת נזק וסקולרי מוקדם ביל\"ד.\n\n**משפט 2 – בטיחות בהריון:**\nבניגוד לבדיקות",
     "ti": 4,
-    "eFlag": "Explanation incomplete, cut off mid-sentence abruptly",
+    "eFlag": "Explanation cut off, incomplete. Cannot verify support for marked answer.",
     "e_issue": true,
     "st": "host_defense"
   },
@@ -7398,7 +7388,7 @@
     "t": "2023-Jun",
     "e": "## תשובה: ג. סטרואידים ו-Mepolizumab\n\n### הסבר בשתי נקודות:\n\n**1. זיהוי הפנוטיפ - אסתמה אאוזינופילית קשה:**\nהמטופלת מתאשפזת בהתקף קשה למרות טיפול בסטרואידים בלבד, מה שמגדיר **אסתמה קשה לא מבוקרת** - במצב כזה יש לחפש ביולוגי מתאים, וסימני האאוזינופיליה (הנרמזים בשאלה) מכוונים לציר **IL-5**.\n\n**2. Mepolizumab הוא ה-Anti-IL-5 המתאים:**\nMepolizumab חוסם **IL-5** - הציטוקין האחרא",
     "ti": 8,
-    "eFlag": "Explanation supports Mepolizumab, answer shows Cyclophosphamide",
+    "eFlag": "Explanation recommends Mepolizumab, marked answer is Cyclophosphamide",
     "e_issue": true,
     "st": "ecg_interpretation"
   },
@@ -7457,7 +7447,7 @@
     "t": "2023-Jun",
     "e": "## התשובה הנכונה היא ב' - Trimethoprim-Sulfamethoxazole (TMP-SMX)\n\n### הסבר בשני משפטים:\n\n**1. הכיסוי המתאים:**\nבחולת מיאלומה נפוצה קיימת **אימונוסופרסיה של לימפוציטים T** (במיוחד בטיפול כמותרפי), מה שמציב אותה בסיכון מיוחד ל-**Listeria monocytogenes** ו-**Pneumocystis jirovecii** — פתוגנים שכיסויים הטוב ביותר הוא TMP-SMX, אשר גם חודר היטב ל-CNS ונחשב לטיפול בחירה במנינגיטיס מ-Listeria (יחד עם אמפיציל",
     "ti": 1,
-    "eFlag": "TMP-SMX not first-line for Listeria meningitis",
+    "eFlag": "Ampicillin is first-line for Listeria; TMP-SMX is alternative",
     "e_issue": true,
     "st": "stable_cad"
   },
@@ -7487,7 +7477,7 @@
     "t": "2023-Jun",
     "e": "## התשובה הנכונה היא ד - רמת פריטין 250 נ\"ג/מ\"ל לפני מנות הדם\n\n### הסבר בשני משפטים:\n\n**1.** בחולה עם אי ספיקת כליות סופנית (ESRD), הפריטין מוגבה באופן כרוני עקב **דלקת כרונית ואגירת ברזל לקויה** – רמה של 250 נ\"ג/מ\"ל מצביעה על **מאגרי ברזל תקינים/גבוהים** (ולא על חסר ברזל), מה שמהווה ממצא אופייני ומצופה במצב זה.\n\n**2.** חסר הברזל האמיתי בחולה דיאליזה מוגדר כפריטין **מ",
     "ti": 7,
-    "eFlag": "Explanation contradicts: ferritin 250 indicates sufficient iron stores",
+    "eFlag": "Explanation says ferritin 250 indicates sufficient iron stores, contradicting indication",
     "e_issue": true,
     "st": "ckd_complications"
   },
@@ -7503,7 +7493,7 @@
     "t": "2023-Jun",
     "e": "## התשובה הנכונה היא ב'\n\n**מחלת ויפל (Whipple's Disease)** היא האבחנה הסבירה כאן (חום + כאבי בטן + ירידה במשקל + ארתרלגיה).\n\n---\n\n### למה ב' נכון:\n\n1. **ביופסיה מנגע עור** (או ביופסיה של מעי דק/בלוטת לימפה) יכולה לזהות את החיידק *Tropheryma whipplei* באמצעות **צביעת PAS** (חיובית) או PCR — ובכך להוביל לאבחנה הסופית.\n\n2. זוהי **הדרך האבחנתית הסטנדרטית** למחלת ויפל — כיוון שאין בדיקת דם פשוטה ש",
     "ti": 6,
-    "eFlag": "Explanation discusses Whipple's, presentation suggests vasculitis",
+    "eFlag": "Explanation diagnoses Whipple's disease, presentation clearly describes vasculitis",
     "e_issue": true,
     "st": "venous_thromboembolism"
   },
@@ -7534,7 +7524,7 @@
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun23_t21.jpeg",
     "e": "## תשובה: ב נכון\n\n**המחלה המתוארת היא מיאלומה נפוצה (Multiple Myeloma)** – אנמיה נורמוציטית מבודדת בגיל 62.\n\n---\n\n### למה ב נכון:\n\n**1.** השילוב של Lenalidomide + Bortezomib (+ Dexamethasone = RVd) הוא משטר הקו הראשון הסטנדרטי, עם שיעורי תגובה כוללים (ORR) של **~90%** ותגובה מלאה (CR) ב-~15-20% מהמקרים – מה שהופך אותו לטיפול היעיל ביותר הנפוץ כיום.\n\n**2.** שיעורי התגובה הגבוהים הללו מבוססים על עשרות מ",
     "ti": 10,
-    "eFlag": "Explanation describes Multiple Myeloma, contradicts 100% response rate",
+    "eFlag": "Explanation describes Multiple Myeloma; contradicts marked 100% response rate",
     "e_issue": true,
     "st": "htn_complications"
   },
@@ -7581,7 +7571,7 @@
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun23_t23.jpeg",
     "e": "## התשובה הנכונה: א. בדיקת עיניים\n\n### הסבר:\n\n**1. TPN דרך צנתר היקפי (Hickman) גורמת לסיבוך ידוע של Catheter-related thrombosis**, אשר עלול לגרום ל-**Superior Vena Cava Syndrome (SVC syndrome)** – לחץ על הווריד הנבוב העליון שיגרום לבצקת בפנים, צוואר, וגפיים עליונות, ולעיתים **בצקת פפילה (papilledema)** שניתנת לגילוי בבדיקת קרקעית עין.\n\n**2. בדיקת עיניים היא הכלי הקליני הישיר לאבחון עלייה בלחץ תוך-גולגולתי** (ICP) הנ",
     "ti": 18,
-    "eFlag": "Explanation describes SVC syndrome, not fever/candidemia findings",
+    "eFlag": "Explanation describes SVC syndrome, not candidemia/fungal infection findings",
     "e_issue": true,
     "st": "sedative_hypnotic"
   },
@@ -7625,7 +7615,7 @@
     "t": "2023-Jun",
     "e": "## למה ג' נכון:\n\n**לאחר ACS עם השתלת סטנט, הטיפול הסטנדרטי הוא DAPT (טיפול נוגד טסיות כפול) למשך 12 חודשים** – כלומר, אין סיבה להפסיק אף אחד מהתרופות אחרי חודשיים בלבד, ושתיהן יש להמשיך.\n\n**הפסקת Aspirin לבד (תשובה ב') או הפסקת Ticagrelor לבד (תשובה א') מסוכנת** כי מחקרים (כמו TWILIGHT ו-TICO) מראים שאם כבר מפסיקים אחת מהן אחרי 3 חודשים, עדיף להפסיק את ה-Aspirin ולהמ",
     "ti": 0,
-    "eFlag": "Explanation contradicts itself - recommends continuing both",
+    "eFlag": "Explanation recommends continuing both, contradicting option 0 marked correct",
     "e_issue": true,
     "st": "gastro_hepato"
   },
@@ -7669,7 +7659,7 @@
     "t": "2024-May",
     "e": "## הסבר מדוע ד נכון\n\nהמטופלת עברה **בירור גינקולוגי** והועלה לה **אלטרוקסין** (תירוקסין סינתטי) —\n\n1. **נטילת הורמון תירואיד אקסוגני** (אלטרוקסין) גורמת לדיכוי ציר ה-HPT ולרמות T4/T3 גבוהות בדם, מה שמסביר את כל הסימפטומים: טכיקרדיה, רעד עדין ו-TSH נמוך — תמונה קלאסית של **תירוטוקסיקוזיס פקטיציה (Factitious Thyrotoxicosis)**.\n\n2. בתירוטוקסיקוזיס פקטיציה (בניגוד לגרייב",
     "ti": 21,
-    "eFlag": "Explanation describes factitious thyrotoxicosis, not trophoblastic disease",
+    "eFlag": "Explanation describes factitious thyrotoxicosis, not trophoblastic disease causing thyrotoxicosis",
     "e_issue": true,
     "st": "electrolyte_disorders"
   },
@@ -7775,7 +7765,7 @@
     "e": "## התשובה הנכונה: ד. Left diaphragmatic paralysis\n\n### הסבר בשני משפטים:\n\n1. **צילום החזה מראה העלאה של הסרעפת השמאלית** (elevated left hemidiaphragm) – ממצא קלאסי לשיתוק סרעפתי חד-צדדי, שמסביר הן את קשיי הנשימה ההדרגתיים והן את ההיפוקסמיה על ידי ירידה בנפח הריאה השמאלית ואי-התאמה של אוורור-זלוף (V/Q mismatch).\n\n2. **בהיעדר מחלות רקע ותרופות**, אטיולוגיה נוירו-שרירית מקומית (כגון פגיעה בעצב הפרני) היא ההס",
     "ti": 5,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_May24_t2.jpeg",
-    "eFlag": "Explanation supports Left diaphragmatic paralysis, not ALS",
+    "eFlag": "Explanation supports Left diaphragmatic paralysis, not ALS as marked",
     "e_issue": true
   },
   {
@@ -7791,7 +7781,6 @@
     "e": "## למה ג' נכון - Artesunate\n\n**1. אבחנה:**\nמדובר ב**מלריה חמורה** (Severe Malaria) – צעיר שחזר מאינדונזיה (אזור אנדמי), עם ירידה במצב הכרה (סטופור) → תמונה קלאסית של **Cerebral Malaria**.\n\n**2. טיפול:**\n**Artesunate IV** הוא ה-**Drug of Choice** למלריה חמורה לפי WHO – עדיף על Quinine בשל יעילות גבוהה יותר, תמותה נמוכה יותר, ופרופיל תופעות לוואי בטוח יותר, כולל כנגד זנים עמידים של *Plasmodium falciparum*.",
     "ti": 14,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun24_q9_tmuna2.jpeg",
-    "eFlag": "Explanation mentions Indonesia, question states Dominican Republic",
     "e_issue": true,
     "st": "peripheral_neuropathy"
   },
@@ -7866,7 +7855,7 @@
     "t": "2024-May",
     "e": "## הסבר מדוע ג נכון: האוושה תהיה **מיד-סיסטולית**\n\nהממצאים מתאימים ל-**MVP (Mitral Valve Prolapse)**.\n\n---\n\n### משפט 1 – המנגנון הפתופיזיולוגי:\n\nב-MVP, הקשר (click) וה-murmur מתרחשים כאשר עלי המסתם בולטים לפרוזדור — דבר שקורה **באמצע הסיסטולה** (לאחר שנפח החדר קטן מספיק), ולכן האוושה של ה-MR היא **מיד-סיסטולית** (מתחילה לאחר ה-click האמצע-סיסטולי) ולא פאן-סיסטולית כמו ב-MR אורג",
     "ti": 3,
-    "eFlag": "Explanation describes MVP not hypertrophic obstructive cardiomyopathy",
+    "eFlag": "Explanation describes MVP; question asks about hypertrophic obstructive cardiomyopathy",
     "e_issue": true,
     "st": "other_electrolytes"
   },
@@ -7942,7 +7931,7 @@
     "t": "2024-May",
     "e": "## הסבר מדוע א' נכון\n\nהמקרה מתאר **אנדוקרדיטיס זיהומית (Infective Endocarditis)** — חום, חולשה, שיעול, וברקע יתר לחץ דם — שגורמת לנפריטיס באמצעות **מנגנון של קומפלקסים חיסוניים**.\n\n---\n\n### 2 משפטים:\n\n1. **באנדוקרדיטיס זיהומית**, חיידקים משחררים אנטיגנים לזרם הדם לאורך זמן, הנקשרים לנוגדנים ויוצרים **קומפלקסים חיסוניים מסיסים** — אך קומפלקסים אלו שוקעים בגלומרולי *ללא* דפוס אופ",
     "ti": 12,
-    "eFlag": "Explanation describes infective endocarditis, not ANCA vasculitis",
+    "eFlag": "Explanation diagnoses infective endocarditis, not PR3+ ANCA vasculitis",
     "e_issue": true,
     "st": "pituitary_calcium"
   },
@@ -8060,7 +8049,7 @@
     "t": "2024-May",
     "e": "## הסבר מדוע תשובה ג' נכונה\n\n**\"ערך PaO₂ בבדיקת גזים עורקיים יהיה מעל 60 mmHg\"**\n\n---\n\n### משפט 1 – זוהי התלקחות **ראשונה** לאחר 5 שנות הפסקת עישון:\n\nהמטופל הפסיק לעשן לפני 5 שנים, מה שמשמע שתפקוד הריאות **השתפר יחסית** לאורך השנים. מכיוון שזוהי אשפוזו **הראשון** בגין התלקחות, מחלתו עדיין לא בשלב מתקדם מאוד, ולכן ה-PaO₂ צפוי להיות **מעל 60 mmHg** (אי",
     "ti": 5,
-    "eFlag": "Explanation is incomplete, cuts off mid-sentence",
+    "eFlag": "Explanation cuts off incomplete, cannot verify it supports option 2",
     "e_issue": true
   },
   {
@@ -8089,7 +8078,7 @@
     "t": "2024-May",
     "e": "## התשובה הנכונה היא **ב' - התחלת טיפול בסטרואידים**\n\n### הסבר (2 משפטים):\n\nהמטופל מציג **תסמינים חוקתיים** (כנראה חום, הזעות לילה, ירידה במשקל - \"B symptoms\") שמהווים **אינדיקציה לטיפול ב-CLL** לפי קריטריוני iwCLL, ללא צורך בביופסיית מח עצם לפני קבלת ההחלטה. סטרואידים (פרדניזון/דקסמתזון) ניתנים כטיפול ראשוני מהיר ב-CLL סימפטומטי, במיוחד כאשר יש חשד לסיבוך אוטואימוני (כגון **AIHA** או",
     "ti": 19,
-    "eFlag": "Explanation describes constitutional B symptoms not AIHA",
+    "eFlag": "Explanation describes constitutional symptoms, patient has AIHA requiring steroids",
     "e_issue": true,
     "st": "procedural_pharm"
   },
@@ -8135,7 +8124,6 @@
     "t": "2024-May",
     "e": "## למה ד' נכון: Isoniazid למשך 6 חודשים\n\n### סיבה 1 – Rifampin אסור בחולה דיאליזה עם שחפת סמויה (LTBI)\n**Rifampin** הוא **inducer חזק של ציטוכרום P450** ומפחית דרמטית את רמות תרופות רבות, כולל תרופות שחולי דיאליזה נוטלים (אנטי-היפרטנסיביים, נוגדי קרישה וכו'). בנוסף, ב-LTBI (ולא מחלה פעילה), הטיפול המועדף בחסר כלייתי הוא **INH בלבד** – ולא שילוב עם ריפמפין.\n\n---\n\n### סיבה 2 – מינון INH",
     "ti": 12,
-    "eFlag": "Explanation incomplete - doesn't state INH duration",
     "st": "diabetes_mgmt"
   },
   {
@@ -8253,7 +8241,6 @@
     "e": "## התשובה הנכונה היא ב'\n\n### הסבר בשני משפטים:\n\n**1.** האק\"ג מראה **בלוק AV מדרגה שנייה מסוג Mobitz I (Wenckebach)** – ממצא שיכול להיות **פיזיולוגי** (בעיקר בגברים מבוגרים/ספורטאים, בזמן מנוחה/שינה), ולכן לפני קבלת החלטה טיפולית יש לבצע **מבחן מאמץ** כדי לראות האם הבלוק נעלם במאמץ (תקין) או מחמיר (פתולוגי).\n\n**2.** רק אם מבחן המאמץ יראה **החמרת הבלוק** או תסמינים (סינקופה",
     "ti": 22,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_May24_t5.jpeg",
-    "eFlag": "Explanation discusses Mobitz I, answer implies pathological finding",
     "st": "eol_care"
   },
   {
@@ -8370,7 +8357,7 @@
     "e": "## למה warfarin נכון:\n\n**מסתם מכני מיטרלי = אינדיקציה מוחלטת לאנטיקואגולציה לכל החיים עם warfarin**, מכיוון שמסתמים מכניים יוצרים משטח טרומבוגני שמחייב INR טיפולי (בדרך כלל 2.5-3.5) למניעת תרומבואמבוליה.\n\n**בניגוד ל-NOACs (כמו rivaroxaban/apixaban), warfarin הוא היחיד המאושר למסתמים מכניים**, והוא גם בטוח יחסית באי-ספיקת כליות סופנית (בניגוד ל-NOACs שרובם מופרשים דרך הכליות).",
     "ti": 10,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_May24_t6.jpeg",
-    "eFlag": "Explanation supports warfarin continuation, not stopping it",
+    "eFlag": "Explanation supports continuing warfarin, not stopping it immediately",
     "e_issue": true,
     "st": "htn_complications"
   },
@@ -8432,7 +8419,7 @@
     "t": "2024-May",
     "e": "## התשובה הנכונה היא ב'\n\n**Ph chromosome (9;22) = Philadelphia chromosome** הוא הסמן הציטוגנטי האבחנתי של **CML (Leukemia Myeloid Chronic)**.\n\n---\n\n### למה ב' נכון - 2 משפטים:\n\n1. **הטרנסלוקציה (9;22) יוצרת את אונקוגן BCR-ABL**, שהוא הסמן המולקולרי הספציפי ביותר ל-CML, ונוכחותו **מאשרת את האבחנה** ומבדילה CML מתגובה לויקמואידית אחרת.\n\n2. **ממצאי המטופל (לויקוציטוזיס >30,000, אנמיה, טרומבוציטופניה, גיל צעיר) מתאימ",
     "ti": 10,
-    "eFlag": "Explanation describes CML, question is about B-ALL",
+    "eFlag": "Explanation describes CML; question clearly states B-ALL diagnosis",
     "e_issue": true,
     "st": "primary_htn"
   },
@@ -8464,7 +8451,7 @@
     "e": "## התשובה הנכונה היא **ב**\n\n### הסבר:\n\nהמצב המתואר הוא **אי ספיקת כליות כרונית (CKD)** שהתפתחה עקב:\n- שימוש ממושך ב-**NSAIDs** (גורמים לוזוקונסטריקציה אפרנטית ופגיעה נפרוטוקסית)\n- שימוב ממושך ב-**מעכבי ACE** (גורמים לוזודילטציה אפרנטית → ירידה ב-GFR, במיוחד בשילוב עם NSAIDs)\n\n---\n\n### למה ב' נכון – 2 משפטים:\n\n1. **אי ספיקת כליות כרונית בשלב מתקדם (ESRD) נושאת שיעורי",
     "ti": 7,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_May24_t9.jpeg",
-    "eFlag": "Explanation describes kidney failure, answer mentions mortality",
+    "eFlag": "Explanation diagnoses kidney failure; answer discusses perforated ulcer mortality",
     "e_issue": true,
     "st": "ckd_complications"
   },
@@ -8583,7 +8570,7 @@
     "e": "## למה ג' נכון: החלפת Tacrolimus ב-Everolimus\n\n**1. Tacrolimus הוא הגורם הסביר לנפרופתיה:**\nTacrolimus (כמו שאר ה-Calcineurin Inhibitors) ידוע כגורם ל**נפרופתיה כרונית** (CNI nephrotoxicity) עקב כיווץ כלי דם אפארנטיים ופיברוזיס אינטרסטיציאלי – לכן יש הגיון להחליפו.\n\n**2. Everolimus (mTOR inhibitor) הוא תחליף מוכר שמאפשר הפחתת CNI:**\nEverolimus מספק אימונוסופרסיה יעילה **ללא נפרוטוקסיות ישירה**, ומחקרים הראו שמ",
     "ti": 7,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun24_q62_tmuna10.jpeg",
-    "eFlag": "Explanation discusses nephropathy not squamous cell carcinoma",
+    "eFlag": "Explanation discusses nephropathy; question asks about squamous cell carcinoma",
     "e_issue": true,
     "st": "dialysis_transplant"
   },
@@ -8599,7 +8586,7 @@
     "t": "2024-May",
     "e": "## הסבר מדוע ד' נכון:\n\n### פעילות תלוית זמן (Time-dependent) של Cefazolin\n\n**משפט 1:**\nCefazolin הוא בטא-לקטם שפעילותו **תלוית זמן** – כלומר, האפקט הבקטריציידלי תלוי בכך שרמת התרופה תישאר **מעל ה-MIC למשך זמן ממושך** (לפחות 50-70% מהמרווח בין המנות), ולכן **זמן מחצית החיים הארוך יותר (כ-2 שעות)** מאפשר לשמור על ריכוז טיפולי לאורך זמן ועדיין לתת מנה חד-יומית.\n\n**משפט 2:**\nלעומת זאת,",
     "ti": 12,
-    "eFlag": "Explanation claims cefazolin allows once-daily dosing incorrectly",
+    "eFlag": "Explanation claims cefazolin allows once-daily dosing; requires multiple daily doses",
     "e_issue": true,
     "st": "diabetes_mgmt"
   },
@@ -8647,7 +8634,7 @@
     "e": "## למה א' **אינו** חלק מהפרוטוקול האקוטי להיפרקלמיה:\n\n### 1. יעילות מוגבלת בהיפרקלמיה\nביקרבונט נתרן (NaHCO₃) פועל על ידי תיקון חמצת מטבולית, מה שגורם לשיפט של אשלגן לתוך התאים. אולם **בהיעדר חמצת מטבולית**, השפעתו על רמת האשלגן **זניחה ואיטית** (30-60 דקות), ואינו נחשב כיום לטיפול קו ראשון אמין בהיפרקלמיה אקוטית לפי הנחיות עדכניות.\n\n### 2. ההשפעה היא **עקיפה",
     "ti": 8,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Jun24_q66_tmuna11.jpeg",
-    "eFlag": "Explanation argues answer is NOT part of protocol",
+    "eFlag": "Explanation says NaHCO NOT part of protocol, contradicts marked answer",
     "st": "electrolyte_effects"
   },
   {
@@ -8662,7 +8649,7 @@
     "t": "2024-May",
     "e": "## למה התשובה היא א - Lung Tuberculosis (שחפת ריאתית)\n\n**סיבה 1 - גורם סיכון תעסוקתי:**\nעבודה במפעל **אבן קיסר (Silica/Quartz)** חושפת את הפועל לאבק סיליקה → **Silicosis** היא גורם סיכון מוכר ומשמעותי לפיתוח שחפת (Silico-tuberculosis), מכיוון שהסיליקה פוגעת במקרופאגים המכילים את המיקובקטריה ומאפשרת לה להתפשט.\n\n**סיבה 2 - ממצא קליני אופייני:**\n**שיעול דמי (Hemoptysis)** שהופיע בשבועות האחרונים הוא סימן קלא",
     "ti": 5,
-    "eFlag": "Explanation describes Silicosis not Lung Tuberculosis"
+    "eFlag": "Explanation describes Silicosis causing TB, not TB itself"
   },
   {
     "q": "בן 82, סובל מדימום תוך מוחי תחת טיפול ב-acetylsalicylic acid ו-rivaroxaban. ספירת דם ותפקודי כליה תקינים. מה הטיפול המומלץ ביותר כעת? סמן את התשובה המדויקת ביותר",
@@ -8690,7 +8677,7 @@
     "t": "2024-May",
     "e": "## התשובה הנכונה: ג. שבר בגולגולת\n\n### הסבר:\n\n**1. מנגנון ישיר לזיהום מנינגוקוקלי:**\nשבר בגולגולת, במיוחד שבר בבסיס הגולגולת, עלול ליצור **תקשורת ישירה בין סינוסים פאראנזאליים/אוזן תיכונה לבין חלל הסאב-ארכנואיד** – מה שמאפשר לחיידקים, כולל *Neisseria meningitidis*, לחדור ישירות ל-CNS ולגרום למנינגיטיס.\n\n**2. למה האחרות פחות ספציפיות למנינגוקוקלי:**\n- **א (חסר C5-C9)** – גור",
     "ti": 6,
-    "eFlag": "Complement deficiency causes meningococcal risk not skull fracture",
+    "eFlag": "Explanation says skull fracture, but complement deficiency causes meningococcal",
     "e_issue": true,
     "st": "interstitial_lung"
   },
@@ -8720,7 +8707,7 @@
     "t": "2024-May",
     "e": "## התשובה הנכונה היא ד'\n\n**יש להימנע ממתן חיסונים חיים לחולה זו עד גיל שנתיים.**\n\n---\n\n### הסבר בשני משפטים:\n\n1. **Adalimumab הוא נוגדן אנטי-TNF** המדכא את המערכת החיסונית, ועובר את השליה בטרימסטר השלישי — לכן התינוק הנולד לאם המטופלת ב-adalimumab נחשב **מדוכא חיסונית** עד גיל **~6 חודשים** (לפי חלק מההנחיות עד 12 חודשים), שכן הנוגדן יישאר בגוף התינוק לאחר הלידה.\n\n2. **חיסונים חיים מוחלשים**",
     "ti": 22,
-    "eFlag": "Explanation says avoid until 6-12 months not 2 years",
+    "eFlag": "Explanation says avoid until 6-12 months, answer says 2 years",
     "e_issue": true,
     "st": "analgesic_pharm"
   },
@@ -8736,7 +8723,7 @@
     "t": "2024-May",
     "e": "## הסבר לתשובה א':\n\n**Penicillin G Benzathine 2.4 mU IM – מנה חד פעמית**\n\n### למה א' נכון:\n\n1. **כאשר לא ידוע מתי הופיעה הסיפיליס** (ולא ניתן לאשר שהיא בת פחות משנה), מטפלים לפי פרוטוקול **Late Latent Syphilis** – שזה 3 מנות שבועיות... אך כאן מדובר ב**חשיפה אפידמיולוגית** (בן זוג שחלה), ולכן ה-CDC ממליץ על **טיפול פרופילקטי חד פעמי** כ-**Epidemiologic Treatment** כאשר הפרטנר נחשף לסיפיליס מוקד",
     "ti": 0,
-    "eFlag": "Explanation contradicts itself on single versus three doses",
+    "eFlag": "Explanation states three weekly doses, contradicts single-dose marked answer",
     "e_issue": true,
     "st": "pharmacology_adrs"
   },
@@ -8766,7 +8753,7 @@
     "t": "2024-May",
     "e": "## למה ג נכון:\n\n**1. היפוטוניק + דקסטרוז בגלל היפוגליקמיה ורמת נתרן תקינה-גבוהה:**\nהמטופל בצום עם גלוקוז נמוך → צריך **Dextrose 5%** לאנרגיה, והנתרן תקין/גבוה → אין צורך בתמיסה איזוטונית מלאה, לכן **Saline 0.45%** (חצי-איזוטוני) מתאים למתן נוזלים מבלי להעמיס נתרן.\n\n**2. KCl 20 mEq ולא 40 mEq בגלל אי-ספיקת כליות:**\nקריאטינין **2.1 מ\"ג/ד\"ל** מעיד על **",
     "ti": 22,
-    "eFlag": "Explanation supports the solution, not avoidance",
+    "eFlag": "Explanation recommends option 2, question asks which to avoid",
     "e_issue": true,
     "st": "analgesic_pharm"
   },
@@ -8782,7 +8769,7 @@
     "t": "2024-May",
     "e": "## התשובה הנכונה: ג. Empagliflozin 10mg פעם ביום\n\n**הסבר בשני משפטים:**\n\n1. **המינון המאושר של Empagliflozin לאי ספיקת לב הוא 10mg פעם ביום** (לא 25mg), מכיוון שבמחקר EMPEROR-Reduced/Preserved שהוכיח את היעילות, נעשה שימוש דווקא במינון זה, ולא נמצאה תועלת נוספת במינון הגבוה יותר.\n\n2. **Dapagliflozin אמנם גם מאושר לאי ספיקת לב במינון 10mg פעם ביום** (לא פעמיים ביום ולא 25mg), אך השאלה מתייחסת ל-Empagliflozin ",
     "ti": 1,
-    "eFlag": "Explanation says 10mg is correct not maximum",
+    "eFlag": "Explanation says 10mg is correct dose not maximum dose",
     "st": "stable_cad"
   },
   {
@@ -8825,7 +8812,7 @@
     "t": "2024-May",
     "e": "## התשובה הנכונה: ב. Sotalol\n\n### הסבר:\n\n1. **Flecainide ו-Propafenone** (תרופות Class IC) **אסורות** בחולים עם מחלת לב מבנית/קרדיומיופתיה בשל סיכון מוגבר לאריתמיות מסכנות חיים (פרו-אריתמוגניות) — כפי שהוכח במחקר CAST. **Dronedarone** אף היא **התווית נגד** בחולים עם אי ספיקת לב / קרדיומיופתיה (מחקר PALLAS/ANDROMEDA הראה עלייה בתמותה).\n\n2. **Sotalol** (Class III + בטא-בלוקר) היא האפשרות המקובלת לשימור קצב (**",
     "ti": 2,
-    "eFlag": "Sotalol contraindicated in low ejection fraction patients",
+    "eFlag": "Explanation says Sotalol acceptable but it's contraindicated in low-EF",
     "e_issue": true,
     "st": "hf_pharmacology"
   },
@@ -9019,7 +9006,7 @@
     "e": "## הסבר מדוע א' נכון\n\n**הרקע הקליני:** מדובר במטופלת בת 72 עם **עליות ST** (STEMI) + **בצקת ריאות** = אוטם שריר הלב חריף עם סיבוך של אי-ספיקת לב חריפה (Killip III-IV).\n\n---\n\n### תשובה א' נכונה:\n\n**שיעור הסיבוכים והתמותה המידיים דומה לשיעור ב-NSTEMI**\n\n> **משפט 1:** ב-STEMI עם בצקת ריאות (Killip III-IV) התמותה התוך-אשפוזית גבוהה מאוד (20-40%), ואילו ב-NSTEMI בסיכון גבוה התמותה המיידית נמוכה יות",
     "ti": 0,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_May24_t14.jpeg",
-    "eFlag": "Explanation contradicts itself on mortality comparison",
+    "eFlag": "Explanation compares NSTEMI mortality, marked answer says similar to MI",
     "e_issue": true,
     "st": "cardiology_key"
   },
@@ -9109,7 +9096,7 @@
     "t": "2024-May",
     "e": "## התשובה הנכונה: ג. Valproic Acid\n\n### הסבר בשני משפטים:\n\n1. **Valproic acid הוא תרופת הבחירה בחשד לאנצפלופתיה** כי הוא אינו גורם לירידה בסף ההתקפים (אנטי-אפילפטי בפני עצמו) ואינו מדכא את מח העצם – בניגוד ל-Clozapine ו-Carbamazepine שידועים כ**נוירוטוקסיים** ועלולים להחמיר את המצב הנוירולוגי.\n\n2. **Risperidone ו-Clozapine** מורידים את סף ההתקפים ועלולים להחמיר את האנצפלופתיה, בעוד ש-**Carbamaz",
     "ti": 4,
-    "eFlag": "Explanation discusses anti-epileptic properties, not neutropenia concern",
+    "eFlag": "Explanation focuses on anti-epileptic properties, ignores neutropenia mentioned in question",
     "e_issue": true,
     "st": "antimicrobial_rx"
   },
@@ -9139,7 +9126,7 @@
     "t": "2024-Oct",
     "e": "## למה התשובה היא **Abatacept (ג')**\n\n**Abatacept** הוא מעכב **CTLA-4-Ig** הפועל על ידי בלימת האקטיבציה של תאי T (בלוקדה של קו-סטימולציה CD80/CD86 – CD28) — **אינו גורם לשחרור ציטוקינים חריף** ולכן הסיכון ל-**Cytokine Release Syndrome (CRS)** נמוך משמעותית בהשוואה לתרופות אחרות.\n\nבניגוד לכך:\n- **Tocilizumab (א')** ו-**Adalimumab (ב')** — anti-IL6 / anti-TNF — יכולים לגרום לתגובות אינפוזיה ו-CRS\n- **Rituximab (ד')**",
     "ti": 22,
-    "eFlag": "Explanation supports Abatacept, not marked Tocilizumab",
+    "eFlag": "Explanation concludes Abatacept, marked answer is Tocilizumab",
     "e_issue": true,
     "st": "analgesic_pharm"
   },
@@ -9170,7 +9157,7 @@
     "t": "2024-Oct",
     "e": "## תשובה: ב. הפרעה פלוקטואטיבית **לא** נדרשת לאבחנה\n\n### הסבר:\n\n**1. קריטריוני DSM-5 לדליריום דורשים:**\n- הפרעה בקשב ובמודעות **(א' נכון)**\n- שינוי קוגניטיבי נוסף (כמו הפרעה בחשיבה/זיכרון) **(ד' נכון)**\n- שינוי חד בהכרה **(ג' נכון)**\n\n**2. הפלוקטואציה היא מאפיין אופייני** של דליריום (תנודות לאורך היום), אך **אינה קריטריון הכרחי לאבחנה** לפי ה-DSM-5 — ניתן לאבחן דלירי",
     "ti": 22,
-    "eFlag": "Explanation says B is correct, not marked answer",
+    "eFlag": "Explanation says B correct, but option 0 marked correct",
     "e_issue": true,
     "st": "palliative_symptoms"
   },
@@ -9302,7 +9289,7 @@
     "t": "2024-Oct",
     "e": "## התשובה הנכונה היא ד - טיפול תומך בלבד\n\n**סיבה 1 - האבחנה:**\nהמצגת הקלאסית של **פריקרדיטיס ויראלית** — צעיר עם כאב חזה לוחץ שמופיע **כ-2 ימים לאחר מחלה חום-ית** (ויראלית), עם ל\"ד תקין ומדדים יציבים, מצביעה על דלקת קרום הלב ממקור ויראלי שהיא **self-limited** ברוב המוחלט של המקרים.\n\n**סיבה 2 - למה לא האחרות:**\nב-**פריקרדיטיס ויראלית אידיופטית** הטיפול הוא **NSAIDs + Colchicine",
     "ti": 0,
-    "eFlag": "Explanation recommends NSAIDs+Colchicine not supportive-only treatment",
+    "eFlag": "Explanation recommends NSAIDs+Colchicine, contradicts supportive-only marked answer",
     "e_issue": true,
     "st": "cardiology_key"
   },
@@ -9318,7 +9305,7 @@
     "t": "2024-Oct",
     "e": "## הסבר מדוע ד' נכון:\n\n**\"יש להפחית מינון אינסולין בזאלי ומינון אינסולין\"**\n\n---\n\n### סיבה 1 – סיכון מוגבר להיפוגליקמיה לאחר אירוע מוחי:\nלאחר שבץ מוחי, המטופל נמצא בסיכון גבוה במיוחד לנזק מהיפוגליקמיה, מאחר שהמוח הפגוע רגיש יותר לירידות סוכר. לכן **יש להקל בטיפול האינסולין** (להפחית מינון) כדי למנוע אפיזודות היפוגליקמיות מסוכנות.\n\n---\n\n### סיבה 2 – הנחיות ADA לאחר",
     "ti": 7,
-    "eFlag": "Explanation mentions insulin twice, answer mentions Janumet",
+    "eFlag": "Explanation says reduce insulin twice, answer says reduce Janumet",
     "e_issue": true,
     "st": "ckd_complications"
   },
@@ -9466,7 +9453,7 @@
     "e": "## הסבר מדוע ב' נכון\n\n**האבחנה:** סרקואידוזיס חריפה – **תסמונת Löfgren** (ארתריטיס + erythema nodosum + adenopathy hilare דו-צדדית בCT חזה + חום)\n\n---\n\n### מדוע ב' נכון – Prednisone 40 מ\"ג + Steroid Sparing Agent:\n\n1. **המטופלת סימפטומטית משמעותית** – חום, ארתריטיס, ושיעול טורדני במשך **חודש** – מה שמצדיק טיפול סיסטמי בסטרואידים (שולל א')\n\n2. **המינון 40 מ\"ג הוא המינון הסטנדרטי** לסרקואידוזיס פעילה הדורשת ט",
     "ti": 22,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Oct24_pg03.jpg",
-    "eFlag": "Löfgren syndrome typically self-limiting, steroids rarely needed",
+    "eFlag": "Löfgren syndrome typically self-resolves; steroids rarely needed here.",
     "e_issue": true,
     "st": "palliative_symptoms"
   },
@@ -9525,7 +9512,7 @@
     "t": "2024-Oct",
     "e": "## התשובה הנכונה היא ב'\n\n### עובי ספטום בין-חדרי של 15 מ\"מ\n\n---\n\n### הסבר בשני משפטים:\n\n**1.** היפרטרופיה של חדר שמאל (LVH) עם עובי ספטום ≥15 מ\"מ מעיד על נזק אורגני ממושך ומשמעותי ללב – זהו סימן ל**נזק של אבר מטרה (Target Organ Damage)**, שהוא מאפיין מרכזי של **יתר לחץ דם משני** (secondary hypertension) הנגרם לרוב מסיבה הורמונלית או מבנית (כגון היפראלדוסטרוניזם, פאוכרומוציטומה, היצרות עורק הכליה",
     "ti": 4,
-    "eFlag": "LVH is primary hypertension sign, not secondary",
+    "eFlag": "LVH indicates target organ damage, not secondary hypertension itself",
     "e_issue": true,
     "st": "diagnostic_micro"
   },
@@ -9645,7 +9632,7 @@
     "t": "2024-Oct",
     "e": "## התשובה הנכונה: **ד**\n\n### הסבר בשני משפטים:\n\n**1.** אובדן הכרה לאחר הזרקת יוד **רדיואקטיבי** (כגון בסריקת בלוטת התריס) אינו מהווה תגובה אלרגית אמיתית לחומר ניגוד יודי המשמש לצנתור, מאחר שמדובר במנגנון שונה לחלוטין ואין עדות לרגישות יתר לחומר ניגוד אינטרווסקולרי.\n\n**2.** בניגוד לאפשרויות א', ב', ו-ג' – שכולן מייצגות רגישות יתר מוכחת ליוד או לחומרים קשורים (תגובה קודמת",
     "ti": 22,
-    "eFlag": "Explanation discusses option ד, not marked answer",
+    "eFlag": "Explanation endorses option ד, marked answer is option 0",
     "e_issue": true,
     "st": "analgesic_pharm"
   },
@@ -9690,7 +9677,7 @@
     "t": "2024-Oct",
     "e": "## הסבר מדוע ד נכון:\n\n**רקע קליני:** מיה בת 25 עם אנמיה מחוסר ברזל + שלשולים + IgA תקין + Anti-tTG מוגבר → **אבחנה סבירה של צליאק**.\n\n---\n\n### למה ד נכון – קולונוסקופיה לבירור:\n\n1. **למרות החשד הגבוה לצליאק, שלשול + אנמיה מחוסר ברזל מחייבים שלילת פתולוגיה קולונית** (כגון IBD, ניאופלזיה, קוליטיס מיקרוסקופית) – **קולונוסקופיה עם ביופסיות** היא חלק חיוני מהבירור כדי לא לפספס אבחנה",
     "ti": 6,
-    "eFlag": "Explanation describes initial workup, not refractory case",
+    "eFlag": "Explanation describes initial workup, marked answer addresses refractory case",
     "e_issue": true,
     "st": "interstitial_lung"
   },
@@ -9721,7 +9708,7 @@
     "t": "2024-Oct",
     "e": "## תשובה: א. S. mutans\n\n### הסבר:\n\n**S. mutans** הוא סטרפטוקוקוס מקבוצת **Viridans streptococci** — חיידקים שמקורם בחלל הפה (פלורה אורלית), והם הגורם הקלאסי והשכיח ביותר לאנדוקרדיטיס תת-חריפה (SBE), **לא** לפריקרדיטיס.\n\nבקטרמיה של **S. mutans** (למשל לאחר טיפול שיניים) נוטה \"להיצמד\" לשסתומי לב פגומים ולגרום **אנדוקרדיטיס** — ולכן היא **פחות** מחשידה לפריקרדיטיס בהשוואה לאחרים.",
     "ti": 12,
-    "eFlag": "Explanation discusses endocarditis risk, not lowest suspicion",
+    "eFlag": "Question asks lowest suspicion, explanation says highest suspicion endocarditis",
     "e_issue": true,
     "st": "thyroid_adrenal"
   },
@@ -9812,7 +9799,7 @@
     "e": "## התשובה הנכונה: א. אספירין 1 גרם שלוש פעמים ביום\n\n---\n\n### הסבר בשני משפטים:\n\n**1.** התמונה הקלינית (גבר צעיר ובריא, כאבים בחזה בימים האחרונים + שינויים אופייניים באק\"ג) מאוד מתאימה ל**פריקרדיטיס חריפה**, וטיפול הבחירה הראשוני במצב זה הוא **NSAIDs במינון אנטי-דלקתי גבוה** – כאשר אספירין 1 גרם שלוש פעמים ביום (3 גרם/יום) הוא הטיפול המועדף והמקובל ביותר לפריקרדיטיס.\n\n**2.** האופ",
     "ti": 22,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Oct24_pg06.jpg",
-    "eFlag": "Explanation says aspirin only, answer includes colchicine",
+    "eFlag": "Explanation says aspirin only, marked answer includes colchicine combination",
     "e_issue": true,
     "st": "pain_assessment"
   },
@@ -9843,7 +9830,7 @@
     "t": "2024-Oct",
     "e": "## הסבר מדוע תשובה ב' נכונה\n\n### התשובה: \"בכל המטופלים מעל גיל 35 יש לבצע בירור לאטיולוגיה\"\n\n---\n\n### משפט 1 – הרציונל הקליני:\nמעל גיל 35, שכיחות המחלות הנפוצות הגורמות ל-CKD (סוכרת, יתר לחץ דם, מחלות גלומרולריות) עולה משמעותית, ולכן **בירור אטיולוגי שיטתי** בגיל זה משנה את ההחלטות הטיפוליות ומאפשר התערבות מונעת להאטת ההתקדמות.\n\n---\n\n### משפט 2 – הסיבה לדחיית שאר האפש",
     "ti": 7,
-    "eFlag": "Explanation describes different screening criteria than answer",
+    "eFlag": "Explanation describes general etiological workup, answer specifies multiple myeloma screening",
     "e_issue": true,
     "st": "ckd_complications"
   },
@@ -9860,7 +9847,7 @@
     "e": "## התשובה: ג. Amiodarone\n\n**Amiodarone גורם לרעילות ריאתית (Amiodarone Pulmonary Toxicity)**, המתבטאת בקוצר נשימה, חום, ובממצאים בבדיקה גופנית – יכולה להופיע גם תוך שעות לאחר מתן IV (במיוחד בצורה החריפה).\n\n**מנגנון הנזק כולל תגובה דלקתית/רעילה ישירה לרקמת הריאה**, הגורמת לדלקת ריאות (Pneumonitis) עם חום וקוצר נשימה – התמונה הקלינית המתוארת בשאלה תואמת במדויק לסיבוך זה.",
     "ti": 5,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Oct24_pg07.jpg",
-    "eFlag": "Explanation supports Amiodarone, not marked Ibuprofen",
+    "eFlag": "Explanation explicitly endorses Amiodarone, marked answer is Ibuprofen",
     "e_issue": true,
     "st": "aki_etiology"
   },
@@ -9877,7 +9864,7 @@
     "e": "## הסבר מדוע ג' נכון:\n\n**1. האבחנה היא פאראפנאומוני אפיוזיה (Parapneumonic Effusion) פשוטה:**\nהמטופלת מציגה פנאומוניה עם תפליט פלאורלי **ימני** – במקרה של תפליט פשוט (לא מסובך), שאינו אמפיאמה, **אין אינדיקציה לניקוז** (לא לפלאורוצנטזה אבחנתית/טיפולית ולא לחזהניקוז), והטיפול הנכון הוא **המשך אנטיביוטיקה** שכבר ניתנת.\n\n**2. הוספת כיסוי אנאירובי (Anaerobic Coverage):**\nבחולה עם פנאומ",
     "ti": 5,
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_Oct24_pg07.jpg",
-    "eFlag": "Explanation contradicts drainage; answer requires chest drain",
+    "eFlag": "Explanation says no drainage needed; answer requires chest drain",
     "e_issue": true,
     "st": "aki_management"
   },
@@ -9893,7 +9880,7 @@
     "t": "2024-Oct",
     "e": "## למה ג' נכון:\n\n**1. אינדיקציה לטיפול מלא למשך 3-6 שבועות:**\nלאחר ניתוח לתיקון שבר צוואר ירך, ההנחיות ממליצות על טרומבופרופילקסיס ממושך (extended prophylaxis) למשך **35 ימים (≈3-6 שבועות)** מהניתוח, מכיוון שזהו ניתוח אורתופדי גדול עם סיכון גבוה במיוחד ל-VTE.\n\n**2. מינון מלא ולא מופחת למרות CKD:**\neGFR של **40 ml/min אינו מצריך הפחתת מינון** עבור Apixaban או Rivaroxaban בהקשר של פרופילקסיס אור",
     "ti": 10,
-    "eFlag": "Explanation discusses prophylaxis, answer states treatment duration",
+    "eFlag": "Explanation discusses prophylaxis duration, answer states treatment for DVT",
     "e_issue": true,
     "st": "primary_htn"
   },
@@ -9952,7 +9939,7 @@
     "t": "2024-Oct",
     "e": "## תשובה: ב' נכונה\n\n**\"עד 2/3 מהחולים עם scleroderma renal crisis\"**\n\n### הסבר בשני משפטים:\n\n1. **Scleroderma renal crisis (SRC)** מתרחש בכ-**10-15%** מחולי סקלרודרמה סיסטמית (בעיקר בתת-סוג dcSSc), ומתאפיין ביתר לחץ דם זדוני + אי ספיקת כליות חריפה – וכ-**2/3 מהחולים שפיתחו SRC** עלולים להגיע לאי ספיקת כליות סופנית (ESRD) ללא טיפול מהיר.\n\n2. **שאר האפשרויות שגויות** כי גורם התמותה מספר אחד ב",
     "ti": 13,
-    "eFlag": "Explanation contradicts marked answer on dialysis percentage",
+    "eFlag": "Explanation says 2/3 reach ESRD, marked answer says need dialysis",
     "st": "anemia_rbc"
   },
   {
@@ -9996,7 +9983,7 @@
     "t": "2024-Oct",
     "e": "## התשובה הנכונה היא ד - טיפול תומך\n\n**הסבר:**\n\n1. **האבחנה הסבירה היא מונונוקלאוזיס (EBV)** - מחלת חום וכאב גרון שנמשכת שבועיים אצל בן 35, שלא הגיבה לאמוקסיצילין, ועם תופעת פריחה לאחר מתן אמוקסיצילין (תופעה קלאסית ב-EBV) מצביעה על זיהום ויראלי ולא חיידקי - ולכן אנטיביוטיקה לא תועיל.\n\n2. **ב-EBV עם מעורבות לבבית/ריאתית/כלייתית, הטיפול הוא תומך בלבד** - ACE",
     "ti": 0,
-    "eFlag": "Explanation describes EBV, presentation suggests post-streptococcal glomerulonephritis",
+    "eFlag": "Explanation diagnoses EBV; presentation clearly indicates post-streptococcal glomerulonephritis",
     "e_issue": true,
     "st": "electrolytes_endo"
   },
@@ -10056,7 +10043,7 @@
     "t": "2024-Oct",
     "e": "## התשובה הנכונה היא **ב**\n\n### הסבר:\n\n**1. התרופה הנכונה היא Dexamethasone:**\nבדלקת קרום המוח החיידקית הטיפול הסטנדרטי הוא **Dexamethasone** (ולא hydrocortisone), מאחר שיש לו פעילות אנטי-דלקתית חזקה יותר ופחות פעילות מינרלוקורטיקואידית, ומחקרי הבסיס (כולל המחקר האירופאי של de Gans & van de Beek, NEJM 2002) הוכיחו את יעילותו בהפחתת תמותה וסיבוכים נוירולוגיים.\n\n**2. המינון הנכון הוא 0.15 mg/kg כל 6 ",
     "ti": 22,
-    "eFlag": "Explanation mentions 0.15 mg/kg, answer states 10mg",
+    "eFlag": "Explanation says 0.15 mg/kg, marked answer states 10mg dosing",
     "st": "analgesic_pharm"
   },
   {
@@ -10146,7 +10133,7 @@
     "t": "2024-Oct",
     "e": "## התשובה הנכונה: ג\n\n**אאוזינופיליה בשטיפה ברונכואלוולרית (BAL) שכיחה ב-ABPA**\n\n### הסבר:\n\n1. **ABPA (Allergic Bronchopulmonary Aspergillosis)** היא התשובה לתמונה הקלינית - חולה אסתמטית אטופית עם תסמינים ריאתיים. בשטיפה הברונכואלוולרית (BAL) נמצא **אאוזינופיליה ב-\\>25% מהתאים** - זהו ממצא אופייני ושכיח המשקף את התגובה האלרגית המקומית בדרכי האוויר לאספרגילוס.\n\n2. האאוזינופיליה ב-BAL **הרבה יות",
     "ti": 5,
-    "eFlag": "Explanation discusses ABPA, not general eosinophilia finding",
+    "eFlag": "Explanation discusses ABPA, not general eosinophilia finding requested",
     "e_issue": true,
     "st": "aki_etiology"
   },
@@ -10162,7 +10149,7 @@
     "t": "2024-Oct",
     "e": "## הסבר מדוע א' נכון\n\n**רקע קליני:**\nבחולה עם **אי ספיקת לב ידועה** המגיע עם קוצר נשימה + **תפליט פלאורלי דו-צדדי** בצילום חזה —\n\n### שתי סיבות מדוע א' נכון (אין צורך להוכיח שהסיבה היא אי ספיקת לב):\n\n1. **התמונה הקלינית קלאסית ומספיקה לאבחנה** — תפליט פלאורלי **דו-צדדי וסימטרי** בחולה עם אי ספיקת לב ידועה, יתר לחץ דם וסוכרת הוא ממצא צפוי ואופייני. על פי **קריטריוני Light**, ת",
     "ti": 7,
-    "eFlag": "Explanation mentions bilateral effusion, question shows unilateral",
+    "eFlag": "Explanation says bilateral effusion, question clearly states unilateral right-sided",
     "e_issue": true,
     "st": "fluid_electrolytes"
   },
@@ -10249,7 +10236,7 @@
     "t": "2024-Oct",
     "e": "## התשובה הנכונה: א. Piperacillin-tazobactam\n\n### הסבר:\n\n1. **E. coli ESBL** מייצרת בטא-לקטמאזות בספקטרום רחב המפרקות פניצילינים וצפלוספורינים, אך **Piperacillin-tazobactam** מכיל מעכב בטא-לקטמאז (tazobactam) המנטרל את האנזים ומאפשר לפניצילין לפעול ביעילות נגד החיידק.\n\n2. שאר האופציות **אינן יעילות** כנגד ESBL: Cloxacillin פועל רק על גרם-חיוביים, Ceftazidime וAztreonam מפורקים על ידי ה-ESBL ולכן אין להם פע",
     "ti": 1,
-    "eFlag": "Explanation contradicts itself - ESBL resistant to piperacillin-tazobactam"
+    "eFlag": "ESBL bacteria are resistant to piperacillin-tazobactam despite explanation claim"
   },
   {
     "q": "איזה סיבוך אופייני נפוץ בחולי מיאלומה המטופלים ב-IMiDs כגון lenalidomide ו-dexamethasone?",
@@ -10278,7 +10265,7 @@
     "t": "2024-Oct",
     "e": "## למה ב' נכון – אין צורך בטיפול, מעקב בלבד\n\n**Essential Thrombocytosis** מחולקת לפי **סיכון טרומבוטי**:\n\n1. **גיל < 60** + **ללא היסטוריה של פקקת** = **סיכון נמוך** → מעקב בלבד\n2. **גיל ≥ 60** או **היסטוריה של פקקת** = סיכון גבוה → טיפול (Hydroxyurea)\n\n---\n\n### הסבר ב-2 משפטים:\n\n**משפט 1:** החולה בן 58 (מתחת ל-60) וללא היסטוריה של אירועים טרומבוטיים, ולכן הוא מסווג כ**סיכון נמוך** – בו הוכח שטי",
     "ti": 10,
-    "eFlag": "Patient is 58, explanation contradicts marked answer",
+    "eFlag": "Patient is 58, explanation says <60 low-risk, contradicts reality",
     "st": "htn_management"
   },
   {
@@ -10365,7 +10352,6 @@
     "t": "2024-Oct",
     "e": "## למה ג' נכון: High Anion Gap Metabolic Acidosis\n\n### חישוב ה-Anion Gap:\n**AG = Na – (Cl + HCO₃)**\n\nנתונים: Na = 140, Cl = 100, HCO₃ = 10 (pH 7.58 עם הקשר קליני)\n\n**AG = 140 – (100 + 10) = 30** → **מוגבר** (נורמה < 12)\n\n---\n\n### 2 משפטים להסבר:\n\n1. **המטופל עם HFrEF + הקאות בשבוע אחרון** → הלב הכושל גורם לירידה בפרפוזיה כלייתית ורקמתית → צבירת **לקטט** (lactic acidosis מסוג B/cardiogenic), מה שמוביל ל-**high anion gap** עם פ",
     "ti": 8,
-    "eFlag": "Explanation shows high AG acidosis, not combined",
     "e_issue": true,
     "st": "electrolyte_effects"
   },
@@ -10425,7 +10411,7 @@
     "t": "2024-Oct",
     "e": "## למה ד' נכון – GVHD\n\nמוצרי דם מוקרנים (Irradiated blood products) ניתנים בדיוק **כדי למנוע** Transfusion-associated GVHD, כלומר ההקרנה **היא** הפתרון ל-GVHD ולא גורם לו.\n\n**הסבר בשני משפטים:**\n\n1. ההקרנה משמידה את הלימפוציטים T התורמים במוצר הדם, ובכך מונעת אותם מלתקוף את רקמות המארח החיסונית-מוחלש – כלומר מניעת GVHD היא **המטרה המרכזית** של מתן דם מוקרן.\n\n2. לכן GVHD הוא הסיבוך היחיד מהרש",
     "ti": 5,
-    "eFlag": "Explanation says irradiation PREVENTS GVHD, not causes",
+    "eFlag": "Explanation says irradiation PREVENTS GVHD, contradicts marked answer completely",
     "e_issue": true,
     "st": "dialysis_transplant"
   },
@@ -10540,7 +10526,7 @@
     "t": "2024-Oct",
     "e": "## ניתוח הבדיקות\n\nהנתונים:\n- Serum K = **2.8 meq/l** (היפוקלמיה)\n- Urine K = **35 meq/l** (איבוד כליתי של אשלגן - גבוה)\n- Urine Na = **נמוך** (מרמז על נפח תוך-וסקולרי נמוך / אבסורפציה מקסימלית של Na)\n\n---\n\n## למה **א' נכון** - מטופל עם אנדוקרדיטיס המטופל שבוע ע\"י **Gentamicin**:\n\n### משפט 1:\nGentamicin (אמינוגליקוזיד) גורם לנזק טובולרי ישיר (**Fanconi-like syndrome / Bartter-like effect**) הפוגע ביכול",
     "ti": 0,
-    "eFlag": "Explanation discusses Gentamicin, answer states cloxacillin",
+    "eFlag": "Explanation discusses Gentamicin mechanism, answer states cloxacillin treatment",
     "e_issue": true,
     "st": "electrolytes_endo"
   },
@@ -10584,7 +10570,7 @@
     "t": "2025-Jun",
     "e": "## התשובה הנכונה היא א'\n\n### הסבר בשני משפטים:\n\n**בן 19 עם ערכי גלוקוז בצום של 130 מ\"ג/ד\"ל** מאובחן כסוכרת סוג 1 (בהתחשב בגילו הצעיר), שבה קיימת **הרס אוטואימוני של תאי בטא** בלבלב עם חסר מוחלט של אינסולין אנדוגני.\n\nלכן, **ברוב מקרי סוכרת סוג 1**, הטיפול **חייב להיות אינסולין** מהשלב הראשון – ללא אפשרות לטפל בתרופות פומיות בלבד, מכיוון שהגוף אינו מייצר אינסולין ב",
     "ti": 0,
-    "eFlag": "Explanation says insulin required, answer says diet",
+    "eFlag": "Explanation says insulin required, marked answer says diet only",
     "e_issue": true,
     "st": "electrolytes_endo"
   },
@@ -10615,7 +10601,7 @@
     "e": "## למה ג' נכון – כ-100% סיכוי ל-LBBB אמיתי (אורגני)\n\n**1. שילוב של אי ספיקת לב סיסטולית + מחלת לב איסכמית = בסיס מבני ברור**\nבחולה עם קרדיומיופתיה איסכמית ו-EF ירודה, ה-LBBB נובע כמעט תמיד מנזק מיוקרדיאלי אמיתי (פיברוזיס, אוטם קודם, הפרעת הולכה אורגנית) – ולא מסיבה פונקציונלית חולפת.\n\n**2. CLBBB (Complete LBBB) בהקשר קליני זה = אינדיקציה מוחלטת ל-CRT**\nעל פ",
     "ti": 1,
     "img": "data:image/svg+xml;utf8,%3Csvg%20viewBox='0%200%20800%20400'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern%20id='grid'%20width='5'%20height='5'%20patternUnits='userSpaceOnUse'%3E%3Cpath%20d='M%205%200%20L%200%200%200%205'%20fill='none'%20stroke='#ffcccb'%20stroke-width='0.3'/%3E%3C/pattern%3E%3Cpattern%20id='gridBold'%20width='25'%20height='25'%20patternUnits='userSpaceOnUse'%3E%3Cpath%20d='M%2025%200%20L%200%200%200%2025'%20fill='none'%20stroke='#ff9999'%20stroke-width='0.5'/%3E%3C/pattern%3E%3C/defs%3E%3Crect%20width='800'%20height='400'%20fill='white'/%3E%3Crect%20width='800'%20height='400'%20fill='url(#grid)'/%3E%3Crect%20width='800'%20height='400'%20fill='url(#gridBold)'/%3E%3Ctext%20x='10'%20y='20'%20font-family='Arial'%20font-size='14'%20font-weight='bold'%3ELead%20I%3C/text%3E%3Cpath%20d='M%2030%20100%20L%2050%20100%20L%2052%20100%20L%2060%2090%20L%2068%20110%20L%2076%2040%20L%2084%20100%20L%2092%20120%20L%20100%20115%20L%20108%20105%20L%20150%20105%20L%20152%20105%20L%20160%2095%20L%20168%20115%20L%20176%2045%20L%20184%20105%20L%20192%20125%20L%20200%20120%20L%20208%20110%20L%20250%20110%20L%20252%20110%20L%20260%20100%20L%20268%20120%20L%20276%2050%20L%20284%20110%20L%20292%20130%20L%20300%20125%20L%20308%20115'%20fill='none'%20stroke='black'%20stroke-width='1.5'/%3E%3Ctext%20x='10'%20y='170'%20font-family='Arial'%20font-size='14'%20font-weight='bold'%3ELead%20V1%3C/text%3E%3Cpath%20d='M%2030%20250%20L%2050%20250%20L%2052%20250%20L%2060%20280%20L%2068%20240%20L%2076%20270%20L%2084%20180%20L%2092%20260%20L%20100%20255%20L%20108%20250%20L%20150%20250%20L%20152%20250%20L%20160%20280%20L%20168%20240%20L%20176%20270%20L%20184%20180%20L%20192%20260%20L%20200%20255%20L%20208%20250%20L%20250%20250%20L%20252%20250%20L%20260%20280%20L%20268%20240%20L%20276%20270%20L%20284%20180%20L%20292%20260%20L%20300%20255%20L%20308%20250'%20fill='none'%20stroke='black'%20stroke-width='1.5'/%3E%3Ctext%20x='420'%20y='20'%20font-family='Arial'%20font-size='14'%20font-weight='bold'%3ELead%20V5%3C/text%3E%3Cpath%20d='M%20440%20100%20L%20460%20100%20L%20462%20100%20L%20470%2090%20L%20478%20110%20L%20486%2035%20L%20494%20100%20L%20502%20125%20L%20510%20120%20L%20518%20105%20L%20560%20105%20L%20562%20105%20L%20570%2095%20L%20578%20115%20L%20586%2040%20L%20594%20105%20L%20602%20130%20L%20610%20125%20L%20618%20110%20L%20660%20110%20L%20662%20110%20L%20670%20100%20L%20678%20120%20L%20686%2045%20L%20694%20110%20L%20702%20135%20L%20710%20130%20L%20718%20115'%20fill='none'%20stroke='black'%20stroke-width='1.5'/%3E%3Ctext%20x='420'%20y='170'%20font-family='Arial'%20font-size='14'%20font-weight='bold'%3ELead%20V6%3C/text%3E%3Cpath%20d='M%20440%20250%20L%20460%20250%20L%20462%20250%20L%20470%20240%20L%20478%20260%20L%20486%20185%20L%20494%20250%20L%20502%20275%20L%20510%20270%20L%20518%20255%20L%20560%20255%20L%20562%20255%20L%20570%20245%20L%20578%20265%20L%20586%20190%20L%20594%20255%20L%20602%20280%20L%20610%20275%20L%20618%20260%20L%20660%20260%20L%20662%20260%20L%20670%20250%20L%20678%20270%20L%20686%20195%20L%20694%20260%20L%20702%20285%20L%20710%20280%20L%20718%20265'%20fill='none'%20stroke='black'%20stroke-width='1.5'/%3E%3Ctext%20x='350'%20y='390'%20font-family='Arial'%20font-size='12'%20fill='#666'%3EWide%20QRS%20(%3E120ms),%20Notched%20R%20in%20lateral%20leads%3C/text%3E%3C/svg%3E",
-    "eFlag": "Explanation discusses LBBB probability not pacing percentage",
+    "eFlag": "Explanation discusses LBBB probability, question asks about pacing percentage",
     "e_issue": true
   },
   {
@@ -10631,7 +10617,6 @@
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_img_Jun25_1.jpg",
     "e": "## התשובה היא א' - משטח דם א'\n\n### הסבר:\n\n**1. רקע אפידמיולוגי + ביטוי קליני של G6PD:**\nהמטופל הוא יליד עירק (אוכלוסייה בסיכון גבוה ל-G6PD), עם שתן כהה (המוגלובינוריה מהמוליזה), חום וחשיפה קודמת – תמונה קלאסית של **משבר המוליטי חריף** על רקע חסר G6PD.\n\n**2. ממצא אופייני במשטח – \"Bite Cells\" ו-\"Heinz Bodies\":**\nבמשטח א' ניתן לראות **כדוריות דם אדומות עם נגיסות (Bite Cells)** הנוצרות כאשר הטחול",
     "ti": 6,
-    "eFlag": "Explanation cut off, cannot verify complete reasoning",
     "e_issue": true,
     "st": "interstitial_lung"
   },
@@ -10647,7 +10632,7 @@
     "t": "2025-Jun",
     "e": "## למה ד (Colchicine) נכון:\n\n1. **בחולה עם CKD ו-eGFR ירוד** (קריאטינין בסיס 1.7 במבוגרת בת 82 = eGFR נמוך מאוד), קולכיצין בטוח יחסית לטיפול בהתקף גאוט חריף, **בניגוד ל-NSAIDs** (כמו Etoricoxib) שאסורים באי-ספיקת כליות בשל החמרת תפקוד כלייתי ועיכוב פרוסטגלנדינים.\n\n2. **סטרואידים (Prednisone)** הם אלטרנטיבה אך בגיל 82 הסיכונים גבוהים (היפרגליקמיה, אוסטאופ",
     "ti": 7,
-    "eFlag": "Explanation supports Colchicine safety, not its toxicity",
+    "eFlag": "Explanation says Colchicine is safe, contradicts toxicity diagnosis",
     "e_issue": true,
     "st": "ckd_complications"
   },
@@ -10693,7 +10678,7 @@
     "t": "2025-Jun",
     "e": "## התשובה הנכונה: ב. Aseptic Meningitis\n\n### הסבר בשני משפטים:\n\n**1.** התמונה הקלינית של פורפורה עורית + דימומים רטינליים + דימום חניכיים + פגיעה כלייתית (נפריטית) מצביעה על **SLE (זאבת אדמנתית)** – מחלה אוטואימונית שיכולה לפגוע בכל מערכות הגוף, כולל מערכת העצבים המרכזית.\n\n**2.** ב-SLE מתפתח **Aseptic Meningitis (דלקת קרום מוח ללא זיהום)** כסיבוך נוירולוגי ידוע (CNS Lupus / Neuropsychiatric SLE), הנגרם ממנגנ",
     "ti": 12,
-    "eFlag": "Explanation describes SLE complication, not ITP treatment",
+    "eFlag": "Explanation diagnoses SLE, not ITP; wrong disease entirely",
     "e_issue": true,
     "st": "thyroid_adrenal"
   },
@@ -10752,7 +10737,7 @@
     "t": "2025-Jun",
     "e": "## למה ד' נכון – גלי a בולטים בבדיקת ורידי הצוואר\n\n**גלי a בולטים** ב-JVP מייצגים **התכווצות פרוזדורית חזקה** כנגד התנגדות מוגברת – מה שמתרחש באופן קלאסי ב**היצרות מסתם אאורטלי (AS)**, שם החדר הימני (ובעקיפין הלחץ הפרוזדורי) מתמודד עם נוקשות חדרית (היענות ירודה של החדר השמאלי), שגורמת לפרוזדור לעבוד קשה יותר כדי למלא את החדר הנוקשה.\n\n**בהקשר הקליני:** בחולה בת 83 עם אוושה",
     "ti": 22,
-    "eFlag": "Explanation discusses aortic stenosis not pacemaker indication",
+    "eFlag": "Explanation discusses aortic stenosis, not pacemaker indication per question",
     "e_issue": true,
     "st": "palliative_symptoms"
   },
@@ -10854,7 +10839,7 @@
     "t": "2025-Jun",
     "e": "## התשובה הנכונה: א. אוסמולליות שתן 180 מאוסמ/ל\n\n---\n\n### הסבר בשני משפטים:\n\n**1.** אוסמולליות שתן **נמוכה (180 mOsm/L)** מעידה על כך שהכליה **כבר מדללת את השתן באופן מקסימלי** — כלומר ADH מדוכא והכליה מנסה להפריש מים חופשיים; מצב זה מאפיין **SIADH שנגרם מגירוי המודינמי (low-flow)** — כאשר עם מתן סליין ותיקון הנפח, הגירוי ל-ADH יפסק פתאומית והכליה תפריש כמות גדולה של מים מהר מאוד, מה ש",
     "ti": 22,
-    "eFlag": "Explanation contradicts itself - describes suppressed ADH",
+    "eFlag": "Explanation says ADH suppressed, but low urine osmolality contradicts diagnosis",
     "e_issue": true,
     "st": "palliative_symptoms"
   },
@@ -10870,7 +10855,7 @@
     "t": "2025-Jun",
     "e": "## התשובה הנכונה היא ד'\n\n**בת 20 עם יובש בעיניים ובפה ונוגדנים חיוביים** – התמונה הקלינית מתאימה ל**תסמונת שוגרן (Sjögren's Syndrome)**, שהיא מחלה אוטואימונית הגורמת AIN.\n\n---\n\n### למה ד' היא התווית נגד מוחלטת לסטרואידים?\n\n1. **ב-AIN על רקע שוגרן, הסטרואידים אינם יעילים ועלולים להזיק** – ה-AIN בשוגרן קשור לתהליך אוטואימוני כרוני עם פיברוזיס טובולואינטרסטיציאלי, ולא לתגובת רגישות יתר חרי",
     "ti": 22,
-    "eFlag": "Explanation calls it contraindication not absolute indication",
+    "eFlag": "Explanation says contraindication; marked option implies absolute indication",
     "e_issue": true,
     "st": "palliative_symptoms"
   },
@@ -10900,7 +10885,7 @@
     "t": "2025-Jun",
     "e": "## למה ג. היפרקלמיה נכון\n\n**היפרקלמיה (עודף אשלגן בדם)** היא הסיבוך המטבולי הצפוי במצב זה מכיוון:\n\n1. **שלשול גורם לאיבוד נוזלים ואלקטרוליטים**, מה שמוביל להתייבשות ולירידה בנפח הדם → הכליות מפחיתות סילוק אשלגן (אוליגוריה/אי-ספיקה כלייתית פרה-רנלית), ובנוסף **אצידוזיס מטבולי** הנגרם מהשלשול גורם ליציאת אשלגן מהתאים לדם.\n\n2. **החום (38.5°C) מצביע על תהליך זי",
     "ti": 22,
-    "eFlag": "Explanation describes diarrhea causing hyperkalemia incorrectly",
+    "eFlag": "Explanation says diarrhea causes hyperkalemia; diarrhea actually causes hypokalemia",
     "e_issue": true,
     "st": "palliative_symptoms"
   },
@@ -10931,7 +10916,7 @@
     "t": "2025-Jun",
     "e": "## התשובה הנכונה: א\n\n### הסבר:\n\n**1. בחירת הטיפול באנדוקרדיטיס על מסתם תותב (PVE):**\nאנדוקרדיטיס על מסתם תותב הנגרמת לרוב על ידי **Staph. epidermidis** או **Staph. aureus** מטופלת לפי הנחיות ה-AHA/ESC בשילוש **Vancomycin + Gentamycin + Rifampin** — ה-Rifampin חיוני במיוחד כי הוא חודר לביופילם על המסתם התותב, ו-Vancomycin ניתן עד לידיעת הרגישות (ולא Cefazolin שאינו קו ראשון אמפירי ב-PVE).\n\n**2. מדוע",
     "ti": 0,
-    "eFlag": "Explanation recommends Vancomycin not Cefazolin regimen",
+    "eFlag": "Explanation explicitly recommends Vancomycin regimen, contradicts marked Cefazolin answer",
     "e_issue": true,
     "st": "pharmacology_adrs"
   },
@@ -10990,7 +10975,7 @@
     "t": "2025-Jun",
     "e": "## התשובה הנכונה: א. Myeloma Cast Nephropathy\n\n### הסבר בשני משפטים:\n\n**1.** בדיפסטיק השתן יש **חלבון חיובי ללא המטוריה משמעותית** (אריתרוציטים ++ עשויים להיות שגרתיים בגיל, אך העיקר הוא שהדיפסטיק מגלה **חלבון שאינו אלבומין** – שרשראות קלות/Bence-Jones protein – שהדיפסטיק הרגיל **אינו מזהה היטב**, מה שמרמז על עומס שרשראות קלות הגורמות לחסימת צינוריות).\n\n**2.** התמונה הקלינית הקלאסית של **אישה מבוגרת עם אנ",
     "ti": 7,
-    "eFlag": "Explanation describes why myeloma fits, not why least appropriate",
+    "eFlag": "Explanation argues myeloma fits well, not why it's least appropriate",
     "e_issue": true,
     "st": "rheum_diseases"
   },
@@ -11049,7 +11034,7 @@
     "t": "2025-Jun",
     "e": "## למה ג נכון:\n\n**תרופות ממשפחת PPI אינן מונעות את האירוע הפיזי של הרפלוקס** (עליית תוכן קיבה לוושט), אלא **מפחיתות את חומציות** התוכן העולה על ידי עיכוב משאבת הפרוטונים.\n\nלכן, PPI יעילים **בהפחתת הנזק והתסמינים** הנגרמים מהרפלוקס (כי החומר פחות חומצי), אך **הרפלוקס עצמו ממשיך להתרחש** — כלומר, הם **אינם** מונעים את הרפלוקס באמת, מה שהופך את ג' ל**נכונה** (PPI אינן יעילות במניעת הרפ",
     "ti": 6,
-    "eFlag": "Explanation contradicts answer - PPIs ARE effective",
+    "eFlag": "Explanation says PPIs ARE effective, contradicts marked answer statement",
     "e_issue": true,
     "st": "interstitial_lung"
   },
@@ -11137,7 +11122,7 @@
     "t": "2025-Jun",
     "e": "## למה ג' נכון – LMWH\n\n**Andexanet alfa** הוא גרסה מהונדסת של **Factor Xa** (ללא פעילות קטליטית), שפועלת כ**\"decoy receptor\"** – היא קושרת ומנטרלת מעכבי Factor Xa.\n\n**LMWH** (כמו אנוקסאפרין) פועל בעיקר על ידי עיכוב **Factor Xa** (דרך אנטיתרומבין), ולכן Andexanet alfa יכול לקשור ולנטרל את קומפלקס ה-LMWH ולהפוך את אפקטו האנטיקואגולנטי.\n\n---\n\n### למה האחרות שגויות בקצרה:\n- **א. Dabigatran** – מעכב **Thrombin (",
     "ti": 10,
-    "eFlag": "Explanation confirms Andexanet reverses Factor Xa inhibitors",
+    "eFlag": "Explanation confirms Andexanet reverses Factor Xa inhibitors, not LMWH primarily",
     "e_issue": true,
     "st": "htn_management"
   },
@@ -11167,7 +11152,7 @@
     "t": "2025-Jun",
     "e": "## דליריום בסוף החיים - הסבר על תשובה א'\n\n**התשובה הנכונה: א. נפוץ בשבועות שלפני המוות עם ירידה בשכיחות**\n\n---\n\n### הסבר בשני משפטים:\n\n1. **דליריום הוא סימן פרואגנוסטי מאוחר** – הוא מופיע בשכיחות גבוהה מאוד (עד 80-90%) בשבועות ובימים הסופיים לחיים, ומשמש אינדיקטור קליני למצב הגסיסה, כאשר ככל שמתקרבים למוות הוא נעשה שכיח יותר ולאחר מכן \"נעלם\" כאשר המטופל מאבד הכרה לחלוטין.",
     "ti": 22,
-    "eFlag": "Explanation contradicts answer about frequency decrease",
+    "eFlag": "Explanation says frequency increases approaching death, contradicts marked answer",
     "e_issue": true,
     "st": "palliative_symptoms"
   },
@@ -11211,7 +11196,7 @@
     "t": "2025-Jun",
     "e": "## התשובה היא ד' ✓\n\n### הסבר בשני משפטים:\n\n1. **Hibernating myocardium** – בחולה עם מחלה קורונרית כרונית ותפקוד לב ירוד (EF 33%), סביר שחלק מהשריר \"רדום\" אך חי (viable), ולכן **רה-וסקולריזציה (PCI/CABG) עשויה לשפר משמעותית את ה-EF** ואת התסמינים – רווח שאינו אפשרי בקרדיומיופתיה דילטטיבית אידיופתית (א') או לאחר אוטם אקוטי עם נמק (ב').\n\n2. **מצב קליני מאוזן (NYHA II) מאפשר התערבות אלקטיבית בסי",
     "ti": 0,
-    "eFlag": "Explanation discusses revascularization not ICD implantation",
+    "eFlag": "Explanation recommends revascularization; marked answer is about ICD implantation",
     "e_issue": true,
     "st": "cardiology_key"
   },
@@ -11256,7 +11241,7 @@
     "t": "2025-Jun",
     "e": "## הסבר מדוע ג' נכון\n\n### תרחיש ג': בת 35, המוגלובין 13 ג'/ד\"ל, ספירת לויקוציטים תקינה\n\n**משפט 1 – ערכי דם תקינים = מחלה פעילה ללא ציטופניה:**\nהמטופלת מציגה ערכי דם **תקינים לחלוטין** (המוגלובין תקין, לויקוציטים תקינים), מה שמעיד שאין ציטופניה הנגרמת מ-SLE פעיל – ולכן ניתן **להוסיף טיפול אימונוסופרסיבי בבטחה** (כגון Azathioprine או Mycophenolate) מבלי שהטיפול יחמיר דיכוי",
     "ti": 13,
-    "eFlag": "Explanation describes normal values, answer shows thrombocytopenia",
+    "eFlag": "Explanation says normal values, answer shows platelets 30K (severe thrombocytopenia)",
     "e_issue": true,
     "st": "transfusion"
   },
@@ -11602,7 +11587,7 @@
     "t": "2025-Jun",
     "e": "## התשובה הנכונה: ג\n\n### הסבר:\n\n**נוגדנים של הנמצא (Recipient) כנגד תורם הכליה = Cross-match חיובי**\n\nזוהי התווית נגד **מוחלטת** להשתלה, מכיוון שנוגדנים אלו (Anti-HLA antibodies) יתקפו את הכליה המושתלת **באופן מיידי** וגורמים ל**דחייה היפר-אקוטית** (Hyperacute Rejection) תוך דקות-שעות, מה שמוביל לאיבוד מיידי של השתל.\n\n---\n\n### למה האחרות אינן התווית נגד מוחלטת:\n\n* **א. גיל מעל 80** – התווית נגד **יחסית** בלבד, מוערך case",
     "ti": 1,
-    "eFlag": "Explanation describes cross-match, not colon cancer remission",
+    "eFlag": "Explanation supports option 2, marked answer is option 1",
     "e_issue": true
   },
   {
@@ -11777,7 +11762,7 @@
     "t": "2025-Jun",
     "e": "## התשובה הנכונה: ב. Clonidine\n\n### הסבר:\n\n1. **מצב חירום יתר לחץ דם (Hypertensive Emergency)** עם בצקת ריאות דורש הורדת לחץ דם **מהירה ומבוקרת** - Clonidine הוא אגוניסט α2 מרכזי הפועל **מהר יחסית** (תוך דקות עד שעה), מתאים למצב חריף, וניתן גם **תת-לשונית** במצבי חירום להורדה מידית.\n\n2. **האלטרנטיבות פחות מתאימות** בחירום זה: Carvedilol (א) הוא בטא-חוסם ארוך טווח שאינו מיועד לחירום חריף; Captopril (",
     "ti": 1,
-    "eFlag": "Explanation describes emergency treatment, not withdrawal cause",
+    "eFlag": "Explanation describes emergency treatment drugs, not withdrawal rebound cause",
     "e_issue": true,
     "st": "acs_complications"
   },
@@ -11836,7 +11821,7 @@
     "t": "2025-Jun",
     "e": "## התשובה: ג. אריתמה נודוזום\n\n**הסבר:**\n\nמדובר בתמונה קלינית קלאסית של **סרקואידוזיס** – חום סובפיברילי, חולשה, ותפיחות נוקשה בצוואר (לימפאדנופתיה היילארית/צווארית).\n\nאריתמה נודוזום היא **ביטוי עורי אופייני של סרקואידוזיס**, המופיעה כחלק מ**תסמונת לופגרן** (Löfgren syndrome) – הכוללת: לימפאדנופתיה + אריתמה נודוזום + ארתריטיס + חום, ומהווה את הצורה האקוטית והפרוגנוסטית הטובה של המחלה.",
     "ti": 22,
-    "eFlag": "Explanation describes sarcoidosis not IgG4-related disease",
+    "eFlag": "Explanation diagnoses sarcoidosis; marked answer indicates IgG4-related disease",
     "e_issue": true,
     "st": "pain_assessment"
   },
@@ -11996,7 +11981,7 @@
     "t": "2025-Jun",
     "e": "## התשובה הנכונה: א\n\n### הסבר:\n\n**1. Rivaroxaban במינון נכון לפני היפוך אלקטיבי:**\nעל פי הגידליינים (ACC/AHA ו-ESC), לפני היפוך אלקטיבי בפרפור עליות נדרש **אנטיקואגולציה אפקטיבית למשך ≥3 שבועות**. המינון התקין של Rivaroxaban לפרפור עליות הוא **20 mg פעם ביום** (או 15 mg אצל חולים עם אי-ספיקת כליות מתונה - CrCl 15-49) - כלומר 15 mg יכול להיות מינון תקין במידה והמטופל עם ירידה בתפקוד כליות, ובכל מקרה זה",
     "ti": 10,
-    "eFlag": "Explanation discusses Rivaroxaban, answer is CT cardiac",
+    "eFlag": "Explanation supports Rivaroxaban option, not CT cardiac marked answer",
     "e_issue": true,
     "st": "htn_management"
   },
@@ -12084,7 +12069,7 @@
     "t": "2025-Jun",
     "e": "## התשובה הנכונה היא ב' - נוזלים ואיזון אלקטרוליטי\n\n**סיבה 1 - האבחנה:**\nשלשול ירקרק עם חום תת-פיברילי בן 4 ימים מרמז על **גסטרואנטריטיס ויראלית** (או חיידקית המגבילה את עצמה), שבה ברוב המקרים **אנטיביוטיקה אינה מומלצת** כטיפול ראשון - הגוף מחלים לבד והמפתח הוא מניעת התייבשות.\n\n**סיבה 2 - גיל ויתר לחץ דם:**\nבגיל 70, אפילו עם יתר לחץ דם **מאוזן**, קיים סיכון מוג",
     "ti": 22,
-    "eFlag": "Explanation ignores confirmed Campylobacter culture results",
+    "eFlag": "Explanation says viral gastroenteritis; ignores confirmed Campylobacter culture requiring antibiotics",
     "e_issue": true,
     "st": "pain_assessment"
   },
@@ -12173,7 +12158,7 @@
     "t": "2025-Jun",
     "e": "## למה ג' (מחלה אוטואימונית) נכון:\n\n1. **השילוב של bronchiectasis + hypogammaglobulinemia + splenomegaly** מאפיין **CVID (Common Variable Immunodeficiency)** – מחלה אוטואימונית/אימונולוגית שבה הגוף לא מייצר נוגדנים כראוי, ומובילה לזיהומים חוזרים בדרכי הנשימה (→ bronchiectasis) ולמעורבות טחולית.\n\n2. **Hypogammaglobulinemia עם splenomegaly** מעיד על תהליך בו מערכת החיסון פגועה אך הטחול פעיל יתר על המידה (כחלק מתגובה אוטואימונית/דיסרגולציה אימונולוגית),",
     "ti": 17,
-    "eFlag": "CVID is immunodeficiency not autoimmune disease",
+    "eFlag": "Explanation calls CVID autoimmune when it's primary immunodeficiency",
     "e_issue": true,
     "st": "special_populations"
   },
@@ -12189,7 +12174,7 @@
     "t": "2025-Jun",
     "e": "## תשובה ב' נכונה: יש צורך בבירור ממאירות\n\n### הסבר:\n\n**1. האבחנה היא Statin-induced necrotizing autoimmune myopathy (SINAM)**\nמיופתיה נקרוטית אוטואימונית הנגרמת מסטטינים היא מצב בו הגוף מפתח נוגדנים עצמיים (anti-SRP או **anti-HMGCR**) שתוקפים את שריר השלד — גם לאחר הפסקת הסטטין המצב ממשיך ומחמיר, בניגוד למיופתיה רגילה מסטטינים.\n\n**2. מיופתיה נקרוטית אוטואימונית היא paraneoplastic syndrome ידוע**\nנוגדנים מסוג anti-HMG",
     "ti": 13,
-    "eFlag": "Explanation describes autoimmune myopathy, not malignancy screening",
+    "eFlag": "Explanation diagnoses autoimmune myopathy, not malignancy requiring screening.",
     "e_issue": true,
     "st": "anemia_rbc"
   },
@@ -12205,7 +12190,7 @@
     "t": "2025-Jun",
     "e": "## התשובה הנכונה היא ד' - Azathioprine בלבד\n\n**הסבר:**\n\n1. **DVT דיסטלי מבודד** (מתחת לברך) בחולה צעיר ללא גורמי סיכון ברורים אינו מצריך אנטיקואגולציה מיידית לפי הנחיות עדכניות – מספיק מעקב US חוזר, ולכן **אין אינדיקציה לטיפול אנטיקואגולנטי** (מה שמוציא את כל האפשרויות הכוללות Apixaban/Warfarin).\n\n2. **Azathioprine** הוא תרופה אימונוסופרסיבית (נוגד מטבוליט) המשמשת למחלות אוטואימוניות – סביר שה",
     "ti": 10,
-    "eFlag": "Explanation cut off, cannot verify Azathioprine recommendation",
+    "eFlag": "Explanation cut off mid-sentence, cannot verify Azathioprine recommendation",
     "e_issue": true,
     "st": "htn_complications"
   },
@@ -12308,7 +12293,7 @@
     "t": "2025-Jun",
     "e": "## למה ג' (Rituximab בלבד) **לא** נכון כאן — וד' הנכון\n\nרגע, נבחן את התמונה הקלינית:\n\n---\n\n## התמונה הקלינית\n- בן 50, **אי סבילות למאמצים מחמירה** (דצמבר-ינואר = חורף)\n- מעבדה: **המוליזה** (ככל הנראה Hemolytic anemia)\n- עונתיות + גיל → **Cold Agglutinin Disease (CAD)**\n\n---\n\n## למה **ד' (High dose steroids + Rituximab)** נכון\n\n1. **Rituximab** הוא טיפול הקו הראשון ב-CAD — הוא מדכא את שיבוט ה-B cells המייצר את ה-IgM הקר, עם שיעור ת",
     "ti": 10,
-    "eFlag": "Explanation argues AGAINST Rituximab alone, supports combination",
+    "eFlag": "Explanation explicitly argues option 2 is WRONG, endorses option 3",
     "e_issue": true,
     "st": "htn_complications"
   },
@@ -12325,7 +12310,6 @@
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_img_Jun25_10.jpg",
     "e": "## למה ג' (תפקודי קרישה) נכון:\n\n1. **אפיסטקסיס חוזר** הוא סימן קלאסי לליקוי בתפקודי קרישה (קואגולופתיה או טרומבוציטופניה) – דימום ספונטני ממשטחי ריריות מעיד ישירות על פגיעה במערכת ההמוסטזה, ולכן בדיקת PT/PTT/INR וספירת טסיות היא הבדיקה הדחופה והרלוונטית ביותר.\n\n2. **שילוב של חולשה קשה + טכיפנאה + מראה חולה** יכול להעיד על **אנמיה חמורה כתוצאה מדימום מתמשך**, ובדיקות קריש",
     "ti": 10,
-    "eFlag": "Explanation describes coagulation disorder not thrombocytopenia reality",
     "st": "htn_management"
   },
   {
@@ -12340,7 +12324,7 @@
     "t": "2025-Jun",
     "e": "## ניתוח הממצאים\n\n**נתרן 120 mEq/L** = היפונתרמיה קשה\n**אוסמולליות שתן 150 mOsm/kg** = שתן **מדולל** (נמוך מאוסמולליות פלסמה)\n\n---\n\n## המפתח לפתרון\n\nשתן מדולל (150) + היפונתרמיה = הכליה **מנסה להפריש מים חופשיים כראוי** ✓\n\nכלומר: **ADH מדוכא** — הכליה עובדת נכון, אבל הבעיה היא **צריכת מים מוגזמת** (פולידיפסיה פסיכוגנית/פריימרי)\n\n---\n\n## התשובה הנכונה: א — בת 22 עם אנורקסי",
     "ti": 0,
-    "eFlag": "Explanation describes psychogenic polydipsia, not anorexia",
+    "eFlag": "Explanation diagnoses psychogenic polydipsia, answer marked is anorexia",
     "e_issue": true,
     "st": "electrolytes_endo"
   },
@@ -12458,7 +12442,7 @@
     "t": "2025-Jun",
     "e": "## התשובה הנכונה היא ג'\n\n**הסבר:**\n\n1. **ב-CLL (לוקמיה לימפוציטית כרונית) יכולה להתפתח היפוגמגלובולינמיה משנית** (רמות נמוכות של אימונוגלובולינים) כתוצאה מתפקוד לקוי של תאי B, וכאשר יש **זיהומים חוזרים + רמות IgG נמוכות מוכחות** – זוהי אינדיקציה מקובלת ומבוססת ראיות לטיפול תחליפי קבוע ב-IVIg.\n\n2. **שאר האפשרויות אינן אינדיקציה ל-IVIg קבוע:** CVID (א') מטופל ב-IVIg",
     "ti": 17,
-    "eFlag": "Explanation says CVID treated with IVIg contradicting answer",
+    "eFlag": "Explanation says CVID treated with IVIg, contradicts marked CLL answer",
     "e_issue": true,
     "st": "special_populations"
   },
@@ -13088,7 +13072,7 @@
     "e": "הפטיטיס C כרוני הוא הגורם השכיח ביותר לציروזה בעולם, במיוחד בתחזוקה של וירוסים. בעולם המערבי, אלכוהול היא הסיבה המובילה, אך בעולם בכללותו הפטיטיס C עדיף.",
     "ti": 6,
     "t": "Harrison",
-    "eFlag": "Explanation contradicts itself - says alcohol leads globally",
+    "eFlag": "Explanation contradicts itself stating alcohol leads in Western world globally",
     "e_issue": true,
     "st": "obstructive_lung"
   },
@@ -13104,7 +13088,6 @@
     "e": "SBP דורש אנטיביוטיקה ספקטרום רחב דחופה (בדרך כלל ספלוספורין מדור 3) כדי למנוע הלם ספטי. אלבומין IV משמש גם כדי למנוע כישלון כליות. זו סיטואציה חירום.",
     "ti": 6,
     "t": "Harrison",
-    "eFlag": "Explanation mentions albumin, answer says supportive nutrition",
     "e_issue": true,
     "st": "obstructive_lung"
   },
@@ -13431,7 +13414,7 @@
     "ti": 20,
     "t": "Harrison",
     "e": "Revised Cardiac Risk Index (RCRI/Lee Index) עם ציון 2 מעריך סיכון של כ-6.6% לאירוע לבבי פרי-אופרטיבי. לניתוח בסיכון נמוך-בינוני (כמו כריתת כיס מרה), ניתן בדרך כלל להמשיך ללא בדיקות נוספות אם ה-functional capacity ≥4 METs.",
-    "eFlag": "Explanation contradicts answer about needing additional tests",
+    "eFlag": "Explanation says proceed without tests, contradicts marked need-tests answer",
     "e_issue": true,
     "st": "diagnostic_therapy"
   },
@@ -13643,7 +13626,6 @@
     "e": "CIWA ≥15 מציין מיתיגציה מרמוד. lorazepam בחיזוי 2-5 מ\"ג כל 2 שעות עד הגעה לציון CIWA <10 הוא בחירה ראשונה. סטים אזור זו מהוס יותר וטוב יותר ככזי",
     "ti": 21,
     "t": "Harrison",
-    "eFlag": "Explanation recommends lorazepam, answer states different medication",
     "e_issue": true,
     "st": "toxicology"
   },
@@ -13743,7 +13725,7 @@
     "e": "RCRI מורכב מ-6 גורמי סיכון: גיל>70, MI לפני 6 חודשים, CAD, CHF, cerebrovascular disease וסוכרת על אינסולין. בחולה זה: גיל 68 (לא), MI לפני 5 שנים (כן), CAD (כן), סוכרת (כן) = 3 נקודות",
     "ti": 20,
     "t": "Harrison",
-    "eFlag": "Age 68 doesn't meet >70 criterion, miscounted",
+    "eFlag": "Explanation counts 3 factors but patient doesn't meet age>70 criterion",
     "e_issue": true,
     "st": "diagnostic_therapy"
   },
@@ -13787,7 +13769,7 @@
     "e": "ניתוח דחוף דורש reversal עם vitamin K + FFP, ואז LMWH prophylactic (לא full-dose) כדי להימנע מ-VTE בתקופת transition.",
     "ti": 20,
     "t": "Harrison",
-    "eFlag": "Explanation adds vitamin K, not FFP alone",
+    "eFlag": "Explanation requires vitamin K plus FFP, option states FFP alone",
     "e_issue": true,
     "st": "diagnostic_therapy"
   },
@@ -13803,7 +13785,7 @@
     "e": "ABI ≤0.7 מעיד על PAD קלינית משמעותית וכדאי בדיקה מבנית (duplex/CTA) ושיקום כלים אם יש סימפטומים או הקדמה. ABI 0.65 דורש הערכה מבנית מקדימה.",
     "ti": 23,
     "t": "Harrison",
-    "eFlag": "Explanation suggests duplex/CTA first, not immediate angiography",
+    "eFlag": "Explanation recommends duplex/CTA first, not immediate angiography as marked",
     "e_issue": true,
     "st": "arterial_occlusive"
   },
@@ -14086,7 +14068,6 @@
     "e": "זהו דרמטיטיס הרפטיפורמיס הקשור לצליאק. מתאפיין בוזיקולות גרדניות מקובצות ושקיעת IgA תת-אפידרמית. הטיפול כולל דיאטה נטולת גלוטן (שתביא להחלמה ארוכת טווח) ודפסון לשליטה מהירה בתסמינים.",
     "ti": 16,
     "t": "Harrison",
-    "eFlag": "Explanation mentions both diet and dapsone together",
     "e_issue": true,
     "st": "toxicity_reactions"
   },
@@ -14158,7 +14139,7 @@
     "e": "אנגיואדמה הקשורה למעכבי ACE דורשת הפסקת התרופה ומעבר לחוסם קולטני אנגיוטנסין (ARB) שאינו גורם לאנגיואדמה.",
     "ti": 17,
     "t": "Harrison",
-    "eFlag": "ARBs can also cause angioedema cross-reactivity",
+    "eFlag": "Explanation claims ARBs don't cause angioedema; clinically they can",
     "e_issue": true,
     "st": "intraop_mgmt"
   },
@@ -14217,7 +14198,6 @@
     "e": "Metformin יש להפסיק 48 שעות לפני ניתוח עם חומר ניגוד עקב הסיכון לחמצת לקטית. גליפיזיד (sulfonylurea) יש להפסיק רק ביום הניתוח עקב הסיכון להיפוגליקמיה בצום.",
     "ti": 20,
     "t": "Harrison",
-    "eFlag": "Explanation says stop metformin 48hrs before procedure",
     "e_issue": true,
     "st": "diagnostic_therapy"
   },
@@ -14389,7 +14369,7 @@
     "e": "המטופל סובל מ-SIADH (אוסמולליות שתן גבוהה, נתרן בשתן גבוה, אאוולמיה). הטיפול הוא הגבלת נוזלים ופורוסמיד, עם תיקון איטי של 8-10 mEq/L ביום למניעת osmotic demyelination syndrome.",
     "ti": 18,
     "t": "Harrison",
-    "eFlag": "Furosemide worsens SIADH, contradicts fluid restriction treatment"
+    "eFlag": "Furosemide worsens SIADH hyponatremia by causing sodium loss in urine"
   },
   {
     "q": "אישה בת 72 עם היפונתרמיה כרונית (נתרן 120 mEq/L) מקבלת טיפול. לאחר 6 שעות נתרן עלה ל-132 mEq/L. מה הטיפול הדחוף הנדרש?",
@@ -14416,7 +14396,7 @@
     "e": "נוסחת חוסר המים החופשיים: 0.6 × משקל × (נתרן נוכחי/140 - 1) = 0.6 × 70 × (160/140 - 1) = 42 × 0.143 = 6 ליטר. התשובה הקרובה ביותר היא 4.2 ליטר (ייתכן שהמחשבה היא על תיקון חלקי או שגיאת עיגול).",
     "ti": 18,
     "t": "Harrison",
-    "eFlag": "Calculation shows 6 liters not 4.2 liters",
+    "eFlag": "Explanation calculates 6 liters, marked answer is 4.2 liters",
     "e_issue": true
   },
   {
@@ -15061,7 +15041,7 @@
     "e": "MELD score >25 מעיד על שחמת חמורה עם תמותה גבוהה ב-3 חודשים (~20%) ואינדיקציה להערכה להשתלת כבד.",
     "ti": 6,
     "t": "Harrison",
-    "eFlag": "Question asks about pancreatitis prognosis, not cirrhosis",
+    "eFlag": "Question describes pancreatitis case, asks about cirrhosis MELD prognosis instead",
     "st": "respiratory_failure"
   },
   {
@@ -16435,7 +16415,7 @@
     "t": "Harrison",
     "ti": 17,
     "e": "Oral food challenge נחשב ל-gold standard אך לא הבדיקה הרגישה ביותר אלא המאשרת ביותר. Skin prick test רגיש מאוד אך יכול להיות חיובי שקר. Specific IgE ל-Ara h 2 (component-resolved diagnostics) היא הבדיקה הספציפית ביותר לאלרגיה קלינית לבוטנים, אך ד' מציינת CRD כאפשרות. Serum specific IgE הוא הבדיקה הסטנדרטית הרגישה ביותר in vitro.",
-    "eFlag": "Explanation says oral challenge most confirmatory not sensitive",
+    "eFlag": "Explanation says oral challenge most confirmatory not most sensitive",
     "e_issue": true,
     "st": "preop_assessment"
   },
@@ -17283,7 +17263,6 @@
     "t": "Harrison",
     "e": "## הסבר:\n\nהסתיידות דגנרטיבית (calcific aortic stenosis) היא הסיבה השכיחה ביותר ל-AS בקשישים. מסתם ביקוספידלי הוא הסיבה השכיחה ביותר בגילאי 40-70. קדחת שגרונית שכיחה במדינות מתפתחות.",
     "ti": 3,
-    "eFlag": "Explanation says bicuspid valve most common 40-70",
     "st": "other_electrolytes"
   },
   {
@@ -17620,7 +17599,7 @@
     "t": "Harrison",
     "e": "## הסבר:\n\nEM minor: target lesions טיפוסיים, אקרלי, לעתים קשור ל-HSV. SJS: detachment <10% BSA, atypical targets, מעורבות רירית (פה, עיניים, גניטליה), בד\"כ drug-induced. TEN: >30% BSA detachment. SJS/TEN overlap: 10-30%.",
     "ti": 16,
-    "eFlag": "Explanation states SJS detachment <10%, answer says >10%",
+    "eFlag": "Explanation says SJS detachment <10%, answer says >10% BSA",
     "e_issue": true,
     "st": "toxicity_reactions"
   },
@@ -18100,7 +18079,7 @@
     "t": "Harrison",
     "e": "## הסبر:\n\nBreakthrough pain dose: 10-15% (sometimes 10-20%) of total daily opioid dose. Total daily = 30mg × 6 = 180mg. 10-15% = 18-27mg → ~30 mg PO q1h PRN. Short-acting formulation (IR morphine). Reassess if >3-4 breakthrough doses/day — need to increase baseline.",
     "ti": 19,
-    "eFlag": "Calculation yields 18-27mg not 30-45mg",
+    "eFlag": "Calculation shows 18-27mg but answer claims 30-45mg incorrect range",
     "e_issue": true,
     "st": "procedural_pharm"
   },
@@ -18368,7 +18347,7 @@
     "t": "Harrison",
     "e": "## הסбר:\n\nACC/AHA stepwise approach: (1) Emergency surgery → OR. (2) ACS → cardiology. (3) Surgery risk + functional capacity: if MET ≥4 → proceed. If MET <4 → assess RCRI: 0-1 = proceed. ≥2 = consider pharmacological stress test. Catheterization only if stress positive + would change management.",
     "ti": 20,
-    "eFlag": "Explanation says RCRI ≥2 needs testing, not ≥1",
+    "eFlag": "Explanation says RCRI ≥2 needs testing, option says ≥1",
     "e_issue": true,
     "st": "diagnostic_therapy"
   },
@@ -19936,7 +19915,6 @@
     "t": "Harrison",
     "ti": 17,
     "e": "Bruton agammaglobulinemia (XLA): mutation ב-BTK → absence of mature B cells → agammaglobulinemia. מתבטא בגיל 6-12 חודשים (אחרי שhmaternalIgG נעלם). זיהומים חיידקיים חוזרים (sinopulmonary, GI). טיפול: IVIG replacement. CVID מופיע מאוחר יותר (20-30).",
-    "eFlag": "Patient age 5 contradicts explanation's 6-12 months",
     "st": "special_populations"
   },
   {
@@ -20064,7 +20042,7 @@
     "t": "Harrison",
     "ti": 18,
     "e": "Furosemide גורם לאיבוד נתרן (natriuresis) ונפח. המטופלת hypovolemic → ADH release → retention של free water → dilutional hyponatremia. אוסמולריות שתן גבוהה (500) מאשרת ADH פעיל. Hypervolemic hypoNa (CHF) — יש overload עם effective arterial underfilling.",
-    "eFlag": "Explanation describes hypervolemic, answer marked hypovolemic",
+    "eFlag": "Explanation describes CHF as hypervolemic, answer marked hypovolemic",
     "e_issue": true,
     "st": "sedative_hypnotic"
   },
@@ -20233,7 +20211,7 @@
     "t": "Harrison",
     "ti": 18,
     "e": "Hypervolemic hyponatremia ב-CHF: הגבלת נוזלים היא הטיפול העיקרי. Effective arterial underfilling → ADH → water retention. Loop diuretics מסייעים להפרשת free water. Tolvaptan (V2 receptor antagonist) — second-line, יעיל אך יקר ויש risk של overcorrection.",
-    "eFlag": "Explanation says hypervolemic, question states euvolemic",
+    "eFlag": "Explanation says hypervolemic, question explicitly states patient is euvolemic",
     "e_issue": true
   },
   {
@@ -20318,7 +20296,6 @@
     "t": "Harrison",
     "ti": 19,
     "e": "Breakthrough (rescue) dose = 10-15% של OME היומי (אם Oxycodone 40mg/d, OME = 60mg → 10% = 6mg, שזה ~4mg Oxycodone). ניתן כל 1-4 שעות לפי הצורך. אם צריך >3 breakthrough/d באופן קבוע — יש להגדיל את המינון הבסיסי.",
-    "eFlag": "Calculation error: 40mg Oxycodone ≠ 60mg OME",
     "e_issue": true,
     "st": "procedural_pharm"
   },
@@ -21145,7 +21122,7 @@
     "t": "Exam",
     "e": "PFTs: FVC 73% predicted, FEV1 31.8%, FEV1/FVC 34% — actually this looks obstructive. But reviewing: FEV1/FVC ratio 34/73 = actual ratio is low. With RV elevated (149%) and TLC normal — air trapping. DLCO reduced 83%. Pattern: severe obstruction with air trapping. DDx: COPD, asthma. תיקון: obstructive with hyperinflation.",
     "img": "https://krmlzwwelqvlfslwltol.supabase.co/storage/v1/object/public/question-images/pnimit_jun21_img7.jpeg",
-    "eFlag": "Explanation describes obstructive not restrictive pattern",
+    "eFlag": "Explanation concludes obstructive pattern, contradicts marked restrictive answer",
     "e_issue": true,
     "st": "ckd_complications"
   },
@@ -21388,7 +21365,6 @@
     "t": "2020",
     "ti": 0,
     "e": "**AKI non-oliguric — שלילת NSAIDs**\n\nהתשובה הנכונה היא **B**. השאלה שואלת מה **פחות סביר** לגרום ל-AKI משמעותי עם **תפוקת שתן שמורה**. NSAIDs בדרך כלל גורמים ל-AKI על רקע וזוקונסטריקציה של העורקיק האפרנטי, מה שמוביל לירידה ב-GFR עם **ירידה בתפוקת השתן** (pre-renal physiology). מנגנון זה לא מתיישב היטב עם תפוקת שתן מצוינת.\n\n**תשובה A (Cisplatin):** גורם לנפרוטוקסיות טובולרית (פרוקסימלית ודיסטלית), תדיר non-oliguric עקב פגיעה בתפקוד קונצנטרציה. תואם.\n\n**תשובה C (Amikacin):** אמינוגליקוזידים גורמים לנפרוטוקסיות טובולרית פרוקסימלית — מאופיינת בדיוק ב-non-oliguric AKI. תואם.\n\n**תשובה D (Amphotericin B):** גורם לפגיעה טובולרית דיסטלית עם type 1 RTA ו-polyuria משמעותית. קלאסית non-oliguric. תואם.\n\n**פנינה קלינית:** במטופל קשיש עם AKI ותפוקת שתן שמורה, תמיד לבדוק תרופות נפרוטוקסיות טובולריות לפני שמניחים \"pre-renal\". ATN מתרופות טוקסיות לעיתים מציג מעט תסמינים ראשוניים למעט עליה בקריאטינין.",
-    "eFlag": "Explanation contradicts marked answer - NSAIDs least likely",
     "st": "electrolytes_endo"
   },
   {
@@ -21417,7 +21393,7 @@
     "t": "2020",
     "ti": 6,
     "e": "**אינטרסטיטיאל נפריטיס חריפה — הפסקת הטריגר**\n\nהתשובה הנכונה (c=1) מציגה את הסיפור הקליני המלא: מטופל שפיתח עליה בקריאטינין + אאוזינופיליה + פרוטאינוריה והמטוריה קלות לאחר הוספת תרופות חדשות (Digoxin, נוגד קרישה, מינון מוגבר של חסמי בטא). התמונה הקלאסית: **Acute Interstitial Nephritis (AIN)** מתרופתי.\n\n**סימנים מכוונים ל-AIN:** עליה בקריאטינין בסמיכות להוספת תרופה חדשה, אאוזינופיליה בדם ובשתן, חום קל, פריחה לעיתים, פרוטאינוריה חלבון נמוכה-בינונית (לא נפרוטית), המטוריה מיקרוסקופית.\n\n**הטיפול:** הפסקת הגורם החשוד ותמיכה. אם אין שיפור או יש פגיעה קשה — שקלול של טיפול בסטרואידים. במקרה זה הנוגד קרישה (אם זה Coumadin) הוא חשוד, וגם דיגוקסין. מבחינה פרקטית, במטופל זה ששלושת התרופות הוספו לאחרונה, הגישה היא להפסיק את **כל** התרופות החדשות ולעקוב.\n\n**אבחנות מבדלות:** AKI פרה-רנאלי מירידת קדם-עומס, nephrotoxicity ישירה, ATN.\n\n**פנינה קלינית:** שילוש קלאסי של AIN (חום, פריחה, אאוזינופיליה) מופיע רק ב-10-30% מהמקרים. היעדרו אינו שולל אבחנה. אאוזינופילוריה בשתן (>1%) רגישה ~40% לאבחון.",
-    "eFlag": "Explanation describes stopping causative drug, not anticoagulant",
+    "eFlag": "Explanation says stop causative drug, answer says stop anticoagulant",
     "e_issue": true,
     "st": "venous_thromboembolism"
   },
@@ -21449,7 +21425,6 @@
     "t": "2020",
     "ti": 8,
     "e": "**EGPA (Churg-Strauss) — טיפול אינדוקציה**\n\nהתשובה הנכונה היא **B**. התמונה הקלאסית של **Eosinophilic Granulomatosis with Polyangiitis (EGPA)**: אסתמה רקע + אאוזינופיליה בדם (>10% או >1,500/mm³) + מעורבות עצבית (mononeuritis multiplex — drop foot, חולשת אצבעות) + פריחה פורפורית + pANCA (MPO) חיובי חזק.\n\n**הטיפול האינדוקציה בקווים מנחים ACR/EULAR:** עם פגיעה בלתי-הפיכה באברים (EGPA \"severe\": לב, כליה, CNS, GI, נוירופתיה, אלוואולרי המוראז') — **Prednisone במינון גבוה + Cyclophosphamide**. במטופלת זו יש מעורבות עצבית פריפרית (mononeuritis multiplex) שמגדירה פגיעה קשה.\n\n**תשובה A (Mepolizumab) שגויה כבחירה ראשונה:** anti-IL-5 מאושר ל-EGPA אבל כאופציה לרפרקטורי או relapsing — **לא** לאינדוקציה בפגיעה קשה עם מעורבות עצבית.\n\n**תשובה C (Rituximab) שגויה פחות:** אמנם אפשרות מקובלת ב-ANCA-associated vasculitis (AAV) בכלל, וה-RCT האחרון (Terrier 2023) הראה non-inferiority ל-Cyclophosphamide ב-EGPA, אבל הסטנדרט ההיסטורי במעורבות עצבית הוא עדיין Cyclo.\n\n**תשובה D שגויה:** Azathioprine + MTX הם בדרך-כלל טיפול **אחזקה** ולא אינדוקציה בחולה עם פגיעה קשה.\n\n**פנינה קלינית:** Five-Factor Score (FFS) ב-EGPA: גיל >65, מעורבות לב, GI, כליה, היעדר ENT. FFS≥1 → אינדוקציה עם סטרואיד + ציטוטוקסי.",
-    "eFlag": "Explanation text appears cut off mid-sentence",
     "e_issue": true,
     "st": "electrolyte_effects"
   },
@@ -21493,7 +21468,7 @@
     "t": "2020",
     "ti": 1,
     "e": "**VAP מוקדם — אנטיביוטיקה אמפירית**\n\nהתשובה הנכונה היא **A**. המקרה: מונשם ICU כללי 5 ימים שפיתח HAP/VAP (Ventilator-Associated Pneumonia — הופעה לאחר >48 שעות מהאינטובציה). **VAP מוקדם** (≤5 ימים) שונה מ-VAP מאוחר מבחינת פתוגנים צפויים:\n- **Early onset (≤5 ימים)** ללא גורמי סיכון לפתוגנים עמידים: *S. pneumoniae, H. influenzae, MSSA, Enterobacteriaceae רגישים* — ניתן לטפל ב-Ceftriaxone.\n- **Late onset (>5 ימים)** או גורמי סיכון: Pseudomonas, Acinetobacter, MRSA — דורש כיסוי רחב יותר (Piperacillin/Tazobactam או Meropenem + Vancomycin ± אמינוגליקוזיד).\n\n**תשובה B (Ertapenem) שגויה:** יש כיסוי רחב אבל **אינו מכסה Pseudomonas** (בניגוד ל-Meropenem/Imipenem). במצב עמיד זה לא מתאים, ובמוקדם אין יתרון על Ceftriaxone.\n\n**תשובה C (Vancomycin) שגויה:** מכסה רק גראם-חיובי (MRSA) — לא מספיק כמונותרפיה ב-VAP.\n\n**תשובה D (Linezolid) שגויה:** כנ\"ל — כיסוי גראם-חיובי בלבד.\n\n**פנינה קלינית:** על פי ATS/IDSA 2016, גורמי סיכון לפתוגנים עמידים ב-VAP: טיפול אנטיביוטי ב-90 יום קודמים, אשפוז >5 ימים, שוק ספטי, CRRT, שכיחות מקומית גבוהה של Pseudomonas/MRSA. קבלת תרביות מ-BAL חיונית להתאמת טיפול.",
-    "eFlag": "Explanation says VAP ≤5 days, patient at day 5",
+    "eFlag": "Day 5 is boundary; explanation calls it early-onset VAP",
     "e_issue": true
   },
   {
@@ -21734,7 +21709,7 @@
     "t": "2020",
     "ti": 0,
     "e": "**חומצה-בסיס משולש — בססת נשימתית + Normal AG + High AG**\n\nהתשובה הנכונה היא **D**. ניתוח שלב-בשלב של ה-ABG:\n\n**שלב 1: pH 7.59** — alkalemia (גבוה).\n\n**שלב 2: PCO2 = 18 mmHg** — מאוד נמוך. נורמל 35-45. Alkalemia + PCO2 נמוך = **בססת נשימתית ראשונית**.\n\n**שלב 3: ביקרבונט = 25.6** — נקדים נורמלי (22-26), אך במקום שניצפה ירידה בפיצוי לבססת נשימתית:\n- **Acute respiratory alkalosis:** ירידה של 2 mEq ביקרבונט לכל 10 ירידת PCO2. PCO2 ירד ב-22 → פיצוי צפוי ביקרבונט 24 - 4.4 = 19.6.\n- **Chronic:** ירידה 4-5 per 10 → ביקרבונט צפוי 14.\nה-HCO3 **גבוה מהמצופה** (25.6 > 19.6) → **בססת מטבולית נלווית**.\n\n**שלב 4: Anion Gap** — AG = Na - (Cl + HCO3) = 140 - (95 + 25.6) = 19.4. עם albumin 3.5 (נמוך), corrected AG = 19.4 + 2.5×(4-3.5) = 20.6. **AG גבוה** (תקין <12).\n\n**שלב 5: Delta-Delta:**\n- Excess AG = 20.6 - 12 = 8.6\n- Expected HCO3 = 24 - 8.6 = 15.4 (אילו היה רק חמצת מטבולית High AG)\n- HCO3 actual = 25.6 >>15.4 → יש **עוד** בססת מטבולית/הפרעה מטבולית\n\n**פענוח משולש:**\n- בססת נשימתית (ראשונית)\n- חמצת מטבולית Normal AG (לא מבטלת אבל יכולה להסתתר — במקרה אין סיבה ברורה... בעצם:\n\nהאבחנה: **בססת נשימתית + חמצת מטבולית עם High AG + תוספת חמצת Normal AG**. Triple disorder.\n\n**פנינה קלינית:** Triple disorders שכיחים ב-ICU. Delta ratio: (AG excess / HCO3 deficit). ~1 = pure high AG metabolic acidosis. >2 = concurrent metabolic alkalosis. <0.4 = concurrent normal AG metabolic acidosis. במקרה הזה AG excess = 8.6, HCO3 deficit = -1.6 (HCO3 מעל תקין), ratio משולל → multiple disorders.",
-    "eFlag": "Explanation concludes metabolic alkalosis, not acidosis",
+    "eFlag": "Explanation concludes metabolic alkalosis, marked answer says metabolic acidosis",
     "e_issue": true,
     "st": "electrolytes_endo"
   },
@@ -21763,7 +21738,6 @@
     "t": "2020",
     "ti": 0,
     "e": "**תפליט פלאורלי — Light criteria**\n\nהתשובה הנכונה היא **B**. חישוב לפי קריטריוני **Light**:\n\n1. Pleural protein / Serum protein = 3.3 / 6.6 = **0.5** (גבול — קריטריון אקסודאט: >0.5)\n2. Pleural LDH / Serum LDH = 150 / 250 = **0.6** (גבול — קריטריון אקסודאט: >0.6)\n3. Pleural LDH = 150, 2/3 × ULN (נניח 250 × 2/3 = 167) — **לא עובר**.\n\nאחד או יותר מהקריטריונים לא עובר → **טרנסודאט**.\n\nתמונה קלינית: חולה עם מחלת לב איסכמית, תפקוד LV ירוד, MR בינונית → **CHF** — טרנסודאט קלאסי.\n\n**תשובה A (אקסודאט) שגויה:** הנתונים לא עוברים את קריטריוני Light לאקסודאט (גבוליים — protein בדיוק 0.5, LDH בדיוק 0.6 — כשלא עוברים בבירור → טרנסודאט).\n\n**תשובה C (תסחיף) שגויה:** תפליט פוסט-PE בדרך-כלל אקסודאט (דם אקסטרוואזציה, דלקת מקומית).\n\n**תשובה D (ממאירות) שגויה:** תפליט ממאיר הוא אקסודאט — עם פרוטאין גבוה יחסית, לעיתים hemorrhagic.\n\n**פנינה קלינית:** 25% מ-transudates מסווגים שגוי כ-exudate ע\"י Light (במיוחד תחת טיפול משתנים). אם חשד CHF גבוה אך Light אקסודאט: בדוק **NT-proBNP pleural** (>1500 → CHF) או **serum-pleural albumin gradient >1.2** (→ transudate).",
-    "eFlag": "Explanation says ratio 0.5 is borderline/doesn't pass exudate",
     "e_issue": true,
     "st": "cardiology_key"
   },
@@ -22051,7 +22025,7 @@
     "t": "2023-Jun",
     "ti": 0,
     "e": "## הסבר:\n\n**למה ג' נכונה:** אי ספיקת כבד גורמת לירידה בסינתזה של אלבומין וחלבונים אחרים, מה שמוביל להיפואלבומינמיה. לפי Harrison's, זה גורם לבססת מטבולית בגלל ירידה ב-anion gap ועליה יחסית בריכוז הביקרבונט. כמו כן, ירידה בפירוק אמוניה מובילה להיפרוונטילציה פיצויית.\n\n**למה א' טעות:** ספסיס גרם שלילי בדרך כלל גורם לחמצת מטבולית עקב lactic acidosis ולא לחמצת נשימתית.\n\n**למה ב' טעות:** הריון גורם לחמצת נשימתית פיצויית (לא בססת מטבולית) עקב היפרוונטילציה פיזיולוגית.\n\n**למה ד' טעות:** הרעלת סליצילטים גורמת לחמצת מטבולית, לא נשימתית.\n\n**פנינה קלינית:** במחלות כבד מתקדמות, הבססת המטבולית משקפת חומרת הפגיעה בתפקודי הסינתזה.",
-    "eFlag": "Explanation describes metabolic alkalosis, not respiratory alkalosis",
+    "eFlag": "Explanation describes metabolic alkalosis, marked answer says respiratory alkalosis",
     "e_issue": true,
     "st": "electrolytes_endo"
   },
@@ -22124,7 +22098,7 @@
     "t": "2023-Jun",
     "ti": 6,
     "e": "## הסבר:\n\n**למה ב' נכונה:** מדובר בדימום GI עליון פעיל עם סממני hypovolemic shock (אוטוסטטיות, טכיקרדיה). הירידה החדה בהמוגלובין מ-12 ל-7 גר'/ד\"ל מעידה על דימום פעיל. בדימום GI עליון הגסטרוסקופיה היא הבדיקה המועדפת הן לאבחון והן לטיפול - מאפשרת זיהוי מקור הדימום וטיפול אנדוסקופי מיידי (sclerotherapy, banding, cautery).\n\n**למה א' טעות:** קולונוסקופיה מתאימה לדימום GI תחתון ולא עליון.\n\n**למה ג' טעות:** CT angio רק אם הדימום הפעיל מהיר מדי להדמיה ישירה.\n\n**למה ד' טעות:** מיפוי כדוריות אדומות לדימום איטי וסמוי.\n\n**פנינה קלינית:** בדימום GI עליון יש לבצע גסטרוסקופיה תוך 24 שעות, ובמקרי דימום פעיל - מיד לאחר ייצוב המודינמיקה.",
-    "eFlag": "Explanation supports gastroscopy for upper GI bleeding",
+    "eFlag": "Explanation supports gastroscopy but patient presents with rectal bleeding",
     "e_issue": true,
     "st": "respiratory_failure"
   },
@@ -22196,7 +22170,7 @@
     "t": "2025-Jun",
     "ti": 0,
     "e": "## הסבר:\n\n**למה א' נכונה:** Ticagrelor הוא מעכב P2Y12 הפיך, בעוד clopidogrel ו-prasugrel הם מעכבים בלתי הפיכים. במקרה של דימום אקוטי אצל חולה המטופל ב-ticagrelor, עירוי טסיות לא יועיל מכיוון שהתרופה עדיין תמשיך לעכב את הטסיות החדשות. לעומת זאת, אצל חולים המטופלים במעכבים בלתי הפיכים, טסיות חדשות יוכלו לתפקד כרגיל.\n\n**למה ב', ג' טעות:** Clopidogrel ו-prasugrel הם מעכבי P2Y12 בלתי הפיכים - טסיות חדשות יתפקדו כרגיל.\n\n**למה ד' טעות:** Vorapaxar הוא מעכב PAR-1 ותפקוד הטסיות החדשות לא יוכשל.\n\n**פנינה קלינית:** במקרה של דימום חמור עם ticagrelor, יש לשקול מתן טסיות יחד עם הפסקת התרופה והמתנה להחלפה.",
-    "eFlag": "Explanation contradicts itself - says ticagrelor reversible",
+    "eFlag": "Explanation says reversible ticagrelor makes platelets ineffective, contradicts pharmacology",
     "e_issue": true,
     "st": "pharmacology_adrs"
   },
@@ -22212,7 +22186,7 @@
     "t": "2025-Jun",
     "ti": 0,
     "e": "## הסבר:\n\n**למה ג' נכונה:** החולה מציגה טריאדה של thrombocytopenia, anemia ומעורבות נוירולוגית (חולשה). יחד עם הממצאים הקליניים (epistaxis, המטומות), החשד העיקרי הוא TTP (Thrombotic Thrombocytopenic Purpura) או HUS. בדיקת תפקודי קרישה חיונית להבחנה בין הפרעות קרישה ראשוניות לבין microangiopathic hemolytic anemia.\n\n**למה א' טעות:** תפקודי כליה חשובים אך לא הבדיקה הראשונית הקריטית.\n\n**למה ב' טעות:** תפקודי כבד לא רלוונטיים לתמונה הקלינית הנוכחית.\n\n**למה ד' טעות:** אין סיבה לחשד להפרעת תריס בהתבסס על התמונה.\n\n**פנינה קלינית:** התמונה המתוארת דורשת התייחסות דחופה ל-TTP אפשרי - טיפול בפלזמפרזיס יכול להציל חיים.",
-    "eFlag": "Explanation supports TTP workup, not coagulation tests",
+    "eFlag": "Explanation supports TTP workup, not coagulation tests as marked",
     "e_issue": true,
     "st": "pharmacology_adrs"
   },
@@ -22228,7 +22202,7 @@
     "t": "2020",
     "ti": 12,
     "e": "## הסבר:\n\n**למה א' נכונה:** אי ספיקת לב חמורה עם EF<30% מהווה התווית נגד מוחלטת להשתלת כבד. הפרוגנוזה הירודה ומורכבות הניתוח הגבוהה הופכים את ההליך לבלתי ראוי. לפי קריטריונים של MELD ו-UNOS, מצב קרדיווסקולרי יציב הוא דרישה בסיסית.\n\n**למה ב' טעות:** הפטומה קטנה (<2 ס\"מ) יכולה להיות מטופלת לפני ההשתלה ואינה התווית נגד מוחלטת.\n\n**למה ג' טעות:** HIV עם CD4 נמוך הוא התווית נגד יחסית, לא מוחלטת, ותלוי בטיפול נוגד רטרו-ויראלי.\n\n**למה ד' טעות:** גיל 58 אינו התווית נגד - השתלות מתבצעות עד גיל 70+ במקרים מתאימים.\n\n**פנינה קלינית:** הערכה קרדיולוגית מקיפה כוללת Echo, catheterization ובמקרים מסוימים stress testing לפני השתלת כבד.",
-    "eFlag": "Explanation describes EF<30%, answer states EF 60%",
+    "eFlag": "Explanation describes EF<30%, answer states EF 60% - contradictory diagnoses",
     "e_issue": true,
     "st": "thyroid_adrenal"
   },
@@ -22244,7 +22218,7 @@
     "t": "2020",
     "ti": 5,
     "e": "## הסבר:\n\n**למה ג' נכונה:** עמידות ל-Quinolones נוצרת על ידי מוטציות בגנים המקודדים לאנזימי DNA gyrase ו-topoisomerase IV. תופעה זו אינה קשורה לאלרגיה ל-Penicillin, שהיא תגובה חיסונית. העמידות היא מנגנון מולקולרי שונה לחלוטין מאלרגיה.\n\n**למה א' טעות:** גיל מעל 65 (לא 56) מהווה גורם סיכון לעמידות ל-Penicillin.\n\n**למה ב' טעות:** העמידות ל-Macrolides ב-S. pneumoniae גדלה משמעותית בשנים האחרונות.\n\n**למה ד' טעות:** יש קשר בין עמידות ל-Penicillin לעמידות לאנטיביוטיקה אחרת כמו Macrolides.\n\n**פנינה קלינית:** בחולה אלרגי ל-Penicillin עם חשד לזיהום S. pneumoniae, Quinolones נשארים אופציה טיפולית יעילה.",
-    "eFlag": "Explanation contradicts answer - quinolones NOT related to allergy",
+    "eFlag": "Explanation states quinolones NOT related to allergy, contradicts marked answer",
     "e_issue": true,
     "st": "aki_etiology"
   },
@@ -22260,7 +22234,7 @@
     "t": "2020",
     "ti": 0,
     "e": "## הסבר:\n\n**למה ד' נכונה:** אבלציה של ורידי הריאה גורמת לנזק לרקמת הפרוזדור, מה שמפחית את התגובתיות לטיפולים אנטי-אריתמיים עתידיים. הנזק לרקמה יוצר substrate שונה שפחות מגיב לתרופות.\n\n**למה א' טעות:** טיפולי אבלציה חוזרים משפרים את סיכויי השמירה על קצב סינוס.\n\n**למה ב' טעות:** יעילות האבלציה בפרפור עליות התקפי גבוהה יותר מאשר בפרפור כרוני מתמשך.\n\n**למה ג' טעות:** יעילות האבלציה אינה פוחתת משמעותית בחולים עם מחלת לב מבנית.\n\n**פנינה קלינית:** החלטה על אבלציה צריכה לקחת בחשבון את ההשפעה על טיפולים תרופתיים עתידיים.",
-    "eFlag": "Explanation contradicts marked answer - ablation reduces responsiveness",
+    "eFlag": "Explanation says ablation reduces drug responsiveness, contradicting medical evidence",
     "e_issue": true,
     "st": "cardiology_key"
   },
@@ -22276,7 +22250,7 @@
     "t": "2020",
     "ti": 6,
     "e": "## הסבר:\n\n**למה א' נכונה:** התמונה הקלינית מתאימה לדלקת כבד אוטואימונית (AIH) - ALT/AST גבוהים, גלובולין מוגבר, interface hepatitis ותאי פלסמה בביופסיה. הטיפול הראשוני הוא Azathioprine כמונותרפיה או בשילוב עם Prednisone.\n\n**למה ב' טעות:** Cyclosporine אינו הטיפול הראשוני לדלקת כבד אוטואימונית.\n\n**למה ג' טעות:** Prednisone במינון גבוה אינו נפוץ כמונותרפיה ראשונית.\n\n**למה ד' טעות:** Rituximab הוא טיפול לא סטנדרטי לדלקת כבד אוטואימונית.\n\n**פנינה קלינית:** אבחנה מדויקת של AIH דורשת קריטריונים ספציפיים כולל נוגדנים אוטואימוניים וביופסיה אופיינית.",
-    "eFlag": "Explanation says azathioprine OR with prednisone, not monotherapy",
+    "eFlag": "Explanation states azathioprine OR with prednisone, contradicts monotherapy claim",
     "e_issue": true,
     "st": "respiratory_failure"
   },
@@ -22292,7 +22266,7 @@
     "t": "2020",
     "ti": 1,
     "e": "## הסבר:\n\n**למה ב' נכונה:** מורסה במוח בחולה מבוגר סיעודי מצריכה כיסוי רחב לחיידקים גרם חיוביים וגרם שליליים כולל אנאירובים. Meropenem מספק כיסוי מיטבי לכל הפתוגנים הרלוונטיים כולל Streptococcus, Staphylococcus ו-Bacteroides.\n\n**למה א' טעות:** Vancomycin לבדו אינו מספק כיסוי לגרם שליליים ואנאירובים.\n\n**למה ג' טעות:** השילוב אינו מספק כיסוי אופטימלי לכל הפתוגנים האפשריים.\n\n**למה ד' טעות:** Ceftriaxone לא חודר טוב דרך מחסום המוח-דם למורסות.\n\n**פנינה קלינית:** טיפול אנטיביוטי במורסת מוח דורש חדירה טובה דרך מחסום המוח-דם וכיסוי רחב.",
-    "eFlag": "Standard treatment requires ceftriaxone+metronidazole, not meropenem",
+    "eFlag": "Standard treatment is ceftriaxone+metronidazole, not meropenem monotherapy",
     "e_issue": true
   },
   {
@@ -22307,7 +22281,7 @@
     "t": "2020",
     "ti": 0,
     "e": "## הסבר:\n\n**למה ג' נכונה:** אירוע מוחי בעבר, במיוחד דימום תוך גולגולתי, מהווה התווית נגד יחסית ל-TAVR בשל הצורך בטיפול נוגד קרישה כפול לאחר הפרוצדורה ומורכבות הניהול הנוירולוגי.\n\n**למה א' טעות:** TAVR מאושר גם לחולים בסיכון בינוני ונמוך לניתוח.\n\n**למה ב' טעות:** אין טיפול תרופתי יעיל להיצרות אאורטלית חמורה סימפטומטית מלבד החלפת מסתם.\n\n**למה ד' טעות:** השכיחות של הצורך בקוצב קבוע לאחר TAVR היא כ-10-15%, לא 1%.\n\n**פנינה קלינית:** החלטה על TAVR דורשת הערכה מולטי-דיסציפלינרית הכוללת הערכה נוירולוגית בחולים עם הסטוריה של CVA.",
-    "eFlag": "Explanation contradicts answer - CVA is relative contraindication",
+    "eFlag": "Explanation says CVA is relative contraindication, not absolute contraindication",
     "e_issue": true,
     "st": "cardiology_key"
   },
@@ -22323,7 +22297,7 @@
     "t": "2020",
     "ti": 0,
     "e": "## הסבר:\n\n**למה ג' נכונה:** החולה מציג polyuria (6.6 ליטר ביממה) עם אוסמולליות שתן נמוכה (660 מוסמול/ל) ונתרן נמוך בשתן (10 מא\"ק/ל). המצב תואם diabetes insipidus centralis או nephrogenis. התחלת diabetes mellitus יכולה להוביל ל-osmotic diuresis עם polyuria.\n\n**למה א' טעות:** Furosemide יגרום לאובדן נתרן ואשלגן משמעותי יותר בשתן.\n\n**למה ב' טעות:** Lithium גורם ל-nephrogenic DI אך לא מסביר את הממצאים המעבדתיים הנוכחיים.\n\n**למה ד' טעות:** גידול ריאתי עלול לגרום ל-SIADH עם hyponatremia ולא ל-polyuria.\n\n**פנינה קלינית:** בחולה עם polyuria, חשוב לבדוק אוסמולליות שתן ופלזמה כדי להבחין בין DI לבין osmotic diuresis.",
-    "eFlag": "Explanation describes diabetes insipidus, not diabetes mellitus",
+    "eFlag": "Explanation describes diabetes insipidus; marked answer says diabetes mellitus",
     "e_issue": true,
     "st": "electrolytes_endo"
   },
@@ -22352,7 +22326,6 @@
     "t": "2020",
     "ti": 0,
     "e": "## הסבר:\n\n**למה ב' נכונה:** החולה מציג Hypophosphatemic osteomalacia עם חולשה שרירית, אוסטאופניה וגוש רך ברקמות (tumor-induced osteomalacia). המנגנון כולל הפרשת FGF23 מהגידול, הגורמת להפחתת יצור 1,25-OH Vitamin D ברכה ולהגברת הפרשת הזרחן.\n\n**למה א' טעות:** רמות 25-OH Vitamin D בדרך כלל תקינות במצב זה.\n\n**למה ג' טעות:** FGF23 יהיה מוגבר במקרה זה.\n\n**למה ד' טעות:** IGF לא קשור למטבוליזם הזרחן והסידן במקרה זה.\n\n**פנינה קלינית:** גוש רך ברקמות יחד עם hypophosphatemia צריך לעורר חשד ל-tumor-induced osteomalacia.",
-    "eFlag": "Explanation says FGF23 causes decreased 1,25-OH production",
     "st": "electrolytes_endo"
   },
   {
