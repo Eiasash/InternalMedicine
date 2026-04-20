@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { SUPA_URL, SUPA_ANON, TOPICS, EXAM_YEARS } from '../core/constants.js';
-import { sanitize, fmtT, safeJSONParse, getOptShuffle, remapExplanationLetters, isMetaOption } from '../core/utils.js';
+import { sanitize, fmtT, safeJSONParse, getOptShuffle, remapExplanationLetters, isMetaOption, toast } from '../core/utils.js';
 import { getDueQuestions, getWeakTopics, isExamTrap, srScore, getTopicStats, buildRescuePool } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
 import { renderExplainBox, toggleFlagExplain, explainWithAI, aiAutopsy, gradeTeachBack, startVoiceTeachBack } from '../ai/explain.js';
@@ -13,6 +13,29 @@ import { startPomodoro, stopPomodoro, startSuddenDeath, endSuddenDeath, speakQue
 import { showAnswerHardFail } from './more-view.js';
 
 export function toggleBk(){G.S.bk[G.pool[G.qi]]=!G.S.bk[G.pool[G.qi]];G.save();G.render();}
+export function toggleQNote(){
+  const box=document.getElementById('qnote-box');if(box){box.remove();return;}
+  const idx=G.pool[G.qi];const cur=(G.S.qnotes&&G.S.qnotes[idx])||'';
+  const h=`<div id="qnote-box" style="margin:8px 0;padding:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px"><div style="font-size:10px;font-weight:700;color:#475569;margin-bottom:6px">📝 הערה לשאלה זו</div><textarea id="qnote-ta" dir="auto" placeholder="כתוב הערה אישית..." style="width:100%;min-height:70px;resize:vertical;font-family:Heebo,Inter,sans-serif;border:1px solid #e2e8f0;border-radius:8px;padding:8px;font-size:12px;background:#fff;color:#0f172a">${sanitize(cur)}</textarea><div style="display:flex;gap:6px;margin-top:6px"><button class="btn btn-p" data-action="save-qnote" style="flex:1;font-size:11px;min-height:36px">שמור</button><button class="btn" data-action="del-qnote" style="font-size:11px;min-height:36px;background:#fef2f2;color:#991b1b">מחק</button><button class="btn" data-action="cancel-qnote" style="font-size:11px;min-height:36px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0">ביטול</button></div></div>`;
+  const tgt=document.querySelector('#ct .card')||document.querySelector('#ct');if(tgt)tgt.insertAdjacentHTML('beforeend',h);
+  setTimeout(()=>{const t=document.getElementById('qnote-ta');if(t)t.focus();},50);
+}
+export function saveQNote(){
+  const t=document.getElementById('qnote-ta');if(!t)return;
+  const v=t.value.trim();const idx=G.pool[G.qi];
+  if(!G.S.qnotes)G.S.qnotes={};
+  if(v)G.S.qnotes[idx]=v;else delete G.S.qnotes[idx];
+  G.save();toast('הערה נשמרה','success');
+  const b=document.getElementById('qnote-box');if(b)b.remove();
+  G.render();
+}
+export function delQNote(){
+  const idx=G.pool[G.qi];
+  if(G.S.qnotes)delete G.S.qnotes[idx];
+  G.save();
+  const b=document.getElementById('qnote-box');if(b)b.remove();
+  G.render();
+}
 
 
 export async function uploadQImage(qIdx){
@@ -279,10 +302,11 @@ h+=`<div style="display:flex;justify-content:space-between;align-items:center;ma
 <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">${_cf?'<span title="Chronic difficulty — read the chapter instead of drilling" style="font-size:14px;cursor:default">🔴</span>':''}${isExamTrap(G.pool[G.qi])?'<span title="Exam trap — many people pick the same wrong answer" style="font-size:12px;cursor:default">🪤</span>':''}<span class="tag-year" style="background:${q.t==='Harrison'?'#faf5ff':'#eff6ff'};color:${q.t==='Harrison'?'#7c3aed':'#1d4ed8'};font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px">${q.t==='Harrison'?'🤖 AI — Harrison\'s':'📝 '+q.t}</span>${topicName?`<span class="tag-topic" style="background:#f0fdf4;color:#166534;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px">${topicName}</span>`:''}${(()=>{const ref=TOPIC_REF[q.ti];if(!ref)return '';return '';})()}</div>
 <div style="display:flex;align-items:center;gap:8px">
 <button data-action="speak-q" class="speech-btn${G.isSpeaking?' speaking':''}" title="Read aloud" aria-label="Read question aloud">🔊</button>
-<button data-action="share-q" id="shbtn" class="share-btn" title="Share" aria-label="Share question">📋 שתף</button><button data-action="toggle-bk" style="font-size:16px;opacity:${bk?.7:.3};min-height:44px" title="Bookmark" aria-label="${bk?'Remove bookmark':'Bookmark question'}">${bk?'🔖':'🏷️'}</button>
+<button data-action="share-q" id="shbtn" class="share-btn" title="Share" aria-label="Share question">📋 שתף</button><button data-action="toggle-qnote" style="font-size:16px;opacity:${(G.S.qnotes&&G.S.qnotes[G.pool[G.qi]])?.9:.35};min-height:44px;background:none;border:none;cursor:pointer" title="Note for this question" aria-label="Note for this question">📝</button><button data-action="toggle-bk" style="font-size:16px;opacity:${bk?.7:.3};min-height:44px;background:none;border:none;cursor:pointer" title="Bookmark" aria-label="${bk?'Remove bookmark':'Bookmark question'}">${bk?'🔖':'🏷️'}</button>
 <span style="color:#94a3b8;font-size:10px">${G.qi+1}/${G.pool.length}</span>
 </div></div>`;
 h+=`<p class="heb" style="font-size:13px;font-weight:700;line-height:1.7;margin-bottom:${q.img?'10':'16'}px" dir="auto">${q.q}</p>`;
+if(G.S.qnotes&&G.S.qnotes[G.pool[G.qi]]){h+=`<div style="margin:0 0 12px;padding:8px 10px;background:#fffbeb;border-right:3px solid #d97706;border-radius:8px;font-size:11px;line-height:1.6;color:#475569;direction:rtl;text-align:right;cursor:pointer" data-action="toggle-qnote" title="Click to edit">📝 ${sanitize(G.S.qnotes[G.pool[G.qi]])}</div>`;}
 if(q.img){h+=`<div style="margin-bottom:14px;text-align:center"><img src="${q.img}" alt="Question image" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer" data-action="view-img" loading="lazy"></div>`;}
 const _shuf=getOptShuffle(G.pool[G.qi],q);
 _shuf.forEach((origI,dispJ)=>{
@@ -523,6 +547,10 @@ export function initQuizEvents(container) {
 
     // === Toggles ===
     else if (action === 'toggle-bk') { toggleBk(); }
+    else if (action === 'toggle-qnote') { toggleQNote(); }
+    else if (action === 'save-qnote') { saveQNote(); }
+    else if (action === 'del-qnote') { delQNote(); }
+    else if (action === 'cancel-qnote') { const b = document.getElementById('qnote-box'); if (b) b.remove(); }
 
     // === Image/Media ===
     else if (action === 'view-img') {

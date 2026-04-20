@@ -11,7 +11,9 @@ import { migrateStoredTags } from './tagMigration.js';
 // Contract & idempotency live in src/core/tagMigration.js (tested).
 migrateStoredTags(LS);
 
-G.S=safeJSONParse(LS,{ck:{},qOk:0,qNo:0,bk:{},notes:{},sr:{},fci:0,fcFlip:false,streak:0,lastDay:null,chat:[],studyMode:false,sp:{},spOpen:true});
+G.S=safeJSONParse(LS,{ck:{},qOk:0,qNo:0,bk:{},notes:{},sr:{},fci:0,fcFlip:false,streak:0,lastDay:null,chat:[],studyMode:false,sp:{},spOpen:true,qnotes:{},gnotes:''});
+if(!G.S.qnotes)G.S.qnotes={};
+if(typeof G.S.gnotes!=='string')G.S.gnotes='';
 if(!G.S.chat)G.S.chat=[];
 if(G.S.studyMode===undefined)G.S.studyMode=false;
 if(!G.S.streak)G.S.streak=0;if(!G.S.lastDay)G.S.lastDay=null;

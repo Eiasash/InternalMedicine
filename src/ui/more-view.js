@@ -1,9 +1,72 @@
 import G from '../core/globals.js';
-import { sanitize, getApiKey, setApiKey } from '../core/utils.js';
+import { sanitize, getApiKey, setApiKey, toast } from '../core/utils.js';
 import { callAI } from '../ai/client.js';
 import { AI_PROXY, AI_SECRET } from '../core/constants.js';
 import { startVoiceParser } from '../quiz/modes.js';
 import { submitFeedbackForm } from '../features/cloud.js';
+
+export function renderNotes(){
+  const qnoteEntries=Object.entries(G.S.qnotes||{}).filter(([k,v])=>v&&v.trim());
+  let h='<div class="sec-t">📝 Notes</div><div class="sec-s">כתוב הערות אישיות ומחשבות ללימוד — נשמר אוטומטית בדפדפן</div>';
+  h+=`<div style="padding:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;margin-bottom:12px">
+    <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:8px">📓 פנקס כללי</div>
+    <textarea id="gnotes-ta" dir="auto" placeholder="כתוב הערות, רשמים, פרלים מרפואה... הכל נשמר בדפדפן שלך."
+      style="width:100%;min-height:180px;resize:vertical;font-family:Heebo,Inter,sans-serif;border:1px solid #e2e8f0;border-radius:10px;padding:10px;font-size:12px;line-height:1.7;background:#fff;color:#0f172a">${sanitize(G.S.gnotes||'')}</textarea>
+    <div style="display:flex;gap:6px;margin-top:8px;align-items:center">
+      <button class="btn btn-p" data-action="save-gnotes" style="flex:1;font-size:11px;min-height:40px">💾 שמור</button>
+      <button class="btn" data-action="export-gnotes" style="font-size:11px;min-height:40px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0">📤 ייצא</button>
+      <span id="gnotes-status" style="font-size:10px;color:#94a3b8;margin-right:auto"></span>
+    </div>
+  </div>`;
+  h+=`<div class="sec-t" style="font-size:13px">🔖 הערות על שאלות (${qnoteEntries.length})</div>`;
+  if(!qnoteEntries.length){
+    h+='<div class="empty">אין הערות על שאלות עדיין. בעת מענה, לחץ על 📝 כדי להוסיף הערה.</div>';
+  } else {
+    h+='<div style="display:flex;flex-direction:column;gap:8px">';
+    qnoteEntries.forEach(([idx,txt])=>{
+      const q=G.QZ[idx];if(!q)return;
+      const preview=(q.q||'').slice(0,80);
+      h+=`<div style="padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:10px">
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;direction:rtl;text-align:right">${sanitize(preview)}${q.q.length>80?'…':''}</div>
+        <div style="font-size:11px;color:#0f172a;direction:rtl;text-align:right;line-height:1.6;margin-bottom:6px;white-space:pre-wrap">${sanitize(txt)}</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn" data-action="jump-to-q" data-idx="${idx}" style="font-size:10px;padding:6px 10px;min-height:32px;background:var(--app-primary);color:var(--app-on-primary)">↵ עבור לשאלה</button>
+          <button class="btn" data-action="del-qnote-idx" data-idx="${idx}" style="font-size:10px;padding:6px 10px;min-height:32px;background:#fef2f2;color:#991b1b">🗑️ מחק</button>
+        </div>
+      </div>`;
+    });
+    h+='</div>';
+  }
+  return h;
+}
+export function saveGNotes(){
+  const t=document.getElementById('gnotes-ta');if(!t)return;
+  G.S.gnotes=t.value;G.save();
+  const st=document.getElementById('gnotes-status');
+  if(st){st.textContent='✓ נשמר '+new Date().toLocaleTimeString('he-IL');setTimeout(()=>{if(st)st.textContent='';},2500);}
+}
+export function exportGNotes(){
+  const blob=new Blob([G.S.gnotes||''],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='pnimit-notes-'+new Date().toISOString().slice(0,10)+'.txt';
+  a.click();URL.revokeObjectURL(a.href);
+  toast('הערות יוצאו','success');
+}
+export function delQNoteByIdx(idx){
+  if(G.S.qnotes)delete G.S.qnotes[idx];
+  G.save();G.render();
+}
+export function jumpToQuestion(idx){
+  G.tab='quiz';
+  let pos=G.pool.indexOf(idx);
+  if(pos<0){G.filt='all';G.topicFilt=-1;G.years=[];
+    // Rebuild pool
+    G.pool=[];G.QZ.forEach((_,i)=>G.pool.push(i));
+    pos=G.pool.indexOf(idx);if(pos<0)pos=0;
+  }
+  G.qi=pos;G.sel=null;G.ans=false;G.render();
+}
 
 export function renderSearch(){
 let h=`<div class="sec-t">🔍 Search</div><div class="sec-s">Search across all ${G.QZ.length} questions + ${G.NOTES.length} study notes + ${G.DRUGS.length} drugs</div>`;
@@ -208,6 +271,10 @@ export function initMoreEvents(container) {
     else if (action === 'send-chat') { sendChat(); }
     else if (action === 'submit-feedback') { submitFeedbackForm(); }
     else if (action === 'toggle-notif-opt-in') { toggleNotifOptIn(); }
+    else if (action === 'save-gnotes') { saveGNotes(); }
+    else if (action === 'export-gnotes') { exportGNotes(); }
+    else if (action === 'jump-to-q') { jumpToQuestion(parseInt(btn.dataset.idx, 10)); }
+    else if (action === 'del-qnote-idx') { delQNoteByIdx(btn.dataset.idx); }
   });
   container.addEventListener('input', (e) => {
     if (e.target.dataset.action === 'search-input') {
