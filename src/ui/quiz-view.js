@@ -7,7 +7,7 @@ import { renderExplainBox, toggleFlagExplain, explainWithAI, aiAutopsy, gradeTea
 import { TOPIC_REF } from './track-view.js';
 import { openHarrisonChapter } from './library-view.js';
 import { buildPool, check, next, prev, pick, checkMockIntercept, exitOnCallMode, flipCard, runExplainOnCall, onCallPick,
-         setFilt, setTopicFilt, toggleYearFilt, clearYearFilt, startExam, startMockExam, startTopicMiniExam,
+         setFilt, setTopicFilt, toggleYearFilt, clearYearFilt, startExam, startMockExam, startMockExamByTag, showMockExamPicker, startTopicMiniExam,
          startOnCallMode, _storeDiff } from '../quiz/engine.js';
 import { startPomodoro, stopPomodoro, startSuddenDeath, endSuddenDeath, speakQuestion, startNextBestStep } from '../quiz/modes.js';
 import { showAnswerHardFail } from './more-view.js';
@@ -531,7 +531,11 @@ export function initQuizEvents(container) {
     else if (action === 'pause-timed') { pauseTimed(); }
     else if (action === 'stop-pomo') { stopPomodoro(); }
     else if (action === 'start-exam') { startExam(); }
-    else if (action === 'start-mock') { startMockExam(); }
+    else if (action === 'start-mock') { showMockExamPicker(); }
+    else if (action === 'mock-picker-noop') { /* stop propagation so card clicks don't close modal */ }
+    else if (action === 'start-mock-mixed') { document.getElementById('mockPicker')?.remove(); startMockExam(); }
+    else if (action === 'start-mock-tag') { const tag=el.dataset.tag; document.getElementById('mockPicker')?.remove(); if(tag)startMockExamByTag(tag); }
+    else if (action === 'close-mock-picker') { if(el.id==='mockPicker')document.getElementById('mockPicker')?.remove(); }
     else if (action === 'start-sd') { startSuddenDeath(); }
     else if (action === 'start-oncall') { startOnCallMode(); }
     else if (action === 'start-pomo') { startPomodoro(); }

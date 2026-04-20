@@ -108,7 +108,7 @@ export function fcFsrsScore(key,rating){
   s.fsrsS=Math.round(upd.s*1000)/1000;
   s.fsrsD=Math.round(upd.d*100)/100;
   s.lastReview=Date.now();
-  const days=fsrsInterval(s.fsrsS);
+  const days=fsrsIntervalWithDeadline(s.fsrsS,s.fsrsD,rPrev);
   s.next=Date.now()+days*86400000;
   // Legacy n counter: 0 on Again, cap at 2 for "known" chip.
   s.n=rating===1?0:Math.min(2,(s.n||0)+1);
@@ -167,9 +167,9 @@ if(G.S.fcFlip){
   const _nextHint=(rating)=>{
     // Tiny preview of the next interval for each rating, for label UX
     const tmpS=_r?.fsrsS;
-    if(!tmpS)return fsrsInterval(fsrsInitNew(rating).s);
+    if(!tmpS){const init=fsrsInitNew(rating);return fsrsIntervalWithDeadline(init.s,init.d,1);}
     const upd=fsrsUpdate(tmpS,_r.fsrsD,1,rating);
-    return fsrsInterval(upd.s);
+    return fsrsIntervalWithDeadline(upd.s,upd.d,1);
   };
   h+=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px">
 <button class="btn" style="background:#fef2f2;color:#dc2626;font-size:10px;padding:8px 4px" data-action="fc-rate" data-r="1" aria-label="Rate: Again">🔄 שוב<br><span style="font-size:8px;opacity:.7">10m</span></button>

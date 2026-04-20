@@ -10,7 +10,8 @@ import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, buildRes
 import { buildPool, setFilt, setTopicFilt, startOnCallMode, exitOnCallMode, flipCard,
          onCallPick, renderOnCall, runExplainOnCall, pick, check, next, _storeDiff,
          startTopicMiniExam, endMiniExam, startExam, startMockExam, endExam, endMockExam,
-         checkMockIntercept, showMockExamResult, buildMockExamPool } from '../quiz/engine.js';
+         checkMockIntercept, showMockExamResult, buildMockExamPool,
+         replayMockWrong, replayLastMockWrong } from '../quiz/engine.js';
 import { requestWakeLock, startPomodoro, stopPomodoro, startSuddenDeath, endSuddenDeath,
          speakQuestion, startNextBestStep, startVoiceParser } from '../quiz/modes.js';
 import { callAI } from '../ai/client.js';
@@ -325,6 +326,8 @@ document.body.addEventListener('click', (e) => {
   else if (el.dataset.action === 'apply-update') applyUpdate();
   else if (el.dataset.action === 'close-update-banner') { try{localStorage.setItem(UPDATE_DISMISS_KEY,'1');}catch(e){} const b = document.getElementById('update-banner'); if (b) b.remove(); }
   else if (el.dataset.action === 'close-mock-modal') { const m = document.getElementById('mexModal'); if (m) m.remove(); }
+  else if (el.dataset.action === 'replay-mock-wrong') { replayMockWrong(window.__pnimitLastMockWrong || []); }
+  else if (el.dataset.action === 'replay-last-mock-wrong') { replayLastMockWrong(); }
   else if (el.dataset.action === 'close-exam-modal') { const m = document.getElementById('examModal'); if (m) m.remove(); }
 });
 

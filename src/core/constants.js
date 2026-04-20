@@ -24,8 +24,14 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.67';
+export const APP_VERSION='9.68';
 export const CHANGELOG={
+    '9.68': [
+      '⚡ FSRS now deadline-aware: once an exam date is set, card intervals are capped by difficulty bucket (weak 30% / normal 60% / strong 85% of remaining days) so every card gets a pre-exam review.',
+      '🎯 מבחן סימולציה — בחירת שנה ספציפית (2020/2021-Jun/2022-Jun/2023-Jun/2024-May/2024-Oct/2025-Jun) בנוסף לתמהיל המציאותי.',
+      '🔁 Replay wrong answers from the most recent mock — one-tap drill from the mock result modal and from the daily plan.',
+      '☁️ Cloud backup now bundles mock history + session snapshots, so cross-device restore preserves your mock trend.',
+    ],
     '9.67': [
       '⬆️ כפתור "הבאה" הועבר לראש אזור התשובה',
       '✎ אייקון הערה ו-★ אייקון סימניה ברורים יותר (עיגולים צבעוניים)',

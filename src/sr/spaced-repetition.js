@@ -1,5 +1,5 @@
 import G from '../core/globals.js';
-import { fsrsR, fsrsInterval, fsrsInitNew, fsrsUpdate, fsrsMigrateFromSM2, isChronicFail } from './fsrs-bridge.js';
+import { fsrsR, fsrsInterval, fsrsInitNew, fsrsUpdate, fsrsMigrateFromSM2, isChronicFail, fsrsIntervalWithDeadline } from './fsrs-bridge.js';
 
 import { toast } from '../core/utils.js';
 // Spaced repetition, SRS scoring, activity tracking — extracted from pnimit-mega.html
@@ -48,8 +48,8 @@ const upd=fsrsUpdate(s.fsrsS,s.fsrsD,rPrev,rating);
 s.fsrsS=Math.round(upd.s*1000)/1000;
 s.fsrsD=Math.round(upd.d*100)/100;
 s.lastReview=Date.now();
-// FSRS interval → next review
-const fsrsDays=fsrsInterval(s.fsrsS);
+// FSRS interval → next review (deadline-aware if examDate set)
+const fsrsDays=fsrsIntervalWithDeadline(s.fsrsS,s.fsrsD,rPrev);
 s.next=Date.now()+fsrsDays*86400000;
 // Keep SM-2 ef/n as proxies for filter compatibility
 s.n=correct?s.n+1:0;

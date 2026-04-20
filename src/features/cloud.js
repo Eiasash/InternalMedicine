@@ -138,7 +138,12 @@ export async function cloudBackup(){
   const btn=document.getElementById('cloud-backup-btn');
   if(btn){btn.disabled=true;btn.textContent='☁️ Saving...';}
   try{
-    const payload={id:_sbDeviceId(),data:G.S,updated_at:new Date().toISOString()};
+    // Bundle ancillary localStorage (mock_hist, sessions) so cross-device restore
+    // carries the full picture, not just G.S.
+    let mockHist=[],sessions=[];
+    try{mockHist=JSON.parse(localStorage.getItem('pnimit_mock_hist')||'[]');}catch(e){}
+    try{sessions=JSON.parse(localStorage.getItem('pnimit_sessions')||'[]');}catch(e){}
+    const payload={id:_sbDeviceId(),data:{...G.S,_mockHist:mockHist,_sessions:sessions},updated_at:new Date().toISOString()};
     const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups',{
       method:'POST',
       headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
@@ -150,7 +155,7 @@ export async function cloudBackup(){
         const patchRes=await fetch(SUPA_URL+'/rest/v1/pnimit_backups?id=eq.'+_sbDeviceId(),{
           method:'PATCH',
           headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json'},
-          body:JSON.stringify({data:G.S,updated_at:new Date().toISOString()})
+          body:JSON.stringify({data:{...G.S,_mockHist:mockHist,_sessions:sessions},updated_at:new Date().toISOString()})
         });
         if(!patchRes.ok){const pe=await patchRes.text();toast('❌ Backup update failed: '+patchRes.status+'\n'+pe.slice(0,200),'info');return;}
       }
@@ -204,6 +209,9 @@ export async function cloudRestore(){
       document.getElementById('rstNo').addEventListener('click',()=>close(false));
     });
     if(ok){
+      // Pull sibling localStorage bundles out of the payload before G.S whitelist
+      try{if(Array.isArray(row.data&&row.data._mockHist))localStorage.setItem('pnimit_mock_hist',JSON.stringify(row.data._mockHist.slice(-20)));}catch(e){}
+      try{if(Array.isArray(row.data&&row.data._sessions))localStorage.setItem('pnimit_sessions',JSON.stringify(row.data._sessions.slice(-30)));}catch(e){}
       const validated=filterRestorePayload(row.data,new Set(Object.keys(G.S)));
       Object.assign(G.S,validated);G.save();G.render();
       toast('✅ Progress restored!','success');
