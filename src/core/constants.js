@@ -24,8 +24,12 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.68';
+export const APP_VERSION='9.69';
 export const CHANGELOG={
+    '9.69': [
+      '🔍 תמונות נפתחות בזום מלא בלחיצה (היה חסר CSS ל-overlay).',
+      '↔️ תיקון BIDI מקיף: כיוון טקסט מחושב לפי יחס עברית/אנגלית (heDir) במקום dir="auto". קלפי Distractor Autopsy, הסברים המתחילים ב-IgG4/MEN1/CT, שאלות ב-Library preview — כולם שומרים כעת על כיוון טקסט נכון.',
+    ],
     '9.68': [
       '⚡ FSRS now deadline-aware: once an exam date is set, card intervals are capped by difficulty bucket (weak 30% / normal 60% / strong 85% of remaining days) so every card gets a pre-exam review.',
       '🎯 מבחן סימולציה — בחירת שנה ספציפית (2020/2021-Jun/2022-Jun/2023-Jun/2024-May/2024-Oct/2025-Jun) בנוסף לתמהיל המציאותי.',
