@@ -296,43 +296,34 @@ h+=`<button class="${cls}${blurCls}${autopsyCls}" data-action="pick" data-i="${o
 });
 h+=`<div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">`;
 if(!G.ans){
-if(!G.examMode&&G.sel!==null&&G._confidence===null){
-// Feature 9: Confidence before reveal
-h+=`<div style="margin-bottom:8px;font-size:10px;color:#64748b;font-weight:600">How sure are you?</div>
-<div style="display:flex;gap:6px;margin-bottom:10px">
-<button class="btn" style="flex:1;background:#fef2f2;color:#dc2626;font-size:13px;padding:8px" data-action="confidence" data-c="0">😬</button>
-<button class="btn" style="flex:1;background:#fffbeb;color:#d97706;font-size:13px;padding:8px" data-action="confidence" data-c="1">🤔</button>
-<button class="btn" style="flex:1;background:#f0fdf4;color:#059669;font-size:13px;padding:8px" data-action="confidence" data-c="2">😎</button>
-</div>`;
-}
-const _confLabel=G._confidence===0?'😬':G._confidence===1?'🤔':G._confidence===2?'😎':'';
+const _confLabel='';
 h+=`<div style="display:flex;gap:6px;align-items:center"><button class="btn btn-p" data-action="check-answer"${G.sel===null?' disabled':''} aria-label="Check answer" style="flex:1;min-height:44px">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" data-action="give-up" style="background:#fff3e0;color:#d97706;font-size:11px;padding:6px 14px;min-height:44px" aria-label="Show answer">👁 לא יודע</button>`;h+=`</div>`;}
 else{
 // Feature 1: Why-wrong classification (required after wrong, non-exam)
 if(!G.examMode&&G.sel!==q.c&&!G._wrongReason){
 h+=`<div style="margin-bottom:8px">
-<div style="font-size:10px;font-weight:700;color:#dc2626;margin-bottom:6px">Why did you get it wrong?</div>
-<div style="display:flex;gap:4px;flex-wrap:wrap">
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#fef2f2;color:#991b1b" data-action="wrong-reason" data-r="no_knowledge">📚 Didn't know</button>
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#fffbeb;color:#92400e" data-action="wrong-reason" data-r="misread">👓 Misread</button>
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#eff6ff;color:#1e40af" data-action="wrong-reason" data-r="between_2">⚖️ Between 2</button>
-<button class="btn" style="font-size:10px;padding:6px 10px;background:#f5f3ff;color:#6d28d9" data-action="wrong-reason" data-r="silly">🤦 Silly mistake</button>
+<div style="font-size:11px;font-weight:700;color:#dc2626;margin-bottom:6px">Why did you get it wrong?</div>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<button class="btn" style="font-size:11px;padding:8px 12px;min-height:40px;background:#fef2f2;color:#991b1b" data-action="wrong-reason" data-r="no_knowledge">📚 Didn't know</button>
+<button class="btn" style="font-size:11px;padding:8px 12px;min-height:40px;background:#fffbeb;color:#92400e" data-action="wrong-reason" data-r="misread">👓 Misread</button>
+<button class="btn" style="font-size:11px;padding:8px 12px;min-height:40px;background:#eff6ff;color:#1e40af" data-action="wrong-reason" data-r="between_2">⚖️ Between 2</button>
+<button class="btn" style="font-size:11px;padding:8px 12px;min-height:40px;background:#f5f3ff;color:#6d28d9" data-action="wrong-reason" data-r="silly">🤦 Silly</button>
 </div></div>`;
 }
 // Feature 4: Cross-link to chapter after wrong answer
 if(!G.examMode&&G.sel!==q.c&&q.ti>=0){
 const _chRef=TOPIC_REF[q.ti];
 if(_chRef&&_chRef.s==='har'){
-h+=`<button class="btn" data-action="read-chapter" style="font-size:10px;padding:5px 12px;background:#ede9fe;color:#7c3aed;margin-bottom:6px;width:100%">📖 Read: ${_chRef.l} — you're weak here</button>`;
+h+=`<button class="btn" data-action="read-chapter" style="font-size:11px;padding:10px 12px;min-height:44px;background:#ede9fe;color:#7c3aed;margin-bottom:6px;width:100%;font-weight:700">📖 Read: ${_chRef.l} — you're weak here</button>`;
 }
 }
 // Feature 7: Optional difficulty rating
 if(!G.examMode){
-h+=`<div style="display:flex;gap:4px;margin-bottom:8px;align-items:center">
-<span style="font-size:9px;color:#94a3b8">Difficulty:</span>
-<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='easy'?'background:#dcfce7;color:#166534':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="easy">Easy</button>
-<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='med'?'background:#fef9c3;color:#854d0e':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="med">Medium</button>
-<button class="btn" style="font-size:9px;padding:3px 8px;${G._diffRating==='hard'?'background:#fecaca;color:#991b1b':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="hard">Hard</button>
+h+=`<div style="display:flex;gap:6px;margin-bottom:8px;align-items:center;flex-wrap:wrap">
+<span style="font-size:10px;color:#94a3b8">Difficulty:</span>
+<button class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;${G._diffRating==='easy'?'background:#dcfce7;color:#166534':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="easy">Easy</button>
+<button class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;${G._diffRating==='med'?'background:#fef9c3;color:#854d0e':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="med">Medium</button>
+<button class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;${G._diffRating==='hard'?'background:#fecaca;color:#991b1b':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="hard">Hard</button>
 </div>`;
 }
 // Next button — why-wrong classification is a nudge, not a gate

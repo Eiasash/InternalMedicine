@@ -24,8 +24,13 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.59';
+export const APP_VERSION='9.60';
 export const CHANGELOG={
+    '9.60': [
+      '🐛 הסר פרומפט "How sure are you?" שחסם את זרימת המענה — האפקרציה כעת עוברת ישר מבחירה ל-"בדוק"',
+      '📏 כפתורי Why-wrong, Difficulty ו-Read-chapter: גדלים מותאמים ל-44px מינימום למגע — ניתנים ללחיצה בקלות',
+      '📏 כפתורי Easy/Medium/Hard: פונט 11px (היה 9px), padding גדול יותר, flex-wrap למקרי overflow'
+    ],
     '9.59': [
       '🐛 תיקון קריטי: פריסת flex אחרי מענה — Why-wrong, Read-chapter, Difficulty וכפתור הבאה היו נדחסים לעמודות בנות תו אחד בגלל display:flex ללא flex-direction:column',
       '🐛 תיקון קריטי: הסבר ה-💡 היה מראה נושא שגוי ב-21 מתוך 24 נושאים (notes.json לא מסודר לפי TOPICS[]). בניית מפה NOTES_BY_TI בעת טעינת הנתונים',
