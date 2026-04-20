@@ -24,20 +24,30 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.66';
+export const APP_VERSION='9.67';
 export const CHANGELOG={
+    '9.67': [
+      '⬆️ כפתור "הבאה" הועבר לראש אזור התשובה',
+      '✎ אייקון הערה ו-★ אייקון סימניה ברורים יותר (עיגולים צבעוניים)',
+      '📊 אייקון טאב Track תוקן (היה מוצג פגום)',
+      '📓 עמוד יומן לימוד — עוצב מחדש, כפתור "תרגל הכל"'
+    ],
+    '9.66': [
+      '📋 עזרה ורשימת שינויים בעברית מלאה',
+      '🔢 ספירות דינמיות (שאלות, פלאשקארדים)'
+    ],
     '9.65': [
-      '📝 הערות אישיות — כפתור 📝 בכל שאלה פותח הערה פרטית',
-      '📓 פנקס כללי ב-More → Notes עם ייצוא לקובץ',
-      '🔖 רשימה של כל ההערות עם כפתור מעבר לשאלה'
+      '📝 הערות אישיות — כפתור בכל שאלה פותח הערה פרטית',
+      '📓 פנקס כללי ב-Notes עם ייצוא לקובץ',
+      '🔖 רשימת כל ההערות עם מעבר לשאלה'
     ],
     '9.64': [
-      '🔔 התראות לא חוסמות — toast ו-confirmModal במקום alert/confirm',
+      '🔔 התראות לא חוסמות במקום חלוניות מערכת',
       '🧹 ניקוי handlers יתומים ו-imports לא בשימוש'
     ],
     '9.63': [
       '🔀 חצי "קודמת" ו"הבאה" תוקנו לכיוון עברי',
-      '📱 סיום מבחן במודאל מעוצב במקום חלונית מערכת'
+      '📱 סיום מבחן במודאל מעוצב'
     ],
     '9.62': [
       '🌙 מצב כהה ומצב לימוד — תיקוני צבע לכל הכפתורים אחרי מענה'

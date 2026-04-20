@@ -108,45 +108,42 @@ export function renderWrongAnswerLog(){
   recentWrong.sort((a,b)=>(b.s.ts?.slice(-1)[0]||0)-(a.s.ts?.slice(-1)[0]||0));
 
   let h='';
-  // Wrong answer key reporter (still useful, now prominent)
-  const curQ=G.pool.length&&G.qi<G.pool.length?G.QZ[G.pool[G.qi]]:null;
-  if(curQ){
-    h+=`<div style="margin-bottom:12px;padding:10px;background:#fffbeb;border-radius:10px;border:1px solid #fde68a">
-<div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:6px">❌ Report wrong answer key for current question</div>
-<input id="reportInput" class="search-box" placeholder="מה לדעתך התשובה הנכונה ולמה?" style="font-size:11px;margin-bottom:6px;direction:rtl">
-<button class="btn" style="font-size:10px;width:100%;background:#d97706;color:#fff" data-action="submit-report" aria-label="Submit report for AI review">שלח לבדיקת AI</button>
-<div id="fbStatus" style="font-size:10px;margin-top:4px;display:none"></div>
-<div id="aiVerifyResult" style="display:none;margin-top:8px;padding:10px;border-radius:8px;font-size:10px;line-height:1.6"></div>
+  // Summary + action
+  const totalProblem=chronic.length+recentWrong.length;
+  if(totalProblem>0){
+    h+=`<div style="padding:10px 12px;background:#f1f5f9;border-radius:10px;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<div style="flex:1;font-size:11px;color:#475569;line-height:1.5"><b style="color:#0f172a">${totalProblem}</b> שאלות דורשות חזרה · ${chronic.length} כרוניות · ${recentWrong.length} אחרונות</div>
+<button class="btn btn-p" style="font-size:11px;padding:8px 14px;min-height:36px" data-action="retry-wrong" aria-label="Retry wrong questions">🔄 תרגל הכל</button>
 </div>`;
   }
 
   // Chronic failures
   if(chronic.length>0){
-    h+=`<div style="font-weight:700;font-size:11px;margin-bottom:6px;color:#dc2626">🔴 Chronic Failures — read the chapter, not drill</div>`;
+    h+=`<div style="font-weight:700;font-size:11px;margin-bottom:6px;color:#dc2626">🔴 כישלונות כרוניים — קרא את הפרק, אל תתרגל</div>`;
     chronic.slice(0,5).forEach(({idx,q,s})=>{
       const acc=Math.round(s.ok/s.tot*100);
       const topic=q.ti>=0?TOPICS_L[q.ti]:'';
       h+=`<div style="padding:8px;background:#fef2f2;border-radius:8px;margin-bottom:6px;cursor:pointer" data-action="goto-q" data-idx="${idx}" data-flip="1">
-<div style="font-size:10px;font-weight:600;line-height:1.4">${q.q.slice(0,80)}${q.q.length>80?'…':''}</div>
+<div style="font-size:10px;font-weight:600;line-height:1.4" dir="auto">${q.q.slice(0,80)}${q.q.length>80?'…':''}</div>
 <div style="display:flex;gap:8px;margin-top:4px"><span style="font-size:9px;color:#dc2626">${s.ok}/${s.tot} (${acc}%) · D=${s.fsrsD?s.fsrsD.toFixed(1):'?'}</span><span style="font-size:9px;color:#94a3b8">${topic}</span></div>
 </div>`;
     });
   }
 
-  // Recently wrong (last streak broken)
+  // Recently wrong
   const shown=recentWrong.slice(0,8);
   if(shown.length>0){
-    h+=`<div style="font-weight:700;font-size:11px;margin-bottom:6px;margin-top:10px;color:#d97706">⚠️ Recently Wrong — retry these</div>`;
+    h+=`<div style="font-weight:700;font-size:11px;margin-bottom:6px;margin-top:10px;color:#d97706">⚠️ טעויות אחרונות</div>`;
     shown.forEach(({idx,q,s})=>{
       const topic=q.ti>=0?TOPICS_L[q.ti]:'';
       h+=`<div style="padding:8px;background:#fffbeb;border-radius:8px;margin-bottom:4px;cursor:pointer" data-action="goto-q" data-idx="${idx}">
-<div style="font-size:10px;line-height:1.4">${q.q.slice(0,75)}${q.q.length>75?'…':''}</div>
+<div style="font-size:10px;line-height:1.4" dir="auto">${q.q.slice(0,75)}${q.q.length>75?'…':''}</div>
 <div style="font-size:9px;color:#94a3b8;margin-top:2px">${topic}</div>
 </div>`;
     });
   }
 
-  if(!chronic.length&&!shown.length&&!curQ)h+='<div style="font-size:11px;color:#94a3b8;text-align:center;padding:20px">No data yet — answer some questions first</div>';
+  if(!chronic.length&&!shown.length)h+='<div style="font-size:11px;color:#94a3b8;text-align:center;padding:20px">עדיין אין נתונים — ענה על כמה שאלות תחילה</div>';
   return h;
 }
 export function toggleHarrisonAI(){

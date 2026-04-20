@@ -1012,6 +1012,17 @@ export function initTrackEvents(container) {
     else if (action === 'rescue-drill') {
       buildRescuePool(); G.tab = 'quiz'; G.render();
     }
+    // Retry wrong questions (from Study Journal)
+    else if (action === 'retry-wrong') {
+      const wrongIdxs=[];
+      Object.entries(G.S.sr||{}).forEach(([idx,s])=>{
+        if(!G.QZ[+idx])return;
+        const failing=(s.tot>=4&&s.ok/s.tot<0.35)||(s.n===0&&s.tot>=1);
+        if(failing)wrongIdxs.push(+idx);
+      });
+      if(!wrongIdxs.length)return;
+      G.pool=wrongIdxs;G.qi=0;G.sel=null;G.ans=false;G.filt='custom';G.tab='quiz';G.render();
+    }
     // Chapter due for reading
     else if (action === 'open-chapter-due') {
       G.tab = 'lib'; G.libSec = 'harrison';

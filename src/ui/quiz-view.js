@@ -302,7 +302,7 @@ h+=`<div style="display:flex;justify-content:space-between;align-items:center;ma
 <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">${_cf?'<span title="Chronic difficulty — read the chapter instead of drilling" style="font-size:14px;cursor:default">🔴</span>':''}${isExamTrap(G.pool[G.qi])?'<span title="Exam trap — many people pick the same wrong answer" style="font-size:12px;cursor:default">🪤</span>':''}<span class="tag-year" style="background:${q.t==='Harrison'?'#faf5ff':'#eff6ff'};color:${q.t==='Harrison'?'#7c3aed':'#1d4ed8'};font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px">${q.t==='Harrison'?'🤖 AI — Harrison\'s':'📝 '+q.t}</span>${topicName?`<span class="tag-topic" style="background:#f0fdf4;color:#166534;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px">${topicName}</span>`:''}${(()=>{const ref=TOPIC_REF[q.ti];if(!ref)return '';return '';})()}</div>
 <div style="display:flex;align-items:center;gap:8px">
 <button data-action="speak-q" class="speech-btn${G.isSpeaking?' speaking':''}" title="Read aloud" aria-label="Read question aloud">🔊</button>
-<button data-action="share-q" id="shbtn" class="share-btn" title="Share" aria-label="Share question">📋 שתף</button><button data-action="toggle-qnote" style="font-size:16px;opacity:${(G.S.qnotes&&G.S.qnotes[G.pool[G.qi]])?.9:.35};min-height:44px;background:none;border:none;cursor:pointer" title="Note for this question" aria-label="Note for this question">📝</button><button data-action="toggle-bk" style="font-size:16px;opacity:${bk?.7:.3};min-height:44px;background:none;border:none;cursor:pointer" title="Bookmark" aria-label="${bk?'Remove bookmark':'Bookmark question'}">${bk?'🔖':'🏷️'}</button>
+<button data-action="share-q" id="shbtn" class="share-btn" title="Share" aria-label="Share question">📋</button><button data-action="toggle-qnote" style="font-size:14px;width:34px;height:34px;min-height:34px;background:${(G.S.qnotes&&G.S.qnotes[G.pool[G.qi]])?'#fef3c7':'#f1f5f9'};color:${(G.S.qnotes&&G.S.qnotes[G.pool[G.qi]])?'#92400e':'#64748b'};border:1px solid ${(G.S.qnotes&&G.S.qnotes[G.pool[G.qi]])?'#fbbf24':'#e2e8f0'};border-radius:50%;cursor:pointer;display:inline-flex;align-items:center;justify-content:center" title="Note for this question" aria-label="Note">✎</button><button data-action="toggle-bk" style="font-size:14px;width:34px;height:34px;min-height:34px;background:${bk?'#fef3c7':'#f1f5f9'};color:${bk?'#92400e':'#64748b'};border:1px solid ${bk?'#fbbf24':'#e2e8f0'};border-radius:50%;cursor:pointer;display:inline-flex;align-items:center;justify-content:center" title="Bookmark" aria-label="Bookmark">${bk?'★':'☆'}</button>
 <span style="color:#94a3b8;font-size:10px">${G.qi+1}/${G.pool.length}</span>
 </div></div>`;
 h+=`<p class="heb" style="font-size:13px;font-weight:700;line-height:1.7;margin-bottom:${q.img?'10':'16'}px" dir="auto">${q.q}</p>`;
@@ -323,7 +323,13 @@ if(!G.ans){
 const _confLabel='';
 h+=`<div style="display:flex;gap:6px;align-items:center"><button class="btn btn-p" data-action="check-answer"${G.sel===null?' disabled':''} aria-label="Check answer" style="flex:1;min-height:44px">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" data-action="give-up" style="background:#fff3e0;color:#d97706;font-size:11px;padding:6px 14px;min-height:44px" aria-label="Show answer">👁 לא יודע</button>`;h+=`</div>`;}
 else{
-// Feature 1: Why-wrong classification (required after wrong, non-exam)
+// POST-ANSWER: Next button FIRST
+h+=`<div style="display:flex;gap:6px;align-items:stretch;margin-bottom:8px">`;
+if(!G.examMode)h+=`<button class="btn" data-action="prev-q" style="flex:0 0 auto;min-height:48px;padding:0 14px;font-size:11px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;border-radius:10px;${G.qi<=0?'opacity:0.4;pointer-events:none;':''}" aria-label="Previous question">קודמת ←</button>`;
+h+=`<button class="btn btn-d" data-action="next-q" aria-label="${G.examMode&&G.qi+1>=150?'Finish exam':'Next question'}" style="flex:1;min-height:48px;padding:10px 18px;font-size:14px;font-weight:700">${G.examMode&&G.qi+1>=150?'סיים':'→ הבאה'}</button>`;
+h+=`</div>`;
+
+// Why-wrong (secondary)
 if(!G.examMode&&G.sel!==q.c&&!G._wrongReason){
 h+=`<div style="margin-bottom:8px">
 <div style="font-size:11px;font-weight:700;color:#dc2626;margin-bottom:6px">Why did you get it wrong?</div>
@@ -334,14 +340,14 @@ h+=`<div style="margin-bottom:8px">
 <button class="btn" style="font-size:11px;padding:8px 12px;min-height:40px;background:#f5f3ff;color:#6d28d9" data-action="wrong-reason" data-r="silly">🤦 Silly</button>
 </div></div>`;
 }
-// Feature 4: Cross-link to chapter after wrong answer
+// Read chapter
 if(!G.examMode&&G.sel!==q.c&&q.ti>=0){
 const _chRef=TOPIC_REF[q.ti];
 if(_chRef&&_chRef.s==='har'){
 h+=`<button class="btn" data-action="read-chapter" style="font-size:11px;padding:10px 12px;min-height:44px;background:#ede9fe;color:#7c3aed;margin-bottom:6px;width:100%;font-weight:700">📖 Read: ${_chRef.l} — you're weak here</button>`;
 }
 }
-// Feature 7: Optional difficulty rating
+// Difficulty
 if(!G.examMode){
 h+=`<div style="display:flex;gap:6px;margin-bottom:8px;align-items:center;flex-wrap:wrap">
 <span style="font-size:10px;color:#94a3b8">Difficulty:</span>
@@ -350,11 +356,6 @@ h+=`<div style="display:flex;gap:6px;margin-bottom:8px;align-items:center;flex-w
 <button class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;${G._diffRating==='hard'?'background:#fecaca;color:#991b1b':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="hard">Hard</button>
 </div>`;
 }
-// Prev + Next buttons
-h+=`<div style="display:flex;gap:6px;align-items:stretch">`;
-if(!G.examMode)h+=`<button class="btn" data-action="prev-q" style="flex:0 0 auto;min-height:44px;padding:0 14px;font-size:11px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;${G.qi<=0?'opacity:0.4;pointer-events:none;':''}" aria-label="Previous question">קודמת ←</button>`;
-h+=`<button class="btn btn-d" data-action="next-q" aria-label="${G.examMode&&G.qi+1>=150?'Finish exam':'Next question'}" style="flex:1;min-height:44px;font-size:13px;font-weight:700">${G.examMode&&G.qi+1>=150?'סיים':'→ הבאה'}</button>`;
-h+=`</div>`;
 }
 h+=`</div>`;
 
