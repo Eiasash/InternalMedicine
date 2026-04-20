@@ -1,8 +1,9 @@
-const CACHE='pnimit-v9.57';
+const CACHE='pnimit-v9.58';
 const HTML_URLS=['pnimit-mega.html','manifest.json','shared/fsrs.js','src/clock.js','src/core/globals.js','src/core/constants.js','src/core/utils.js','src/core/state.js','src/core/data-loader.js','src/sr/fsrs-bridge.js','src/sr/spaced-repetition.js','src/quiz/engine.js','src/quiz/modes.js','src/ai/client.js','src/ai/explain.js','src/features/cloud.js','src/ui/quiz-view.js','src/ui/learn-view.js','src/ui/library-view.js','src/ui/track-view.js','src/ui/more-view.js','src/ui/app.js'];
 const CSS_URLS=['src/styles/base.css','src/styles/layout.css','src/styles/components.css','src/styles/quiz.css','src/styles/track.css','src/styles/chat.css','src/styles/theme.css','src/styles/utilities.css'];
 const JSON_DATA_URLS=['data/questions.json','data/topics.json','data/notes.json','data/drugs.json','data/flashcards.json','data/tabs.json','data/distractors.json','harrison_chapters.json'];
-const ALL_URLS=[...HTML_URLS,...CSS_URLS,...JSON_DATA_URLS];
+const FONT_URLS=['fonts/heebo-hebrew-400-normal.woff2','fonts/heebo-hebrew-500-normal.woff2','fonts/heebo-hebrew-600-normal.woff2','fonts/heebo-hebrew-700-normal.woff2','fonts/heebo-latin-400-normal.woff2','fonts/heebo-latin-500-normal.woff2','fonts/heebo-latin-600-normal.woff2','fonts/heebo-latin-700-normal.woff2','fonts/inter-latin-400-normal.woff2','fonts/inter-latin-500-normal.woff2','fonts/inter-latin-600-normal.woff2','fonts/inter-latin-700-normal.woff2'];
+const ALL_URLS=[...HTML_URLS,...CSS_URLS,...JSON_DATA_URLS,...FONT_URLS];
 
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ALL_URLS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
