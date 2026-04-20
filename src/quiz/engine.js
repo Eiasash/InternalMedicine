@@ -294,6 +294,36 @@ export function startMockExam(){
   const el=document.getElementById('etimer');if(el)el.textContent=fmtT(G.examSec);},1000);
   G.render();
 }
+// Mock-by-year: start a mock using only questions from a specific exam tag (e.g. '2025-Jun')
+export function startMockExamByTag(tag){
+  G.examMode=true;
+  const ixs=[];G.QZ.forEach((q,i)=>{if(q.t===tag)ixs.push(i);});
+  for(let i=ixs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ixs[i],ixs[j]]=[ixs[j],ixs[i]];}
+  G.pool=ixs.slice(0,100);
+  G.qi=0;G.sel=null;G.ans=false;G.autopsyDistractor=-1;G.teachBackState=null;G._optShuffle=null;G._confidence=null;
+  G.mockExamResults={byTopic:{},start:Date.now(),tag};
+  EXAM_FREQ.forEach((_,ti)=>{G.mockExamResults.byTopic[ti]={ok:0,no:0};});
+  G._examStartOk=G.S.qOk;G._examStartNo=G.S.qNo;G.examSec=10800;G.save();
+  G.examTimer=setInterval(()=>{G.examSec--;if(G.examSec<=0)endMockExam();
+  const el=document.getElementById('etimer');if(el)el.textContent=fmtT(G.examSec);},1000);
+  G.render();
+}
+export function showMockExamPicker(){
+  const EXAM_TAGS=['2020','2021-Jun','2022-Jun','2023-Jun','2024-May','2024-Oct','2025-Jun'];
+  const counts={};
+  G.QZ.forEach(q=>{if(EXAM_TAGS.includes(q.t))counts[q.t]=(counts[q.t]||0)+1;});
+  const rows=EXAM_TAGS.filter(t=>counts[t]>=20).map(t=>`<button data-action="start-mock-tag" data-tag="${t}" class="btn" style="display:block;width:100%;margin-bottom:6px;padding:10px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;text-align:right;font-size:12px;cursor:pointer">${t} <span style="color:#94a3b8;font-size:10px">— ${counts[t]} שאלות</span></button>`).join('');
+  const html=`<div id="mockPicker" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;padding:16px;overflow-y:auto" data-action="close-mock-picker">
+  <div id="mockPickerCard" data-action="mock-picker-noop" style="background:#fff;border-radius:16px;max-width:420px;margin:40px auto;padding:18px;direction:rtl">
+    <div style="font-weight:700;font-size:15px;margin-bottom:12px">🎯 מבחן סימולציה</div>
+    <button data-action="start-mock-mixed" class="btn btn-p" style="display:block;width:100%;margin-bottom:10px;padding:10px;font-size:12px;font-weight:700">🎲 100 שאלות — חלוקה מציאותית של כל הנושאים</button>
+    <div style="font-size:10px;color:#94a3b8;margin:10px 0 6px;font-weight:700">או תרגל מבחן שנתי ספציפי:</div>
+    ${rows}
+    <button data-action="close-mock-picker" class="btn" style="display:block;width:100%;margin-top:10px;padding:8px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;font-size:11px">ביטול</button>
+  </div>
+</div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
 // Override check() to also record per-topic result when in mockExam
 const _origCheck=window.check;
 export function checkMockIntercept(){
@@ -301,7 +331,7 @@ export function checkMockIntercept(){
   const qIdx=G.pool[G.qi];const q=G.QZ[qIdx];const correct=G.sel===q.c;
   if(G.mockExamResults&&q.ti>=0){
     if(correct)G.mockExamResults.byTopic[q.ti].ok++;
-    else G.mockExamResults.byTopic[q.ti].no++;
+    else {G.mockExamResults.byTopic[q.ti].no++; (G.mockExamResults.wrongIdxs=G.mockExamResults.wrongIdxs||[]).push(qIdx);}
     G._mockAnswered++;
   }
 }
@@ -326,18 +356,18 @@ export function endMockExam(){
   // Build analytics
   const examOk=G.S.qOk-(G._examStartOk||0),examNo=G.S.qNo-(G._examStartNo||0);const tot=examOk+examNo,pct=tot?Math.round(examOk/tot*100):0;
   const elapsed=Math.floor((Date.now()-G.mockExamResults.start)/1000);
-  // Store in history
+  // Store in history (with wrong-answer IDs for replay)
   try{const hist=JSON.parse(localStorage.getItem('pnimit_mock_hist')||'[]');
-    hist.push({date:new Date().toISOString(),score:pct,correct:examOk,total:tot,elapsed,byTopic:G.mockExamResults.byTopic});
+    hist.push({date:new Date().toISOString(),score:pct,correct:examOk,total:tot,elapsed,byTopic:G.mockExamResults.byTopic,wrongIdxs:G.mockExamResults.wrongIdxs||[],tag:G.mockExamResults.tag||null});
     if(hist.length>20)hist.splice(0,hist.length-20);
     localStorage.setItem('pnimit_mock_hist',JSON.stringify(hist));
   }catch(e){}
   // Show in custom modal instead of alert
-  showMockExamResult(pct,examOk,tot,elapsed,G.mockExamResults.byTopic);
+  showMockExamResult(pct,examOk,tot,elapsed,G.mockExamResults.byTopic,G.mockExamResults.wrongIdxs||[]);
   G.mockExamResults=null;
   G.render();
 }
-export function showMockExamResult(pct,correct,tot,elapsed,byTopic){
+export function showMockExamResult(pct,correct,tot,elapsed,byTopic,wrongIdxs){
   const TOPICS_LOCAL=TOPICS;
   const pass=pct>=60;
   // per-topic breakdown sorted by accuracy ascending (worst first)
@@ -346,6 +376,9 @@ export function showMockExamResult(pct,correct,tot,elapsed,byTopic){
     const acc=Math.round(s.ok/n*100);
     return{ti:+ti,name:TOPICS_LOCAL[+ti]||'Other',ok:s.ok,no:s.no,n,acc};
   }).filter(Boolean).sort((a,b)=>a.acc-b.acc);
+  const wn=(wrongIdxs&&wrongIdxs.length)||0;
+  // Stash on window so the handler can read it back (avoid inline JSON.stringify in onclick)
+  window.__pnimitLastMockWrong=wrongIdxs||[];
   let html=`<div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;overflow-y:auto;padding:16px" id="mexModal">
 <div style="background:#fff;border-radius:16px;max-width:480px;margin:0 auto;padding:20px;font-family:Inter,sans-serif">
 <div style="text-align:center;margin-bottom:16px">
@@ -363,9 +396,26 @@ ${rows.map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0
   </div>
   <div style="font-size:10px;font-weight:700;color:${r.acc>=70?'#059669':r.acc>=50?'#d97706':'#dc2626'};min-width:28px;text-align:right">${r.acc}%</div>
 </div>`).join('')}
-<button data-action="close-mock-modal" style="margin-top:16px;width:100%;padding:10px;background:#0f172a;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer" aria-label="Close exam results">Close</button>
+${wn?`<button data-action="replay-mock-wrong" style="margin-top:14px;width:100%;padding:10px;background:#dc2626;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer" aria-label="Review wrong answers">🔁 Review ${wn} wrong answers</button>`:''}
+<button data-action="close-mock-modal" style="margin-top:10px;width:100%;padding:10px;background:#0f172a;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer" aria-label="Close exam results">Close</button>
 </div></div>`;
   document.body.insertAdjacentHTML('beforeend',html);
+}
+// Replay wrong answers as a custom quiz pool
+export function replayMockWrong(ixs){
+  try{document.getElementById('mexModal')?.remove();}catch(e){}
+  if(!Array.isArray(ixs)||!ixs.length){return;}
+  G.pool=ixs.slice();G._sessAnsw={};
+  G.qi=0;G.sel=null;G.ans=false;G.autopsyDistractor=-1;G.teachBackState=null;G._optShuffle=null;G._confidence=null;
+  G.filt='custom';G.tab='quiz';G.examMode=false;G.mockExamResults=null;
+  G.save();G.render();
+}
+export function replayLastMockWrong(){
+  try{const hist=JSON.parse(localStorage.getItem('pnimit_mock_hist')||'[]');
+    const last=hist[hist.length-1];
+    if(!last||!last.wrongIdxs||!last.wrongIdxs.length)return;
+    replayMockWrong(last.wrongIdxs);
+  }catch(e){}
 }
 
 

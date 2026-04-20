@@ -11,3 +11,6 @@ export const fsrsInitNew = w.fsrsInitNew;
 export const fsrsUpdate = w.fsrsUpdate;
 export const fsrsMigrateFromSM2 = w.fsrsMigrateFromSM2;
 export const isChronicFail = w.isChronicFail;
+export const fsrsDaysToExam = w.fsrsDaysToExam;
+export const fsrsIntervalWithDeadline = w.fsrsIntervalWithDeadline;
+export const fsrsScheduleWithDeadline = w.fsrsScheduleWithDeadline;

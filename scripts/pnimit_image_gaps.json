@@ -1,0 +1,894 @@
+{
+  "source": "pnimit/data/questions.json",
+  "total_questions": 1541,
+  "already_with_img": 160,
+  "flagged_count": 45,
+  "by_priority": {
+    "2": 17,
+    "1": 28
+  },
+  "by_modality": {
+    "Other imaging": 14,
+    "Fundus/Eye": 6,
+    "ECG": 4,
+    "CT/MRI": 8,
+    "Smear/Histopath": 7,
+    "CXR": 3,
+    "US": 3
+  },
+  "by_topic": {
+    "Endocrinology & Diabetes": 2,
+    "Pain Management & Palliative Care": 9,
+    "Cardiology — ACS & Coronary Disease": 3,
+    "Hematology & Coagulation": 2,
+    "Toxicology — Key Syndromes": 2,
+    "Hypertension": 5,
+    "Required Articles — Key Takeaways": 2,
+    "Nephrology — AKI & CKD": 6,
+    "Rheumatology & Vasculitis": 1,
+    "Critical Care & Shock": 1,
+    "Heart Failure": 2,
+    "Pulmonology & VTE": 1,
+    "Oncologic Emergencies": 3,
+    "Neurology & Stroke": 3,
+    "Infectious Disease — Core Principles": 1,
+    "GI & Hepatology": 2
+  },
+  "flagged": [
+    {
+      "idx": 33,
+      "ti": 12,
+      "topic": "Endocrinology & Diabetes",
+      "tag": "2020",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "PET-CT"
+        }
+      ],
+      "stem_preview": "מה נכון לגבי בדיקות הדמיה באבחון אנדוקרדיטיס?"
+    },
+    {
+      "idx": 64,
+      "ti": 22,
+      "topic": "Pain Management & Palliative Care",
+      "tag": "2020",
+      "priority": 1,
+      "modalities": [
+        "Fundus/Eye"
+      ],
+      "triggers": [
+        {
+          "group": "fundus",
+          "modality": "Fundus/Eye",
+          "priority": 1,
+          "match": "פונדוס"
+        }
+      ],
+      "stem_preview": "בן 61, ידוע על הפטיטיס C מגיל 10, מגיע למיון עקב הקאות דמיות ביממה אחרונה. בבדיקתו יש מיימת ובמעבדה המוגלובין 10 גר׳/ד״ל. בגסטרוסקופיה יש שלוש דליות גדולות. מה נכון לגבי הטיפול בדל"
+    },
+    {
+      "idx": 69,
+      "ti": 1,
+      "topic": "Cardiology — ACS & Coronary Disease",
+      "tag": "2020",
+      "priority": 1,
+      "modalities": [
+        "ECG"
+      ],
+      "triggers": [
+        {
+          "group": "ecg",
+          "modality": "ECG",
+          "priority": 1,
+          "match": "תרשים אק"
+        }
+      ],
+      "stem_preview": "בת 58, פונה בשל קוצר נשימה פרוגרסיבי כשברקע יל\"ד. בבדיקה: השמנת יתר, לחץ הדם 160/80 מ\"מ כספית, גודש ורידי צווארי ניכר ובצקות היקפיות. בתרשים אק\"ג: מקצב סינוס והיפרטרופיה של חדר שמא"
+    },
+    {
+      "idx": 77,
+      "ti": 13,
+      "topic": "Hematology & Coagulation",
+      "tag": "2020",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "PET-CT"
+        }
+      ],
+      "stem_preview": "בת 66 מתלוננת על חולשה וגרד. במעבדה: ALT, AST, ALP, GGT, Bilirubin 0.5, CRP, שקיעת דם ורמת IgG תקינים. מה נכון לגבי אבחון מחלתה?"
+    },
+    {
+      "idx": 146,
+      "ti": 22,
+      "topic": "Pain Management & Palliative Care",
+      "tag": "2021-Jun",
+      "priority": 1,
+      "modalities": [
+        "Fundus/Eye"
+      ],
+      "triggers": [
+        {
+          "group": "fundus",
+          "modality": "Fundus/Eye",
+          "priority": 1,
+          "match": "פונדוס"
+        }
+      ],
+      "stem_preview": "מה נכון לגבי כיב קיבה?"
+    },
+    {
+      "idx": 177,
+      "ti": 18,
+      "topic": "Toxicology — Key Syndromes",
+      "tag": "2021-Jun",
+      "priority": 1,
+      "modalities": [
+        "Fundus/Eye"
+      ],
+      "triggers": [
+        {
+          "group": "fundus",
+          "modality": "Fundus/Eye",
+          "priority": 1,
+          "match": "פונדוסקופיה"
+        }
+      ],
+      "stem_preview": "בת 20, בריאה בד\"כ. מאושפזת בשל אי ספיקת כליות חדה וארתרלגיות. בבדיקתה לחץ דם 150/80 ממ\"כ, ללא פריחות, ללא ממצאים מפרקיים. במעבדה המוגלובין גר'/ד\"ל, שאר הספירה תקינה, קריאטינין 2.5 "
+    },
+    {
+      "idx": 179,
+      "ti": 10,
+      "topic": "Hypertension",
+      "tag": "2021-Jun",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "PET-CT"
+        }
+      ],
+      "stem_preview": "בן 52, שמזה 10 ימים סובל ממחלת חום. בבדיקתו נמוש טחול 2 ס\"מ מתחת לקשת. במעבדה: המוגלובין 8 גר'/ד\"ל עם MCV גבוה, לויקוציטים 2,400 בממ\"ק מתוכם 700 נויטרופילים, וטסיות 45,000 בממ\"ק. L"
+    },
+    {
+      "idx": 198,
+      "ti": 0,
+      "topic": "Required Articles — Key Takeaways",
+      "tag": "2021-Jun",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "מיפוי עצמות"
+        }
+      ],
+      "stem_preview": "בת 67, שבבדיקות מעבדה נמצאו היפרגלובולינמיה, המוגלובין 14 גר'/ד״ל ספירה לבנה וטסיות תקינים. סידן ותפקודי כליה תקינים, ובאלקטרופורזה של חלבוני הנסיוב מקטע מונוקלונלי מסוג IgG (0.7 ג"
+    },
+    {
+      "idx": 265,
+      "ti": 5,
+      "topic": "Nephrology — AKI & CKD",
+      "tag": "2022-Jun",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "PET-CT"
+        }
+      ],
+      "stem_preview": "בן 60 עם היפרליפידמיה ויתר לחץ דם מתאשפז לבירור כאבים בחזה. במהלך האשפוז מופיעים חום ופלביטיס בסמוך לעירוי פריפרי, ללא ממצאים חריגים אחרים בבדיקה גופנית. במהלך האשפוז המטופל עובר ב"
+    },
+    {
+      "idx": 275,
+      "ti": 22,
+      "topic": "Pain Management & Palliative Care",
+      "tag": "2022-Jun",
+      "priority": 1,
+      "modalities": [
+        "Fundus/Eye"
+      ],
+      "triggers": [
+        {
+          "group": "fundus",
+          "modality": "Fundus/Eye",
+          "priority": 1,
+          "match": "בדיקת קרקעית עיניים"
+        }
+      ],
+      "stem_preview": "בן 80, מגיע למלר״ד בשל בלבול כשבבדיקה לחץ דם 220/110 ממ״כ ביד ימין ו-100/60 ממ״כ ביד שמאל. מה הצעד המידי הבא במצב זה?"
+    },
+    {
+      "idx": 319,
+      "ti": 5,
+      "topic": "Nephrology — AKI & CKD",
+      "tag": "2022-Jun",
+      "priority": 1,
+      "modalities": [
+        "CT/MRI"
+      ],
+      "triggers": [
+        {
+          "group": "ct_mri",
+          "modality": "CT/MRI",
+          "priority": 1,
+          "match": "הדמיית בטן"
+        }
+      ],
+      "stem_preview": "בת 60, עם שחמת הכבד על רקע כבד שומני. אושפזה עקב חום, כאב בטן ומיימת. בספירת הדם יש לויקוציטוזיס ובניקור המיימת 350 נויטרופילים ב-µL ובתרבית מהנוזל E.coli, Enterococcus ו-S. virida"
+    },
+    {
+      "idx": 333,
+      "ti": 22,
+      "topic": "Pain Management & Palliative Care",
+      "tag": "2022-Jun",
+      "priority": 1,
+      "modalities": [
+        "Fundus/Eye"
+      ],
+      "triggers": [
+        {
+          "group": "fundus",
+          "modality": "Fundus/Eye",
+          "priority": 1,
+          "match": "פונדוס"
+        }
+      ],
+      "stem_preview": "בן 50, ידוע על הפטיטיס C, מגיע למלר״ד עקב הקאות דמיות ביממה אחרונה. בבדיקתו יש מיימת ובמעבדה המוגלובין 10 גר׳/ד״ל. בגסטרוסקופיה נמצאו שלוש דליות גדולות. מה נכון לגבי קשירת הדליות, "
+    },
+    {
+      "idx": 346,
+      "ti": 18,
+      "topic": "Toxicology — Key Syndromes",
+      "tag": "2022-Jun",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "מיפוי עצמות"
+        }
+      ],
+      "stem_preview": "בן 30 עם כאב בעכוז המוחמר בלילה ומעירו משינה. בבוקר נוקשות הגב כשעה, כשבמאמץ יש הקלה ניכרת. איזו בדיקה תהיה אבחנתית בסבירות גבוהה ביותר?"
+    },
+    {
+      "idx": 426,
+      "ti": 22,
+      "topic": "Pain Management & Palliative Care",
+      "tag": "2023-Jun",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "גסטרוסקופיה נמצא מראה"
+        }
+      ],
+      "stem_preview": "בן 25, מתלונן על אירועי קושי בבליעת מוצקים, ללא ירידה במשקל. ברקע אסתמה. בגסטרוסקופיה נמצא מראה של טבעות בושט ללא היצרות, מעבר תקין לקיבה, קיבה ותריסריון תקינים. בביופסיות מהושט - "
+    },
+    {
+      "idx": 462,
+      "ti": 13,
+      "topic": "Hematology & Coagulation",
+      "tag": "2023-Jun",
+      "priority": 1,
+      "modalities": [
+        "Smear/Histopath"
+      ],
+      "triggers": [
+        {
+          "group": "microscopy",
+          "modality": "Smear/Histopath",
+          "priority": 1,
+          "match": "צביעתH&E"
+        }
+      ],
+      "stem_preview": "מה הדרך הטובה והנפוצה ביותר לאשש אבחנה שלIgA vasculitis ?"
+    },
+    {
+      "idx": 547,
+      "ti": 10,
+      "topic": "Hypertension",
+      "tag": "2024-May",
+      "priority": 1,
+      "modalities": [
+        "CT/MRI"
+      ],
+      "triggers": [
+        {
+          "group": "ct_mri",
+          "modality": "CT/MRI",
+          "priority": 1,
+          "match": "CT בטן - 2 אוטמים במראה"
+        }
+      ],
+      "stem_preview": "בן 45 עם רקע של SLE ותסמונת APLA עם אירוע של DVT בעברו. מפסיק את הטיפול הקבוע ב-warfarin למשך 5 ימים לצורך ביצוע גסטרוסקופיה. יום לאחר הפעולה מתלונן על כאבי בטן עזים ובבדיקה גופנית"
+    },
+    {
+      "idx": 620,
+      "ti": 0,
+      "topic": "Required Articles — Key Takeaways",
+      "tag": "2024-Oct",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "גסטרוסקופיה מדגימה"
+        }
+      ],
+      "stem_preview": "בת 35, מתלוננת על כאבים ברום הבטן מזה כחצי שנה, בדיקת נשיפה ל-Helicobacter pylori שלילי. שוללת נטילת NSAIDs. גסטרוסקופיה מדגימה כיב בחלק השלישי של התריסריון. מה הכי נכון לגבי המשך "
+    },
+    {
+      "idx": 663,
+      "ti": 7,
+      "topic": "Rheumatology & Vasculitis",
+      "tag": "2024-Oct",
+      "priority": 1,
+      "modalities": [
+        "Fundus/Eye"
+      ],
+      "triggers": [
+        {
+          "group": "fundus",
+          "modality": "Fundus/Eye",
+          "priority": 1,
+          "match": "פונדוס"
+        }
+      ],
+      "stem_preview": "איזה מבין המשפטים הבאים נכון לגבי בירור אתיולוגיה אפשרית במטופלים עם אי ספיקת כליות כרונית (CKD) ללא אתיולוגיה נראית לעין?"
+    },
+    {
+      "idx": 715,
+      "ti": 1,
+      "topic": "Cardiology — ACS & Coronary Disease",
+      "tag": "2025-Jun",
+      "priority": 1,
+      "modalities": [
+        "ECG"
+      ],
+      "triggers": [
+        {
+          "group": "ecg",
+          "modality": "ECG",
+          "priority": 1,
+          "match": "תרשים אק"
+        }
+      ],
+      "stem_preview": "בן 65, ברקע אי ספיקת לב סיסטולית על רקע מחלת לב איסכמית. בתרשים אק\"ג: מקצב סינוס עם CLBBB. לאור התמשכות סימפטומים למרות GDMT עובר השתלת CRTD. מה אחוז הקיצוב הרצוי?"
+    },
+    {
+      "idx": 718,
+      "ti": 5,
+      "topic": "Nephrology — AKI & CKD",
+      "tag": "2025-Jun",
+      "priority": 1,
+      "modalities": [
+        "CT/MRI"
+      ],
+      "triggers": [
+        {
+          "group": "ct_mri",
+          "modality": "CT/MRI",
+          "priority": 1,
+          "match": "CT חזה מדגים"
+        }
+      ],
+      "stem_preview": "בן 70, פנסיונר של מספנות (נמל חיפה), מעשן. מתלונן על קוצר נשימה מזה מספר שנים בבדיקתו ללא קוצר נשימה במנוחה אך מתנשם לאחר מאמצים קלים, סטורציה 92% באוויר החדר, חרחורים אינספירטורים"
+    },
+    {
+      "idx": 742,
+      "ti": 15,
+      "topic": "Critical Care & Shock",
+      "tag": "2025-Jun",
+      "priority": 1,
+      "modalities": [
+        "CXR"
+      ],
+      "triggers": [
+        {
+          "group": "cxr",
+          "modality": "CXR",
+          "priority": 1,
+          "match": "צילום חזה מדגים"
+        }
+      ],
+      "stem_preview": "בן 56, ברקע COPD. פונה למלר\"ד בשל החמרה משמעותית בקוצר נשימה בשלושת הימים האחרונים. בבדיקתו: מתנשם, צפצופים אקספירטורים דיפוזיים ואקספיריום ארוך. צילום חזה מדגים היפראינפלציה ללא ת"
+    },
+    {
+      "idx": 747,
+      "ti": 22,
+      "topic": "Pain Management & Palliative Care",
+      "tag": "2025-Jun",
+      "priority": 1,
+      "modalities": [
+        "Smear/Histopath"
+      ],
+      "triggers": [
+        {
+          "group": "microscopy",
+          "modality": "Smear/Histopath",
+          "priority": 1,
+          "match": "משטח דם פריפרי מראה"
+        }
+      ],
+      "stem_preview": "בן 58 מאושפז בשל תלונות על עייפות, הזעות לילה וירידה במשקל. בבדיקה הגופנית נמצאה הגדלה משמעותית של הטחול ללא לימפאדנופתיה. בדיקות מעבדה מראות המוגלובין של 10.5 גרם/ד\"ל, ספירת טסיות"
+    },
+    {
+      "idx": 768,
+      "ti": 1,
+      "topic": "Cardiology — ACS & Coronary Disease",
+      "tag": "2025-Jun",
+      "priority": 1,
+      "modalities": [
+        "CXR"
+      ],
+      "triggers": [
+        {
+          "group": "cxr",
+          "modality": "CXR",
+          "priority": 1,
+          "match": "צילום חזה מדגים"
+        }
+      ],
+      "stem_preview": "בת 82 ברקע HFpEF ו-CKD פרה-דיאליטי. מאושפזת מזה שבוע במחלקה פנימית עקב קוצר נשימה ובצקות ללא הטבה תחת טיפול מקסימלי במשתנים במתן תוך ורידי. למטופלת אין חום, מתנשמת. ובבדיקות מעבדה "
+    },
+    {
+      "idx": 770,
+      "ti": 22,
+      "topic": "Pain Management & Palliative Care",
+      "tag": "2025-Jun",
+      "priority": 2,
+      "modalities": [
+        "US"
+      ],
+      "triggers": [
+        {
+          "group": "ultrasound",
+          "modality": "US",
+          "priority": 2,
+          "match": "אקו לב מדגים"
+        }
+      ],
+      "stem_preview": "בן 50, מתאשפז לאחר אירוע מוחי. בבירור שמבוצע במהלך האשפוז מתגלה כי הוא סובל מיתר לחץ דם לא מאוזן מזה לפחות 10 שנים. אקו לב מדגים היפרטרופיה של המחיצה הבין-חדרית. בבדיקות המעבדה מיו"
+    },
+    {
+      "idx": 775,
+      "ti": 10,
+      "topic": "Hypertension",
+      "tag": "2025-Jun",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "PET-CT"
+        }
+      ],
+      "stem_preview": "בת 62, בריאה בד\"כ, פונה לבירור בשל לימפאדנופטיה צווארית מזה מס' חודשים ללא סימפטומים נוספים. ב-PET-CT קליטה קלושה בקשריות לימפה מעל ומתחת לסרעפת. מאובחנת בסופו של דבר ע\"י ביופסיה כ"
+    },
+    {
+      "idx": 810,
+      "ti": 2,
+      "topic": "Heart Failure",
+      "tag": "2025-Jun",
+      "priority": 1,
+      "modalities": [
+        "ECG"
+      ],
+      "triggers": [
+        {
+          "group": "ecg",
+          "modality": "ECG",
+          "priority": 1,
+          "match": "תרשים אק"
+        }
+      ],
+      "stem_preview": "מה האתיולוגיה הסבירה ביותר לממצא בתרשים אק\"ג זה (תמונה 7)?"
+    },
+    {
+      "idx": 827,
+      "ti": 6,
+      "topic": "Pulmonology & VTE",
+      "tag": "2025-Jun",
+      "priority": 1,
+      "modalities": [
+        "Smear/Histopath"
+      ],
+      "triggers": [
+        {
+          "group": "microscopy",
+          "modality": "Smear/Histopath",
+          "priority": 1,
+          "match": "ביופסיה מהושט המדגימה"
+        }
+      ],
+      "stem_preview": "איזה מההיגדים הבאים הכי נכון לגבי אבחנה שלeosinophilic esophagitis ?"
+    },
+    {
+      "idx": 866,
+      "ti": 5,
+      "topic": "Nephrology — AKI & CKD",
+      "tag": "Harrison",
+      "priority": 1,
+      "modalities": [
+        "CXR"
+      ],
+      "triggers": [
+        {
+          "group": "cxr",
+          "modality": "CXR",
+          "priority": 1,
+          "match": "צילום חזה מראה"
+        }
+      ],
+      "stem_preview": "מטופל עם דלקת ריאות חדה מגיע לבדיקה. בבדיקה גופנית: קול נשימה מופחת בבסיס הריאה השמאלית וכאב בחזה הוגבר בנשימה עמוקה. צילום חזה מראה אופציויות דקות. מה הפתולוגיה הסבירה ביותר?"
+    },
+    {
+      "idx": 954,
+      "ti": 16,
+      "topic": "Oncologic Emergencies",
+      "tag": "Harrison",
+      "priority": 1,
+      "modalities": [
+        "Smear/Histopath"
+      ],
+      "triggers": [
+        {
+          "group": "microscopy",
+          "modality": "Smear/Histopath",
+          "priority": 1,
+          "match": "ביופסיה מראה"
+        }
+      ],
+      "stem_preview": "חולה בן 40 עם צליאק מתלונן על פריחה גרדנית עזה על המרפקים, הברכיים והעכוז מזה חודשיים. בבדיקה: וזיקולות קטנות מקובצות על רקע אריתמטוזי. ביופסיה מראה שקיעת IgA תת-אפידרמית. מה הטיפו"
+    },
+    {
+      "idx": 991,
+      "ti": 14,
+      "topic": "Neurology & Stroke",
+      "tag": "Harrison",
+      "priority": 1,
+      "modalities": [
+        "CT/MRI"
+      ],
+      "triggers": [
+        {
+          "group": "ct_mri",
+          "modality": "CT/MRI",
+          "priority": 1,
+          "match": "CT מוח מראה"
+        }
+      ],
+      "stem_preview": "אישה בת 45 מגיעה עם כאב ראש חד פתאומי חמור. CT מוח מראה דימום תוך מוחי בפריטו-אוקסיפיטלי. לחץ דם 185/110. מה יעד לחץ הדם הנכון?"
+    },
+    {
+      "idx": 994,
+      "ti": 14,
+      "topic": "Neurology & Stroke",
+      "tag": "Harrison",
+      "priority": 1,
+      "modalities": [
+        "CT/MRI"
+      ],
+      "triggers": [
+        {
+          "group": "ct_mri",
+          "modality": "CT/MRI",
+          "priority": 1,
+          "match": "CT חזה מראה"
+        }
+      ],
+      "stem_preview": "אישה בת 28 עם חולשה עפעפיים בערב, קושי בלעה, חולשה פרוקסימלית. נוגדני AChR חיוביים. CT חזה מראה מסה מדיאסטינלית קדמית. מה הטיפול הראשוני?"
+    },
+    {
+      "idx": 995,
+      "ti": 4,
+      "topic": "Infectious Disease — Core Principles",
+      "tag": "Harrison",
+      "priority": 1,
+      "modalities": [
+        "CT/MRI"
+      ],
+      "triggers": [
+        {
+          "group": "ct_mri",
+          "modality": "CT/MRI",
+          "priority": 1,
+          "match": "הדמיית CT"
+        }
+      ],
+      "stem_preview": "גבר בן 45 עם יתר לחץ דם עמיד לטיפול למרות טיפול בשילוב של ACE inhibitor, CCB ו-thiazide במינונים מקסימליים. בדיקות מעבדה מראות: K+ 2.8 mEq/L, Na+ 145 mEq/L. מה הבדיקה הבאה המומלצת "
+    },
+    {
+      "idx": 1005,
+      "ti": 2,
+      "topic": "Heart Failure",
+      "tag": "Harrison",
+      "priority": 2,
+      "modalities": [
+        "US"
+      ],
+      "triggers": [
+        {
+          "group": "ultrasound",
+          "modality": "US",
+          "priority": 2,
+          "match": "אקו מראה"
+        }
+      ],
+      "stem_preview": "גבר בן 72 עם פרפור פרוזדות כרוני, יתר לחץ דם וסוכרת. מגיע למיון עם קוצר נשימה. דופק 150/דקה לא סדיר, לחץ דם 140/85. אקו מראה LVEF 40%. CHA2DS2-VASc = 4. איזה טיפול מומלץ?"
+    },
+    {
+      "idx": 1015,
+      "ti": 5,
+      "topic": "Nephrology — AKI & CKD",
+      "tag": "Harrison",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "V/Q scan"
+        }
+      ],
+      "stem_preview": "חולה בן 45 עם כאב חזה פתאומי וקוצר נשימה. ציון Wells 6.5. CT-PA לא זמין מיידית. מה הטיפול המומלץ?"
+    },
+    {
+      "idx": 1041,
+      "ti": 10,
+      "topic": "Hypertension",
+      "tag": "Harrison",
+      "priority": 1,
+      "modalities": [
+        "Smear/Histopath"
+      ],
+      "triggers": [
+        {
+          "group": "microscopy",
+          "modality": "Smear/Histopath",
+          "priority": 1,
+          "match": "בדיקה מיקרוסקופית"
+        }
+      ],
+      "stem_preview": "חולה עם אנמיה המוליטית. DAT חיובי, ספירולות בבדיקה מיקרוסקופית ותרומבוציטופניה. איזה אבחנה הכי סבירה?"
+    },
+    {
+      "idx": 1061,
+      "ti": 12,
+      "topic": "Endocrinology & Diabetes",
+      "tag": "Harrison",
+      "priority": 2,
+      "modalities": [
+        "US"
+      ],
+      "triggers": [
+        {
+          "group": "ultrasound",
+          "modality": "US",
+          "priority": 2,
+          "match": "אקו מראה"
+        }
+      ],
+      "stem_preview": "חולה עם חום ונשפה חדשה. אקו מראה וגטציה על מסתם מיטרלי. תרבית דם חיובית ל-Streptococcus viridans. כמה קריטריונים עיקריים יש לפי Duke criteria?"
+    },
+    {
+      "idx": 1074,
+      "ti": 14,
+      "topic": "Neurology & Stroke",
+      "tag": "Harrison",
+      "priority": 1,
+      "modalities": [
+        "CT/MRI"
+      ],
+      "triggers": [
+        {
+          "group": "ct_mri",
+          "modality": "CT/MRI",
+          "priority": 1,
+          "match": "CT חזה מראה"
+        }
+      ],
+      "stem_preview": "אישה בת 40 עם ptosis דו-צדדי, diplopia וחולשה שמחמירה במהלך היום. CT חזה מראה מסה במדיאסטינום קדמי. מה השילוב הטיפולי המתאים?"
+    },
+    {
+      "idx": 1082,
+      "ti": 16,
+      "topic": "Oncologic Emergencies",
+      "tag": "Harrison",
+      "priority": 1,
+      "modalities": [
+        "Smear/Histopath"
+      ],
+      "triggers": [
+        {
+          "group": "microscopy",
+          "modality": "Smear/Histopath",
+          "priority": 1,
+          "match": "ביופסיה מראה"
+        }
+      ],
+      "stem_preview": "גבר בן 35 עם כיבי מעי דלקתיים מפתח גושים כואבים ואדומים בחזית השוקיים. הביופסיה מראה דלקת של המחיצות הבין-שומניות ללא וסקוליטיס. מהו האבחון הסביר ביותר?"
+    },
+    {
+      "idx": 1084,
+      "ti": 16,
+      "topic": "Oncologic Emergencies",
+      "tag": "Harrison",
+      "priority": 1,
+      "modalities": [
+        "Smear/Histopath"
+      ],
+      "triggers": [
+        {
+          "group": "microscopy",
+          "modality": "Smear/Histopath",
+          "priority": 1,
+          "match": "ביופסיה מראה"
+        }
+      ],
+      "stem_preview": "חולה עם לוקמיה מיאלואידית חדה מפתח לוחיות אדמדמות מורמות כואבות בפנים ובצוואר עם נוטרופיליה היקפית. הביופסיה מראה אינפילטרציה דחוסה של נוטרופילים בדרמיס. מהו האבחון?"
+    },
+    {
+      "idx": 1111,
+      "ti": 22,
+      "topic": "Pain Management & Palliative Care",
+      "tag": "Harrison",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "V/Q scan"
+        }
+      ],
+      "stem_preview": "אישה בת 28 עם קוצר נשימה והיסטוריה של נטילת גלולות למניעת הריון. D-dimer מוגבר. מה הבדיקה הבאה?"
+    },
+    {
+      "idx": 1114,
+      "ti": 22,
+      "topic": "Pain Management & Palliative Care",
+      "tag": "Harrison",
+      "priority": 1,
+      "modalities": [
+        "ECG"
+      ],
+      "triggers": [
+        {
+          "group": "ecg",
+          "modality": "ECG",
+          "priority": 1,
+          "match": "הולטר"
+        }
+      ],
+      "stem_preview": "גבר בן 55 עם התעלפות בזמן מאמץ. אק\"ג תקין במנוחה. מה הבדיקה המתאימה ביותר?"
+    },
+    {
+      "idx": 1290,
+      "ti": 11,
+      "topic": "GI & Hepatology",
+      "tag": "Harrison",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "PET-CT"
+        }
+      ],
+      "stem_preview": "מהי הבדיקה הראשונה בחשד לcarcinoma of unknown primary (CUP)?"
+    },
+    {
+      "idx": 1332,
+      "ti": 11,
+      "topic": "GI & Hepatology",
+      "tag": "Harrison",
+      "priority": 1,
+      "modalities": [
+        "CT/MRI"
+      ],
+      "triggers": [
+        {
+          "group": "ct_mri",
+          "modality": "CT/MRI",
+          "priority": 1,
+          "match": "הדמיית MRI"
+        }
+      ],
+      "stem_preview": "מהי התגובה הנאותה ל-spinal cord compression אונקולוגי?"
+    },
+    {
+      "idx": 1498,
+      "ti": 10,
+      "topic": "Hypertension",
+      "tag": "2020",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "PET-CT"
+        }
+      ],
+      "stem_preview": "בת 60, אסימפטומטית, עם Diffuse Large B Cell Lymphoma וקליטה דיפוזית ב-PET-CT מעל ומתחת לסרעפת וגם בכבד. מה הטיפול בחולה בשלב זה?"
+    },
+    {
+      "idx": 1507,
+      "ti": 5,
+      "topic": "Nephrology — AKI & CKD",
+      "tag": "2020",
+      "priority": 2,
+      "modalities": [
+        "Other imaging"
+      ],
+      "triggers": [
+        {
+          "group": "other_imaging",
+          "modality": "Other imaging",
+          "priority": 2,
+          "match": "PET-CT"
+        }
+      ],
+      "stem_preview": "בן 65, מתלונן על חולשה. בבדיקתו חיוור, ללא הגדלת קשריות לימפה, נמוש טחול 5 ס\"מ מתחת לקשת הצלעות. במעבדה: המוגלובין 8.6 גר'/ד\"ל, שאר הספירה תקינה. בכימיה היפרגלובולינמיה. בפרוטאין א"
+    }
+  ]
+}

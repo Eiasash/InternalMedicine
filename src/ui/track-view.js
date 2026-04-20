@@ -260,7 +260,7 @@ const pa=a.s.tot?a.s.ok/a.s.tot:0,pb=b.s.tot?b.s.ok/b.s.tot:0;return pa-pb;}).sl
 const trapCount=G.QZ.filter((_,i)=>isExamTrap(i)).length;
 let h=`<div class="card" style="padding:14px;margin-bottom:10px;border-left:4px solid #059669">
 <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:#059669">📋 Today's Study Plan</div>`;
-if(daysLeft!==null)h+=`<div style="font-size:10px;color:#64748b;margin-bottom:10px">${daysLeft} days to exam · ${new Date(examDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>`;
+if(daysLeft!==null)h+=`<div style="font-size:10px;color:#64748b;margin-bottom:10px">${daysLeft} days to exam · ${new Date(examDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}${(function(){try{let w=0;const f=window.fsrsInterval,wf=window.fsrsIntervalWithDeadline;if(!f||!wf)return '';for(let i=0;i<G.QZ.length;i++){const sr=G.S.sr[i];if(sr&&sr.fsrsS&&sr.fsrsD){if(wf(sr.fsrsS,sr.fsrsD,1)<f(sr.fsrsS))w++;}}return w>0?` · <span style="color:#d97706">⚡ ${w} cards compressed</span>`:'';}catch(e){return '';}})()}</div>`;
 h+=`<div style="font-size:11px;line-height:2">`;
 // Step 1: Due questions
 if(dueN>0)h+=`<div>1️⃣ <b>${dueN} due questions</b> (~${Math.round(dueN*1.5)} min) <button data-action="goto-quiz" data-filt="due" style="font-size:9px;padding:2px 8px;background:#eff6ff;color:#3b82f6;border:none;border-radius:6px;cursor:pointer">▶ Start</button></div>`;
@@ -275,6 +275,8 @@ h+=`<div>3️⃣ Drill: <b>20q mini-exam on ${w.name}</b> <button data-action="s
 }
 // Step 3: Traps
 if(trapCount>0)h+=`<div>4️⃣ Review <b>${trapCount} trap questions</b> <button data-action="goto-quiz" data-filt="traps" style="font-size:9px;padding:2px 8px;background:#fffbeb;color:#92400e;border:none;border-radius:6px;cursor:pointer">🪤 Start</button></div>`;
+// Step 4: Replay last mock wrong (if any)
+try{const _mh=JSON.parse(localStorage.getItem('pnimit_mock_hist')||'[]');const _last=_mh[_mh.length-1];const _wn=_last&&_last.wrongIdxs?_last.wrongIdxs.length:0;if(_wn>0){const _dt=new Date(_last.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});h+=`<div>5️⃣ Replay <b>${_wn} wrong answers</b> from mock on ${_dt} <button data-action="replay-last-mock-wrong" style="font-size:9px;padding:2px 8px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer">🔁 Start</button></div>`;}}catch(e){}
 h+=`</div></div>`;
 return h;
 }
