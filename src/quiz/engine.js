@@ -231,7 +231,23 @@ export function next(){
 G.qStartTime=Date.now();
 if(G.examMode&&G.mockExamResults&&G.qi+1>=G.pool.length){endMockExam();return;}
 if(G.examMode&&!G.mockExamResults&&G.qi+1>=Math.min(G.pool.length,150)){endExam();return;}
+// Save current answer state for prev() restoration
+if(!G._sessAnsw)G._sessAnsw={};
+if(G.ans&&!G.examMode)G._sessAnsw[G.pool[G.qi]]={sel:G.sel,ans:true,conf:G._confidence};
 G.qi++;if(G.qi>=G.pool.length)G.qi=0;G.sel=null;G.ans=false;G.autopsyDistractor=-1;G.teachBackState=null;G._optShuffle=null;G._confidence=null;G._wrongReason=null;G._diffRating=null;
+if(G.timedMode){clearInterval(G.timedInt);G.timedSec=90;G.render();setTimeout(startTimedQ,100);}
+else G.render();
+}
+
+export function prev(){
+if(G.qi<=0||G.examMode)return;
+G.qStartTime=Date.now();
+if(G.ans)G._sessAnsw=G._sessAnsw||{},G._sessAnsw[G.pool[G.qi]]={sel:G.sel,ans:true,conf:G._confidence};
+G.qi--;
+const _st=G._sessAnsw&&G._sessAnsw[G.pool[G.qi]];
+if(_st){G.sel=_st.sel;G.ans=_st.ans;G._confidence=_st.conf;}
+else{G.sel=null;G.ans=false;G._confidence=null;}
+G.autopsyDistractor=-1;G.teachBackState=null;G._optShuffle=null;G._wrongReason=null;G._diffRating=null;
 if(G.timedMode){clearInterval(G.timedInt);G.timedSec=90;G.render();setTimeout(startTimedQ,100);}
 else G.render();
 }
