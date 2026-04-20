@@ -308,7 +308,16 @@ export function checkMockIntercept(){
 export function endExam(){
   clearInterval(G.examTimer);G.examMode=false;
   const examOk=G.S.qOk-(G._examStartOk||0),examNo=G.S.qNo-(G._examStartNo||0);const tot=examOk+examNo,pct=tot?Math.round(examOk/tot*100):0;
-  alert(`Exam Complete!\n\n✅ ${examOk}/${tot} (${pct}%)\n${pct>=60?'PASS 🎉':'NEEDS WORK ❌'}\n\nTime: ${fmtT(10800-G.examSec)}`);
+  const pass=pct>=60;
+  const html=`<div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;overflow-y:auto;padding:16px" id="examModal">
+<div style="background:#fff;border-radius:16px;max-width:400px;margin:10vh auto;padding:24px;text-align:center;font-family:Heebo,Inter,sans-serif">
+<div style="font-size:48px">${pass?'🎉':'💪'}</div>
+<div style="font-size:32px;font-weight:700;color:${pass?'#059669':'#dc2626'}">${pct}%</div>
+<div style="font-size:13px;color:#64748b;margin-bottom:8px">${examOk}/${tot} correct · ${fmtT(10800-G.examSec)}</div>
+<div style="font-size:15px;font-weight:700;color:${pass?'#059669':'#dc2626'};margin-bottom:16px">${pass?'PASS ✓':'NEEDS WORK ✗'} (pass ≥60%)</div>
+<button data-action="close-exam-modal" style="width:100%;padding:12px;background:#0ea5e9;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">סגור</button>
+</div></div>`;
+  const d=document.createElement('div');d.innerHTML=html;document.body.appendChild(d.firstChild);
   G.render();
 }
 export function endMockExam(){

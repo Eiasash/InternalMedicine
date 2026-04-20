@@ -1,5 +1,5 @@
 import G from '../core/globals.js';
-import { SUPA_URL, SUPA_ANON, TOPICS, EXAM_FREQ, EXAM_YEARS } from '../core/constants.js';
+import { SUPA_URL, SUPA_ANON, TOPICS, EXAM_YEARS } from '../core/constants.js';
 import { sanitize, fmtT, safeJSONParse, getOptShuffle, remapExplanationLetters, isMetaOption } from '../core/utils.js';
 import { getDueQuestions, getWeakTopics, isExamTrap, srScore, getTopicStats, buildRescuePool } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
@@ -328,8 +328,8 @@ h+=`<div style="display:flex;gap:6px;margin-bottom:8px;align-items:center;flex-w
 }
 // Prev + Next buttons
 h+=`<div style="display:flex;gap:6px;align-items:stretch">`;
-if(!G.examMode)h+=`<button class="btn" data-action="prev-q" style="flex:0 0 auto;min-height:44px;padding:0 14px;font-size:11px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;${G.qi<=0?'opacity:0.4;pointer-events:none;':''}" aria-label="Previous question">→ קודמת</button>`;
-h+=`<button class="btn btn-d" data-action="next-q" aria-label="${G.examMode&&G.qi+1>=150?'Finish exam':'Next question'}" style="flex:1;min-height:44px;font-size:13px;font-weight:700">${G.examMode&&G.qi+1>=150?'סיים':'הבאה ←'}</button>`;
+if(!G.examMode)h+=`<button class="btn" data-action="prev-q" style="flex:0 0 auto;min-height:44px;padding:0 14px;font-size:11px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;${G.qi<=0?'opacity:0.4;pointer-events:none;':''}" aria-label="Previous question">קודמת ←</button>`;
+h+=`<button class="btn btn-d" data-action="next-q" aria-label="${G.examMode&&G.qi+1>=150?'Finish exam':'Next question'}" style="flex:1;min-height:44px;font-size:13px;font-weight:700">${G.examMode&&G.qi+1>=150?'סיים':'→ הבאה'}</button>`;
 h+=`</div>`;
 }
 h+=`</div>`;
@@ -461,9 +461,6 @@ export function initQuizEvents(container) {
       const i = parseInt(el.dataset.i, 10);
       if (G.blindRecall && !G.ans && i !== G.sel) el.classList.remove('qo-blur');
       pick(i);
-    }
-    else if (action === 'confidence') {
-      G._confidence = parseInt(el.dataset.c, 10); G.render();
     }
     else if (action === 'check-answer') { check(); }
     else if (action === 'give-up') { showAnswerHardFail(); }
