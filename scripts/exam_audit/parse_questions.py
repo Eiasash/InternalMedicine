@@ -106,7 +106,9 @@ def split_stem_options(q_text):
     # Unified pattern: match either "letter . space" (modern) or ". letter {space|English cap|bracket}" (older).
     # The older lookahead excludes mid-word Hebrew punctuation like "של .אפיסטקסיס" where
     # .α is inside a Hebrew word (Pnimit Jun25 Q120 bug).
-    pattern = re.compile(r'(?:([\u05d0-\u05d3])\s*\.\s|\.\s*([\u05d0-\u05d3])(?=\s|[A-Z\[\(]))')
+    # Option-letter must be word-start: preceded by whitespace/start, never another Hebrew letter.
+    # (Fix: Hebrew word "בריא" ends in א → naive match treated "בריא." as option א.)
+    pattern = re.compile(r'(?:(?<![\u0590-\u05FF])([\u05d0-\u05d3])\s*\.\s|\.\s*([\u05d0-\u05d3])(?=\s|[A-Z\[\(]))')
     marks = list(pattern.finditer(q_text))
     if len(marks) < 4:
         return q_text, []
