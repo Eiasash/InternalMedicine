@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { SUPA_URL, SUPA_ANON, TOPICS, EXAM_YEARS } from '../core/constants.js';
-import { sanitize, heDir, fmtT, safeJSONParse, getOptShuffle, remapExplanationLetters, isMetaOption, toast } from '../core/utils.js';
+import { sanitize, heDir, fmtT, safeJSONParse, getOptShuffle, remapExplanationLetters, isMetaOption, toast, isOk} from "../core/utils.js";
 import { getDueQuestions, getWeakTopics, isExamTrap, srScore, getTopicStats, buildRescuePool } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
 import { renderExplainBox, toggleFlagExplain, explainWithAI, aiAutopsy, gradeTeachBack, startVoiceTeachBack } from '../ai/explain.js';
@@ -197,7 +197,7 @@ if(q.img){h+=`<div style="margin-bottom:14px;text-align:center;position:relative
 if(!q.img&&!G.examMode){h+=`<div style="margin-bottom:10px"><button data-action="upload-img" data-idx="${G.pool[G.qi]}" style="font-size:10px;padding:4px 12px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">📷 Attach Image</button><span id="img-status-${G.pool[G.qi]}" style="font-size:10px;color:#94a3b8;margin-left:6px"></span></div>`;}
 q.o.forEach((o,i)=>{
 let cls='qo';
-if(G.ans){cls+=' lk';if(i===q.c)cls+=' ok';else if(i===G.sel)cls+=' no';else cls+=' dim';}
+if(G.ans){cls+=' lk';if(isOk(q,i))cls+=' ok';else if(i===G.sel)cls+=' no';else cls+=' dim';}
 else if(i===G.sel)cls+=' sel';
 h+=`<button class="${cls}" data-action="pick" data-i="${i}" aria-label="Option ${i+1}: ${o}" dir="${heDir(o)}">${o}</button>`;
 });
@@ -314,10 +314,10 @@ const _shuf=getOptShuffle(G.pool[G.qi],q);
 _shuf.forEach((origI,dispJ)=>{
 const o=q.o[origI];
 let cls='qo';
-if(G.ans){cls+=' lk';if(!G.examMode){if(origI===q.c)cls+=' ok';else if(origI===G.sel)cls+=' no';else cls+=' dim';}else if(origI===G.sel)cls+=' sel';}
+if(G.ans){cls+=' lk';if(!G.examMode){if(isOk(q,origI))cls+=' ok';else if(origI===G.sel)cls+=' no';else cls+=' dim';}else if(origI===G.sel)cls+=' sel';}
 else if(origI===G.sel)cls+=' sel';
 const blurCls=G.blindRecall&&!G.ans&&origI!==G.sel?' qo-blur':'';
-const autopsyCls=(G.autopsyMode&&G.ans&&!G.examMode&&origI!==q.c&&origI===G.autopsyDistractor)?' distractor-highlight':'';
+const autopsyCls=(G.autopsyMode&&G.ans&&!G.examMode&&!isOk(q,origI)&&origI===G.autopsyDistractor)?' distractor-highlight':'';
 h+=`<button class="${cls}${blurCls}${autopsyCls}" data-action="pick" data-i="${origI}" aria-label="Option ${origI+1}" dir="${heDir(o)}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
 });
 h+=`<div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">`;
@@ -332,7 +332,7 @@ h+=`<button class="btn btn-d" data-action="next-q" aria-label="${G.examMode&&G.q
 h+=`</div>`;
 
 // Why-wrong (secondary)
-if(!G.examMode&&G.sel!==q.c&&!G._wrongReason){
+if(!G.examMode&&!isOk(q,G.sel)&&!G._wrongReason){
 h+=`<div style="margin-bottom:8px">
 <div style="font-size:11px;font-weight:700;color:#dc2626;margin-bottom:6px">Why did you get it wrong?</div>
 <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -343,7 +343,7 @@ h+=`<div style="margin-bottom:8px">
 </div></div>`;
 }
 // Read chapter
-if(!G.examMode&&G.sel!==q.c&&q.ti>=0){
+if(!G.examMode&&!isOk(q,G.sel)&&q.ti>=0){
 const _chRef=TOPIC_REF[q.ti];
 if(_chRef&&_chRef.s==='har'){
 h+=`<button class="btn" data-action="read-chapter" style="font-size:11px;padding:10px 12px;min-height:44px;background:#ede9fe;color:#7c3aed;margin-bottom:6px;width:100%;font-weight:700">📖 Read: ${_chRef.l} — you're weak here</button>`;
@@ -362,7 +362,7 @@ h+=`<div style="display:flex;gap:6px;margin-bottom:8px;align-items:center;flex-w
 h+=`</div>`;
 
 // Teach-Back box
-if(G.ans&&!G.examMode&&G.sel===q.c){
+if(G.ans&&!G.examMode&&isOk(q,G.sel)){
 if(!G.teachBackState){
 h+='<div style="margin-top:12px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:12px">';
 h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:#065f46;direction:rtl">🎓 Teach-Back: הסבר מדוע זו התשובה הנכונה</span><button data-action="voice-teachback" id="tb-mic-btn" style="font-size:16px;padding:4px 8px;background:#ecfdf5;border:none;border-radius:8px;cursor:pointer" title="הקלט קולי" aria-label="Record voice teach-back">🎙️</button></div>';
@@ -436,7 +436,7 @@ if(G.ans&&!G.examMode){
   if(_dist){
     // Offline path — render each option with sanitized rationale
     q.o.forEach((opt,i)=>{
-      const _isCorrect=(i===q.c);
+      const _isCorrect=isOk(q,i);
       const _isUserPick=(i===G.sel);
       const _rationale=_dist[i];
       const _bg=_isCorrect?'#dcfce7':(_isUserPick?'#fef2f2':'#fff7ed');
@@ -473,7 +473,7 @@ h+=`</div>`;
 return h;
 }
 // Sudden Death check/next
-export function sdCheck(){if(G.sel===null)return;G.ans=true;const q=G.QZ[G.sdPool[G.sdQi]];if(G.sel===q.c){G.sdStreak++;G.S.qOk++;srScore(G.sdPool[G.sdQi],true);G.save();G.render();}else{G.S.qNo++;srScore(G.sdPool[G.sdQi],false);G.save();G.render();setTimeout(()=>endSuddenDeath(),800);}}
+export function sdCheck(){if(G.sel===null)return;G.ans=true;const q=G.QZ[G.sdPool[G.sdQi]];if(isOk(q,G.sel)){G.sdStreak++;G.S.qOk++;srScore(G.sdPool[G.sdQi],true);G.save();G.render();}else{G.S.qNo++;srScore(G.sdPool[G.sdQi],false);G.save();G.render();setTimeout(()=>endSuddenDeath(),800);}}
 export function sdNext(){G.sdQi++;if(G.sdQi>=G.sdPool.length)G.sdQi=0;G.sel=null;G.ans=false;G.autopsyDistractor=-1;G.render();}
 
 

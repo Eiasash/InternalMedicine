@@ -1,7 +1,7 @@
 // App entry point — orchestrates all modules, wires up window bindings for onclick handlers
 import G from '../core/globals.js';
 import { APP_VERSION, LS, TOPICS, EXAM_FREQ, CHANGELOG, BUILD_HASH } from '../core/constants.js';
-import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey, toast } from "../core/utils.js";
+import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey, toast, isOk} from "../core/utils.js";
 import { migrateToIDB } from '../core/state.js';
 import '../core/data-loader.js'; // side-effect: populates G.QZ, G.TABS, etc.
 import '../clock.js'; // side-effect: header clock (#hdr-sub)
@@ -109,7 +109,7 @@ if(G.S.studyMode)document.body.classList.add('study');
 export function shareQ(){
 const q=G.QZ[G.pool[G.qi]];
 let txt=q.q+'\n';
-q.o.forEach((o,i)=>{txt+=(i===q.c?'✅ ':'❌ ')+o+'\n';});
+q.o.forEach((o,i)=>{txt+=(isOk(q,i)?'✅ ':'❌ ')+o+'\n';});
 if(navigator.share){navigator.share({title:'Pnimit Mega — Question',text:txt}).catch(()=>{});}
 else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>{const b=document.getElementById('shbtn');if(b){b.textContent='✅ הועתק';setTimeout(()=>b.textContent='📋 שתף',1500)}});
 }

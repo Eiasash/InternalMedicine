@@ -280,6 +280,35 @@ describe('questions.json — structural invariants', () => {
 // ─────────────────────────────────────────────────────────────
 // Expected question counts per session (locked so AI regen doesn't silently drop Qs)
 // ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// c_accept schema validation (multi-accept answers)
+// ─────────────────────────────────────────────────────────────
+describe('questions.json — c_accept schema', () => {
+  let questions;
+  beforeAll(() => { questions = loadJSON('data/questions.json'); });
+
+  test('c_accept entries are valid when present', () => {
+    const violations = [];
+    questions.forEach((q, i) => {
+      if (q.c_accept === undefined) return;
+      if (!Array.isArray(q.c_accept)) { violations.push(`idx=${i}: c_accept not array`); return; }
+      if (q.c_accept.length === 0) { violations.push(`idx=${i}: c_accept empty — omit field instead`); return; }
+      const dups = q.c_accept.length !== new Set(q.c_accept).size;
+      if (dups) { violations.push(`idx=${i}: c_accept has duplicates`); return; }
+      for (const v of q.c_accept) {
+        if (!Number.isInteger(v) || v < 0 || v >= q.o.length) {
+          violations.push(`idx=${i}: c_accept contains invalid index ${v}`);
+          return;
+        }
+      }
+      if (!q.c_accept.includes(q.c)) {
+        violations.push(`idx=${i}: primary c=${q.c} not in c_accept ${JSON.stringify(q.c_accept)}`);
+      }
+    });
+    expect(violations).toEqual([]);
+  });
+});
+
 describe('questions.json — per-session counts locked', () => {
   let questions;
   beforeAll(() => { questions = loadJSON('data/questions.json'); });

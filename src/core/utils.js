@@ -19,6 +19,10 @@ export function toast(msg,type='info',ms=3500){
   }catch(e){console.warn('toast failed:',e,msg);}
 }
 
+// Grading helper — honors q.c_accept (array of accepted answer indices) if present,
+// falls back to primary q.c. q.c stays the primary/display answer; c_accept is additive.
+export function isOk(q,i){if(!q)return false;if(Array.isArray(q.c_accept)&&q.c_accept.length)return q.c_accept.includes(i);return i===q.c;}
+
 // XSS-safe string escaping
 export function sanitize(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 export function heDir(s){s=String(s||'');if(!s)return'auto';let he=0,en=0;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);if(c>=0x0590&&c<=0x05FF)he++;else if((c>=0x41&&c<=0x5A)||(c>=0x61&&c<=0x7A))en++;}const t=he+en;if(!t)return'auto';return he/t>=0.25?'rtl':'ltr';}

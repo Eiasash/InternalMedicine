@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { TOPICS, HARRISON_PDF_MAP, APP_VERSION, SYLLABUS_VERSION } from '../core/constants.js';
-import { sanitize, heDir, safeJSONParse, toast } from "../core/utils.js";
+import { sanitize, heDir, safeJSONParse, toast, isOk} from "../core/utils.js";
 import { callAI } from '../ai/client.js';
 import { getTopicStats, trackChapterRead, getChaptersDueForReading } from '../sr/spaced-repetition.js';
 import { TOPIC_REF } from './track-view.js';
@@ -241,7 +241,7 @@ c = 0-based index of correct answer. No markdown, no preamble.`;
       h+=`<div style="margin-bottom:14px;padding:12px;background:#faf5ff;border-radius:10px;border-left:3px solid #7c3aed">`;
       h+=`<div style="font-size:12px;font-weight:600;margin-bottom:8px" dir="${heDir(q.q)}">${idx+1}. ${sanitize(q.q)}</div>`;
       q.o.forEach((opt,oi)=>{
-        const isCorrect=oi===q.c;
+        const isCorrect=isOk(q,oi);
         h+=`<div style="font-size:11px;padding:4px 8px;margin-bottom:3px;border-radius:6px;background:${isCorrect?'#dcfce7':'#f8fafc'};color:${isCorrect?'#166534':'#475569'};font-weight:${isCorrect?'700':'400'}">${sanitize(opt)}${isCorrect?' ✓':''}</div>`;
       });
       if(q.e)h+=`<div style="font-size:10px;color:#6d28d9;margin-top:8px;text-align:right;line-height:1.6;border-top:1px solid #e9d5ff;padding-top:6px;unicode-bidi:plaintext" dir="${heDir(q.e)}">💡 ${sanitize(q.e)}</div>`;

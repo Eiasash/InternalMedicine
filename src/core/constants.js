@@ -24,8 +24,13 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.72';
+export const APP_VERSION='9.73';
 export const CHANGELOG={
+    '9.73': [
+      '🔧 Oct24: 4 שאלות עם stem corrupt תוקנו (Q29 "הנ" strays + "נפיחות"→"מיימת", Q38 "נערה" מיותר, Q66 "בן 14" שהיה צריך להיות "תמונה 14", Q67 bidi spacing).',
+      '✅ תמיכה בתשובות כפולות (c_accept): 5 שאלות Oct24 עם multi-accept לפי מפתח התשובות הרשמי — Q22 EGPA (א+ד), Q23 סרקואיד (ב+ג), Q37 דימום דליות (ב+ד), Q41 C.septicum (ג+ד), Q67 טחול (כל 4 התשובות — נפסלה).',
+      '⏳ Oct24 חסר שאלה אחת (Q90, IPF/PFT) — ממתין ל-ingestion מה-PDF.',
+    ],
     '9.72': [
       '🧹 ניקיון: 3 placeholder תמונות פגומות (data:image/svg+xml עם viewBox ריק) הוסרו משדה img. משתמשים ראו תמונות שבורות ב-2 שאלות Jun2025 + 1 Harrison עד עכשיו.',
       '📊 Audit תמונות: 160/1541 (10.4%) עם img אמיתי. Gap של 18 שאלות עם reference תמונה בטקסט אך ללא img — לא ניתן לפתור ללא PDF source images.',
