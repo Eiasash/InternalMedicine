@@ -24,13 +24,18 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.71';
+export const APP_VERSION='9.72';
 export const CHANGELOG={
+    '9.72': [
+      '🧹 ניקיון: 3 placeholder תמונות פגומות (data:image/svg+xml עם viewBox ריק) הוסרו משדה img. משתמשים ראו תמונות שבורות ב-2 שאלות Jun2025 + 1 Harrison עד עכשיו.',
+      '📊 Audit תמונות: 160/1541 (10.4%) עם img אמיתי. Gap של 18 שאלות עם reference תמונה בטקסט אך ללא img — לא ניתן לפתור ללא PDF source images.',
+      '✅ Tests: 456 pass, version 9.71 → 9.72.',
+    ],
     '9.71': [
       '🔬 AI scan של 1,541 שאלות — 206 סומנו ב-eFlag (ההסבר אולי לא מתאים לתשובה הנכונה). באדג׳ אדום עם סיבת ה-AI + כפתור ✓ לניקוי לאחר בדיקה ידנית.',
       '⚠️ 8 שאלות תלויות-תמונה (imgDep) מסומנות גם הן עם כפתור ✓ מאומת.',
     ],
-    '9.71': [
+    '9.71-dup': [
       '🔍 AI audit על 1,541 הסברים: 206 סומנו עם eFlag (ההסבר לא תואם לתשובה הנכונה). באדג\' אדום + כפתור "✓ אמת" לאחר חשיפת התשובה.',
       '⚠️ 8 שאלות תלויות-תמונה סומנו עם באדג\' אמבר (imgDep) + כפתור "✓ מאומת" לניקוי.',
       '✓ Mark-verified buttons: imgDep + eFlag — לחיצה אחת לניקוי הסימון.',
