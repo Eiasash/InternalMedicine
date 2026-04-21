@@ -315,7 +315,7 @@ describe('questions.json — per-session counts locked', () => {
 
   const EXPECTED = {
     '2020': 139, '2021-Jun': 149, '2022-Jun': 148, '2023-Jun': 147,
-    '2024-May': 99, '2024-Oct': 99, '2025-Jun': 151, 'Harrison': 589, 'Exam': 20,
+    '2024-May': 99, '2024-Oct': 100, '2025-Jun': 151, 'Harrison': 589, 'Exam': 20,
   };
 
   test.each(Object.entries(EXPECTED))('session %s has exactly %s questions', (tag, n) => {
@@ -324,7 +324,7 @@ describe('questions.json — per-session counts locked', () => {
   });
 
   test('total question count is exactly 1541', () => {
-    expect(questions.length).toBe(1541);
+    expect(questions.length).toBe(1542);
   });
 });
 

@@ -24,7 +24,7 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.73';
+export const APP_VERSION='9.74';
 export const CHANGELOG={
     '9.73': [
       '🔧 Oct24: 4 שאלות עם stem corrupt תוקנו (Q29 "הנ" strays + "נפיחות"→"מיימת", Q38 "נערה" מיותר, Q66 "בן 14" שהיה צריך להיות "תמונה 14", Q67 bidi spacing).',
