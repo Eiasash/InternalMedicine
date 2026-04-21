@@ -1,5 +1,5 @@
 import G from '../core/globals.js';
-import { sanitize, toast, heDir } from '../core/utils.js';
+import { sanitize, toast, heDir, isOk } from '../core/utils.js';
 import { callAI } from './client.js';
 
 // AI explain, autopsy, teach-back — extracted from pnimit-mega.html
@@ -67,7 +67,7 @@ const _apKey='autopsy_'+qIdx;
 G._exCache[_apKey]='<div style="color:#64748b">⏳ AI analyzing each option...</div>';
 G.render();
 try{
-const wrongOpts=q.o.filter((_,i)=>i!==q.c);
+const wrongOpts=q.o.filter((_,i)=>!isOk(q,i));
 const txt=await callAI([{role:'user',content:`Internal medicine board exam question. For EACH wrong option, explain in 1-2 sentences why it's wrong HERE and when it WOULD be correct.
 
 Question: ${q.q}
