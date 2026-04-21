@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { TOPICS, EXAM_FREQ, EXAM_YEARS } from '../core/constants.js';
-import { sanitize, fmtT, toast, heDir } from "../core/utils.js";
+import { sanitize, fmtT, toast, heDir, isOk } from "../core/utils.js";
 import { getDueQuestions, getTopicStats, isExamTrap, srScore } from '../sr/spaced-repetition.js';
 import { callAI } from '../ai/client.js';
 import { buildRescuePool } from '../sr/spaced-repetition.js';
@@ -210,10 +210,10 @@ const q=G.QZ[G.pool[G.qi]];
 if(G._confidence!==null){
 if(!G.S.sr[G.pool[G.qi]])G.S.sr[G.pool[G.qi]]={ef:2.5,n:0,next:0,ts:[],at:0,tot:0,ok:0};
 if(!G.S.sr[G.pool[G.qi]].conf)G.S.sr[G.pool[G.qi]].conf={sure_ok:0,sure_no:0,unsure_ok:0,unsure_no:0};
-const _ck=(G._confidence>=2?'sure':'unsure')+'_'+(G.sel===q.c?'ok':'no');
+const _ck=(G._confidence>=2?'sure':'unsure')+'_'+(isOk(q,G.sel)?'ok':'no');
 G.S.sr[G.pool[G.qi]].conf[_ck]++;
 }
-if(G.sel===q.c){G.S.qOk++;srScore(G.pool[G.qi],true);}
+if(isOk(q,G.sel)){G.S.qOk++;srScore(G.pool[G.qi],true);}
 else{G.S.qNo++;
   // Store which distractor was chosen for future mistake-pattern analysis
   if(!G.S.sr[G.pool[G.qi]])G.S.sr[G.pool[G.qi]]={ef:2.5,n:0,next:0,ts:[],at:0,tot:0,ok:0};
@@ -328,7 +328,7 @@ export function showMockExamPicker(){
 const _origCheck=window.check;
 export function checkMockIntercept(){
   if(G.ans||G.sel===null)return;
-  const qIdx=G.pool[G.qi];const q=G.QZ[qIdx];const correct=G.sel===q.c;
+  const qIdx=G.pool[G.qi];const q=G.QZ[qIdx];const correct=isOk(q,G.sel);
   if(G.mockExamResults&&q.ti>=0){
     if(correct)G.mockExamResults.byTopic[q.ti].ok++;
     else {G.mockExamResults.byTopic[q.ti].no++; (G.mockExamResults.wrongIdxs=G.mockExamResults.wrongIdxs||[]).push(qIdx);}
