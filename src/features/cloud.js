@@ -29,7 +29,7 @@ const payload={uid,answered:totalAnswered,correct:totalCorrect,streak,readiness,
 try{
   const res=await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard',{
     method:'POST',
-    headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Prefer':'resolution=merge-duplicates'},
+    headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Content-Profile':'internal_medicine','Prefer':'resolution=merge-duplicates'},
     body:JSON.stringify(payload)
   });
   if(!res.ok){console.warn('Leaderboard submit non-ok',res.status);return{submitted:false,status:res.status};}
@@ -39,7 +39,7 @@ try{
 export async function fetchLeaderboard(){
 try{
   const res=await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard?select=uid,answered,correct,streak,readiness,accuracy,ts&order=accuracy.desc.nullslast,answered.desc&limit=20',{
-    headers:{'apikey':SUPA_ANON}
+    headers:{'apikey':SUPA_ANON,'Accept-Profile':'internal_medicine'}
   });
   return await res.json();
 }catch(e){console.warn('Leaderboard fetch failed',e);return[];}
@@ -118,7 +118,7 @@ localStorage.setItem('pnimit_fb_sent',JSON.stringify(fb));
 try{
   await fetch(SUPA_URL+'/rest/v1/pnimit_feedback',{
     method:'POST',
-    headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Prefer':'return=minimal'},
+    headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Content-Profile':'internal_medicine','Prefer':'return=minimal'},
     body:JSON.stringify({message:text,type,app_version:APP_VERSION})
   });
 }catch(e){console.warn('Feedback submit failed',e);}
@@ -146,7 +146,7 @@ export async function cloudBackup(){
     const payload={id:_sbDeviceId(),data:{...G.S,_mockHist:mockHist,_sessions:sessions},updated_at:new Date().toISOString()};
     const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups',{
       method:'POST',
-      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json','Content-Profile':'internal_medicine','Prefer':'resolution=merge-duplicates'},
       body:JSON.stringify(payload)
     });
     if(res.ok||res.status===409){
@@ -154,7 +154,7 @@ export async function cloudBackup(){
       if(res.status===409){
         const patchRes=await fetch(SUPA_URL+'/rest/v1/pnimit_backups?id=eq.'+_sbDeviceId(),{
           method:'PATCH',
-          headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json'},
+          headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json','Content-Profile':'internal_medicine'},
           body:JSON.stringify({data:{...G.S,_mockHist:mockHist,_sessions:sessions},updated_at:new Date().toISOString()})
         });
         if(!patchRes.ok){const pe=await patchRes.text();toast('❌ Backup update failed: '+patchRes.status+'\n'+pe.slice(0,200),'info');return;}
@@ -194,7 +194,7 @@ export async function cloudRestore(){
   if(!id)return;
   try{
     const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups?id=eq.'+encodeURIComponent(id)+'&select=data,updated_at',{
-      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}
+      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Accept-Profile':'internal_medicine'}
     });
     if(!res.ok){toast('❌ Restore failed: '+res.status,'info');return;}
     const rows=await res.json();
@@ -270,7 +270,7 @@ let fb;try{fb=JSON.parse(localStorage.getItem('pnimit_feedback')||'[]');}catch(e
 fb.push(payload);if(fb.length>50)fb.splice(0,fb.length-50);
 localStorage.setItem('pnimit_feedback',JSON.stringify(fb));
 fetch(SUPA_URL+'/rest/v1/pnimit_feedback',{
-method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Prefer':'return=minimal'},
+method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Content-Profile':'internal_medicine','Prefer':'return=minimal'},
 body:JSON.stringify({message:msg,diagnostics:diag,app_version:APP_VERSION,type,context})
 }).catch(()=>{});
 if(type==='wrong_answer'&&qObj){
