@@ -1,0 +1,2 @@
+# Force Unix line endings for shell scripts (prevents Windows CRLF breaking heredocs)
+*.sh text eol=lf
