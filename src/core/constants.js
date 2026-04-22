@@ -24,7 +24,7 @@ export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.76';
+export const APP_VERSION='9.77';
 export const CHANGELOG={
     '9.76': [
       '↩ הוחזרו כתובות Supabase לסכמת public (internal_medicine schema לא היה חשוף ב-PostgREST, כתיבות החזירו 406 מאז merge של PR #42 ב-17:45 UTC). כל פיצ׳רי הגיבוי, הפידבק והליידרבורד פעילים שוב.',
@@ -38,6 +38,7 @@ export const CHANGELOG={
     '9.72': [
       '🧹 ניקיון: 3 placeholder תמונות פגומות (data:image/svg+xml עם viewBox ריק) הוסרו משדה img. משתמשים ראו תמונות שבורות ב-2 שאלות Jun2025 + 1 Harrison עד עכשיו.',
       '📊 Audit תמונות: 160/1541 (10.4%) עם img אמיתי. Gap של 18 שאלות עם reference תמונה בטקסט אך ללא img — לא ניתן לפתור ללא PDF source images.',
+      '📚 +11 missing IMA Q2020 questions (Q28,41,50,57,64,81,106-110) reconstructed from official PDFs via Sonnet 4.5 — 2020 session now complete 150/150',
       '✅ Tests: 456 pass, version 9.71 → 9.72.',
     ],
     '9.71': [
