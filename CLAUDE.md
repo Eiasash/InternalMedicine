@@ -8,7 +8,8 @@
 - **App version**: see `APP_VERSION` in `src/core/constants.js` (source of truth)
 - **Entry point**: `pnimit-mega.html` (59-line HTML shell) → `src/ui/app.js` (ES module)
 - **Deployment**: Push to `main` → GitHub Actions builds with Vite → deploys `dist/` to Pages
-- **Sibling app**: Shlav A Mega (geriatrics) at Eiasash/Geriatrics — same engine, separate data
+- **Sibling apps**: Shlav A Mega (geriatrics) + Mishpacha Mega (family medicine) — all three share `shared/fsrs.js` (byte-identical, canonical md5 `cea66a0435…`) and the same Supabase project `krmlzwwelqvlfslwltol` (labeled "Toranot" in the dashboard)
+- **Current version**: v9.79 (as of 23/04/26) — BIDI hygiene pass, FSRS canonicalization, publishable-key rotation
 
 ---
 
@@ -115,7 +116,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 │   └── build.sh                # Production build: vite build + copy static assets + generate prod SW
 │
 ├── data/                       # Runtime JSON data
-│   ├── questions.json          # 1541 MCQs
+│   ├── questions.json          # 1556 MCQs
 │   ├── topics.json             # 24 topic definitions
 │   ├── notes.json              # 24 study notes
 │   ├── drugs.json              # 53 drugs (Beers, ACB, STOPP)
@@ -129,7 +130,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 ├── questions/images/            # 128 question images
 ├── syllabus/P0064-2025.pdf     # Official IMA syllabus
 │
-├── tests/                      # 309 tests across 8 files
+├── tests/                      # 488 tests across 21 files
 │   ├── dataIntegrity.test.js   # Question schema, duplicates, topic coverage
 │   ├── appIntegrity.test.js    # Module structure, SW version sync, security
 │   ├── appLogic.test.js        # Core quiz logic patterns
@@ -193,7 +194,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 ### Local Dev
 ```bash
 npm run dev          # Vite dev server (port 3737, auto-reload)
-npm test             # 309 tests via vitest
+npm test             # 488 tests via vitest
 npm run build        # Production build → dist/ (Vite bundle + static assets)
 npm run build:vite   # Vite-only build (no asset copy)
 npm run lint         # ESLint
@@ -228,7 +229,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | June 2025 | 151 | `2025-Jun` |
 | Exam (misc) | 20 | `Exam` |
 | Harrison (AI) | 589 | `Harrison` |
-| **Total** | **1541** | |
+| **Total** | **1556** | |
 
 ---
 
@@ -271,7 +272,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Functions | 144 |
 | ES imports | 77 |
 | Window bindings | 16 (down from 72) |
-| Questions | 1,541 (all with explanations) |
+| Questions | 1,556 (all with explanations) |
 | AI-generated | 589 (tagged `Harrison`) |
 | Topics | 24 |
 | Notes | 24 |
@@ -281,8 +282,8 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Past exams | 7 sessions (2020–2025) |
 | Harrison chapters | ~69 PDFs |
 | Articles | 10 |
-| Test files | 8 |
-| Tests | 309 |
+| Test files | 21 |
+| Tests | 488 |
 | CI workflows | 4 (ci, integrity-guard, weekly-audit, deploy) |
 
 ---
