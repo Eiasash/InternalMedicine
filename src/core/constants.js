@@ -27,8 +27,12 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.78';
+export const APP_VERSION='9.79';
 export const CHANGELOG={
+    '9.79': [
+      '🔤 BIDI hygiene pass (matches § C FamilyMedicine v1.3.4) — .heb class no longer force-sets direction:rtl; now uses unicode-bidi:plaintext + text-align:start. Each paragraph\'s base direction is computed from its own first strong character per the Unicode Bidi Algorithm. Hebrew stays right-aligned, English-majority content (AI explanations, drug names) no longer reflows RTL inside Hebrew-font containers.',
+      '🔤 Quiz chrome — AI-flag banner + imgDep banner + teach-back textarea + teach-back header: dir="rtl" → dir="auto" + unicode-bidi:plaintext. Interpolated eFlag text wrapped in <bdi> so English error strings don\'t reorder into surrounding Hebrew.',
+    ],
     '9.78': [
       '🔑 Rotated SUPA_ANON from legacy JWT anon to new-format publishable key (sb_publishable_*) — matches § B Toranot, § C FamilyMedicine, § D Geriatrics on the shared Supabase project. Drift-prevention comment added.',
     ],
