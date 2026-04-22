@@ -107,6 +107,17 @@ export function startVoiceTeachBack(){
   rec.onend=function(){if(btn){btn.textContent='🎙️';btn.disabled=false;}};
   rec.start();
 }
+// Extract the first JSON object substring from an AI response.
+// Uses [\s\S] (not `.`) so newlines inside pretty-printed JSON still match.
+// Returns {} when no object is found or parsing fails — callers treat that
+// as a soft failure and fall back to default scoring/feedback.
+export function extractJsonObject(txt){
+  const s=String(txt||'');
+  const m=s.match(/\{[\s\S]*\}/);
+  if(!m)return{};
+  try{return JSON.parse(m[0]);}catch(e){return{};}
+}
+
 export async function gradeTeachBack(qIdx,userExplanation){
 G.teachBackState='grading';G.render();
 const q=G.QZ[qIdx];
@@ -120,8 +131,7 @@ RUBRIC (score all 3 axes, then give final score):
 FINAL SCORE: 3=all 3 axes correct (excellent), 2=any 2 correct (partial), 1=0-1 correct (needs work).
 Respond ONLY with valid JSON: {"score":N,"mechanism":0or1,"criteria":0or1,"exception":0or1,"feedback":"2 sentences in Hebrew — what was good and what is missing"}`;
 const txt=await callAI([{role:'user',content:teachBackRubric+'\n\nQuestion: '+q.q+'\nCorrect answer: '+correctOption+'\nStudent explanation: '+userExplanation}],400,'sonnet');
-const jsonMatch=txt.match(/\{[\s\G.S]*\}/);
-const parsed=jsonMatch?JSON.parse(jsonMatch[0]):{};
+const parsed=extractJsonObject(txt);
 G.teachBackState={score:parsed.score||1,feedback:parsed.feedback||'לא התקבל משוב — נסה שוב'};
 }catch(e){
 G.teachBackState={score:null,feedback:'⚠️ '+(e.message==='no_key'?'AI unavailable':e.message)};

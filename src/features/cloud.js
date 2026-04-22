@@ -303,6 +303,6 @@ method:'POST',
 headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Content-Type':'application/json','Prefer':'return=minimal'},
 body:JSON.stringify({app:'pnimit',question_idx:qIdx,question_text:(q.q||'').slice(0,200),current_answer:q.c,reported_answer:(userReason||'').slice(0,50),user_reason:userReason||'',ai_verdict:aiVerdict||'',device_id:_sbDeviceId()})
 });
-}catch(e){console.warn('Report G.save failed:',e.message);}
+}catch(e){console.warn('Report save failed:',e.message);}
 }
 
