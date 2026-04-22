@@ -19,7 +19,12 @@ body {
   overflow-x: hidden;
 }
 
-.heb { font-family: 'Heebo', sans-serif; direction: rtl; text-align: right }
+/* Hebrew-font container: BIDI-safe via unicode-bidi:plaintext (each paragraph's
+   base direction is computed from its own first strong character, per UBA).
+   text-align:start follows the computed direction — Hebrew paragraphs right-
+   align, English paragraphs left-align, mixed-majority content renders sanely.
+   Callers can still add dir="rtl" / dir="auto" / dir="ltr" to force a direction. */
+.heb { font-family: 'Heebo', sans-serif; unicode-bidi: plaintext; text-align: start }
 
 button { cursor: pointer; border: none; background: none; font: inherit }
 input, textarea, select { font: inherit }
