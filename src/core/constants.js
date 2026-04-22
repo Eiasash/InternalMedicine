@@ -16,16 +16,22 @@ export const EXAM_FREQ=[50,45,40,30,45,60,50,40,35,50,45,35,55,35,40,30,15,15,20
 // Canonical format YYYY-Mon. `2020` kept bare — month unresolved (TODO: confirm from source).
 export const EXAM_YEARS=['2020','2021-Jun','2022-Jun','2023-Jun','2024-May','2024-Oct','2025-Jun'];
 
-// Supabase
+// Supabase (shared Toranot project — shared w/ Toranot / FamilyMedicine / Geriatrics)
+// DO NOT drift: this URL + key must match FamilyMedicine/src/core/constants.js, Geriatrics/shlav-a-mega.html, and toranot's env.
+// New-format publishable key (sb_publishable_*) — public client key by design, safe to ship.
+// Legacy JWT anon rotated out 2026-04 (matches § B/C/D on same project).
 export const SUPA_URL='https://krmlzwwelqvlfslwltol.supabase.co';
-export const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybWx6d3dlbHF2bGZzbHdsdG9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NjQxMDksImV4cCI6MjA4NzU0MDEwOX0.PFSuFgHA-WBnrgs4stmloxvOORSX0CiXDPsW2dinAAQ';
+export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 
 // 24 subspecialty display names (P0064-2025)
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.77';
+export const APP_VERSION='9.78';
 export const CHANGELOG={
+    '9.78': [
+      '🔑 Rotated SUPA_ANON from legacy JWT anon to new-format publishable key (sb_publishable_*) — matches § B Toranot, § C FamilyMedicine, § D Geriatrics on the shared Supabase project. Drift-prevention comment added.',
+    ],
     '9.76': [
       '↩ הוחזרו כתובות Supabase לסכמת public (internal_medicine schema לא היה חשוף ב-PostgREST, כתיבות החזירו 406 מאז merge של PR #42 ב-17:45 UTC). כל פיצ׳רי הגיבוי, הפידבק והליידרבורד פעילים שוב.',
       '🔒 תיקון במקביל לגריאטריה (v10.2) — אותה בעיה, אותו פיתרון.',
