@@ -1,5 +1,6 @@
 node_modules/
 dist/
+coverage/
 generated-*.json
 *.progress.json
 .DS_Store
