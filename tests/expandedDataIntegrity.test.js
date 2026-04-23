@@ -29,7 +29,7 @@ beforeAll(() => {
 
 describe("questions.json — answer integrity", () => {
   it("every question has exactly 4 options", () => {
-    const non4 = questions.filter((q, i) => q.o.length !== 4);
+    const non4 = questions.filter(q => q.o.length !== 4);
     expect(non4.length, `${non4.length} questions don't have exactly 4 options`).toBeLessThan(
       questions.length * 0.05,
     );
@@ -152,7 +152,7 @@ describe("notes.json — content quality", () => {
 
   it("notes cite Harrison's as source (ch field)", () => {
     const nonHarrison = [];
-    notes.forEach((n, i) => {
+    notes.forEach((n, _i) => {
       if (!n.ch || !n.ch.includes("Harrison")) {
         nonHarrison.push({ id: n.id, topic: n.topic, ch: n.ch });
       }
@@ -169,25 +169,25 @@ describe("notes.json — content quality", () => {
 
 describe("drugs.json — clinical accuracy checks", () => {
   it("all Beers Criteria drugs have meaningful risk descriptions (>10 chars)", () => {
-    drugs.filter(d => d.beers).forEach((d, i) => {
+    drugs.filter(d => d.beers).forEach((d, _i) => {
       expect(d.risk.length, `Beers drug "${d.name}" should have risk description`).toBeGreaterThan(10);
     });
   });
 
   it("Hebrew name (heb) is non-empty for all drugs", () => {
-    drugs.forEach((d, i) => {
+    drugs.forEach((d, _i) => {
       expect(d.heb.length, `Drug "${d.name}" should have Hebrew name`).toBeGreaterThan(0);
     });
   });
 
   it("drug categories are non-empty", () => {
-    drugs.forEach((d, i) => {
+    drugs.forEach((d, _i) => {
       expect(d.cat.length, `Drug "${d.name}" should have category`).toBeGreaterThan(0);
     });
   });
 
   it("ACB scores are clinically reasonable (0-3 integer scale)", () => {
-    drugs.forEach((d, i) => {
+    drugs.forEach((d, _i) => {
       expect([0, 1, 2, 3]).toContain(d.acb);
     });
   });

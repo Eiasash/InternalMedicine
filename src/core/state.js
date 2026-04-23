@@ -25,7 +25,7 @@ G.save=function(){clearTimeout(G._saveTimer);G._saveTimer=setTimeout(()=>{
   // Warn if localStorage approaching 5MB limit
   try{
     let total=0;
-    for(let k in localStorage)if(localStorage.hasOwnProperty(k))total+=localStorage[k].length*2;
+    for(const k in localStorage)if(Object.prototype.hasOwnProperty.call(localStorage,k))total+=localStorage[k].length*2;
     if(total>4*1024*1024&&!window._lsWarnShown){
       window._lsWarnShown=true;
       console.warn('localStorage: '+(total/1024/1024).toFixed(1)+'MB — approaching limit');
