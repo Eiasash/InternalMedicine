@@ -124,7 +124,7 @@ G.teachBackState='grading';G.render();
 const q=G.QZ[qIdx];
 const correctOption=q.o[q.c];
 try{
-const teachBackRubric=`You are an Israeli internal medicine board examiner grading a resident\'s teach-back.
+const teachBackRubric=`You are an Israeli internal medicine board examiner grading a resident's teach-back.
 RUBRIC (score all 3 axes, then give final score):
 1. MECHANISM: Does the student explain WHY this is correct (pathophysiology/mechanism)? (0=no, 1=yes)
 2. CRITERIA: Does the student cite the key criterion/definition/threshold (e.g. specific numbers, guideline criteria)? (0=no, 1=yes)

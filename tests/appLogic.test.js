@@ -73,7 +73,7 @@ function isChronicFail(sr, qIdx) {
 
 function getDueQuestions(sr) {
   const now = Date.now();
-  return Object.entries(sr).filter(([k, v]) => v.next <= now).map(([k]) => parseInt(k)).slice(0, 20);
+  return Object.entries(sr).filter(([_k, v]) => v.next <= now).map(([k]) => parseInt(k)).slice(0, 20);
 }
 
 function isExamTrap(sr, qIdx) {

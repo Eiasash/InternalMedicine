@@ -26,7 +26,7 @@ const title=line.replace(/^▸\s+/,'');
 return '<div style="margin:14px 0 6px;padding:5px 10px;background:linear-gradient(90deg,#eff6ff,transparent);border-left:3px solid #3b82f6;border-radius:0 4px 4px 0;font-size:10px;font-weight:800;color:#1e40af;text-transform:uppercase;letter-spacing:.6px">'+title+'</div>';
 }
 // Sub-headers: ALL-CAPS word followed by colon at line start (e.g. "Tai Chi:", "RACF setting:")
-line=line.replace(/^([A-Z][A-Z\s\/&\-()]{2,40}):/,'<strong style="color:#0f172a">$1:</strong>');
+line=line.replace(/^([A-Z][A-Z\s/&\-()]{2,40}):/,'<strong style="color:#0f172a">$1:</strong>');
 // Any remaining "Label:" pattern
 line=line.replace(/^([^:\n]{2,50}):/,'<strong>$1:</strong>');
 // Numbers with units, thresholds
