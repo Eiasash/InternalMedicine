@@ -380,7 +380,7 @@ export function showMockExamResult(pct,correct,tot,elapsed,byTopic,wrongIdxs){
   const wn=(wrongIdxs&&wrongIdxs.length)||0;
   // Stash on window so the handler can read it back (avoid inline JSON.stringify in onclick)
   window.__pnimitLastMockWrong=wrongIdxs||[];
-  let html=`<div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;overflow-y:auto;padding:16px" id="mexModal">
+  const html=`<div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;overflow-y:auto;padding:16px" id="mexModal">
 <div style="background:#fff;border-radius:16px;max-width:480px;margin:0 auto;padding:20px;font-family:Inter,sans-serif">
 <div style="text-align:center;margin-bottom:16px">
   <div style="font-size:48px">${pass?'🎉':'💪'}</div>

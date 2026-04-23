@@ -25,7 +25,7 @@ describe('questions.json', () => {
   });
 
   test('every question has required fields: q, o, c, ti', () => {
-    questions.forEach((q, i) => {
+    questions.forEach((q, _i) => {
       expect(q).toHaveProperty('q');
       expect(q).toHaveProperty('o');
       expect(q).toHaveProperty('c');
@@ -34,22 +34,22 @@ describe('questions.json', () => {
   });
 
   test('every question has q as a non-empty string', () => {
-    questions.forEach((q, i) => {
+    questions.forEach((q, _i) => {
       expect(typeof q.q).toBe('string');
       expect(q.q.trim().length).toBeGreaterThan(0);
     });
   });
 
   test('every question has exactly 4 options', () => {
-    questions.forEach((q, i) => {
+    questions.forEach((q, _i) => {
       expect(Array.isArray(q.o)).toBe(true);
       expect(q.o).toHaveLength(4);
     });
   });
 
   test('every option is a non-empty string', () => {
-    questions.forEach((q, i) => {
-      q.o.forEach((opt, j) => {
+    questions.forEach((q, _i) => {
+      q.o.forEach((opt, _j) => {
         expect(typeof opt).toBe('string');
         expect(opt.trim().length).toBeGreaterThan(0);
       });
@@ -57,7 +57,7 @@ describe('questions.json', () => {
   });
 
   test('correct answer index c is a number between 0 and 3', () => {
-    questions.forEach((q, i) => {
+    questions.forEach((q, _i) => {
       expect(typeof q.c).toBe('number');
       expect(q.c).toBeGreaterThanOrEqual(0);
       expect(q.c).toBeLessThanOrEqual(3);
@@ -65,13 +65,13 @@ describe('questions.json', () => {
   });
 
   test('correct answer index c is within bounds of options array', () => {
-    questions.forEach((q, i) => {
+    questions.forEach((q, _i) => {
       expect(q.c).toBeLessThan(q.o.length);
     });
   });
 
   test('topic index ti is a number between 0 and 23', () => {
-    questions.forEach((q, i) => {
+    questions.forEach((q, _i) => {
       expect(typeof q.ti).toBe('number');
       expect(q.ti).toBeGreaterThanOrEqual(0);
       expect(q.ti).toBeLessThanOrEqual(23);
@@ -145,7 +145,7 @@ describe('notes.json', () => {
   });
 
   test('every note has topic and notes fields', () => {
-    notes.forEach((n, i) => {
+    notes.forEach((n, _i) => {
       expect(n).toHaveProperty('topic');
       expect(typeof n.topic).toBe('string');
       expect(n.topic.trim().length).toBeGreaterThan(0);
@@ -174,7 +174,7 @@ describe('flashcards.json', () => {
   });
 
   test('every flashcard has f (front) and b (back) fields', () => {
-    flashcards.forEach((fc, i) => {
+    flashcards.forEach((fc, _i) => {
       expect(fc).toHaveProperty('f');
       expect(typeof fc.f).toBe('string');
       expect(fc.f.trim().length).toBeGreaterThan(0);
@@ -204,7 +204,7 @@ describe('drugs.json', () => {
 
   test('every drug has required fields: name, heb, acb, beers, cat, risk', () => {
     const required = ['name', 'heb', 'acb', 'beers', 'cat', 'risk'];
-    drugs.forEach((d, i) => {
+    drugs.forEach((d, _i) => {
       required.forEach(key => {
         expect(d).toHaveProperty(key);
       });

@@ -7,7 +7,7 @@ import { TOPIC_REF } from './track-view.js';
 import { submitReport } from '../features/cloud.js';
 import { buildPool } from '../quiz/engine.js';
 
-let sylSec='haz';
+const sylSec='haz';
 let _pendingAiQs=null; // temp storage for add-to-bank delegation
 const SYL_HAZ_EXCLUDED=new Set([2,3,4,5,6,34,62]);
 const SYL_HAZ=[];
@@ -232,7 +232,7 @@ Return ONLY valid JSON array:
 c = 0-based index of correct answer. No markdown, no preamble.`;
   try{
     const txt=await callAI([{role:'user',content:prompt}],1200,'sonnet');
-    const clean=txt.replace(/\`\`\`json|\`\`\`/g,'').trim();
+    const clean=txt.replace(/```json|```/g,'').trim();
     const qs=JSON.parse(clean);
     // Display the generated questions
     let h='<div style="margin-top:16px;border-top:2px solid #7c3aed;padding-top:12px">';

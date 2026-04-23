@@ -15,7 +15,6 @@ import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 
 const rootDir = resolve(import.meta.dirname, '..');
-const dataDir = resolve(rootDir, 'data');
 const canonDir = resolve(rootDir, 'scripts', 'exam_audit', 'canonical');
 
 function loadJSON(relPath) {
@@ -152,7 +151,7 @@ describe('questions.json — duplicates', () => {
   // Normalized stem match: strips whitespace, punctuation, digits, Hebrew maqaf.
   // Catches near-dupes that differ only in trailing chars on an option, whitespace
   // drift, or punctuation variation.
-  const normStem = (s) => (s || '').replace(/[\s\d.,?!:;()\[\]"'\-\u05BE]+/g, '').toLowerCase();
+  const normStem = (s) => (s || '').replace(/[\s\d.,?!:;()[\]"'\-\u05BE]+/g, '').toLowerCase();
 
   test('no duplicate questions per tag (normalized stem)', () => {
     const byTagKey = new Map();
@@ -240,7 +239,7 @@ describe('questions.json — structural invariants', () => {
   });
 
   test('every question has a tag t', () => {
-    const bad = questions.filter((q, i) => !q.t || typeof q.t !== 'string').map((q, i) => ({ i, t: q.t }));
+    const bad = questions.filter(q => !q.t || typeof q.t !== 'string').map((q, i) => ({ i, t: q.t }));
     expect(bad.length).toBe(0);
   });
 
@@ -357,7 +356,7 @@ describe('canonical JSONs stay in sync with data/questions.json', () => {
 
   test('canonical JSONs contain no ð mojibake', () => {
     const bad = [];
-    SESSIONS.forEach(({ tag, file }) => {
+    SESSIONS.forEach(({ file }) => {
       const p = resolve(canonDir, file);
       if (!existsSync(p)) return;
       const text = readFileSync(p, 'utf-8');

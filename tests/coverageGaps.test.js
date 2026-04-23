@@ -12,10 +12,6 @@ const srcFiles = [
 const allSource = [html, ...srcFiles.map(f => readFileSync(f, 'utf-8'))].join('\n');
 // Combined source: HTML + external JS for constant/function lookups
 
-// Extract JS between first <script> and last </script>
-const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/);
-const jsCode = scriptMatch ? scriptMatch[1] : '';
-
 describe('AI Proxy Routing', () => {
   it('has AI_PROXY constant pointing to toranot proxy', () => {
     expect(allSource).toContain("const AI_PROXY='https://toranot.netlify.app/api/claude'");
