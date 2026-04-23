@@ -194,6 +194,7 @@ export async function runExplainOnCall(qIdx){
   try{
     const txt=await callAI([{role:'user',content:'ANSWER KEY: The correct answer is DEFINITIVELY "'+correct+'".\n\nהסבר בעברית (3-4 משפטים) למה זו התשובה הנכונה. עגן בתשובה הנכונה. שאלה: '+q.q+'\nתשובה נכונה: '+correct}],400,'sonnet');
     G._exCache[qIdx]=txt;try{localStorage.setItem('pnimit_ex',JSON.stringify(G._exCache));}catch(e){}
+    // safe-innerhtml: heDir returns only 'rtl'|'ltr'|'auto'; txt goes through sanitize()
     box.innerHTML='<div style="font-size:12px;color:#475569;line-height:1.7;text-align:right;margin-top:8px;unicode-bidi:plaintext" dir="'+heDir(txt)+'">'+sanitize(txt)+'</div>';
     btn.remove();
   }catch(e){btn.textContent='🤖 הסבר AI';btn.disabled=false;}
