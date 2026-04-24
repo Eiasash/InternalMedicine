@@ -43,7 +43,7 @@ export function initSWUpdate(appVersion) {
 
   caches.keys().then(ks => {
     const old = ks.filter(k => k.startsWith('pnimit-') && k !== 'pnimit-v' + appVersion);
-    old.forEach(k => { caches.delete(k); console.log('Deleted old cache:', k); });
+    old.forEach(k => { caches.delete(k); if(import.meta.env.DEV)console.log('Deleted old cache:', k); });
   });
 
   return navigator.serviceWorker.register('sw.js').then(reg => {
