@@ -1,5 +1,5 @@
 import G from '../core/globals.js';
-import { sanitize, getApiKey, setApiKey, toast, heDir } from '../core/utils.js';
+import { sanitize, toast, heDir } from '../core/utils.js';
 import { callAI } from '../ai/client.js';
 import { AI_PROXY, AI_SECRET } from '../core/constants.js';
 import { startVoiceParser } from '../quiz/modes.js';
@@ -225,8 +225,8 @@ export async function sendChat(){
 const input=document.getElementById('chat-input');
 const text=(input?input.value:'').trim();
 if(!text||G.chatLoading)return;
-const key=getApiKey();
-if(!key){const k=prompt('הכנס Anthropic API Key:','');if(!k)return;setApiKey(k);}
+// Removed: proxy has its own x-api-secret; no user key needed to chat.
+// (User key is still used by callAI() as fallback if the proxy fails.)
 G.S.chat.push({role:'user',text:text});
 G.chatLoading=true;G.save();G.render();
 setTimeout(function(){const el=document.getElementById('chat-msgs');if(el)el.scrollTop=el.scrollHeight;},50);
