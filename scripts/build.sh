@@ -133,6 +133,10 @@ SWEOF
 
 # 5. Summary
 echo ""
+# Verify dist/sw.js is internally consistent before shipping.
+echo "→ Verifying dist/sw.js manifest…"
+node scripts/verify-dist-sw.cjs
+
 echo "=== Build complete ==="
 echo "Output: dist/"
 du -sh dist/
