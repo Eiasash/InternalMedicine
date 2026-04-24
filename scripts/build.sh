@@ -25,6 +25,24 @@ cp index.html dist/index.html
 echo "→ Fixing manifest path in built HTML..."
 sed -i 's|href="[^"]*manifest[^"]*\.json"|href="manifest.json"|' dist/pnimit-mega.html
 
+
+# Defensive parity check — cp -r can silently drop files under ENOSPC or
+# similar per-file errors while returning 0 at the invocation level. Assert
+# every static-asset sub-tree that landed in dist/ matches its source count.
+echo "→ Verifying static-asset parity (src vs dist)..."
+for d in data shared exams harrison articles goroll docs/references/afp_hari questions syllabus; do
+  dst=$(basename "$d")
+  if [ -d "$d" ] && [ -d "dist/$dst" ]; then
+    src_count=$(find "$d" -type f | wc -l)
+    dst_count=$(find "dist/$dst" -type f | wc -l)
+    if [ "$src_count" -ne "$dst_count" ]; then
+      echo "FATAL: $d/ → dist/$dst/ lost files (src=$src_count, dst=$dst_count)" >&2
+      exit 1
+    fi
+    echo "  ✓ $d/ → dist/$dst/ ($src_count files)"
+  fi
+done
+
 # 4. Generate production service worker
 # In production, JS/CSS are content-hashed (immutable) — browser cache handles them.
 # SW only needs to cache: HTML shell (offline access) + data JSON (offline quiz).
