@@ -7468,7 +7468,7 @@
 {
 "q": "בן 45, מובא לחדר המיון מעורפל הכרה, נראה מוזנח ומכוסה בקיא. בבדיקה: ל\"ד 90/60 ממ\"כ, דופק 120 לדקה, חום 38°C, סטורציה 94% באוויר חדר, חרחורים מעל חצי ריאה ימנית. מה הפרעת החומצה-בסיס על פי בדיקות המעבדה? Na 148 mEq/L, pH 7.25, K 2.9 mEq/L, HCO₃ 15 mEq/L, Cl 95 mEq/L, pCO₂ 30 mmHg, Albumin 3.2 gr/dL, Lactate תקין. metabolic acidosis",
 "o": [
-"high AG metabolic acidosis בלבד",
+"metabolic acidosis",
 "metabolic alkalosis+high AG metabolic acidosis+respiratory acidosis",
 "high AG metabolic acidosis+normal AG metabolic acidosis",
 "respiratory acidosis+metabolic alkalosis"
