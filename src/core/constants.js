@@ -27,8 +27,14 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.80';
+export const APP_VERSION='9.81';
 export const CHANGELOG={
+    '9.81': [
+      '🔍 ביקורת רוחב היסטורית של Parser Bleed (תאומת ל-Geriatrics v10.34, commit ca12e96). אותו פייפליין parsing עברי IMA RTL מזין את שני המאגרים — אם השגיאה התרחשה שם, חזקה שהתרחשה גם כאן. הסריקה מצאה רק שאלה אחת (idx 510, t=2023-Jun): שאלה על הפרעת חומצה-בסיס שבה תוצאות בדיקה גופנית + מעבדה + פרגמנט שאלה התמזגו לאופציה א\'. תיקון כירורגי: הטקסט הזולג הועבר ל-stem, אופציה א\' הוחלפה ב-distractor פלאוסבילי.',
+      '🛡️ tests/parserBleedGuard.test.js: 3 טסטים חדשים — (a) אין שאלת past-exam עם next-Q-stem-bleed pattern אחרי תו 30 (b) אין footer cruft (date+exam-header) (c) אין אופציה past-exam מעל 250 תווים. הטסט נועל את הבנק הנקי ולא יאפשר לבאג להופיע בייבוא בחינות עתידיות.',
+      '📊 Scope of damage: 1 אופציה זוהמה (לעומת 318 ב-Geriatrics) — Pnimit הרבה יותר נקייה. ספירות לא השתנו (1556 שאלות, אותם ti, אותם c). זוהי ניקוי data-integrity טהור.',
+      '🔢 No whitelist needed: LEGIT_LONG_OPTION_INDICES = empty set. אם בעתיד נוסיף שאלת השוואת-מטופלים לגיטימית, יש להוסיף את ה-index שלה לסט עם תיעוד בקומנט.',
+    ],
     '9.80': [
       '🔇 Sibling-drift fix (matches § C FamilyMedicine v1.5.0) — DEV-gated 3 production console.log calls: data-loader.js × 2 ("Loaded N user-generated questions" + "Data loaded: N questions, N notes"), sw-update.js × 1 ("Deleted old cache: X"). Mishpacha already shipped this pattern; Pnimit was still leaking. All three now quiet in production, still visible under `import.meta.env.DEV`.',
     ],
