@@ -27,8 +27,14 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.81';
+export const APP_VERSION='9.82';
 export const CHANGELOG={
+    '9.82': [
+      '🔬 Sanity-check correction על v9.81: התיקון הכירורגי על idx 510 (Q142 ב-2023-Jun, "מה הפרעת החומצה-בסיס") יצר distractor פיקטיבי במקום לשחזר מ-PDF המקור. cross-reference מול exams/2023_jun_questions.pdf חשף שהאופציה האמיתית היא "metabolic acidosis" (פשוט), לא "high AG metabolic acidosis בלבד" שהוצע על בסיס reasoning קליני בלבד.',
+      '✅ אומת מול answer_key המקורי: Q142 → ב, תואם ל-bank c=1. שלוש האופציות האחרות (o[1..3]) תואמות ל-PDF ב/ג/ד מילה-במילה. רק o[0] היה פיקטיבי, וכעת תוקן.',
+      '⚠️ הלקח: בעתיד, אם מקור PDF זמין ב-exams/, יש לחלץ ממנו לפני reconstruction מ-context קליני. הכלל "פיו ר היגיינה, לא יצירה" צריך להיות מחייב גם בתיקונים נקודתיים.',
+      '📝 פערים שנותרו ב-Q142 (out-of-scope לתיקון הזה): stem חסר labs (Albumin 3.2, pCO2 53, Lactate תקין) שהיו ב-PDF המקור, וטמפרטורה 38°C במקום 39°C — באגי parser מקוריים שדורשים מעבר מקיף יותר.',
+    ],
     '9.81': [
       '🔍 ביקורת רוחב היסטורית של Parser Bleed (תאומת ל-Geriatrics v10.34, commit ca12e96). אותו פייפליין parsing עברי IMA RTL מזין את שני המאגרים — אם השגיאה התרחשה שם, חזקה שהתרחשה גם כאן. הסריקה מצאה רק שאלה אחת (idx 510, t=2023-Jun): שאלה על הפרעת חומצה-בסיס שבה תוצאות בדיקה גופנית + מעבדה + פרגמנט שאלה התמזגו לאופציה א\'. תיקון כירורגי: הטקסט הזולג הועבר ל-stem, אופציה א\' הוחלפה ב-distractor פלאוסבילי.',
       '🛡️ tests/parserBleedGuard.test.js: 3 טסטים חדשים — (a) אין שאלת past-exam עם next-Q-stem-bleed pattern אחרי תו 30 (b) אין footer cruft (date+exam-header) (c) אין אופציה past-exam מעל 250 תווים. הטסט נועל את הבנק הנקי ולא יאפשר לבאג להופיע בייבוא בחינות עתידיות.',
