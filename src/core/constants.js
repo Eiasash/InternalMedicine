@@ -27,8 +27,11 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.84';
+export const APP_VERSION='9.84.1';
 export const CHANGELOG={
+    '9.84.1': [
+      '🐛 callAI singleton AbortController fix (mirror of Geriatrics v10.38.2). G._aiAbortController הוחלף ב-per-call AbortController + 30s safety timeout. בקשות מקבילות (bulk callers, רצף קליקים מהיר) לא מבטלות זו את זו יותר. preventive port — לא דווח באג ב-Pnimit אך אותו שורש קוד = אותו פגם.',
+    ],
     '9.84': [
       '🐞 Debug console polish: report format עבר ל-=== DEBUG REPORT === בסגנון plain-text section headers (במקום markdown #/##), כולל URL ו-time ISO. הוספת window.__debug API: __debug.show() / __debug.report() / __debug.buffer / __debug.clear(). MAX_NETWORK 50→100, MAX_ACTIONS 50→100. לוגיקת click-action מזהה כעת data-action ו-onclick=fnName(...) ומדגים אותם בלוג. tests/debugConsole.test.js + docs/DEBUG_CONSOLE.md מקובץ סטנדרטי לכל שלושת ה-PWAs.',
     ],

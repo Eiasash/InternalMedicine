@@ -6,12 +6,14 @@ import { getApiKey } from '../core/utils.js';
 // Depends on: AI_PROXY, AI_SECRET (constants.js), getApiKey (utils.js)
 
 export async function callAI(messages,maxTokens=400,model='sonnet'){
-  // Cancel any in-flight AI request before starting new one
-  if(G._aiAbortController)G._aiAbortController.abort();
-  G._aiAbortController=new AbortController();
-  const signal=G._aiAbortController.signal;
+  // v9.84.1: per-call AbortController (was singleton G._aiAbortController which
+  // cancelled in-flight peers on every new invocation, breaking bulk callers).
+  const _ctrl=new AbortController();
+  const signal=_ctrl.signal;
+  const _timeoutId=setTimeout(()=>_ctrl.abort(),30000);
 // Model alias map for direct API fallback
 const modelMap={sonnet:'claude-sonnet-4-6',opus:'claude-opus-4-6',haiku:'claude-haiku-4-5-20251001'};
+try{
 try{
 const pr=await fetch(AI_PROXY,{
 method:'POST',
@@ -21,7 +23,7 @@ signal
 });
 if(pr.ok){const d=await pr.json();return d.content?.[0]?.text||'';}
 console.warn('Proxy status:',pr.status);
-}catch(e){console.warn('Proxy:',e.message);}
+}catch(e){if(e&&e.name==='AbortError')throw e;console.warn('Proxy:',e.message);}
 // Fallback to personal API key with correct model name
 const apiKey=getApiKey();
 if(!apiKey)throw new Error('no_key');
@@ -35,4 +37,5 @@ signal
 if(!r.ok)throw new Error('API '+r.status);
 const d=await r.json();
 return d.content?.[0]?.text||'';
+}finally{clearTimeout(_timeoutId);}
 }
