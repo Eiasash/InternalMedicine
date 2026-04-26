@@ -1,4 +1,5 @@
 // App entry point — orchestrates all modules, wires up window bindings for onclick handlers
+import '../debug/console.js'; // FIRST IMPORT: installs console/fetch/error wrappers before anything else runs
 import G from '../core/globals.js';
 import { APP_VERSION, LS, TOPICS, EXAM_FREQ, CHANGELOG, BUILD_HASH } from '../core/constants.js';
 import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey, toast, isOk} from "../core/utils.js";
@@ -340,6 +341,7 @@ document.addEventListener('visibilitychange', () => {
 
 // Header version
 {const hv=document.getElementById('headerVer');if(hv)hv.textContent='v'+APP_VERSION;}
+window.APP_VERSION=APP_VERSION; // expose for debug-console
 
 // IDB migration → initial render
 migrateToIDB().then(()=>{

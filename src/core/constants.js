@@ -27,8 +27,13 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.82';
+export const APP_VERSION='9.83';
 export const CHANGELOG={
+    '9.83': [
+      '🐛 Built-in debug console: 5 הקשות ברצף (תוך 3 שניות) על הפינה הימנית-עליונה של המסך פותחות panel דיבוג חי. מציג: APP/SW versions, מצב נוכחי (tab/libSec/pool/qi/QZ), 10 שגיאות אחרונות עם stack traces, 50 שורות console (בצבעים לפי level), 20 קריאות fetch אחרונות (status+ms+URL), 30 פעולות משתמש אחרונות. כפתור "📋 Copy" מעתיק הכל כ-markdown ללוח. מצמצם את צורך USB-debugging מהטלפון.',
+      '🪝 Hooks: src/debug/console.js — first import ב-src/ui/app.js כך ש-console.{log,info,warn,error,debug} + window.fetch + onerror + unhandledrejection נעטפים לפני יתר ה-modules. document click capture (capture phase) רושם target+data-action+text. window.__debug_open() זמין מ-DevTools console.',
+      '🔧 Sibling-port (matches Geriatrics v10.38.0). אין שינוי בלוגיקת האפליקציה — רק תוספת observability טהורה. Bundle size delta ≈ 7KB gz.',
+    ],
     '9.82': [
       '🔬 Sanity-check correction על v9.81: התיקון הכירורגי על idx 510 (Q142 ב-2023-Jun, "מה הפרעת החומצה-בסיס") יצר distractor פיקטיבי במקום לשחזר מ-PDF המקור. cross-reference מול exams/2023_jun_questions.pdf חשף שהאופציה האמיתית היא "metabolic acidosis" (פשוט), לא "high AG metabolic acidosis בלבד" שהוצע על בסיס reasoning קליני בלבד.',
       '✅ אומת מול answer_key המקורי: Q142 → ב, תואם ל-bank c=1. שלוש האופציות האחרות (o[1..3]) תואמות ל-PDF ב/ג/ד מילה-במילה. רק o[0] היה פיקטיבי, וכעת תוקן.',
