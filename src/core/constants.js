@@ -27,8 +27,11 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.84.1';
+export const APP_VERSION='9.85.0';
 export const CHANGELOG={
+  '9.85.0': [
+    '👤 חשבונות משתמש — שם משתמש + סיסמה לחברי הצוות. Powered by Supabase pgcrypto bcrypt דרך RPC SECURITY DEFINER (auth_register_user / auth_login_user / auth_change_password). שם המשתמש הופך ל-uid: ההתקדמות, לוח התוצאות והגיבוי בענן עוקבים אחריך בין מכשירים. משתמשים אורחים (uid אקראי) ממשיכים לעבוד כרגיל — אין מיגרציה הכרחית. Lockout אחרי 5 נסיונות כושלים. Settings → 👤 חשבון. Mirror של Mishpacha v1.8.0 — נחלק את ה-app_users table באותו פרויקט Supabase, אז חשבון אחד פותח את שלוש האפליקציות.',
+  ],
     '9.84.1': [
       '🐛 callAI singleton AbortController fix (mirror of Geriatrics v10.38.2). G._aiAbortController הוחלף ב-per-call AbortController + 30s safety timeout. בקשות מקבילות (bulk callers, רצף קליקים מהיר) לא מבטלות זו את זו יותר. preventive port — לא דווח באג ב-Pnimit אך אותו שורש קוד = אותו פגם.',
     ],
