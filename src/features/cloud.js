@@ -4,6 +4,7 @@ import { sanitize, fmtT, toast } from '../core/utils.js';
 import { callAI } from '../ai/client.js';
 import { calcEstScore } from '../ui/track-view.js';
 import { getTopicStats, getDueQuestions } from '../sr/spaced-repetition.js';
+import { getUserId, getCurrentUser } from './auth.js';
 
 // Cloud sync, leaderboard, feedback, diagnostics — extracted from pnimit-mega.html
 // Depends on: SUPA_URL, SUPA_ANON (constants.js), G.S, G.save (state.js),
@@ -23,8 +24,7 @@ const est=calcEstScore();
 if(est==null)return{skipped:'no_est',answered:totalAnswered};
 const streak=G.S.streak||0;
 const readiness=est;
-let uid=localStorage.getItem('pnimit_uid');
-if(!uid){uid='u'+Math.random().toString(36).slice(2,10);localStorage.setItem('pnimit_uid',uid);}
+let uid=getUserId();
 const payload={uid,answered:totalAnswered,correct:totalCorrect,streak,readiness,ts:new Date().toISOString()};
 try{
   const res=await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard',{
@@ -52,7 +52,7 @@ await submitLeaderboardScore();
 box.innerHTML='<div style="text-align:center;padding:8px;font-size:10px;color:#64748b">Loading...</div>';
 const data=await fetchLeaderboard();
 _leaderboardData=data;
-const myUid=localStorage.getItem('pnimit_uid')||'';
+const myUid=getUserId();
 let html='';
 if(!data.length){html='<div style="font-size:10px;color:#94a3b8;text-align:center">No data yet</div>';}
 else{
@@ -111,7 +111,7 @@ export async function submitFeedbackForm(){
 const type=document.getElementById('fb-type')?.value||'other';
 const text=document.getElementById('fb-text')?.value?.trim();
 if(!text){toast('Please describe your feedback','info');return;}
-const entry={type,text,ts:Date.now(),version:APP_VERSION,uid:localStorage.getItem('pnimit_uid')||'anon'};
+const entry={type,text,ts:Date.now(),version:APP_VERSION,uid:getUserId()};
 let fb=[];try{fb=JSON.parse(localStorage.getItem('pnimit_fb_sent')||'[]');}catch(e){}
 fb.push(entry);
 localStorage.setItem('pnimit_fb_sent',JSON.stringify(fb));
@@ -133,7 +133,13 @@ G.render();
 }
 // ===== END FEEDBACK =====
 const _SB_KEY=SUPA_ANON;
-export function _sbDeviceId(){let id=localStorage.getItem('pnimit_devid');if(!id){id='dev_'+Math.random().toString(36).slice(2,12);localStorage.setItem('pnimit_devid',id);}return id;}
+export function _sbDeviceId(){
+  const user=getCurrentUser();
+  if(user)return 'user_'+user.username;
+  let id=localStorage.getItem('pnimit_devid');
+  if(!id){id='dev_'+Math.random().toString(36).slice(2,12);localStorage.setItem('pnimit_devid',id);}
+  return id;
+}
 export async function cloudBackup(){
   const btn=document.getElementById('cloud-backup-btn');
   if(btn){btn.disabled=true;btn.textContent='☁️ Saving...';}
@@ -190,7 +196,8 @@ export function filterRestorePayload(payload, allowedKeys) {
 }
 
 export async function cloudRestore(){
-  const id=prompt('Enter device ID to restore from (leave blank for this device):',_sbDeviceId())||_sbDeviceId();
+  const user=getCurrentUser();
+  const id=user?_sbDeviceId():(prompt('Enter device ID to restore from (leave blank for this device):',_sbDeviceId())||_sbDeviceId());
   if(!id)return;
   try{
     const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups?id=eq.'+encodeURIComponent(id)+'&select=data,updated_at',{

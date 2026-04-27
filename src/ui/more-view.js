@@ -4,6 +4,7 @@ import { callAI } from '../ai/client.js';
 import { AI_PROXY, AI_SECRET } from '../core/constants.js';
 import { startVoiceParser } from '../quiz/modes.js';
 import { submitFeedbackForm } from '../features/cloud.js';
+import { renderAuthSection, bindAuthEvents } from '../features/auth.js';
 
 export function renderNotes(){
   const qnoteEntries=Object.entries(G.S.qnotes||{}).filter(([k,v])=>v&&v.trim());
@@ -140,7 +141,8 @@ export function renderSettings() {
       ${optIn ? 'פעיל' : 'כבוי'}
     </button>
   </div>
-</div>`;
+</div>
+${renderAuthSection()}`;
 }
 
 export async function toggleNotifOptIn() {
@@ -261,6 +263,8 @@ export function clearChat(){G.S.chat=[];G.chatLoading=false;G.save();G.render();
 
 // Event delegation for More tab — set up once on #ct container
 export function initMoreEvents(container) {
+  // Bind auth events once globally (idempotent — uses window.__authBound guard).
+  bindAuthEvents();
   container.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-action]');
     if (!btn) return;
