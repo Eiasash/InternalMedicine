@@ -56,7 +56,7 @@ fi
 echo "  → CACHE=pnimit-v${APP_VER}"
 cat > dist/sw.js << SWEOF
 const CACHE='pnimit-v${APP_VER}';
-const SHELL_URLS=['pnimit-mega.html','manifest.json','shared/fsrs.js','shared/tokens.css','shared/install-promo.js','shared/install-promo-config.js'];
+const SHELL_URLS=['pnimit-mega.html','manifest.json','shared/fsrs.js','shared/tokens.css','shared/layout-primitives.css','shared/install-promo.js','shared/install-promo-config.js'];
 const DATA_URLS=['data/questions.json','data/topics.json','data/notes.json','data/drugs.json','data/flashcards.json','data/tabs.json','harrison_chapters.json'];
 const ALL_URLS=[...SHELL_URLS,...DATA_URLS];
 
