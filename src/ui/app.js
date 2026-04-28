@@ -35,6 +35,7 @@ import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
          showAnswerHardFail, renderSettings, toggleNotifOptIn, renderNotes,
          initMoreEvents } from './more-view.js';
 import { getCurrentUser } from '../features/auth.js';
+import { wireUnderlineTabs } from './tabs.js';
 
 export function renderTabs(){
 // safe-innerhtml: G.TABS is a hardcoded array of tab definitions (id/label/icon); no user input
@@ -324,6 +325,10 @@ document.getElementById('tb').addEventListener('click', (e) => {
   const el = e.target.closest('[data-action="go"]');
   if (el) go(el.dataset.tab);
 });
+// Underline-tab indicator — Editorial Clinical 2026-04 redesign.
+// Adds a single sliding bar driven by getBoundingClientRect(); preserves
+// the existing event-delegated go() handler above (no behavior change).
+wireUnderlineTabs(document.getElementById('tb'));
 // Sub-tab + view delegation (inside #ct)
 const _ct = document.getElementById('ct');
 _ct.addEventListener('click', (e) => {
