@@ -6,6 +6,7 @@ import { isChronicFail } from '../sr/fsrs-bridge.js';
 import { setFilt, startTopicMiniExam, buildPool } from '../quiz/engine.js';
 import { buildRescuePool } from '../sr/spaced-repetition.js';
 import { renderWrongAnswerLog } from './library-view.js';
+import { renderTopicHeatmap } from './heatmap.js';
 
 function getTopicTrend(ti){
   try{
@@ -660,19 +661,8 @@ h+=`<div class="card" style="padding:12px;margin-bottom:8px;background:#fef2f2;b
 <button data-action="goto-quiz-build" data-filt="due" class="btn" style="font-size:10px;padding:6px 12px;background:#dc2626;color:#fff;border:none;border-radius:8px">▶ Review</button>
 </div></div>`;
 }
-// Topic mastery heatmap
-const _tStats=getTopicStats();
-h+=`<div class="card" style="padding:14px;margin-bottom:8px">
-<div style="font-size:12px;font-weight:700;margin-bottom:8px">🗺️ Topic Mastery Map</div>
-<div style="display:flex;flex-wrap:wrap;gap:3px">`;
-Object.entries(_tStats).forEach(([ti,s])=>{
-ti=Number(ti);if(!TOPICS[ti])return;
-const _p=s.tot>=2?Math.round(s.ok/s.tot*100):null;
-const color=_p===null?'#e2e8f0':_p>=80?'#059669':_p>=60?'#84cc16':_p>=40?'#f59e0b':'#ef4444';
-const bg=_p===null?'#f8fafc':_p>=80?'#ecfdf5':_p>=60?'#f7fee7':_p>=40?'#fffbeb':'#fef2f2';
-h+=`<div data-action="goto-quiz-topic" data-ti="${ti}" style="padding:4px 6px;border-radius:6px;font-size:8px;background:${bg};color:${color};font-weight:700;cursor:pointer;border:1px solid ${color}30;min-width:28px;text-align:center" title="${TOPICS[ti]}: ${_p!==null?_p+'%':'no data'} (${s.tot} Qs)">${_p!==null?_p+'%':'·'}</div>`;
-});
-h+=`</div></div>`;
+// Topic mastery heatmap (FSRS-driven SVG, Viridis 5-step, colorblind-safe)
+h+=renderTopicHeatmap();
 h+=renderStudyPlan();
 // Feature 5: Exam date + daily plan
 if(!G.S.examDate&&!localStorage.getItem('pnimit_exam_date')){
@@ -995,8 +985,8 @@ export function initTrackEvents(container) {
       G.S.chat = []; window.go('chat');
       setTimeout(() => { window.sendChatStarter('Give me a concise board-review summary of ' + name + ' in internal medicine. Cover: key definitions, diagnostic criteria, management pearls, exam traps, and must-know numbers. Format with bold headings.'); }, 100);
     }
-    // Heatmap tile
-    else if (action === 'goto-quiz-topic') {
+    // Heatmap tile (legacy ASCII grid + new SVG heatmap)
+    else if (action === 'goto-quiz-topic' || action === 'heatmap-topic') {
       G.tab = 'quiz'; G.filt = 'topic';
       G.topicFilt = parseInt(el.dataset.ti, 10);
       buildPool(); G.render();

@@ -23,6 +23,7 @@ import { submitLeaderboardScore, fetchLeaderboard, showLeaderboard, renderFeedba
          saveAnswerReport, _sbDeviceId } from '../features/cloud.js';
 import { renderQuiz, toggleBk, uploadQImage, removeQImage, viewImg, pauseTimed,
          startTimedQ, stopTimedMode, sdCheck, sdNext, initQuizEvents } from './quiz-view.js';
+import { loadWrongSet } from './wrong-review.js';
 import { renderStudy, toggleNote, filterNotes, renderFlash, renderDrugs, initLearnEvents } from './learn-view.js';
 import { renderLibrary, openHarrisonChapter,
          toggleHarrisonAI, submitHarrisonAI, aiSummarizeChapter, quizMeOnChapter,
@@ -383,9 +384,12 @@ window.APP_VERSION=APP_VERSION; // expose for debug-console
 
 // IDB migration → initial render
 migrateToIDB().then(()=>{
+  // Load persistent wrong-answer review set in parallel — non-blocking, but
+  // initial Quiz render uses wrongCount() so kick it off early.
+  loadWrongSet().catch(()=>{});
   renderTabs();render();
   if(!localStorage.getItem('pnimit_seen_help')){localStorage.setItem('pnimit_seen_help','1');setTimeout(showHelp,500);}
-}).catch(e=>{console.error('IDB init failed, falling back to localStorage:',e);renderTabs();render();});
+}).catch(e=>{console.error('IDB init failed, falling back to localStorage:',e);loadWrongSet().catch(()=>{});renderTabs();render();});
 
 // Prevent accidental navigation during mock exam
 window.addEventListener('beforeunload', function(e){
