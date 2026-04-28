@@ -6,10 +6,10 @@
 
 - **Live URL**: https://eiasash.github.io/InternalMedicine/
 - **App version**: see `APP_VERSION` in `src/core/constants.js` (source of truth)
-- **Entry point**: `pnimit-mega.html` (59-line HTML shell) → `src/ui/app.js` (ES module)
+- **Entry point**: `pnimit-mega.html` (155-line HTML shell) → `src/ui/app.js` (ES module)
 - **Deployment**: Push to `main` → GitHub Actions builds with Vite → deploys `dist/` to Pages
 - **Sibling apps**: Shlav A Mega (geriatrics) + Mishpacha Mega (family medicine) — all three share `shared/fsrs.js` (byte-identical, canonical md5 `cea66a0435…`) and the same Supabase project `krmlzwwelqvlfslwltol` (labeled "Toranot" in the dashboard)
-- **Current version**: v9.79 (as of 23/04/26) — BIDI hygiene pass, FSRS canonicalization, publishable-key rotation
+- **Current version**: v9.86.0 (as of 28/04/26) — in-app Study Plan generator, username/password accounts, built-in debug console, callAI singleton AbortController fix
 
 ---
 
@@ -17,7 +17,7 @@
 
 ### Modular ES Modules
 
-The app is split into 19 ES module source files under `src/`. The HTML shell loads two scripts:
+The app is split into 26 ES module source files under `src/`. The HTML shell loads two scripts:
 ```html
 <script src="shared/fsrs.js"></script>              <!-- plain script, shared with Geriatrics -->
 <script type="module" src="src/ui/app.js"></script>  <!-- ES module entry, imports everything -->
@@ -57,8 +57,12 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 
 **Also on window (internal state, not API surface):**
 - `window.G` — global state object, accessed by inline handler strings in `render()`
+- `window.APP_VERSION` — exposed for the built-in debug console
 - `window._idbSaveTimer` / `window._lsWarnShown` — internal flags in `state.js`
 - `window.save` — IDB save (legacy alias, `G.save()` is preferred)
+- `window.__pnimitLastMockWrong` — last mock-exam wrong indices (replay support)
+- `window.__authBound` / `window.__studyPlanBound` — idempotency guards for one-time event bindings
+- `window.__debug` — built-in debug console API (5-tap top-right activation, see `src/debug/console.js`)
 
 ### Storage Layers
 
@@ -74,21 +78,25 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 
 ```
 /
-├── pnimit-mega.html            # HTML shell (59 lines — loads CSS + 2 scripts)
+├── pnimit-mega.html            # HTML shell (155 lines — loads CSS + 2 scripts)
 ├── index.html                  # GitHub Pages redirect → pnimit-mega.html
 ├── sw.js                       # Dev service worker (caches individual modules)
 ├── manifest.json               # PWA manifest
 ├── vite.config.js              # Vite: base /InternalMedicine/, vitest config
-├── package.json                # Scripts: dev, build, test, lint, format
+├── package.json                # Scripts: dev, build, test, lint, format, verify, hooks:install
 │
 ├── src/
+│   ├── clock.js                # Tiny shared clock helper
 │   ├── core/
 │   │   ├── globals.js          # Shared mutable state object G (exported default)
 │   │   ├── constants.js        # APP_VERSION, TOPICS, EXAM_FREQ, LS, SUPA_*, AI_*
 │   │   ├── utils.js            # sanitize, fmtT, safeJSONParse, getApiKey, getOptShuffle
 │   │   ├── state.js            # S object, save, IDB migration, updateStreak
 │   │   ├── data-loader.js      # Fetches data/*.json → populates G.QZ, G.NOTES, etc.
-│   │   └── sw-update.js        # SW registration, update banner, applyUpdate (mirrors Geriatrics/src/sw-update.js)
+│   │   ├── sw-update.js        # SW registration, update banner, applyUpdate (mirrors Geriatrics/src/sw-update.js)
+│   │   └── tagMigration.js     # Legacy tag/topic migration helpers
+│   ├── debug/
+│   │   └── console.js          # Built-in debug console (5-tap top-right activation; window.__debug API)
 │   ├── sr/
 │   │   ├── fsrs-bridge.js      # Re-exports shared/fsrs.js globals as ES imports
 │   │   └── spaced-repetition.js # srScore, getDue, buildRescuePool, trackDailyActivity
@@ -96,10 +104,17 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 │   │   ├── engine.js           # buildPool, pick/check/next, mock exam, on-call mode
 │   │   └── modes.js            # Pomodoro, sudden death, blind recall, speech, NBS
 │   ├── ai/
-│   │   ├── client.js           # callAI (proxy-first + API key fallback)
+│   │   ├── client.js           # callAI (proxy-first + API key fallback, singleton AbortController)
 │   │   └── explain.js          # explainWithAI, aiAutopsy, gradeTeachBack
+│   ├── services/
+│   │   └── supabaseAuth.js     # Supabase auth client wrapper
 │   ├── features/
-│   │   └── cloud.js            # Leaderboard, backup/restore, feedback, diagnostics
+│   │   ├── auth.js             # Username/password account UI + handlers
+│   │   ├── cloud.js            # Leaderboard, backup/restore, feedback, diagnostics
+│   │   └── study_plan/
+│   │       ├── algorithm.js    # Study-plan generator algorithm
+│   │       ├── index.js        # Study-plan UI + event bindings
+│   │       └── syllabus_data.json
 │   ├── ui/
 │   │   ├── app.js              # Entry point: imports all, render(), renderTabs(), boot
 │   │   ├── quiz-view.js        # renderQuiz, SD mode, timed mode, image upload
@@ -121,16 +136,17 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 │   ├── notes.json              # 24 study notes
 │   ├── drugs.json              # 53 drugs (Beers, ACB, STOPP)
 │   ├── flashcards.json         # 155 flashcards
+│   ├── distractors.json        # Per-question distractor pool (~2.6 MB)
 │   └── tabs.json               # 5 tab definitions
 │
 ├── harrison_chapters.json      # Harrison's 22e in-app reader (3.8 MB)
 ├── exams/                      # Past exam PDFs (2020–2025, 7 sessions)
 ├── articles/                   # 10 required NEJM/Lancet articles
 ├── harrison/                   # Harrison's 22e chapter PDFs (~69)
-├── questions/images/            # 128 question images
+├── questions/images/            # 134 question images
 ├── syllabus/P0064-2025.pdf     # Official IMA syllabus
 │
-├── tests/                      # 488 tests across 21 files
+├── tests/                      # 597 tests across 28 files
 │   ├── dataIntegrity.test.js   # Question schema, duplicates, topic coverage
 │   ├── appIntegrity.test.js    # Module structure, SW version sync, security
 │   ├── appLogic.test.js        # Core quiz logic patterns
@@ -138,12 +154,13 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 │   ├── serviceWorker.test.js   # SW cache config, file existence
 │   ├── coverageGaps.test.js    # Cross-module coverage verification
 │   ├── sharedFsrs.test.js      # FSRS algorithm unit tests
-│   └── examData.test.js        # Past exam validation, image map
+│   └── (plus textbookChapters, parserBleedGuard, debugConsole, auth, studyPlanAlgorithm, regressionGuards, fsrsDeadline, …)
 │
 └── .github/workflows/
     ├── ci.yml                  # JSON validation, schema, tests, build (on push/PR)
     ├── integrity-guard.yml     # 6 gates: syntax, critical functions, module structure
     ├── weekly-audit.yml        # Weekly: full audit + security + docs drift
+    ├── distractor-autopsy.yml  # Distractor-pool integrity scan
     └── deploy.yml              # Build with Vite → deploy dist/ to GitHub Pages
 ```
 
@@ -194,11 +211,13 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 ### Local Dev
 ```bash
 npm run dev          # Vite dev server (port 3737, auto-reload)
-npm test             # 488 tests via vitest
+npm test             # 597 tests via vitest
 npm run build        # Production build → dist/ (Vite bundle + static assets)
 npm run build:vite   # Vite-only build (no asset copy)
 npm run lint         # ESLint
 npm run format       # Prettier
+npm run verify       # Full pre-push gate: SW sync + innerHTML guards + Hebrew baseline + tests + build
+npm run hooks:install # One-time: install pre-commit + pre-push git hooks
 ```
 
 ### Version Sync
@@ -206,7 +225,7 @@ npm run format       # Prettier
 
 ### Production Build
 `scripts/build.sh` runs:
-1. `npx vite build` → bundles 19 modules into one JS + one CSS (content-hashed)
+1. `npx vite build` → bundles 26 modules into one JS + one CSS (content-hashed)
 2. Copies static assets (data/, harrison_chapters.json, shared/, exams/, articles/, harrison/, questions/, syllabus/)
 3. Fixes manifest.json path (Vite hashes it, sed reverts)
 4. Generates production SW (simplified: caches HTML + data JSON, stale-while-revalidate for hashed assets)
@@ -267,24 +286,24 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 
 | Metric | Value |
 |--------|-------|
-| Source modules | 19 (under src/) |
-| Source LOC | ~4,120 |
-| Functions | 144 |
-| ES imports | 77 |
-| Window bindings | 16 (down from 72) |
+| Source modules | 26 (under src/) |
+| Source LOC | ~5,780 |
+| Functions | ~180 |
+| ES imports | 98 |
+| Window bindings | 16 (API surface; down from 72) |
 | Questions | 1,556 (all with explanations) |
 | AI-generated | 589 (tagged `Harrison`) |
 | Topics | 24 |
 | Notes | 24 |
 | Flashcards | 155 |
 | Drugs | 53 |
-| Question images | 116 linked, 128 on disk |
+| Question images | 116 linked, 134 on disk |
 | Past exams | 7 sessions (2020–2025) |
 | Harrison chapters | ~69 PDFs |
 | Articles | 10 |
-| Test files | 21 |
-| Tests | 488 |
-| CI workflows | 4 (ci, integrity-guard, weekly-audit, deploy) |
+| Test files | 28 |
+| Tests | 597 |
+| CI workflows | 5 (ci, integrity-guard, weekly-audit, distractor-autopsy, deploy) |
 
 ---
 
@@ -293,8 +312,9 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Workflow | Trigger | Checks |
 |----------|---------|--------|
 | `ci.yml` | Push/PR to main | JSON validation, question schema, SW version sync, topic coverage, no geriatrics content, innerHTML audit, tests, Vite build |
-| `integrity-guard.yml` | Push/PR to main | JS syntax (all 19 modules), 36 critical functions, 22 required files, function count regression, truncated code patterns, SW file refs |
+| `integrity-guard.yml` | Push/PR to main | JS syntax (all 26 modules), critical functions, required files, function count regression, truncated code patterns, SW file refs |
 | `weekly-audit.yml` | Sunday 06:00 UTC | Full data audit + security (eval, innerHTML) + version drift + tests + build |
+| `distractor-autopsy.yml` | Push/PR touching distractors | Distractor-pool integrity (mirrors Geriatrics v10.34 parser-bleed audit) |
 | `deploy.yml` | Push to main | Install → test → build → deploy dist/ to GitHub Pages |
 
 ---
