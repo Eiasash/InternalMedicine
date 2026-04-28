@@ -27,8 +27,11 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.90.0';
+export const APP_VERSION='9.91.0';
 export const CHANGELOG={
+  '9.91.0': [
+    '🎨 Editorial Clinical redesign (2026-04) — body baseline, page header, underline tabs, hairline cards, three-tier buttons. Warm cream + forest green; Frank Ruhl Libre (display) + Heebo (body). Pill-button bottom tabs replaced with underline pattern: a single sliding indicator driven by getBoundingClientRect() + ResizeObserver. New shared/layout-primitives.css (byte-identical with sibling apps). No structural JS changes — re-skin only.',
+  ],
   '9.89.0': [
     '🌈 מפת חום נושאים — Topic Mastery Heatmap ב-Track. SVG עם 5 דרגות Viridis (colorblind-safe). מבוסס FSRS R-value (אחזרה ממוצעת לכל נושא, לא % דיוק גולמי). לחיצה על תא פותחת קוויז של אותו נושא. החליף את ה-Topic Mastery Map הישן.',
     '❌ Wrong-answer review mode — מצב חזרה חדש לקוויז שמסנן רק לשאלות שטעיתי בהן, ממוין לפי recency × topic-weight (EXAM_FREQ). Persisted ב-IndexedDB עם fallback ל-localStorage — שורד reload. שאלה יוצאת מהסט אחרי 2 תשובות נכונות רצופות. כפתור "❌ Review wrong (N)" מופיע ב-Quiz tab כשיש שאלות פתוחות.',
