@@ -6,6 +6,8 @@ import { isChronicFail } from '../sr/fsrs-bridge.js';
 import { renderExplainBox, toggleFlagExplain, explainWithAI, aiAutopsy, gradeTeachBack, startVoiceTeachBack } from '../ai/explain.js';
 import { TOPIC_REF } from './track-view.js';
 import { openHarrisonChapter } from './library-view.js';
+import { wrongCount, startWrongReview } from './wrong-review.js';
+import { renderSourceLink, openSourceForQuestion } from './source-link.js';
 import { buildPool, check, next, prev, pick, checkMockIntercept, exitOnCallMode, flipCard, runExplainOnCall, onCallPick,
          setFilt, setTopicFilt, toggleYearFilt, clearYearFilt, startExam, startMockExam, startMockExamByTag, showMockExamPicker, startTopicMiniExam,
          startOnCallMode, _storeDiff } from '../quiz/engine.js';
@@ -254,8 +256,12 @@ const filts=[['all',`הכל (${G.QZ.length})`],['2020','20'],['2021-Jun','Jun21'
 const _weakForPill=getWeakTopics(3);
 if(_weakForPill.length&&_weakForPill[0].pct!==null&&_weakForPill[0].pct<65)filts.push(['rescue','🚨 Rescue']);
 if(dueN>0)filts.push(['due',`🔄 Due (${dueN})`]);
+// Wrong-answer review pill (persistent across reloads via IDB)
+const _wrongN=wrongCount();
+if(_wrongN>0)filts.push(['wrong',`❌ Review wrong (${_wrongN})`]);
 filts.forEach(([f,l])=>{
 if(f==='rescue')h+=`<span class="pill ${G.filt==='rescue'?'on':''}" data-action="filter-rescue">${l}</span>`;
+else if(f==='wrong')h+=`<span class="pill ${G.filt==='wrong'?'on':''}" data-action="filter-wrong">${l}</span>`;
 else if(f==='nbs')h+=`<span class="pill ${G.filt==='nbs'?'on':''}" data-action="filter-nbs">${l}</span>`;
 else if(EXAM_YEARS.includes(f)){
   const _yOn=_yearSel.includes(f);
@@ -411,6 +417,8 @@ h+=`<div style="margin-top:8px;padding:10px 12px;background:${_eIss?'#fffbeb':'#
 if(_eIss){h+=`<div style="font-size:10px;font-weight:700;margin-bottom:6px;padding:4px 8px;background:#fef3c7;border-radius:6px;display:flex;align-items:center;gap:6px;justify-content:space-between"><span>⚠️ ההסבר הזה עלול להיות שגוי — AI איתר חוסר עקביות מול התשובה הנכונה</span><button data-action="mark-e-verified" data-idx="${G.pool[G.qi]}" style="font-size:9px;padding:3px 8px;background:#d97706;color:#fff;border:none;border-radius:6px;cursor:pointer;flex:0 0 auto">✓ מאומת</button></div>`;}
 h+=`<div style="font-weight:700;margin-bottom:4px;font-size:10px">📝 הסבר</div>`;
 h+=`<div style="unicode-bidi:plaintext" dir="${heDir(q.e)}">${remapExplanationLetters(q.e,_shuf).replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')}</div>`;
+// Source-link chip (clickable Harrison chapter ref)
+h+=renderSourceLink(G.pool[G.qi]);
 h+=`</div>`;
 }
 // AI Explain button
@@ -552,7 +560,9 @@ export function initQuizEvents(container) {
     else if (action === 'filter-year') { toggleYearFilt(el.dataset.f); }
     else if (action === 'filter-year-clear') { clearYearFilt(); }
     else if (action === 'filter-rescue') { buildRescuePool(); }
+    else if (action === 'filter-wrong') { startWrongReview(); }
     else if (action === 'filter-nbs') { startNextBestStep(); }
+    else if (action === 'open-source-link') { openSourceForQuestion(parseInt(el.dataset.idx, 10)); }
 
     // === Toggles ===
     else if (action === 'toggle-bk') { toggleBk(); }
