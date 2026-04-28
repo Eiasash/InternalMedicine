@@ -27,8 +27,14 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.88.0';
+export const APP_VERSION='9.89.0';
 export const CHANGELOG={
+  '9.89.0': [
+    '🌈 מפת חום נושאים — Topic Mastery Heatmap ב-Track. SVG עם 5 דרגות Viridis (colorblind-safe). מבוסס FSRS R-value (אחזרה ממוצעת לכל נושא, לא % דיוק גולמי). לחיצה על תא פותחת קוויז של אותו נושא. החליף את ה-Topic Mastery Map הישן.',
+    '❌ Wrong-answer review mode — מצב חזרה חדש לקוויז שמסנן רק לשאלות שטעיתי בהן, ממוין לפי recency × topic-weight (EXAM_FREQ). Persisted ב-IndexedDB עם fallback ל-localStorage — שורד reload. שאלה יוצאת מהסט אחרי 2 תשובות נכונות רצופות. כפתור "❌ Review wrong (N)" מופיע ב-Quiz tab כשיש שאלות פתוחות.',
+    '📖 Source-link in explanations — צ\'יפ קליקבילי מתחת לכל הסבר שאלה ("📖 Harrison Ch X →"). פותח את ה-Harrison reader על הפרק הרלוונטי. מבוסס TOPIC_REF; תומך ב-q.ref override עתידי.',
+    '🪝 Internal — new modules src/ui/heatmap.js, src/ui/wrong-review.js, src/ui/source-link.js. אין שינוי ב-shared/fsrs.js.',
+  ],
   '9.86.0': [
     '📅 תכנית לימוד בתוך האפליקציה — Settings → 📅 תכנית לימוד. בוחרים תאריך בחינה, שעות לימוד שבועיות (1-20), שבועות חזרה (1-6); המנוע מחלק את 24 הנושאים לפי תדירות אמפירית מ-1,556 שאלות עבר ובונה לוח שבועי. JS port verbatim של allocate_hours + schedule מ-auto-audit/scripts/generate_study_plan.py — fixture חוצה-שפות מאמת התאמה byte-identical (top-5 שעות + week_used לכל תא ≤ 1e-9). שמירה בענן דרך RPC SECURITY DEFINER (study_plan_upsert / study_plan_get) על טבלה משותפת public.study_plans (key (username, app)); אורחים יוצרים תכנית מקומית עם רמז להתחבר. ייצוא .ics צד-לקוח לכל לוחות השנה (Google / Outlook / Apple) — אירועי שבוע + 3 מוקים + יום הבחינה. Mirror של Mishpacha v1.9.1; הטבלה + ה-RPCs כבר רצים על הפרויקט המשותף krmlzwwelqvlfslwltol (האפליקציה רק קוראת להם עם app=\'pnimit\').',
   ],
