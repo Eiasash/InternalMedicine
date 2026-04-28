@@ -5,6 +5,7 @@ import { AI_PROXY, AI_SECRET } from '../core/constants.js';
 import { startVoiceParser } from '../quiz/modes.js';
 import { submitFeedbackForm } from '../features/cloud.js';
 import { renderAuthSection, bindAuthEvents } from '../features/auth.js';
+import { renderStudyPlanSection, bindStudyPlanEvents } from '../features/study_plan/index.js';
 
 export function renderNotes(){
   const qnoteEntries=Object.entries(G.S.qnotes||{}).filter(([k,v])=>v&&v.trim());
@@ -142,7 +143,8 @@ export function renderSettings() {
     </button>
   </div>
 </div>
-${renderAuthSection()}`;
+${renderAuthSection()}
+${renderStudyPlanSection()}`;
 }
 
 export async function toggleNotifOptIn() {
@@ -265,6 +267,8 @@ export function clearChat(){G.S.chat=[];G.chatLoading=false;G.save();G.render();
 export function initMoreEvents(container) {
   // Bind auth events once globally (idempotent — uses window.__authBound guard).
   bindAuthEvents();
+  // Bind study-plan handlers (idempotent — uses window.__studyPlanBound).
+  bindStudyPlanEvents();
   container.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-action]');
     if (!btn) return;
