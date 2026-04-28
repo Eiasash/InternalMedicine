@@ -33,6 +33,7 @@ import { renderTrack, renderCalc, calcUp, calcEstScore, renderStudyPlan, renderE
 import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
          showAnswerHardFail, renderSettings, toggleNotifOptIn, renderNotes,
          initMoreEvents } from './more-view.js';
+import { getCurrentUser } from '../features/auth.js';
 
 export function renderTabs(){
 // safe-innerhtml: G.TABS is a hardcoded array of tab definitions (id/label/icon); no user input
@@ -95,7 +96,34 @@ if(sv.srchi!==undefined&&document.getElementById('srchi'))document.getElementByI
 if(sv.nfilt!==undefined&&document.getElementById('nfilt'))document.getElementById('nfilt').value=sv.nfilt;
 if(sv.dsrch!==undefined&&document.getElementById('dsrch'))document.getElementById('dsrch').value=sv.dsrch;
 if(focused){const fe=document.getElementById(focused);if(fe){fe.focus();if(fe.value)fe.setSelectionRange(fe.value.length,fe.value.length);}}
+updateAccountChip();
 }
+
+// Header account chip — shows user initial when logged in, 👤 when guest.
+// Click goes to More → Settings, where the account section lives.
+// Re-rendered after every render() and after any auth state change.
+export function updateAccountChip(){
+  const btn=document.getElementById('hdr-account-btn');
+  if(!btn)return;
+  const u=getCurrentUser();
+  if(u){
+    const name=u.displayName||u.username||'?';
+    const initial=name.trim().charAt(0).toUpperCase();
+    btn.textContent=initial;
+    btn.style.background='#0D7377'; // teal
+    btn.style.color='#fff';
+    btn.style.fontWeight='700';
+    btn.title=name+' — Account';
+  }else{
+    btn.textContent='👤';
+    btn.style.background='rgba(255,255,255,0.08)';
+    btn.style.color='#fff';
+    btn.style.fontWeight='400';
+    btn.title='Log in / Register';
+  }
+}
+// Expose globally so auth.js can call it after login/logout without a circular import.
+window.updateAccountChip=updateAccountChip;
 
 // ===== DARK MODE =====
 export function toggleDark(){document.body.classList.toggle('dark');G.S.dark=document.body.classList.contains('dark');if(G.S.dark&&document.body.classList.contains('study')){document.body.classList.remove('study');G.S.studyMode=false;}G.save();}
@@ -316,6 +344,16 @@ document.querySelector('.hdr').addEventListener('click', (e) => {
   if (el.dataset.action === 'toggle-dark') toggleDark();
   else if (el.dataset.action === 'toggle-study') toggleStudyMode();
   else if (el.dataset.action === 'show-help') showHelp();
+  else if (el.dataset.action === 'goto-account') {
+    // Jump straight to More → Settings, where the account block lives.
+    G.tab = 'more';
+    G.moreSub = 'settings';
+    renderTabs();
+    render();
+    // Scroll the Settings content into view (Settings is the last sub-tab,
+    // so the body is already on screen — this just ensures top alignment).
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
+  }
 });
 
 // === Body-level delegation for overlays, banners, modals ===
