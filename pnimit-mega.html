@@ -11,6 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
 <link rel="manifest" href="manifest.json">
 <title>Pnimit Mega — Internal Medicine Board Prep</title>
+<link rel="stylesheet" href="shared/tokens.css">
 <style id="clinical-kit">
 /* SZMC Clinical Kit v1 (injected) */
 /* SZMC Clinical Kit — semantic tokens + per-app skin. Additive layer; does
@@ -151,6 +152,9 @@ body.study .badge-info    {background:#1e2a3d;color:#a0c8f0}
 <script src="shared/fsrs.js"></script>
 <!-- App entry point (ES module — imports all other modules) -->
 <script type="module" src="src/ui/app.js"></script>
+<!-- Shared PWA install promo (canonical .shared/install-promo.js) -->
+<script src="shared/install-promo-config.js" defer></script>
+<script src="shared/install-promo.js" defer></script>
 
 </body>
 </html>
