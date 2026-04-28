@@ -684,24 +684,9 @@ h+=`<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
 h+=renderDailyPlan();
 }
 h+=renderSessionCard();
-// Feature 9: Confidence accuracy matrix
-const _confStats={sure_ok:0,sure_no:0,unsure_ok:0,unsure_no:0};
-Object.values(G.S.sr||{}).forEach(s=>{if(s.conf){Object.entries(s.conf).forEach(([k,v])=>{if(_confStats[k]!==undefined)_confStats[k]+=v;});}});
-const _confTotal=Object.values(_confStats).reduce((a,b)=>a+b,0);
-if(_confTotal>=10){
-const _blindSpots=_confStats.sure_no;
-const _lucky=_confStats.unsure_ok;
-h+=`<div class="card" style="padding:14px;margin-bottom:10px">
-<div style="font-weight:700;font-size:12px;margin-bottom:8px">🎯 Confidence Matrix (${_confTotal} rated)</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:10px;text-align:center">
-<div style="padding:8px;background:#dcfce7;border-radius:8px"><div style="font-size:16px;font-weight:700">${_confStats.sure_ok}</div>😎✅ Confident + Right</div>
-<div style="padding:8px;background:#fecaca;border-radius:8px"><div style="font-size:16px;font-weight:700;color:#dc2626">${_confStats.sure_no}</div>😎❌ BLIND SPOTS</div>
-<div style="padding:8px;background:#fef9c3;border-radius:8px"><div style="font-size:16px;font-weight:700">${_confStats.unsure_ok}</div>😬✅ Lucky</div>
-<div style="padding:8px;background:#f1f5f9;border-radius:8px"><div style="font-size:16px;font-weight:700">${_confStats.unsure_no}</div>😬❌ Expected miss</div>
-</div>
-${_blindSpots>0?`<div style="margin-top:8px;font-size:10px;color:#dc2626;font-weight:600">⚠️ ${_blindSpots} blind spots — you were confident but wrong. These are your most dangerous gaps.</div>`:''}
-</div>`;
-}
+// v10.50.0 alignment with Geri: Confidence Matrix moved out of _rtTop into a
+// collapsible card after Weak Spots Map. Niche analytic — useful but doesn't
+// need above-the-fold real estate.
 // Feature 10: Cheat sheet export button
 h+=`<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
 <button class="btn btn-d" data-action="export-cheat-sheet" style="font-size:11px" aria-label="Export cheat sheet">📄 Export Weak Topics Cheat Sheet</button>
@@ -760,15 +745,9 @@ h+=`<div class="card" style="padding:14px;margin-bottom:10px">
 </div>
 <div id="leaderboard-box" style="font-size:10px;color:#94a3b8;text-align:center">Tap refresh to load</div>
 </div>`;
-h+=`<div class="sec-t">Progress</div><div class="sec-s">Syllabus · Bookmarks · Spaced Repetition</div>`;
-if(G.S.streak>0)h+=`<div style="text-align:center;margin-bottom:12px"><span class="streak-badge">🔥 ${G.S.streak} day${G.S.streak>1?'s':''} streak</span></div>`;
-const estScore=calcEstScore();
-h+=`<div class="stats">
-<div class="stat"><div class="n" style="color:rgb(var(--em))">${done}/${TOPICS.length}</div><div class="l">Topics</div></div>
-<div class="stat"><div class="n" style="color:rgb(var(--sky))">${pct}</div><div class="l">Quiz</div></div>
-<div class="stat"><span class="tt-wrap"><div class="n" style="color:${estScore===null?'#94a3b8':estScore>=70?'#059669':estScore>=60?'#d97706':'#dc2626'}">${estScore!==null?estScore+'%':'—'}</div><div class="l">Est. Score <button class="tt-icon" tabindex="0">ⓘ</button></div><div class="tt-box" style="left:0;transform:none">Rolling exam score estimate: topic accuracy × exam frequency weight. Penalizes overdue SR cards. Needs 3+ answers per topic for accuracy. Pass = 60%.</div></span></div>
-<div class="stat"><span class="tt-wrap"><div class="n" style="color:rgb(var(--amb))">${dueN}</div><div class="l">Due (SR) <button class="tt-icon" tabindex="0">ⓘ</button></div><div class="tt-box" style="left:0;transform:none">Spaced repetition cards due for review. Based on your past performance.</div></span></div>
-</div>`;
+// v10.50.0 alignment with Geri: removed duplicate "Progress" stats grid +
+// standalone streak badge — Topics/Quiz/EstScore/Due-SR overlapped with the
+// 4 stat cards already shown at the top of _rtTop().
 // Bookmarked questions with folder grouping
 if(bkCount>0){
 const _byTopic={};
@@ -802,23 +781,8 @@ h+=`</div>`;
 }
 // Syllabus
 h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:10px">📋 Syllabus (${done}/${TOPICS.length})</div>`;
-// Per-topic accuracy bars
-const tSt=getTopicStats();
-const ranked=TOPICS.map((t,i)=>({name:t,i,s:tSt[i]||{ok:0,no:0,tot:0}})).filter(p=>p.s.tot>0);
-if(ranked.length>0){
-h+=`<div class="card" style="padding:14px;margin-bottom:10px"><div style="font-weight:700;font-size:12px;margin-bottom:10px">📊 Accuracy by Topic <span class="tt-wrap"><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">Shows your accuracy (% correct) for each topic you've attempted. Green ≥70%, amber ≥50%, red <50%.</div></span></div>`;
-ranked.sort((a,b)=>{const pa=a.s.tot?a.s.ok/a.s.tot:0,pb=b.s.tot?b.s.ok/b.s.tot:0;return pa-pb;}).forEach(p=>{
-const pct=p.s.tot?Math.round(p.s.ok/p.s.tot*100):0;
-const clr=pct>=70?'rgb(var(--em))':pct>=50?'rgb(var(--amb))':'rgb(var(--red))';
-h+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #f8fafc;font-size:10px">
-<span style="flex:1">${p.name}</span>
-<div style="display:flex;align-items:center;gap:6px">
-<div style="width:50px;height:5px;background:#f1f5f9;border-radius:3px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${clr};border-radius:3px"></div></div>
-<span style="width:28px;text-align:right;font-weight:600;color:${clr}">${pct}%</span>
-<span style="color:#94a3b8;font-size:8px">${p.s.tot}</span>
-</div></div>`;
-});
-h+=`</div>`;}
+// v10.50.0 alignment with Geri: removed '📊 Accuracy by Topic' bars — duplicated the
+// 🗺️ Topic Mastery Map at the top of Track. One topic-accuracy view is enough.
 // Year × Topic heatmap
 const years=[...new Set(G.QZ.map(q=>q.t))].sort();
 const heatData=[];
@@ -834,7 +798,14 @@ row.cells.push({yr,pct:answered.length?Math.round(correct.length/answered.length
 if(row.cells.some(c=>c.n>0))heatData.push(row);
 });
 if(heatData.length>0){
-h+=`<div class="card" style="padding:14px;margin-bottom:10px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">🗺️ Weak Spots Map</div>`;
+// v10.50.0 alignment with Geri: Weak Spots Map collapsed by default. The year × topic
+// heatmap is dense and only meaningful with ~50+ answered questions across multiple
+// exam periods. Header shows topic+exam counts so the summary is visible without
+// expanding. State persisted in G.S._wsmOpen.
+const _wsmOpen=G.S._wsmOpen===true;
+h+=`<div class="card" style="padding:14px;margin-bottom:10px">`;
+h+=`<div data-action="toggle-wsm" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700;font-size:12px;${_wsmOpen?'margin-bottom:8px':''}" role="button" tabindex="0" aria-expanded="${_wsmOpen?'true':'false'}" aria-label="Toggle weak spots map"><span style="flex:1">🗺️ Weak Spots Map <span style="font-weight:400;color:#94a3b8;font-size:10px">· ${heatData.length} topic${heatData.length>1?'s':''} × ${years.length} exam${years.length>1?'s':''}</span></span><span style="color:#64748b">${_wsmOpen?'▲':'▼'}</span></div>`;
+if(_wsmOpen){
 h+=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:9px"><thead><tr><th style="text-align:right;padding:3px;font-size:8px">Topic</th>`;
 years.forEach(y=>{h+=`<th style="padding:3px;text-align:center;font-size:7px;white-space:nowrap">${y.length>4?y.slice(-2):y}</th>`;});
 h+=`</tr></thead><tbody>`;
@@ -860,7 +831,34 @@ h+=`<div style="display:flex;gap:8px;margin-top:6px;font-size:8px;color:#94a3b8;
 <span style="display:flex;align-items:center;gap:2px"><span style="width:10px;height:10px;background:#fef9c3;border-radius:2px"></span>50-74%</span>
 <span style="display:flex;align-items:center;gap:2px"><span style="width:10px;height:10px;background:#dcfce7;border-radius:2px"></span>&ge;75%</span>
 </div>`;
+}
 h+=`</div>`;}
+
+// v10.50.0 alignment with Geri: Confidence Matrix moved here as a collapsible card.
+// Same pattern as Weak Spots Map. Default closed; only renders if user has rated ≥10
+// questions for confidence. Was sitting above-the-fold in _rtTop; the actionable summary
+// (blind-spot count) is in the collapsed header so users see it without expanding.
+{
+  const _cmStats={sure_ok:0,sure_no:0,unsure_ok:0,unsure_no:0};
+  Object.values(G.S.sr||{}).forEach(s=>{if(s.conf){Object.entries(s.conf).forEach(([k,v])=>{if(_cmStats[k]!==undefined)_cmStats[k]+=v;});}});
+  const _cmTotal=Object.values(_cmStats).reduce((a,b)=>a+b,0);
+  if(_cmTotal>=10){
+    const _cmOpen=G.S._cmOpen===true;
+    const _blindSpots=_cmStats.sure_no;
+    h+=`<div class="card" style="padding:14px;margin-bottom:10px">`;
+    h+=`<div data-action="toggle-cm" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700;font-size:12px;${_cmOpen?'margin-bottom:8px':''}" role="button" tabindex="0" aria-expanded="${_cmOpen?'true':'false'}" aria-label="Toggle confidence matrix"><span style="flex:1">🎯 Confidence Matrix <span style="font-weight:400;color:#94a3b8;font-size:10px">· ${_cmTotal} rated${_blindSpots>0?` · <span style="color:#dc2626;font-weight:600">${_blindSpots} blind spots</span>`:''}</span></span><span style="color:#64748b">${_cmOpen?'▲':'▼'}</span></div>`;
+    if(_cmOpen){
+      h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:10px;text-align:center">
+<div style="padding:8px;background:#dcfce7;border-radius:8px"><div style="font-size:16px;font-weight:700">${_cmStats.sure_ok}</div>😎✅ Confident + Right</div>
+<div style="padding:8px;background:#fecaca;border-radius:8px"><div style="font-size:16px;font-weight:700;color:#dc2626">${_cmStats.sure_no}</div>😎❌ BLIND SPOTS</div>
+<div style="padding:8px;background:#fef9c3;border-radius:8px"><div style="font-size:16px;font-weight:700">${_cmStats.unsure_ok}</div>😬✅ Lucky</div>
+<div style="padding:8px;background:#f1f5f9;border-radius:8px"><div style="font-size:16px;font-weight:700">${_cmStats.unsure_no}</div>😬❌ Expected miss</div>
+</div>`;
+      if(_blindSpots>0)h+=`<div style="margin-top:8px;font-size:10px;color:#dc2626;font-weight:600">⚠️ ${_blindSpots} blind spots — you were confident but wrong. Most dangerous gaps.</div>`;
+    }
+    h+=`</div>`;
+  }
+}
 // ROI Matrix and Radar chart removed — accuracy bars above are sufficient
 h+=renderPriorityMatrix();
 
@@ -1044,6 +1042,12 @@ export function initTrackEvents(container) {
     }
     else if (action === 'syl-toggle') {
       G.S._sylOpen = !G.S._sylOpen; G.render();
+    }
+    else if (action === 'toggle-wsm') {
+      G.S._wsmOpen = !G.S._wsmOpen; G.save(); G.render();
+    }
+    else if (action === 'toggle-cm') {
+      G.S._cmOpen = !G.S._cmOpen; G.save(); G.render();
     }
     // Settings
     else if (action === 'share-app') { window.shareApp(); }
