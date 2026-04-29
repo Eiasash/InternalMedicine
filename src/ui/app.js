@@ -172,7 +172,7 @@ export function takeWeeklySnapshot(){
     if(snapshots[weekKey])return; // already taken this week
     const tSt=G.S&&G.S.ts?G.S.ts:{};
     const snap={};
-    for(let i=0;i<TOPICS.length;i++){const s=tSt[i]||{ok:0,no:0,tot:0};snap[i]=s.tot>0?Math.round(s.ok/s.tot*100):null;}
+    for(let i=0;i<TOPICS.length;i++){const s=tSt[i]||{ok:0,no:0,tot:0};snap[i]=s.tot>=3?Math.round(s.ok/s.tot*100):null;}
     snapshots[weekKey]={date:now.toISOString(),acc:snap};
     const keys=Object.keys(snapshots).sort();
     if(keys.length>52)delete snapshots[keys[0]];
