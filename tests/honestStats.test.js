@@ -201,4 +201,17 @@ describe('honest stats — source-level guard', () => {
     // Reject if we see a bare `sumR += r;` pattern (the old bug).
     expect(src).not.toMatch(/sumR\s*\+=\s*r\s*;/);
   });
+
+  it('takeWeeklySnapshot must require ≥3 answers per topic (no single-answer extremes)', () => {
+    // Bug: snapshotting `s.tot>0?Math.round(s.ok/s.tot*100):null` produces
+    // 0% or 100% from a single answer, making trend arrows misleading.
+    // Honest fix: require ≥3 tot before snapshotting per-topic accuracy.
+    const src = readFileSync(resolve(process.cwd(), 'src', 'ui', 'app.js'), 'utf-8');
+    const takeFn = src.match(/export function takeWeeklySnapshot\(\)[\s\S]*?\n\}/);
+    expect(takeFn, 'takeWeeklySnapshot not found').not.toBeNull();
+    // Must NOT contain the lax `tot>0` snapshot threshold.
+    expect(takeFn[0]).not.toMatch(/s\.tot>0\s*\?\s*Math\.round/);
+    // Must contain a ≥3 (or stricter) threshold.
+    expect(takeFn[0]).toMatch(/s\.tot\s*>=\s*[3-9]/);
+  });
 });
