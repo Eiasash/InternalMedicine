@@ -228,8 +228,8 @@ describe("flashcards.json — content quality", () => {
 // ─── Tabs — navigation ──────────────────────────────────────────────────────
 
 describe("tabs.json — app navigation", () => {
-  it("has at least 5 tabs (consolidated)", () => {
-    expect(tabs.length).toBeGreaterThanOrEqual(5);
+  it("has at least 4 tabs (Quiz / Library / Track / More — Learn merged into Library v10.0)", () => {
+    expect(tabs.length).toBeGreaterThanOrEqual(4);
   });
 
   it("every tab has id, ic, and l fields", () => {
@@ -249,9 +249,9 @@ describe("tabs.json — app navigation", () => {
     expect(dupes, `Duplicate tab IDs: ${dupes.join(", ")}`).toEqual([]);
   });
 
-  it("tab IDs include expected core tabs", () => {
+  it("tab IDs include expected core tabs (Learn merged into Library v10.0)", () => {
     const ids = tabs.map(t => t.id);
-    const expected = ["quiz", "learn", "lib", "track", "more"];
+    const expected = ["quiz", "lib", "track", "more"];
     expected.forEach(tabId => {
       expect(ids, `Missing expected tab: ${tabId}`).toContain(tabId);
     });
@@ -411,8 +411,8 @@ describe("data file sizes — sanity checks", () => {
     expect(drugs.length).toBeGreaterThanOrEqual(50);
   });
 
-  it("tabs.json has exactly 5 tabs (consolidated)", () => {
-    expect(tabs.length).toBe(5);
+  it("tabs.json has exactly 4 tabs (Quiz / Library / Track / More — Learn merged into Library v10.0)", () => {
+    expect(tabs.length).toBe(4);
   });
 });
 
