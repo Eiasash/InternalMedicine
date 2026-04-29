@@ -635,15 +635,23 @@ export function renderStudyPlan(){
   return h;
 }
 
-export function renderTrack(){
-const done=Object.values(G.S.ck).filter(Boolean).length;
-const tot=G.S.qOk+G.S.qNo;const pctN=tot?Math.round(G.S.qOk/tot*100):0;const pct=tot?pctN+'%':'—';
-const bkCount=Object.values(G.S.bk).filter(Boolean).length;
-const dueN=getDueQuestions().length;
-const readiness=calcEstScore();
-const streak=getStudyStreak();
-// Key metrics row
-let h=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
+// ===== Track sub-tab body builders (v9.94.0) =====
+// renderTrack splits its formerly 12-card vertical scroll into 4 focused
+// sub-tabs (Progress / Plan / Exam / More). Sub-tab persisted in
+// G.S.trackSubtab. Each helper builds one body section. All cards are
+// unchanged from the pre-9.94 layout — they're only regrouped, not
+// redesigned. Mirror of learn-sub / more-sub dispatch pattern in app.js.
+
+function _trackProgressBody(){
+  // Progress: stat tiles + due alert + Topic Mastery Heatmap +
+  // Today's Session + 30-day Activity calendar + Leaderboard.
+  const tot=G.S.qOk+G.S.qNo;
+  const pctN=tot?Math.round(G.S.qOk/tot*100):0;
+  const pct=tot?pctN+'%':'—';
+  const dueN=getDueQuestions().length;
+  const readiness=calcEstScore();
+  const streak=getStudyStreak();
+  let h=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
 <div class="card" style="padding:10px;text-align:center">
 <div style="font-size:22px;font-weight:800;color:${readiness===null?'#94a3b8':readiness>=70?'#059669':readiness>=50?'#d97706':'#dc2626'}">${readiness!==null?readiness+'%':'—'}</div>
 <div style="font-size:9px;color:#64748b">Est. Score</div>
@@ -661,83 +669,33 @@ let h=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;marg
 <div style="font-size:9px;color:#64748b">Accuracy</div>
 </div>
 </div>`;
-// SRS due alert
-if(dueN>0){
-h+=`<div class="card" style="padding:12px;margin-bottom:8px;background:#fef2f2;border:1px solid #fecaca">
+  if(dueN>0){
+    h+=`<div class="card" style="padding:12px;margin-bottom:8px;background:#fef2f2;border:1px solid #fecaca">
 <div style="display:flex;align-items:center;gap:8px">
 <span style="font-size:18px">🔔</span>
 <div style="flex:1"><div style="font-size:12px;font-weight:700;color:#dc2626">${dueN} questions due for review</div>
 <div style="font-size:10px;color:#64748b">Spaced repetition items ready now</div></div>
 <button data-action="goto-quiz-build" data-filt="due" class="btn" style="font-size:10px;padding:6px 12px;background:#dc2626;color:#fff;border:none;border-radius:8px">▶ Review</button>
 </div></div>`;
-}
-// Topic mastery heatmap (FSRS-driven SVG, Viridis 5-step, colorblind-safe)
-h+=renderTopicHeatmap();
-h+=renderStudyPlan();
-// Feature 5: Exam date + daily plan
-if(!G.S.examDate&&!localStorage.getItem('pnimit_exam_date')){
-h+=`<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
-<div style="font-size:12px;font-weight:700;margin-bottom:6px">📅 When is your exam?</div>
-<button class="btn btn-p" data-action="set-exam-date" style="font-size:11px">Set Exam Date</button>
-</div>`;
-}else{
-h+=renderDailyPlan();
-}
-h+=renderSessionCard();
-// v10.50.0 alignment with Geri: Confidence Matrix moved out of _rtTop into a
-// collapsible card after Weak Spots Map. Niche analytic — useful but doesn't
-// need above-the-fold real estate.
-// Feature 10: Cheat sheet export button
-h+=`<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
-<button class="btn btn-d" data-action="export-cheat-sheet" style="font-size:11px" aria-label="Export cheat sheet">📄 Export Weak Topics Cheat Sheet</button>
-<div style="font-size:9px;color:#94a3b8;margin-top:4px">Print-ready 2-page summary of your 15 weakest topics</div>
-</div>`;
-// Feature 5: Change exam date
-if(G.S.examDate||localStorage.getItem('pnimit_exam_date')){
-h+=`<div style="text-align:center;margin-bottom:10px"><button data-action="set-exam-date" style="font-size:9px;color:#94a3b8;background:none;border:none;cursor:pointer;text-decoration:underline">📅 Change exam date</button></div>`;
-}
-h+=renderExamTrendCard();
-// Rescue Drill CTA
-const _weakTopics=getWeakTopics(3);
-if(_weakTopics.length&&_weakTopics[0].pct!==null&&_weakTopics[0].pct<65){
-h+=`<div class="card" style="padding:14px;margin-bottom:10px;background:linear-gradient(135deg,#fef2f2,#fffbeb);border:1px solid #fecaca">
-<div style="display:flex;align-items:center;gap:10px">
-<span style="font-size:24px">🚨</span>
-<div style="flex:1">
-<div style="font-weight:700;font-size:12px;color:#dc2626">Rescue Drill</div>
-<div style="font-size:10px;color:#64748b">${_weakTopics.map(w=>TOPICS[w.ti]+' ('+w.pct+'%)').join(' \u00b7 ')}</div>
-</div>
-<button data-action="rescue-drill" class="btn" style="font-size:11px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:10px;font-weight:700">GO</button>
-</div></div>`;
-}
-// Activity Calendar (30 days)
-h+=`<div class="card" style="padding:14px;margin-bottom:10px">
+  }
+  h+=renderTopicHeatmap();
+  h+=renderSessionCard();
+  // Activity Calendar (30 days)
+  h+=`<div class="card" style="padding:14px;margin-bottom:10px">
 <div style="font-size:12px;font-weight:700;margin-bottom:8px">📅 Activity (last 30 days)</div>
 <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px">`;
-for(let _i=29;_i>=0;_i--){
-const _d=new Date();_d.setDate(_d.getDate()-_i);
-const _dk=_d.toISOString().slice(0,10);
-const _act=G.S.dailyAct&&G.S.dailyAct[_dk];
-const _qc=_act?_act.q:0;
-const _int=_qc===0?0:_qc<5?1:_qc<15?2:_qc<30?3:4;
-const _cols=['#f1f5f9','#dcfce7','#86efac','#22c55e','#15803d'];
-h+=`<div style="aspect-ratio:1;border-radius:3px;background:${_cols[_int]}" title="${_dk}: ${_qc} Qs"></div>`;
-}
-h+=`</div></div>`;
-// Spaced Reading Due
-const _harDue=getChaptersDueForReading('har',30);
-if(_harDue.length){
-h+=`<div class="card" style="padding:14px;margin-bottom:10px">
-<div style="font-size:12px;font-weight:700;margin-bottom:8px">📖 Chapters Due for Re-Reading</div>`;
-_harDue.slice(0,5).forEach(c=>{
-  const _chData=G._harData&&G._harData[c.ch];
-  const _title=_chData?_chData.title:'Ch '+c.ch;
-  h+=`<div data-action="open-chapter-due" data-ch="${c.ch}" style="font-size:10px;padding:4px 0;cursor:pointer;color:#64748b;border-bottom:1px solid #f8fafc">📗 Ch ${c.ch}: ${_title} <span style="color:#7c3aed;font-weight:700">(${c.daysSince}d ago)</span></div>`;
-});
-h+=`</div>`;
-}
-// Leaderboard
-h+=`<div class="card" style="padding:14px;margin-bottom:10px">
+  for(let _i=29;_i>=0;_i--){
+    const _d=new Date();_d.setDate(_d.getDate()-_i);
+    const _dk=_d.toISOString().slice(0,10);
+    const _act=G.S.dailyAct&&G.S.dailyAct[_dk];
+    const _qc=_act?_act.q:0;
+    const _int=_qc===0?0:_qc<5?1:_qc<15?2:_qc<30?3:4;
+    const _cols=['#f1f5f9','#dcfce7','#86efac','#22c55e','#15803d'];
+    h+=`<div style="aspect-ratio:1;border-radius:3px;background:${_cols[_int]}" title="${_dk}: ${_qc} Qs"></div>`;
+  }
+  h+=`</div></div>`;
+  // Leaderboard
+  h+=`<div class="card" style="padding:14px;margin-bottom:10px">
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
 <span style="font-size:14px">🏆</span>
 <div style="font-size:12px;font-weight:700;flex:1">Leaderboard</div>
@@ -745,100 +703,61 @@ h+=`<div class="card" style="padding:14px;margin-bottom:10px">
 </div>
 <div id="leaderboard-box" style="font-size:10px;color:#94a3b8;text-align:center">Tap refresh to load</div>
 </div>`;
-// v10.50.0 alignment with Geri: removed duplicate "Progress" stats grid +
-// standalone streak badge — Topics/Quiz/EstScore/Due-SR overlapped with the
-// 4 stat cards already shown at the top of _rtTop().
-// Bookmarked questions with folder grouping
-if(bkCount>0){
-const _byTopic={};
-Object.entries(G.S.bk).filter(([,v])=>v).forEach(([k])=>{
-const q=G.QZ[k];if(!q)return;
-const tp=TOPICS[q.ti]||'Other';
-if(!_byTopic[tp])_byTopic[tp]=[];
-_byTopic[tp].push({k:k,q:q});
-});
-const _topicKeys=Object.keys(_byTopic);
-if(_topicKeys.length>1){
-h+='<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">📁 Bookmark Folders</div>';
-_topicKeys.forEach(function(topic){
-var fk='bkf_'+topic.replace(/[^a-z0-9]/gi,'_');
-var open=G.S[fk];
-var qs=_byTopic[topic];
-h+='<div style="margin-bottom:6px">';
-h+='<div data-action="bk-toggle" data-key="'+fk+'" style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#f8fafc;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600" role="button" tabindex="0" aria-expanded="'+(open?'true':'false')+'" aria-label="'+topic+'">';
-h+='<span>📁 '+topic+' ('+qs.length+')</span><span>'+(open?'▼':'▶')+'</span></div>';
-if(open){qs.forEach(function(e){h+='<div style="padding:6px 12px;font-size:10px;border-bottom:1px solid #f1f5f9" class="heb" dir="'+heDir(e.q.q)+'">'+e.q.q.substring(0,90)+'...</div>';});}
-h+='</div>';
-});
-h+='</div>';
-}else{
-h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">🔖 Bookmarked (${bkCount})</div>`;
-Object.entries(G.S.bk).filter(([,v])=>v).slice(0,10).forEach(([k])=>{
-const q=G.QZ[k];if(q)h+=`<div style="font-size:10px;padding:6px 0;border-bottom:1px solid #f8fafc" class="heb" dir="${heDir(q.q)}">${q.q.substring(0,80)}...</div>`;
-});
-h+=`</div>`;
+  return h;
 }
-}
-// Syllabus
-h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:10px">📋 Syllabus (${done}/${TOPICS.length})</div>`;
-// v10.50.0 alignment with Geri: removed '📊 Accuracy by Topic' bars — duplicated the
-// 🗺️ Topic Mastery Map at the top of Track. One topic-accuracy view is enough.
-// Year × Topic heatmap
-const years=[...new Set(G.QZ.map(q=>q.t))].sort();
-const heatData=[];
-TOPICS.forEach((topic,ti)=>{
-const row={topic,cells:[]};
-years.forEach(yr=>{
-const qs=G.QZ.map((q,i)=>({q,i})).filter(e=>e.q.ti===ti&&e.q.t===yr);
-if(!qs.length){row.cells.push({yr,pct:-1,n:0});return;}
-const answered=qs.filter(e=>G.S.sr[e.i]);
-const correct=qs.filter(e=>{const s=G.S.sr[e.i];return s&&s.n>0&&s.ef>=2.3;});
-row.cells.push({yr,pct:answered.length?Math.round(correct.length/answered.length*100):-1,n:answered.length});
-});
-if(row.cells.some(c=>c.n>0))heatData.push(row);
-});
-if(heatData.length>0){
-// v10.50.0 alignment with Geri: Weak Spots Map collapsed by default. The year × topic
-// heatmap is dense and only meaningful with ~50+ answered questions across multiple
-// exam periods. Header shows topic+exam counts so the summary is visible without
-// expanding. State persisted in G.S._wsmOpen.
-const _wsmOpen=G.S._wsmOpen===true;
-h+=`<div class="card" style="padding:14px;margin-bottom:10px">`;
-h+=`<div data-action="toggle-wsm" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700;font-size:12px;${_wsmOpen?'margin-bottom:8px':''}" role="button" tabindex="0" aria-expanded="${_wsmOpen?'true':'false'}" aria-label="Toggle weak spots map"><span style="flex:1">🗺️ Weak Spots Map <span style="font-weight:400;color:#94a3b8;font-size:10px">· ${heatData.length} topic${heatData.length>1?'s':''} × ${years.length} exam${years.length>1?'s':''}</span></span><span style="color:#64748b">${_wsmOpen?'▲':'▼'}</span></div>`;
-if(_wsmOpen){
-h+=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:9px"><thead><tr><th style="text-align:right;padding:3px;font-size:8px">Topic</th>`;
-years.forEach(y=>{h+=`<th style="padding:3px;text-align:center;font-size:7px;white-space:nowrap">${y.length>4?y.slice(-2):y}</th>`;});
-h+=`</tr></thead><tbody>`;
-heatData.sort((a,b)=>{
-const avgA=a.cells.filter(c=>c.n>0).reduce((s,c)=>s+c.pct,0)/(a.cells.filter(c=>c.n>0).length||1);
-const avgB=b.cells.filter(c=>c.n>0).reduce((s,c)=>s+c.pct,0)/(b.cells.filter(c=>c.n>0).length||1);
-return avgA-avgB;
-});
-heatData.forEach(row=>{
-h+=`<tr><td style="padding:3px;text-align:right;white-space:nowrap;max-width:100px;overflow:hidden;text-overflow:ellipsis">${row.topic}</td>`;
-row.cells.forEach(c=>{
-if(c.n===0){h+=`<td style="padding:2px;text-align:center;background:#f8fafc;color:#cbd5e1">·</td>`;}
-else if(c.n===1){h+=`<td style="padding:2px;text-align:center;background:#f8fafc;color:#94a3b8;font-size:8px" title="Only 1 attempt — too few for a meaningful score">${c.pct}%<br><span style="font-size:7px">1q</span></td>`;}
-else{
-const bg=c.pct>=75?'#dcfce7':c.pct>=50?'#fef9c3':'#fecaca';
-h+=`<td style="padding:2px;text-align:center;background:${bg};font-weight:600;border-radius:2px" title="${c.pct}% on ${c.n} attempts">${c.pct}%<br><span style="font-size:7px;opacity:0.7">${c.n}q</span></td>`;}
-});
-h+=`</tr>`;
-});
-h+=`</tbody></table></div>`;
-h+=`<div style="display:flex;gap:8px;margin-top:6px;font-size:8px;color:#94a3b8;justify-content:center">
+
+function _trackPlanBody(){
+  // Plan: Study Plan tiers + Priority Matrix + Weak Spots Map + Confidence Matrix.
+  let h=renderStudyPlan();
+  h+=renderPriorityMatrix();
+  // Weak Spots Map (year × topic heatmap, collapsible)
+  const years=[...new Set(G.QZ.map(q=>q.t))].sort();
+  const heatData=[];
+  TOPICS.forEach((topic,ti)=>{
+    const row={topic,cells:[]};
+    years.forEach(yr=>{
+      const qs=G.QZ.map((q,i)=>({q,i})).filter(e=>e.q.ti===ti&&e.q.t===yr);
+      if(!qs.length){row.cells.push({yr,pct:-1,n:0});return;}
+      const answered=qs.filter(e=>G.S.sr[e.i]);
+      const correct=qs.filter(e=>{const s=G.S.sr[e.i];return s&&s.n>0&&s.ef>=2.3;});
+      row.cells.push({yr,pct:answered.length?Math.round(correct.length/answered.length*100):-1,n:answered.length});
+    });
+    if(row.cells.some(c=>c.n>0))heatData.push(row);
+  });
+  if(heatData.length>0){
+    const _wsmOpen=G.S._wsmOpen===true;
+    h+=`<div class="card" style="padding:14px;margin-bottom:10px">`;
+    h+=`<div data-action="toggle-wsm" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700;font-size:12px;${_wsmOpen?'margin-bottom:8px':''}" role="button" tabindex="0" aria-expanded="${_wsmOpen?'true':'false'}" aria-label="Toggle weak spots map"><span style="flex:1">🗺️ Weak Spots Map <span style="font-weight:400;color:#94a3b8;font-size:10px">· ${heatData.length} topic${heatData.length>1?'s':''} × ${years.length} exam${years.length>1?'s':''}</span></span><span style="color:#64748b">${_wsmOpen?'▲':'▼'}</span></div>`;
+    if(_wsmOpen){
+      h+=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:9px"><thead><tr><th style="text-align:right;padding:3px;font-size:8px">Topic</th>`;
+      years.forEach(y=>{h+=`<th style="padding:3px;text-align:center;font-size:7px;white-space:nowrap">${y.length>4?y.slice(-2):y}</th>`;});
+      h+=`</tr></thead><tbody>`;
+      heatData.sort((a,b)=>{
+        const avgA=a.cells.filter(c=>c.n>0).reduce((s,c)=>s+c.pct,0)/(a.cells.filter(c=>c.n>0).length||1);
+        const avgB=b.cells.filter(c=>c.n>0).reduce((s,c)=>s+c.pct,0)/(b.cells.filter(c=>c.n>0).length||1);
+        return avgA-avgB;
+      });
+      heatData.forEach(row=>{
+        h+=`<tr><td style="padding:3px;text-align:right;white-space:nowrap;max-width:100px;overflow:hidden;text-overflow:ellipsis">${row.topic}</td>`;
+        row.cells.forEach(c=>{
+          if(c.n===0){h+=`<td style="padding:2px;text-align:center;background:#f8fafc;color:#cbd5e1">·</td>`;}
+          else if(c.n===1){h+=`<td style="padding:2px;text-align:center;background:#f8fafc;color:#94a3b8;font-size:8px" title="Only 1 attempt — too few for a meaningful score">${c.pct}%<br><span style="font-size:7px">1q</span></td>`;}
+          else{
+            const bg=c.pct>=75?'#dcfce7':c.pct>=50?'#fef9c3':'#fecaca';
+            h+=`<td style="padding:2px;text-align:center;background:${bg};font-weight:600;border-radius:2px" title="${c.pct}% on ${c.n} attempts">${c.pct}%<br><span style="font-size:7px;opacity:0.7">${c.n}q</span></td>`;}
+        });
+        h+=`</tr>`;
+      });
+      h+=`</tbody></table></div>`;
+      h+=`<div style="display:flex;gap:8px;margin-top:6px;font-size:8px;color:#94a3b8;justify-content:center">
 <span style="display:flex;align-items:center;gap:2px"><span style="width:10px;height:10px;background:#fecaca;border-radius:2px"></span>&lt;50%</span>
 <span style="display:flex;align-items:center;gap:2px"><span style="width:10px;height:10px;background:#fef9c3;border-radius:2px"></span>50-74%</span>
 <span style="display:flex;align-items:center;gap:2px"><span style="width:10px;height:10px;background:#dcfce7;border-radius:2px"></span>&ge;75%</span>
 </div>`;
-}
-h+=`</div>`;}
-
-// v10.50.0 alignment with Geri: Confidence Matrix moved here as a collapsible card.
-// Same pattern as Weak Spots Map. Default closed; only renders if user has rated ≥10
-// questions for confidence. Was sitting above-the-fold in _rtTop; the actionable summary
-// (blind-spot count) is in the collapsed header so users see it without expanding.
-{
+    }
+    h+=`</div>`;
+  }
+  // Confidence Matrix (collapsible, only renders if user has rated ≥10 questions)
   const _cmStats={sure_ok:0,sure_no:0,unsure_ok:0,unsure_no:0};
   Object.values(G.S.sr||{}).forEach(s=>{if(s.conf){Object.entries(s.conf).forEach(([k,v])=>{if(_cmStats[k]!==undefined)_cmStats[k]+=v;});}});
   const _cmTotal=Object.values(_cmStats).reduce((a,b)=>a+b,0);
@@ -858,32 +777,143 @@ h+=`</div>`;}
     }
     h+=`</div>`;
   }
+  return h;
 }
-// ROI Matrix and Radar chart removed — accuracy bars above are sufficient
-h+=renderPriorityMatrix();
 
-TOPICS.forEach((t,i)=>{h+=`<div class="topic${G.S.ck[i]?' done':''}" data-action="syl-check" data-i="${i}" style="display:${G.S._sylOpen?'flex':'none'}" role="checkbox" aria-checked="${G.S.ck[i]?'true':'false'}" tabindex="0" aria-label="${t}">
+function _trackExamBody(){
+  // Exam: Set Exam Date OR Daily Plan + Exam Trend + Rescue Drill +
+  // Cheat Sheet export + Change-date link + IMA Exam Archive.
+  let h='';
+  if(!G.S.examDate&&!localStorage.getItem('pnimit_exam_date')){
+    h+=`<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
+<div style="font-size:12px;font-weight:700;margin-bottom:6px">📅 When is your exam?</div>
+<button class="btn btn-p" data-action="set-exam-date" style="font-size:11px">Set Exam Date</button>
+</div>`;
+  }else{
+    h+=renderDailyPlan();
+  }
+  h+=renderExamTrendCard();
+  // Rescue Drill CTA — only when weakest topic <65%
+  const _weakTopics=getWeakTopics(3);
+  if(_weakTopics.length&&_weakTopics[0].pct!==null&&_weakTopics[0].pct<65){
+    h+=`<div class="card" style="padding:14px;margin-bottom:10px;background:linear-gradient(135deg,#fef2f2,#fffbeb);border:1px solid #fecaca">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-size:24px">🚨</span>
+<div style="flex:1">
+<div style="font-weight:700;font-size:12px;color:#dc2626">Rescue Drill</div>
+<div style="font-size:10px;color:#64748b">${_weakTopics.map(w=>TOPICS[w.ti]+' ('+w.pct+'%)').join(' · ')}</div>
+</div>
+<button data-action="rescue-drill" class="btn" style="font-size:11px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:10px;font-weight:700">GO</button>
+</div></div>`;
+  }
+  // Cheat Sheet export
+  h+=`<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
+<button class="btn btn-d" data-action="export-cheat-sheet" style="font-size:11px" aria-label="Export cheat sheet">📄 Export Weak Topics Cheat Sheet</button>
+<div style="font-size:9px;color:#94a3b8;margin-top:4px">Print-ready 2-page summary of your 15 weakest topics</div>
+</div>`;
+  // Change exam date
+  if(G.S.examDate||localStorage.getItem('pnimit_exam_date')){
+    h+=`<div style="text-align:center;margin-bottom:10px"><button data-action="set-exam-date" style="font-size:9px;color:#94a3b8;background:none;border:none;cursor:pointer;text-decoration:underline">📅 Change exam date</button></div>`;
+  }
+  // IMA Exam Archive
+  h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">📥 IMA Exam Archive</div><div style="font-size:10px">`;
+  [["2022","639899_34c9618e-ff88-4811-84d5-ba1fdd9d5f1c","639902_9a12e7aa-9876-40e1-bdea-0786dc417406"],
+  ["2023","639904_14aa53eb-d114-4ab8-8bfe-938b32d02fc0","639907_33601987-d23e-4f5f-8180-53890b2cfcb4"],
+  ["May 24","652285_f10c088f-c183-4f9c-8324-b37bedabe522","652288_5f94445c-1fe5-4207-bd42-e223be8064a0"],
+  ["Sep 24","652291_5946c97e-78c1-4920-81e3-1081d46fdb6e","652294_46e7d570-db16-4307-b4f1-66f002ed456e"],
+  ["Jun 25","749665_d23a3de1-a2af-4467-b2b0-71f297f6b800","766892_d886488d-27d3-487c-8088-56f67ae43409"],
+  ].forEach(([y,q,a])=>{h+=`<div style="display:flex;gap:8px;padding:3px 0"><b style="width:48px">${y}</b><a href="https://ima-files.s3.amazonaws.com/${q}.pdf" target="_blank" style="color:rgb(var(--sky));text-decoration:underline">שאלון</a><a href="https://ima-files.s3.amazonaws.com/${a}.pdf" target="_blank" style="color:rgb(var(--sky));text-decoration:underline">תשובות</a></div>`;});
+  h+=`</div></div>`;
+  return h;
+}
+
+function _trackMoreBody(){
+  // More: Spaced Reading Due + Bookmarks + Syllabus completion +
+  // Study Journal + API Key + Share + Data Management + Version footer.
+  // Settings-y stuff that doesn't belong in the daily flow.
+  const done=Object.values(G.S.ck).filter(Boolean).length;
+  const bkCount=Object.values(G.S.bk).filter(Boolean).length;
+  let h='';
+  // Spaced Reading Due
+  const _harDue=getChaptersDueForReading('har',30);
+  if(_harDue.length){
+    h+=`<div class="card" style="padding:14px;margin-bottom:10px">
+<div style="font-size:12px;font-weight:700;margin-bottom:8px">📖 Chapters Due for Re-Reading</div>`;
+    _harDue.slice(0,5).forEach(c=>{
+      const _chData=G._harData&&G._harData[c.ch];
+      const _title=_chData?_chData.title:'Ch '+c.ch;
+      h+=`<div data-action="open-chapter-due" data-ch="${c.ch}" style="font-size:10px;padding:4px 0;cursor:pointer;color:#64748b;border-bottom:1px solid #f8fafc">📗 Ch ${c.ch}: ${_title} <span style="color:#7c3aed;font-weight:700">(${c.daysSince}d ago)</span></div>`;
+    });
+    h+=`</div>`;
+  }
+  // Bookmarks
+  if(bkCount>0){
+    const _byTopic={};
+    Object.entries(G.S.bk).filter(([,v])=>v).forEach(([k])=>{
+      const q=G.QZ[k];if(!q)return;
+      const tp=TOPICS[q.ti]||'Other';
+      if(!_byTopic[tp])_byTopic[tp]=[];
+      _byTopic[tp].push({k:k,q:q});
+    });
+    const _topicKeys=Object.keys(_byTopic);
+    if(_topicKeys.length>1){
+      h+='<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">📁 Bookmark Folders</div>';
+      _topicKeys.forEach(function(topic){
+        var fk='bkf_'+topic.replace(/[^a-z0-9]/gi,'_');
+        var open=G.S[fk];
+        var qs=_byTopic[topic];
+        h+='<div style="margin-bottom:6px">';
+        h+='<div data-action="bk-toggle" data-key="'+fk+'" style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#f8fafc;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600" role="button" tabindex="0" aria-expanded="'+(open?'true':'false')+'" aria-label="'+topic+'">';
+        h+='<span>📁 '+topic+' ('+qs.length+')</span><span>'+(open?'▼':'▶')+'</span></div>';
+        if(open){qs.forEach(function(e){h+='<div style="padding:6px 12px;font-size:10px;border-bottom:1px solid #f1f5f9" class="heb" dir="'+heDir(e.q.q)+'">'+e.q.q.substring(0,90)+'...</div>';});}
+        h+='</div>';
+      });
+      h+='</div>';
+    }else{
+      h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">🔖 Bookmarked (${bkCount})</div>`;
+      Object.entries(G.S.bk).filter(([,v])=>v).slice(0,10).forEach(([k])=>{
+        const q=G.QZ[k];if(q)h+=`<div style="font-size:10px;padding:6px 0;border-bottom:1px solid #f8fafc" class="heb" dir="${heDir(q.q)}">${q.q.substring(0,80)}...</div>`;
+      });
+      h+=`</div>`;
+    }
+  }
+  // Syllabus completion (24-topic checkbox grid)
+  h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:10px">📋 Syllabus (${done}/${TOPICS.length})</div>`;
+  TOPICS.forEach((t,i)=>{h+=`<div class="topic${G.S.ck[i]?' done':''}" data-action="syl-check" data-i="${i}" style="display:${G.S._sylOpen?'flex':'none'}" role="checkbox" aria-checked="${G.S.ck[i]?'true':'false'}" tabindex="0" aria-label="${t}">
 <input type="checkbox" ${G.S.ck[i]?'checked':''} readonly style="width:13px;height:13px" tabindex="-1"><span>${t}</span></div>`;});
-h+=`<div data-action="syl-toggle" style="text-align:center;padding:8px;cursor:pointer;font-size:10px;color:rgb(var(--sky));font-weight:600" role="button" tabindex="0" aria-expanded="${G.S._sylOpen}" aria-label="Toggle syllabus topics">${G.S._sylOpen?'▲ Collapse':'▼ Show '+TOPICS.length+' topics'}</div>`;
-h+=`</div>`;
-// IMA Links
-h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">📥 IMA Exam Archive</div><div style="font-size:10px">`;
-[["2022","639899_34c9618e-ff88-4811-84d5-ba1fdd9d5f1c","639902_9a12e7aa-9876-40e1-bdea-0786dc417406"],
-["2023","639904_14aa53eb-d114-4ab8-8bfe-938b32d02fc0","639907_33601987-d23e-4f5f-8180-53890b2cfcb4"],
-["May 24","652285_f10c088f-c183-4f9c-8324-b37bedabe522","652288_5f94445c-1fe5-4207-bd42-e223be8064a0"],
-["Sep 24","652291_5946c97e-78c1-4920-81e3-1081d46fdb6e","652294_46e7d570-db16-4307-b4f1-66f002ed456e"],
-["Jun 25","749665_d23a3de1-a2af-4467-b2b0-71f297f6b800","766892_d886488d-27d3-487c-8088-56f67ae43409"],
-].forEach(([y,q,a])=>{h+=`<div style="display:flex;gap:8px;padding:3px 0"><b style="width:48px">${y}</b><a href="https://ima-files.s3.amazonaws.com/${q}.pdf" target="_blank" style="color:rgb(var(--sky));text-decoration:underline">שאלון</a><a href="https://ima-files.s3.amazonaws.com/${a}.pdf" target="_blank" style="color:rgb(var(--sky));text-decoration:underline">תשובות</a></div>`;});
-h+=`</div></div>`;
-// Reset
-// Share with friends
-h+=`<div class="card" style="padding:14px;text-align:center;margin-top:12px">
+  h+=`<div data-action="syl-toggle" style="text-align:center;padding:8px;cursor:pointer;font-size:10px;color:rgb(var(--sky));font-weight:600" role="button" tabindex="0" aria-expanded="${G.S._sylOpen}" aria-label="Toggle syllabus topics">${G.S._sylOpen?'▲ Collapse':'▼ Show '+TOPICS.length+' topics'}</div>`;
+  h+=`</div>`;
+  // Study Journal
+  h+=`<div class="card" style="padding:14px;margin-top:12px">
+<div style="font-weight:700;font-size:12px;margin-bottom:10px">📓 Study Journal</div>
+${renderWrongAnswerLog()}
+</div>`;
+  // API Key
+  var _storedKey=getApiKey();
+  h+='<div class="card" style="padding:14px;margin-top:10px;border:2px solid '+(_storedKey?'#bbf7d0':'#fde68a')+'">';
+  h+='<div class="sec-t" style="font-size:13px">🔑 Anthropic API Key</div>';
+  h+='<div class="sec-s" style="margin-bottom:10px">לשימוש ב-AI Explain ו-Teach-Back · מאוחסן בדפדפן בלבד</div>';
+  if(!_storedKey){h+='<div style="padding:8px 10px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;font-size:10px;color:#065f46;margin-bottom:10px">✅ AI פועל דרך שרת proxy — לא צריך מפתח אישי. אפשר להוסיף כגיבוי. <a href="https://console.anthropic.com/keys" target="_blank" style="color:#d97706;font-weight:700">קבל מפתח ↗</a></div>';}
+  if(_storedKey){
+    h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
+    h+='<div style="flex:1;font-size:11px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;padding:6px 10px;color:#065f46">✅ API key מוגדר (sk-...'+_storedKey.slice(-6)+')</div>';
+    h+='<button class="btn btn-o" style="font-size:11px" data-action="remove-api-key" aria-label="Remove API key">הסר</button>';
+    h+='</div>';
+  } else {
+    h+='<div style="display:flex;gap:8px;margin-bottom:8px">';
+    h+='<input id="apiKeyInput" type="password" placeholder="sk-ant-..." class="calc-in" style="flex:1;margin:0;font-size:11px" aria-label="Claude API key">';
+    h+='<button class="btn btn-p" style="font-size:11px" data-action="save-api-key" aria-label="Save API key">שמור</button>';
+    h+='</div>';
+  }
+  h+='<div style="font-size:9px;color:#94a3b8">API key נשמר ב-localStorage בלבד · לא נשלח לשרתים של האפליקציה</div></div>';
+  // Share with friends
+  h+=`<div class="card" style="padding:14px;text-align:center;margin-top:12px">
 <div style="font-weight:700;font-size:12px;margin-bottom:8px">🔗 Share with Friends</div>
 <div style="font-size:10px;color:#64748b;margin-bottom:10px">Share this app with fellow internal medicine residents</div>
 <button class="btn btn-p" data-action="share-app" style="margin-bottom:8px" aria-label="Share app link">📤 Share App Link</button>
 </div>`;
-// Data management
-h+=`<div class="card" style="padding:14px;margin-top:12px">
+  // Data management
+  h+=`<div class="card" style="padding:14px;margin-top:12px">
 <div style="font-weight:700;font-size:12px;margin-bottom:8px">💾 Data Management</div>
 <div style="font-size:10px;color:#64748b;margin-bottom:10px">Your progress is saved automatically in your browser. Export to backup or transfer between devices.</div>
 <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
@@ -896,32 +926,9 @@ h+=`<div class="card" style="padding:14px;margin-top:12px">
 <button class="btn" style="background:#f0fdf4;color:#15803d" data-action="cloud-restore" aria-label="Restore from cloud">☁️ Restore from Cloud</button>
 </div>
 <div style="font-size:9px;color:#94a3b8;text-align:center;margin-top:6px">Cloud sync · progress keyed by device ID</div>
-</div></div>`;
-// Study Journal — wrong answer log + personal notes
-h+=`<div class="card" style="padding:14px;margin-top:12px">
-<div style="font-weight:700;font-size:12px;margin-bottom:10px">📓 Study Journal</div>
-${renderWrongAnswerLog()}
 </div>`;
-// API key settings card
-var _storedKey=getApiKey();
-h+='<div class="card" style="padding:14px;margin-top:10px;border:2px solid '+(_storedKey?'#bbf7d0':'#fde68a')+'">';
-h+='<div class="sec-t" style="font-size:13px">🔑 Anthropic API Key</div>';
-h+='<div class="sec-s" style="margin-bottom:10px">לשימוש ב-AI Explain ו-Teach-Back · מאוחסן בדפדפן בלבד</div>';
-if(!_storedKey){h+='<div style="padding:8px 10px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;font-size:10px;color:#065f46;margin-bottom:10px">✅ AI פועל דרך שרת proxy — לא צריך מפתח אישי. אפשר להוסיף כגיבוי. <a href="https://console.anthropic.com/keys" target="_blank" style="color:#d97706;font-weight:700">קבל מפתח ↗</a></div>';}
-if(_storedKey){
-  h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
-  h+='<div style="flex:1;font-size:11px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;padding:6px 10px;color:#065f46">✅ API key מוגדר (sk-...'+_storedKey.slice(-6)+')</div>';
-  h+='<button class="btn btn-o" style="font-size:11px" data-action="remove-api-key" aria-label="Remove API key">הסר</button>';
-  h+='</div>';
-} else {
-  h+='<div style="display:flex;gap:8px;margin-bottom:8px">';
-  h+='<input id="apiKeyInput" type="password" placeholder="sk-ant-..." class="calc-in" style="flex:1;margin:0;font-size:11px" aria-label="Claude API key">';
-  h+='<button class="btn btn-p" style="font-size:11px" data-action="save-api-key" aria-label="Save API key">שמור</button>';
-  h+='</div>';
-}
-h+='<div style="font-size:9px;color:#94a3b8">API key נשמר ב-localStorage בלבד · לא נשלח לשרתים של האפליקציה</div></div>';
-// Version footer
-h+=`<div style="text-align:center;margin-top:20px;padding:12px;font-size:9px;color:#94a3b8;line-height:1.8">
+  // Version footer
+  h+=`<div style="text-align:center;margin-top:20px;padding:12px;font-size:9px;color:#94a3b8;line-height:1.8">
 <div>Pnimit Mega v${APP_VERSION} · ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})} · build ${BUILD_HASH}</div>
 <div>Harrison's 22e · ${G.QZ.length} Questions</div>
 <div style="margin-top:8px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
@@ -929,7 +936,28 @@ h+=`<div style="text-align:center;margin-top:20px;padding:12px;font-size:9px;col
 <a href="https://eiasash.github.io/Geriatrics/" target="_blank" style="font-size:10px;padding:5px 14px;background:#0D7377;color:#fff;border:none;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">🩺 Geriatrics App →</a>
 </div>
 <div style="margin-top:6px">صدقة جارية الى من نحب</div></div>`;
-return h;
+  return h;
+}
+
+export function renderTrack(){
+  // Sub-tab dispatcher (v9.94.0). Mirror of learn-sub / more-sub
+  // dispatch in app.js render(). Persists choice in G.S.trackSubtab so
+  // it survives reload. Each sub-tab body fits ~1.5 mobile viewports.
+  const sub=G.S.trackSubtab||'progress';
+  const subBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
+    [{id:'progress',ic:'📊',l:'Progress'},
+     {id:'plan',ic:'🎯',l:'Plan'},
+     {id:'exam',ic:'📅',l:'Exam'},
+     {id:'more',ic:'⚙️',l:'More'}].map(s=>
+      '<button data-action="track-subtab" data-sub="'+s.id+'" style="flex:1;min-height:44px;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(sub===s.id?'700':'400')+';cursor:pointer;background:'+(sub===s.id?'#fff':'transparent')+';color:'+(sub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(sub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
+    ).join('')+'</div>';
+  let body='';
+  if(sub==='progress')body=_trackProgressBody();
+  else if(sub==='plan')body=_trackPlanBody();
+  else if(sub==='exam')body=_trackExamBody();
+  else if(sub==='more')body=_trackMoreBody();
+  else body=_trackProgressBody();
+  return subBar+body;
 }
 
 // ===== SEARCH =====
@@ -941,6 +969,13 @@ export function initTrackEvents(container) {
     if (!el) return;
     const action = el.dataset.action;
 
+    // Sub-tab switch (v9.94.0)
+    if (action === 'track-subtab') {
+      G.S.trackSubtab = el.dataset.sub;
+      G.save(); G.render();
+      window.scrollTo({ top: 0 });
+      return;
+    }
     // Priority Matrix
     if (action === 'toggle-pm-full') {
       const pm = document.getElementById('pmFull');
