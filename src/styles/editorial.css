@@ -1,0 +1,280 @@
+/* ============================================================================
+ * Editorial Mode — "Clinical Editorial" aesthetic
+ *
+ * Opt-in 4th theme alongside light (default), body.dark, body.study.
+ * Activated via toggleEditorial() in src/ui/app.js, persisted in G.S.editorial.
+ * Mutually exclusive with body.dark and body.study (same pattern those use).
+ *
+ * Design intent: NEJM editorial restraint × Dieter Rams. Hairline rules instead
+ * of card-shadows. Serif typography for hero numbers and the question stem
+ * (long Hebrew clinical prose reads better in serif at 17px). Pnimit teal as
+ * the single confident brand accent, used sparingly.
+ *
+ * Typography fallback: 'Frank Ruhl Libre' is the documented intent (see
+ * shared/tokens.css), but font files aren't shipped yet. The stack falls
+ * through to David Libre (Hebrew system serif on macOS/iOS) → Georgia →
+ * generic serif. If the direction validates, we ship the woff2 files in a
+ * follow-up that updates the CSP font-src.
+ * ========================================================================= */
+
+body.editorial {
+  /* Neutrals — warm paper feel, not pure white */
+  --ed-paper:      #FAF8F4;
+  --ed-paper-deep: #F2EDE2;
+  --ed-hairline:   #E8E2D6;
+  --ed-ink:        #1A1F2E;
+  --ed-mute:       #6B6F7A;
+  --ed-mute-soft:  #9DA1AB;
+  --ed-highlight:  #C9B47C;
+
+  /* Pnimit brand — deep teal */
+  --ed-brand:      #155E63;
+  --ed-brand-soft: #D5EDEF;
+  --ed-brand-ink:  #0A2F31;
+
+  /* Status — softened from the bright dark-mode palette */
+  --ed-success-bg:  #E5F0E8;
+  --ed-success-fg:  #1A4A37;
+  --ed-warn-bg:     #FBF5E5;
+  --ed-warn-fg:     #5C4500;
+  --ed-danger-bg:   #F9EAEA;
+  --ed-danger-fg:   #601012;
+
+  /* Override --app-primary so existing rules referencing it get the brand */
+  --app-primary: var(--ed-brand);
+  --app-on-primary: var(--ed-paper);
+
+  background: var(--ed-paper);
+  color: var(--ed-ink);
+}
+
+/* ── Display serif for editorial moments ──────────────────────────────────
+ * Wordmark, hero numbers in stat tiles, question stem.
+ * Long Hebrew clinical prose reads better in serif at this size. */
+body.editorial .stat .n,
+body.editorial .qstem,
+body.editorial .hdr h1,
+body.editorial .display-serif {
+  font-family: 'Frank Ruhl Libre', 'David Libre', Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+/* ── Header: paper + hairline, not gradient ──────────────────────────── */
+body.editorial .hdr {
+  background: var(--ed-paper);
+  border-bottom: 1px solid var(--ed-hairline);
+  color: var(--ed-ink);
+  box-shadow: none;
+}
+body.editorial .hdr h1,
+body.editorial .hdr .hdr-title { color: var(--ed-brand); }
+
+/* ── Cards: hairline + brand top-bar, no shadow ───────────────────────── */
+body.editorial .card {
+  background: var(--ed-paper-deep);
+  border: 1px solid var(--ed-hairline);
+  border-top: 3px solid var(--ed-brand);
+  box-shadow: none;
+  border-radius: 12px;
+}
+
+/* ── Tabs: underline-active, no fill ──────────────────────────────────── */
+body.editorial .tabs {
+  background: var(--ed-paper);
+  border-bottom: 1px solid var(--ed-hairline);
+  box-shadow: none;
+}
+body.editorial .tabs button { color: var(--ed-mute); }
+body.editorial .tabs button.on {
+  color: var(--ed-ink);
+  background: transparent;
+  border-bottom: 2px solid var(--ed-ink);
+}
+
+/* ── Pills: filled when on (uses --app-primary override) ─────────────── */
+body.editorial .pill { box-shadow: none; }
+body.editorial .pill:not(.on) {
+  background: var(--ed-paper);
+  color: var(--ed-mute);
+  border: 1px solid var(--ed-hairline);
+}
+body.editorial .pill.on { box-shadow: none; }
+
+/* ── Buttons ─────────────────────────────────────────────────────────── */
+body.editorial .btn { border-radius: 8px; }
+body.editorial .btn-d { background: var(--ed-ink); color: var(--ed-paper); }
+body.editorial .btn-o {
+  background: transparent;
+  color: var(--ed-ink);
+  border: 1px solid var(--ed-hairline);
+}
+
+/* ── Question options ────────────────────────────────────────────────── */
+body.editorial .qo {
+  background: var(--ed-paper);
+  border: 1px solid var(--ed-hairline);
+  color: var(--ed-ink);
+  border-radius: 10px;
+  font-family: 'Heebo', sans-serif;
+}
+body.editorial .qo:not(.lk):hover {
+  border-color: var(--ed-brand);
+  background: var(--ed-brand-soft);
+}
+body.editorial .qo.sel {
+  border-color: var(--ed-brand);
+  background: var(--ed-brand-soft);
+  font-weight: 600;
+}
+body.editorial .qo.ok {
+  background: var(--ed-success-bg);
+  border-color: #2D6A4F;
+  color: var(--ed-success-fg);
+}
+body.editorial .qo.no {
+  background: var(--ed-danger-bg);
+  border-color: #9B2226;
+  color: var(--ed-danger-fg);
+}
+body.editorial .qo.dim {
+  color: var(--ed-mute-soft);
+  border-color: var(--ed-hairline);
+}
+
+/* ── Question stem: serif + breathing line-height ────────────────────── */
+body.editorial .qstem,
+body.editorial .question-text,
+body.editorial .q-stem {
+  font-family: 'Frank Ruhl Libre', 'David Libre', Georgia, serif;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ed-ink);
+}
+
+/* ── Stat tiles: serif numbers in brand teal ─────────────────────────── */
+body.editorial .stat {
+  background: var(--ed-paper);
+  border: 1px solid var(--ed-hairline);
+  border-radius: 12px;
+  box-shadow: none;
+}
+body.editorial .stat .n {
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--ed-brand);
+}
+body.editorial .stat .l {
+  color: var(--ed-mute);
+  letter-spacing: 0.1em;
+}
+
+/* ── Inputs ──────────────────────────────────────────────────────────── */
+body.editorial .search-box,
+body.editorial .calc-in {
+  background: var(--ed-paper);
+  border: 1px solid var(--ed-hairline);
+  color: var(--ed-ink);
+  border-radius: 8px;
+}
+body.editorial .search-box:focus,
+body.editorial .calc-in:focus {
+  outline: none;
+  border-color: var(--ed-brand);
+  box-shadow: 0 0 0 3px rgba(21, 94, 99, 0.12);
+}
+
+/* ── Flashcards ──────────────────────────────────────────────────────── */
+body.editorial .fc {
+  background: var(--ed-paper);
+  border: 1px solid var(--ed-hairline);
+  box-shadow: none;
+  color: var(--ed-ink);
+}
+
+/* ── Topics ──────────────────────────────────────────────────────────── */
+body.editorial .topic {
+  border: 1px solid transparent;
+}
+body.editorial .topic:hover { background: var(--ed-paper-deep); }
+body.editorial .topic.done {
+  background: var(--ed-success-bg);
+  border-color: #2D6A4F;
+  color: var(--ed-success-fg);
+}
+
+/* ── Badges: muted, not bright ───────────────────────────────────────── */
+body.editorial .badge-r { background: var(--ed-danger-bg);  color: var(--ed-danger-fg); }
+body.editorial .badge-y { background: var(--ed-warn-bg);    color: var(--ed-warn-fg); }
+body.editorial .badge-g { background: var(--ed-success-bg); color: var(--ed-success-fg); }
+
+/* ── Accordions ──────────────────────────────────────────────────────── */
+body.editorial .acc-h:hover { background: var(--ed-paper-deep); }
+body.editorial .acc-ic {
+  background: var(--ed-brand);
+  color: var(--ed-paper);
+}
+
+/* ── Drug rows ───────────────────────────────────────────────────────── */
+body.editorial .drug-row {
+  border-bottom-color: var(--ed-hairline);
+  color: var(--ed-ink);
+}
+
+/* ── Checklists ──────────────────────────────────────────────────────── */
+body.editorial .ck {
+  border: 1px solid var(--ed-hairline);
+  background: var(--ed-paper);
+  color: var(--ed-ink);
+}
+body.editorial .ck:hover { background: var(--ed-paper-deep); }
+body.editorial .ck.done span { color: var(--ed-mute-soft); }
+
+/* ── Empty states ────────────────────────────────────────────────────── */
+body.editorial .empty { color: var(--ed-mute); }
+
+/* ── Section titles ──────────────────────────────────────────────────── */
+body.editorial .sec-t { color: var(--ed-ink); }
+body.editorial .sec-s { color: var(--ed-mute); }
+
+/* ── Chat ────────────────────────────────────────────────────────────── */
+body.editorial .chat-msg-ai {
+  background: var(--ed-paper-deep);
+  border: 1px solid var(--ed-hairline);
+  color: var(--ed-ink);
+}
+body.editorial .chat-msg-user {
+  background: var(--ed-brand-soft);
+  color: var(--ed-brand-ink);
+  border: 1px solid var(--ed-hairline);
+}
+body.editorial .chat-starter {
+  background: var(--ed-paper);
+  border: 1px solid var(--ed-hairline);
+  color: var(--ed-ink);
+}
+body.editorial .chat-disclaimer {
+  background: var(--ed-warn-bg);
+  border: 1px solid #B68500;
+  color: var(--ed-warn-fg);
+}
+
+/* ── Progress bar — uses --app-primary, already overridden above ─────── */
+body.editorial .progress-bar { background: var(--ed-hairline); }
+
+/* ── Tag chips (topic / year) ────────────────────────────────────────── */
+body.editorial .tag-topic {
+  background: var(--ed-brand-soft) !important;
+  color: var(--ed-brand-ink) !important;
+}
+body.editorial .tag-year {
+  background: var(--ed-paper-deep) !important;
+  color: var(--ed-mute) !important;
+}
+
+/* ── Toggle button: 📰 sits in the same row as 🌓 and 🕯️ ─────────────── */
+body.editorial .dm-btn[data-action="toggle-editorial"] {
+  background: var(--ed-brand);
+  color: var(--ed-paper);
+}
