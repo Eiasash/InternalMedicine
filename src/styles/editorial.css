@@ -18,10 +18,11 @@
  * ========================================================================= */
 
 body.editorial {
-  /* Neutrals — warm paper feel, not pure white */
-  --ed-paper:      #FAF8F4;
-  --ed-paper-deep: #F2EDE2;
-  --ed-hairline:   #E8E2D6;
+  /* Neutrals — parchment feel, warm cream undertones
+   * Restored in v9.93.2 after revert chaos wiped the round-2 tweak. */
+  --ed-paper:      #F5EEDD;
+  --ed-paper-deep: #EBE3CF;
+  --ed-hairline:   #DCD5C4;
   --ed-ink:        #1A1F2E;
   --ed-mute:       #6B6F7A;
   --ed-mute-soft:  #9DA1AB;

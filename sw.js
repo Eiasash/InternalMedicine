@@ -1,4 +1,4 @@
-const CACHE='pnimit-v9.93.1';
+const CACHE='pnimit-v9.93.2';
 const HTML_URLS=['pnimit-mega.html','manifest.json','shared/fsrs.js','shared/install-promo.js','shared/install-promo-config.js','src/clock.js','src/core/globals.js','src/core/constants.js','src/core/utils.js','src/core/state.js','src/core/data-loader.js','src/debug/console.js','src/sr/fsrs-bridge.js','src/sr/spaced-repetition.js','src/quiz/engine.js','src/quiz/modes.js','src/ai/client.js','src/ai/explain.js','src/features/cloud.js','src/features/auth.js','src/ui/quiz-view.js','src/ui/learn-view.js','src/ui/library-view.js','src/ui/track-view.js','src/ui/more-view.js','src/ui/heatmap.js','src/ui/wrong-review.js','src/ui/source-link.js','src/ui/app.js'];
 const CSS_URLS=['shared/tokens.css','src/styles/base.css','src/styles/layout.css','src/styles/components.css','src/styles/quiz.css','src/styles/track.css','src/styles/chat.css','src/styles/theme.css','src/styles/utilities.css'];
 const JSON_DATA_URLS=['data/questions.json','data/topics.json','data/notes.json','data/drugs.json','data/flashcards.json','data/tabs.json','data/distractors.json','harrison_chapters.json'];
