@@ -127,10 +127,12 @@ export function updateAccountChip(){
 window.updateAccountChip=updateAccountChip;
 
 // ===== DARK MODE =====
-export function toggleDark(){document.body.classList.toggle('dark');G.S.dark=document.body.classList.contains('dark');if(G.S.dark&&document.body.classList.contains('study')){document.body.classList.remove('study');G.S.studyMode=false;}G.save();}
-export function toggleStudyMode(){document.body.classList.toggle('study');G.S.studyMode=document.body.classList.contains('study');if(G.S.studyMode&&document.body.classList.contains('dark')){document.body.classList.remove('dark');G.S.dark=false;}G.save();}
+export function toggleDark(){document.body.classList.toggle('dark');G.S.dark=document.body.classList.contains('dark');if(G.S.dark){if(document.body.classList.contains('study')){document.body.classList.remove('study');G.S.studyMode=false;}if(document.body.classList.contains('editorial')){document.body.classList.remove('editorial');G.S.editorial=false;}}G.save();}
+export function toggleStudyMode(){document.body.classList.toggle('study');G.S.studyMode=document.body.classList.contains('study');if(G.S.studyMode){if(document.body.classList.contains('dark')){document.body.classList.remove('dark');G.S.dark=false;}if(document.body.classList.contains('editorial')){document.body.classList.remove('editorial');G.S.editorial=false;}}G.save();}
+export function toggleEditorial(){document.body.classList.toggle('editorial');G.S.editorial=document.body.classList.contains('editorial');if(G.S.editorial){if(document.body.classList.contains('dark')){document.body.classList.remove('dark');G.S.dark=false;}if(document.body.classList.contains('study')){document.body.classList.remove('study');G.S.studyMode=false;}}G.save();}
 if(G.S.dark)document.body.classList.add('dark');
 if(G.S.studyMode)document.body.classList.add('study');
+if(G.S.editorial)document.body.classList.add('editorial');
 
 // ===== FLASHCARD SPACED REP =====
 // fcRate moved to learn-view.js
@@ -311,7 +313,7 @@ _w.cloudBackup = cloudBackup; _w.cloudRestore = cloudRestore;
  // still needed by track-view onclick
 
 // Settings
-_w.toggleDark = toggleDark; _w.toggleStudyMode = toggleStudyMode;
+_w.toggleDark = toggleDark; _w.toggleStudyMode = toggleStudyMode; _w.toggleEditorial = toggleEditorial;
 _w.showHelp = showHelp; _w.applyUpdate = applyUpdate;
 _w.importProgress = importProgress; _w.exportProgress = exportProgress;
 _w.shareQ = shareQ;
@@ -344,6 +346,7 @@ document.querySelector('.hdr').addEventListener('click', (e) => {
   if (!el) return;
   if (el.dataset.action === 'toggle-dark') toggleDark();
   else if (el.dataset.action === 'toggle-study') toggleStudyMode();
+  else if (el.dataset.action === 'toggle-editorial') toggleEditorial();
   else if (el.dataset.action === 'show-help') showHelp();
   else if (el.dataset.action === 'goto-account') {
     // Jump straight to More → Settings, where the account block lives.
