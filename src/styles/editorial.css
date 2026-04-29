@@ -278,3 +278,73 @@ body.editorial .dm-btn[data-action="toggle-editorial"] {
   background: var(--ed-brand);
   color: var(--ed-paper);
 }
+
+/* ============================================================================
+ * Patch round 4 — fix layout collision + sweep off-palette inline styles
+ * ========================================================================= */
+
+/* ── FIX: Quiz heading + mode-button row collision ────────────────────
+ * quiz-view.js line 241 wraps the heading and buttons in a horizontal flex
+ * (justify-content:space-between, align-items:center). At sec-t 22px the
+ * heading pushes wider; buttons wrap; centered alignment overlaps both.
+ * Force the parent to stack vertically when its first child is .sec-t.
+ * Uses :has() — Chrome 105+, Safari 15.4+, Firefox 121+. Fine on Oppo. */
+body.editorial div[style*="justify-content:space-between"]:has(> .sec-t) {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 12px;
+}
+
+/* ── Inline-style overrides (CSS attr selectors win with !important) ── */
+
+/* "Internal Medicine" badge in the wordmark — light blue → brand teal soft */
+body.editorial [style*="#eff6ff"] {
+  background: var(--ed-brand-soft) !important;
+  color: var(--ed-brand-ink) !important;
+}
+body.editorial [style*="color:#3b82f6"],
+body.editorial [style*="color: #3b82f6"] {
+  color: var(--ed-brand-ink) !important;
+}
+
+/* Harrison source-link chips + "you're weak here" banner — purple → brand */
+body.editorial [style*="#ede9fe"] {
+  background: var(--ed-brand-soft) !important;
+  color: var(--ed-brand-ink) !important;
+  border-color: var(--ed-hairline) !important;
+}
+body.editorial [style*="color:#7c3aed"],
+body.editorial [style*="color:#6d28d9"] {
+  color: var(--ed-brand-ink) !important;
+}
+body.editorial [style*="#ddd6fe"] {
+  border-color: var(--ed-hairline) !important;
+}
+
+/* "✓ מאומת" verified buttons (image-dep flag + AI-flag) — orange → ink */
+body.editorial [style*="background:#d97706"],
+body.editorial [style*="background: #d97706"] {
+  background: var(--ed-ink) !important;
+  color: var(--ed-paper) !important;
+}
+
+/* ── More font bumps per "still small" feedback ──────────────────────── */
+
+/* Page section titles — bump further, 22 → 24 */
+body.editorial .sec-t { font-size: 24px; }
+body.editorial .sec-s { font-size: 14px; }
+
+/* Question stem (rendered as <p class="heb" style="font-size:13px">) —
+ * 13px is too cramped for dense Hebrew clinical text. Override to 16px,
+ * loosen line-height. Affects all .heb spans which IS what we want — the
+ * other places .heb is used are also Hebrew prose. */
+body.editorial .heb {
+  font-size: 16px !important;
+  line-height: 1.7 !important;
+}
+
+/* Question options — 12 → 14, more readable */
+body.editorial .qo {
+  font-size: 14px;
+  padding: 14px 16px;
+}
