@@ -18,11 +18,11 @@
  * ========================================================================= */
 
 body.editorial {
-  /* Neutrals — parchment feel, warm cream undertones
-   * Restored in v9.93.2 after revert chaos wiped the round-2 tweak. */
-  --ed-paper:      #F5EEDD;
-  --ed-paper-deep: #EBE3CF;
-  --ed-hairline:   #DCD5C4;
+  /* Neutrals — parchment feel with proper tonal hierarchy
+   * canvas → card surface → rules. Each step should be visibly darker. */
+  --ed-paper:      #F5EEDD;  /* canvas — light parchment */
+  --ed-paper-deep: #E5D7B0;  /* card surface — clearly darker cream */
+  --ed-hairline:   #C8B68A;  /* rules — visible against both papers */
   --ed-ink:        #1A1F2E;
   --ed-mute:       #6B6F7A;
   --ed-mute-soft:  #9DA1AB;
@@ -167,7 +167,7 @@ body.editorial .q-stem {
 
 /* ── Stat tiles: serif numbers in brand teal ─────────────────────────── */
 body.editorial .stat {
-  background: var(--ed-paper);
+  background: var(--ed-paper-deep);
   border: 1px solid var(--ed-hairline);
   border-radius: 12px;
   box-shadow: none;
