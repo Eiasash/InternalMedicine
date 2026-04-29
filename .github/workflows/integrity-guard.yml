@@ -57,9 +57,9 @@ jobs:
               'showUpdateBanner', 'applyUpdate',
               # AI
               'callAI',
-              # Tab rendering
-              'renderQuiz', 'renderStudy', 'renderDrugs', 'renderFlash',
-              'renderLibrary', 'renderCalc', 'renderSearch', 'renderChat', 'renderFeedback',
+              # Tab rendering (renderDrugs + renderCalc removed in v9.97 PR #69 — duplicated ward-helper / SZMC formulary)
+              'renderQuiz', 'renderStudy', 'renderFlash',
+              'renderLibrary', 'renderSearch', 'renderChat', 'renderFeedback',
               # Pnimit-specific
               'renderStudyPlan', 'renderDailyPlan',
               # Cloud
