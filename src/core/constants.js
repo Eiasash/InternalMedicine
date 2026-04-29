@@ -27,8 +27,12 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.94.0';
+export const APP_VERSION='9.95.0';
 export const CHANGELOG={
+  '9.95.0': [
+    '🔥 הוסרו עיצובי Editorial ו-Study (סספיה) — האפליקציה כעת light + dark בלבד. כפתורים 🕯️ ו-📰 הוסרו מהכותרת. קבצי CSS שנמחקו: src/styles/editorial.css (423 שורות). כללי body.study הוסרו מ-theme.css ומה-clinical-kit הפנימי. G.S.studyMode ו-G.S.editorial הוסרו ממצב המערכת.',
+    '🪝 Internal — toggleStudyMode() / toggleEditorial() / window bindings הוסרו מ-src/ui/app.js. מאזיני data-action="toggle-study" / "toggle-editorial" הוסרו. אין שינוי ב-shared/fsrs.js. test cloudRestore עודכן.',
+  ],
   '9.94.0': [
     '🗂️ Track tab — שכתוב מבנה ל-4 sub-tabs (Progress / Plan / Exam / More). הגלילה האנכית של 12 כרטיסיות הוחלפה במבנה ממוקד שבו כל sub-tab מחזיק 3-4 כרטיסיות ונכנס ב-~1.5 viewports במובייל.',
     '   • Progress: 4 stat tiles · SRS due alert · Topic Mastery Heatmap · Today\'s Session · Activity (30 days) · Leaderboard',
