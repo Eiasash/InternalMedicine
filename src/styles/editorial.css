@@ -70,6 +70,17 @@ body.editorial .hdr {
 body.editorial .hdr h1,
 body.editorial .hdr .hdr-title { color: var(--ed-brand); }
 
+/* Wordmark — explicit size to dominate the visual hierarchy.
+ * Without this rule, layout.css gives .hdr h1 only 16px (mobile) / 18px
+ * (tablet), which gets out-shadowed by .sec-t section titles below. */
+body.editorial .hdr h1 {
+  font-size: 26px;
+  line-height: 1.15;
+}
+@media (min-width: 768px) {
+  body.editorial .hdr h1 { font-size: 30px; }
+}
+
 /* ── Cards: hairline + brand top-bar, no shadow ───────────────────────── */
 body.editorial .card {
   background: var(--ed-paper-deep);
