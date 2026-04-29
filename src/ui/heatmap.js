@@ -1,6 +1,11 @@
-// Topic heatmap — SVG grid of topics colored by FSRS mastery.
+// Topic heatmap — SVG grid of topics colored by competence-aware mastery.
 // 5-step colorblind-safe Viridis scale. Tap a cell → quiz filtered to that topic.
-// Per-topic mean FSRS R-value is the mastery signal (no review history → grey).
+// Per-card mastery = (ok/tot) × FSRS R. Per-topic = mean across reviewed cards.
+//
+// Why not pure FSRS R? R(t,s) = (1 + 19/81 · t/s)^(-0.5) ≈ 1 immediately after any
+// review (t≈0 minutes), regardless of correctness — so a freshly-failed card would
+// register as 100% mastery. Multiplying by hit-rate (ok/tot) makes wrong answers
+// drop mastery instantly while still letting old correct answers fade with R.
 import G from '../core/globals.js';
 import { TOPICS } from '../core/constants.js';
 import { fsrsR } from '../sr/fsrs-bridge.js';
@@ -30,24 +35,42 @@ export function topicCardR(sr) {
   return Math.max(0, Math.min(1, r));
 }
 
-// For each topic: { ti, name, meanR, n } where meanR is mean FSRS R-value
+// Per-card mastery = hit-rate × FSRS R. Returns null if card has never been answered.
+//   tot = total reviews, ok = correct reviews (tracked in spaced-repetition.js)
+//   - 0/3 correct, just answered  → 0    × ~1   = 0    (drops instantly)
+//   - 3/3 correct, just answered  → 1    × ~1   = ~1   (full mastery)
+//   - 3/3 correct, 30 days ago    → 1    × ~0.7 = ~0.7 (decays)
+// If FSRS state missing (legacy SM-2-only cards), falls back to raw hit-rate.
+export function topicCardMastery(sr) {
+  if (!sr) return null;
+  const tot = sr.tot || 0;
+  if (tot === 0) return null;
+  const ok = sr.ok || 0;
+  const accuracy = ok / tot;
+  const r = topicCardR(sr);
+  if (r === null) return Math.max(0, Math.min(1, accuracy));
+  return Math.max(0, Math.min(1, accuracy * r));
+}
+
+// For each topic: { ti, name, meanR, n } where meanR is mean per-card mastery
 // across reviewed cards in that topic. n = number of reviewed cards.
+// (Field kept as `meanR` for compat with existing renderer/tests.)
 // Pure: depends only on its arguments (used by tests with stubs).
 export function computeTopicMastery(QZ, S, TOPICS_LIST) {
-  const buckets = TOPICS_LIST.map((name, ti) => ({ ti, name, sumR: 0, n: 0 }));
+  const buckets = TOPICS_LIST.map((name, ti) => ({ ti, name, sum: 0, n: 0 }));
   if (!Array.isArray(QZ) || !S || !S.sr) return buckets.map(b => ({ ti: b.ti, name: b.name, meanR: null, n: 0 }));
   Object.entries(S.sr).forEach(([idx, sr]) => {
     const q = QZ[+idx];
     if (!q || q.ti < 0 || q.ti >= TOPICS_LIST.length) return;
-    const r = topicCardR(sr);
-    if (r === null) return;
-    buckets[q.ti].sumR += r;
+    const m = topicCardMastery(sr);
+    if (m === null) return;
+    buckets[q.ti].sum += m;
     buckets[q.ti].n += 1;
   });
   return buckets.map(b => ({
     ti: b.ti,
     name: b.name,
-    meanR: b.n > 0 ? b.sumR / b.n : null,
+    meanR: b.n > 0 ? b.sum / b.n : null,
     n: b.n,
   }));
 }
@@ -108,7 +131,7 @@ export function renderTopicHeatmap() {
 
   // Legend
   const legend = `<div style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:9px;color:#64748b;flex-wrap:wrap">
-<span>Mastery (FSRS R):</span>
+<span>Mastery (accuracy × recency):</span>
 <span style="display:inline-flex;align-items:center;gap:3px"><span style="width:10px;height:10px;background:${VIRIDIS_5[0]};border-radius:2px"></span>0-20%</span>
 <span style="display:inline-flex;align-items:center;gap:3px"><span style="width:10px;height:10px;background:${VIRIDIS_5[1]};border-radius:2px"></span>20-40%</span>
 <span style="display:inline-flex;align-items:center;gap:3px"><span style="width:10px;height:10px;background:${VIRIDIS_5[2]};border-radius:2px"></span>40-60%</span>

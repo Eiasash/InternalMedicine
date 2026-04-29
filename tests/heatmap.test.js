@@ -79,15 +79,17 @@ describe('computeTopicMastery', () => {
       expect(r.n).toBe(0);
     });
   });
-  it('averages R across reviewed cards in a topic', () => {
+  it('per-card mastery = (ok/tot) × R; wrong answer drops mastery to 0', () => {
     const TOPICS_LIST = ['A', 'B'];
     const QZ = [{ ti: 0 }, { ti: 0 }, { ti: 1 }];
     const now = Date.now();
     const S = {
       sr: {
-        0: { fsrsS: 5, fsrsD: 5, lastReview: now - 86400000 }, // 1 day old
-        1: { fsrsS: 50, fsrsD: 5, lastReview: now - 86400000 }, // very stable
-        2: { fsrsS: 1, fsrsD: 5, lastReview: now - 86400000 },  // weak
+        // Topic A: one card answered correctly 3/3, one card answered wrong 0/3
+        0: { fsrsS: 5, fsrsD: 5, lastReview: now - 86400000, ok: 3, tot: 3 },
+        1: { fsrsS: 5, fsrsD: 5, lastReview: now - 86400000, ok: 0, tot: 3 },
+        // Topic B: one card answered correctly 3/3
+        2: { fsrsS: 5, fsrsD: 5, lastReview: now - 86400000, ok: 3, tot: 3 },
       },
     };
     const out = computeTopicMastery(QZ, S, TOPICS_LIST);
@@ -95,23 +97,45 @@ describe('computeTopicMastery', () => {
     const b = out.find(r => r.ti === 1);
     expect(a.n).toBe(2);
     expect(b.n).toBe(1);
+    // Topic A averages 0% and ~R together → ~R/2 ≈ 0.4-0.5
     expect(a.meanR).toBeGreaterThan(0);
-    expect(a.meanR).toBeLessThanOrEqual(1);
-    // Topic A's mean should beat topic B (one strong card pulls average up).
-    expect(a.meanR).toBeGreaterThan(b.meanR);
+    expect(a.meanR).toBeLessThan(0.6);
+    // Topic B is one perfect card → ~R ≈ 0.8-1.0
+    expect(b.meanR).toBeGreaterThan(a.meanR);
   });
-  it('skips cards with no lastReview', () => {
+  it('regression: just-answered wrong card does NOT show 100% mastery', () => {
+    // The original bug — FSRS R alone gave ~1.0 for any card answered seconds ago,
+    // even if the answer was wrong. New mastery = (ok/tot)*R must be 0 when ok=0.
     const TOPICS_LIST = ['A'];
     const QZ = [{ ti: 0 }];
-    const S = { sr: { 0: { fsrsS: 5, fsrsD: 5 } } }; // no lastReview
+    const S = {
+      sr: { 0: { fsrsS: 5, fsrsD: 5, lastReview: Date.now() - 60000, ok: 0, tot: 1 } },
+    };
+    const out = computeTopicMastery(QZ, S, TOPICS_LIST);
+    expect(out[0].n).toBe(1);
+    expect(out[0].meanR).toBe(0);
+  });
+  it('skips cards with tot=0 (never answered)', () => {
+    const TOPICS_LIST = ['A'];
+    const QZ = [{ ti: 0 }];
+    const S = { sr: { 0: { fsrsS: 5, fsrsD: 5, lastReview: Date.now() } } }; // no tot/ok
     const out = computeTopicMastery(QZ, S, TOPICS_LIST);
     expect(out[0].n).toBe(0);
     expect(out[0].meanR).toBeNull();
   });
+  it('falls back to raw hit-rate when FSRS state missing', () => {
+    // Legacy SM-2-only cards (no fsrsS/fsrsD) — use raw ok/tot.
+    const TOPICS_LIST = ['A'];
+    const QZ = [{ ti: 0 }];
+    const S = { sr: { 0: { ok: 2, tot: 4 } } };
+    const out = computeTopicMastery(QZ, S, TOPICS_LIST);
+    expect(out[0].n).toBe(1);
+    expect(out[0].meanR).toBe(0.5);
+  });
   it('ignores out-of-range topic indexes', () => {
     const TOPICS_LIST = ['A'];
     const QZ = [{ ti: 5 }];
-    const S = { sr: { 0: { fsrsS: 5, fsrsD: 5, lastReview: Date.now() } } };
+    const S = { sr: { 0: { fsrsS: 5, fsrsD: 5, lastReview: Date.now(), ok: 1, tot: 1 } } };
     const out = computeTopicMastery(QZ, S, TOPICS_LIST);
     expect(out[0].n).toBe(0);
   });
@@ -127,8 +151,8 @@ describe('renderTopicHeatmap', () => {
     // 24 cells (TOPICS.length)
     const matches = html.match(/data-action="heatmap-topic"/g) || [];
     expect(matches.length).toBe(24);
-    // Includes the legend
-    expect(html).toContain('Mastery (FSRS R)');
+    // New legend label reflecting hit-rate × recency formula
+    expect(html).toContain('Mastery (accuracy × recency)');
   });
   it('cells are tab-focusable for keyboard nav', () => {
     G.S = { sr: {} };

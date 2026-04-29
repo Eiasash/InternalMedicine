@@ -38,31 +38,34 @@ export function renderPriorityMatrix(){
   }).filter(r=>r.freq>0).sort((a,b)=>b.priority-a.priority);
 
   let h='<div style="font-weight:700;font-size:12px;margin:14px 0 8px;color:#0f172a">🎯 Priority Matrix — where to study next</div>';
-  h+='<div style="font-size:9px;color:#94a3b8;margin-bottom:8px">Score = exam frequency × your gap. Higher = drill harder.</div>';
+  h+='<div style="font-size:9px;color:#94a3b8;margin-bottom:8px">Score = exam frequency × your gap. Untested topics ranked by frequency only (gap assumed).</div>';
   rows.slice(0,15).forEach((r,rank)=>{
-    const accStr=r.acc===null?'untested':`${Math.round(r.acc*100)}%`;
+    const isUntested=r.acc===null;
+    const accStr=isUntested?'untested':`${Math.round(r.acc*100)}%`;
     const barW=Math.round(r.priority);
-    const color=r.priority>=60?'#dc2626':r.priority>=30?'#f59e0b':'#10b981';
+    const color=isUntested?'#94a3b8':r.priority>=60?'#dc2626':r.priority>=30?'#f59e0b':'#10b981';
     const trend=getTopicTrend(r.ti);
     const trendStr=trend===null?'':trend>5?'<span style="color:#059669;font-size:10px">↑</span>':trend<-5?'<span style="color:#dc2626;font-size:10px">↓</span>':'<span style="color:#94a3b8;font-size:10px">→</span>';
-    h+=`<div style="margin-bottom:6px">
+    const scoreStyle=isUntested?'font-size:10px;font-weight:400;color:#94a3b8;font-style:italic':`font-size:10px;font-weight:700;color:${color}`;
+    h+=`<div style="margin-bottom:6px${isUntested?';opacity:0.75':''}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
-        <div style="font-size:11px;font-weight:${rank<5?'700':'400'}">${rank+1}. ${r.name} ${trendStr}</div>
+        <div style="font-size:11px;font-weight:${rank<5?'700':'400'}${isUntested?';color:#64748b':''}">${rank+1}. ${r.name} ${trendStr}</div>
         <div style="display:flex;gap:8px;align-items:center">
           <span style="font-size:9px;color:#64748b">${r.s.tot}q · ${accStr}</span>
-          <span style="font-size:10px;font-weight:700;color:${color}">${r.priority}</span>
+          <span style="${scoreStyle}">${r.priority}${isUntested?'*':''}</span>
         </div>
       </div>
       <div style="height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden">
-        <div style="width:${barW}%;height:100%;background:${color};border-radius:3px"></div>
+        <div style="width:${barW}%;height:100%;background:${color};border-radius:3px${isUntested?';opacity:0.5':''}"></div>
       </div>
     </div>`;
   });
+  h+=`<div style="font-size:9px;color:#94a3b8;margin-top:4px;font-style:italic">* = untested, score from exam frequency only</div>`;
   h+=`<div data-action="toggle-pm-full" style="font-size:10px;color:rgb(var(--sky));cursor:pointer;margin-top:6px">Show all 24 topics ▾</div>`;
   h+=`<div id="pmFull" style="display:none">`;
   rows.slice(15).forEach((r,rank)=>{
     const accStr=r.acc===null?'untested':`${Math.round(r.acc*100)}%`;
-    h+=`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;font-size:10px">
+    h+=`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;font-size:10px${r.acc===null?';opacity:0.7':''}">
       <span>${rank+16}. ${r.name}</span>
       <span style="color:#64748b">${r.s.tot}q · ${accStr}</span>
     </div>`;
@@ -340,28 +343,35 @@ ${last.worse?`<div style="font-size:10px">🔴 Worst: <b>${last.worse.name}</b> 
   }catch(e){return '';}
 }
 export function calcEstScore(){
-  // FSRS-aware estimated score: weight by retrievability for seen questions
+  // FSRS-aware estimated score: weighted by exam frequency, using ONLY topics
+  // with sufficient data (tot ≥ 3). Topics below threshold are excluded — we
+  // do not impute a neutral 60% (that produced misleading "60% Est. Score"
+  // readouts when the user had answered only a handful of questions).
+  // Returns null when fewer than 3 topics have ≥3 answers; UI renders "—".
   const now2=Date.now();
-  // Frequency weights from historical exam distribution
   const totalFreq=EXAM_FREQ.reduce((a,b)=>a+b,0);
   const tSt=G.S.ts||{};
   const due=new Set(getDueQuestions());
+
+  // Count topics with sufficient data first; bail early if too sparse.
+  let topicsWithData=0;
+  EXAM_FREQ.forEach((freq,ti)=>{
+    if(!freq)return;
+    const s=tSt[ti]||{ok:0,no:0,tot:0};
+    if(s.tot>=3)topicsWithData++;
+  });
+  if(topicsWithData<3)return null;
 
   let weightedScore=0,totalWeight=0;
   EXAM_FREQ.forEach((freq,ti)=>{
     if(!freq)return;
     const s=tSt[ti]||{ok:0,no:0,tot:0};
+    if(s.tot<3)return; // skip — do not impute neutral default
     const weight=freq/totalFreq;
-    let acc;
-    if(s.tot<3){
-      // Not enough data — assume 60% (neutral)
-      acc=0.60;
-    } else {
-      acc=s.ok/s.tot;
-      // Penalize if due questions exist in this topic
-      const duePenalty=G.QZ.filter((_,i)=>G.QZ[i]?.ti===ti&&due.has(i)).length;
-      if(duePenalty>0)acc=Math.max(0,acc-duePenalty*0.02);
-    }
+    let acc=s.ok/s.tot;
+    // Penalize if due questions exist in this topic
+    const duePenalty=G.QZ.filter((_,i)=>G.QZ[i]?.ti===ti&&due.has(i)).length;
+    if(duePenalty>0)acc=Math.max(0,acc-duePenalty*0.02);
     weightedScore+=acc*weight;
     totalWeight+=weight;
   });

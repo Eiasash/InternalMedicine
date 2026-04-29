@@ -27,8 +27,14 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.91.0';
+export const APP_VERSION='9.92.0';
 export const CHANGELOG={
+  '9.92.0': [
+    '🐛 תיקון קריטי — Topic Mastery Heatmap הציג 100% על כל נושא שנגעת בו, גם אם רוב התשובות היו שגויות. השורש: הנוסחה ב-heatmap.js השתמשה ב-FSRS R בלבד, שהוא דעיכת זמן (R≈1 מיד אחרי כל ביקורת — נכונה או שגויה). חישוב חדש: per-card mastery = (ok/tot) × R. תשובה שגויה מורידה מאסטרי ל-0 מיידית; תשובות נכונות ישנות דועכות עם R. Fallback ל-hit-rate גולמי כשמצב FSRS חסר (legacy SM-2). 5 בדיקות חדשות, כולל regression test למקרה "wrong-just-now ≠ 100%".',
+    '🐛 תיקון — Est. Score החזיר 60% מטעה כשרק נושאים בודדים נבחנו. השורש: הנוסחה הניחה 60% (neutral default) לכל נושא עם <3 תשובות, אז המשקל הכולל קרס סביב 60% גם אחרי 26 שאלות. תיקון: נושאים עם <3 תשובות מודרים מהסכימה (לא מוטענים ב-default). מחזיר null כשפחות מ-3 נושאים יש להם נתונים — UI מציג "—" עד שיש מספיק כיסוי.',
+    '🎨 שיפור Priority Matrix — נושאים שלא נבחנו מסומנים ויזואלית (אופסיטי 0.75, ציון נטוי, כוכבית) עם footnote: "untested, score from exam frequency only". מונע פירוש שגוי של "0q · untested · 70" כמדידה אמיתית.',
+    '🪝 Internal — heatmap.js: חדש topicCardMastery() exported. tests/heatmap.test.js: 5 cases חדשים. אין שינוי ב-shared/fsrs.js.',
+  ],
   '9.89.0': [
     '🌈 מפת חום נושאים — Topic Mastery Heatmap ב-Track. SVG עם 5 דרגות Viridis (colorblind-safe). מבוסס FSRS R-value (אחזרה ממוצעת לכל נושא, לא % דיוק גולמי). לחיצה על תא פותחת קוויז של אותו נושא. החליף את ה-Topic Mastery Map הישן.',
     '❌ Wrong-answer review mode — מצב חזרה חדש לקוויז שמסנן רק לשאלות שטעיתי בהן, ממוין לפי recency × topic-weight (EXAM_FREQ). Persisted ב-IndexedDB עם fallback ל-localStorage — שורד reload. שאלה יוצאת מהסט אחרי 2 תשובות נכונות רצופות. כפתור "❌ Review wrong (N)" מופיע ב-Quiz tab כשיש שאלות פתוחות.',
