@@ -27,8 +27,12 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.96.0';
+export const APP_VERSION='9.97.0';
 export const CHANGELOG={
+  '9.97.0': [
+    '🗑️ הוסרו תת-טאבים שכפלו אפליקציות אחרות — 🧮 Calc (CrCl / CHA₂DS₂-VASc / CURB-65 / PADUA) ב-Track→More הוסר; 💊 Drug Lookup ב-Learn הוסר. ward-helper וה-formulary של שערי-צדק כבר מספקים את אותו ערך עם הקשר קליני אמיתי. נתוני G.DRUGS עדיין נטענים — חיפוש חוצה-בנק ב-More→Search ממשיך להציג תרופות.',
+    '🪝 Internal — נמחקו renderCalc / calcUp / renderDrugs / drugSearch + מאזיני calc-num / calc-check / drug-search. G.S.calcVals הוסר מ-globals defaults. G.moreSub default \'calc\' → \'search\'. מיגרציה: G.moreSub===\'calc\' → \'search\'; G.learnSub===\'drugs\' → \'study\'. אין שינוי ב-shared/fsrs.js.',
+  ],
   '9.96.0': [
     '⚙️ הגדרות חדשות — כפתור גלגל שיניים בכותרת פותח חלון מודאלי שמרכז: חשבון, ערכת נושא, API key, ניהול דאטה (ייצוא/ייבוא/ענן/איפוס), פידבק, אודות. סגירה ב-✕, ESC, או לחיצה ברקע. בסיס למיגרציה הבאה (#69 → להוציא Calc + Drug Lookup; #70 → איחוד Learn ל-Library).',
     '🪝 Internal — חדש src/ui/settings-overlay.js + src/styles/settings.css. ה-overlay חי מחוץ ל-#ct (ב-<div id="settings-overlay">) כך שהוא שורד G.render(). bindSettingsEvents() קוראים פעם אחת ב-boot. אין שינוי ב-shared/fsrs.js.',

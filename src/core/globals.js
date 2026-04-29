@@ -49,10 +49,9 @@ const G = {
   _aiAbortController: null,
 
   // === UI state (app.js + views) ===
-  tab: 'quiz', learnSub: 'study', moreSub: 'calc', libSec: 'harrison',
+  tab: 'quiz', learnSub: 'study', moreSub: 'search', libSec: 'harrison',
   harChOpen: null, _harData: null, _harLoading: false,
   openNote: null,
-  calcVals: {},
   srchQ: '',
   chatLoading: false,
   lastTab: null,
