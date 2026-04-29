@@ -17,7 +17,7 @@
 /* SZMC Clinical Kit — semantic tokens + per-app skin. Additive layer; does
  * not remove existing --bg/--fg/--brd/--sky variables. New components should
  * reference --sem-* and --app-*; existing code keeps working unchanged.
- * Modes: body.dark, body.study (sepia) — both already match app conventions.
+ * Mode: body.dark — matches app conventions.
  */
 
 /* ── Self-hosted Heebo (Hebrew + Latin, split by unicode-range) ── */
@@ -97,8 +97,6 @@ body.dark[data-skin="geriatrics"],html[data-skin="geriatrics"] body.dark{
 body.dark[data-skin="toranot"],html[data-skin="toranot"] body.dark{
   --app-primary:#3b82f6;
 }
-/* ── Study (sepia) — warm the primary toward amber for 3am ── */
-body.study{--app-primary:#c48a3a;--app-on-primary:#0f172a;}
 
 /* ── Clinical badges (semantic, reserved) ── */
 .badge-critical{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:#fef2f2;color:#dc2626}
@@ -109,10 +107,6 @@ body.dark .badge-critical{background:#450a0a;color:#fca5a5}
 body.dark .badge-warning {background:#451a03;color:#fde68a}
 body.dark .badge-ok      {background:#064e3b;color:#6ee7b7}
 body.dark .badge-info    {background:#172554;color:#93c5fd}
-body.study .badge-critical{background:#3d1212;color:#ff9b8a}
-body.study .badge-warning {background:#3d2a12;color:#f0c878}
-body.study .badge-ok      {background:#1e3d1e;color:#a6e0a0}
-body.study .badge-info    {background:#1e2a3d;color:#a0c8f0}
 
 /* ── Numeric (labs/doses/timers): tabular + LTR isolated inside RTL ── */
 .num,.lab,.dose,.timer,.ltr-num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;}
@@ -131,7 +125,6 @@ body.study .badge-info    {background:#1e2a3d;color:#a0c8f0}
 <link rel="stylesheet" href="src/styles/track.css">
 <link rel="stylesheet" href="src/styles/chat.css">
 <link rel="stylesheet" href="src/styles/theme.css">
-<link rel="stylesheet" href="src/styles/editorial.css">
 <link rel="stylesheet" href="src/styles/utilities.css">
 </head>
 <body>
@@ -139,7 +132,7 @@ body.study .badge-info    {background:#1e2a3d;color:#a0c8f0}
 <a href="#ct" class="skip-link">Skip to content</a>
 <div class="hdr" style="position:relative">
 <h1>Pnimit Mega <span style="font-size:9px;font-weight:600;color:#3b82f6;vertical-align:middle;background:#eff6ff;padding:2px 6px;border-radius:6px;margin-right:4px">Internal Medicine</span> <span id="headerVer" style="font-size:9px;font-weight:400;color:#64748b;vertical-align:middle"></span></h1>
-<button class="dm-btn" data-action="toggle-study" title="Night/Study Mode" aria-label="Toggle night mode" style="right:44px">🕯️</button><button class="dm-btn" data-action="toggle-dark" title="Dark Mode" aria-label="Toggle dark mode">🌓</button><button class="dm-btn" data-action="show-help" title="Help" aria-label="Help" style="right:82px;font-size:11px">❓</button><button class="dm-btn" data-action="goto-account" title="Account" aria-label="Account / Login" id="hdr-account-btn" style="right:120px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.08);border:none;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;padding:0;color:#fff">👤</button><button class="dm-btn" data-action="toggle-editorial" title="Editorial Mode (NEJM-style serif typography)" aria-label="Toggle editorial mode" style="right:158px;font-size:11px">📰</button>
+<button class="dm-btn" data-action="toggle-dark" title="Dark Mode" aria-label="Toggle dark mode">🌓</button><button class="dm-btn" data-action="show-help" title="Help" aria-label="Help" style="right:44px;font-size:11px">❓</button><button class="dm-btn" data-action="goto-account" title="Account" aria-label="Account / Login" id="hdr-account-btn" style="right:82px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.08);border:none;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;padding:0;color:#fff">👤</button>
 <p id="hdr-sub">Loading...</p>
 </div>
 

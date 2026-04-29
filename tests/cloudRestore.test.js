@@ -104,7 +104,7 @@ describe('filterRestorePayload — real-world restore shapes', () => {
     const currentState = {
       ck: {}, qOk: 0, qNo: 0, bk: {}, notes: {}, sr: {},
       fci: 0, fcFlip: false, streak: 0, lastDay: null,
-      chat: [], studyMode: false, sp: {}, spOpen: true,
+      chat: [], sp: {}, spOpen: true,
     };
     const backup = {
       qOk: 123, qNo: 45, sr: { q1: { ef: 2.5 } }, streak: 7,
