@@ -341,10 +341,8 @@ body.editorial [style*="background: #d97706"] {
 
 /* ── More font bumps per "still small" feedback ──────────────────────── */
 
-/* Page section titles — bump further, 22 → 24 — REVERTED to 22 in r5
- * (24 reads disproportionate when sec-t lives on its own row after the
- * flex-collision fix made the heading standalone in quiz view). */
-body.editorial .sec-t { font-size: 22px; }
+/* Page section titles — bump further, 22 → 24 */
+body.editorial .sec-t { font-size: 24px; }
 body.editorial .sec-s { font-size: 14px; }
 
 /* Question stem (rendered as <p class="heb" style="font-size:13px">) —
@@ -360,26 +358,4 @@ body.editorial .heb {
 body.editorial .qo {
   font-size: 14px;
   padding: 14px 16px;
-}
-
-/* ============================================================================
- * Patch round 5 — proportions: filter pills section was eating ~60% of
- * viewport before the question card showed. Compress pills + tighten row
- * spacing so the question gets the visual weight it deserves.
- * ========================================================================= */
-
-/* Filter pills more compact in editorial mode */
-body.editorial .pill {
-  min-height: 26px;
-  padding: 4px 11px;
-  font-size: 11px;
-  border-radius: 13px;
-  font-weight: 500;
-}
-
-/* Pill-row containers tighter — quiz-view.js wraps each row in
- * <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px"> */
-body.editorial div[style*="gap:5px"][style*="flex-wrap:wrap"] {
-  gap: 4px !important;
-  margin-bottom: 6px !important;
 }
