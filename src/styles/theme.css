@@ -62,24 +62,7 @@ body.dark .chat-input-row { border-color: #334155 }
 body.dark .chat-disclaimer { background: #422006; border-color: #92400e; color: #fcd34d }
 
 /* ========================================
-   Study / Night Mode (warm sepia)
-   ======================================== */
-body.study { background: #1a1008; color: #e8d5b0 }
-body.study .card { background: #221508; border-color: #3d2a12 }
-body.study .hdr { background: linear-gradient(135deg, #0d0804, #1a1008) }
-body.study .tabs { background: #221508; border-color: #3d2a12 }
-body.study .tabs button:not(.on) { color: #a08060 }
-body.study .pill:not(.on) { background: #221508; color: #a08060; border-color: #3d2a12 }
-body.study .qo { border-color: #3d2a12; color: #e8d5b0; background: #221508 }
-body.study .qo:not(.lk):hover { border-color: #7a5c30; background: #2a1e0d }
-body.study .qo.sel { border-color: #c48a3a; background: #2a1e0d }
-body.study .search-box, body.study .calc-in { background: #221508; border-color: #3d2a12; color: #e8d5b0 }
-body.study .stat { background: #221508; border-color: #3d2a12 }
-body.study .fc { background: #221508; border-color: #3d2a12; color: #e8d5b0 }
-body.study .sec-t { color: #e8d5b0 }
-
-/* ========================================
-   Dark/Study overrides for inline-styled buttons added in v9.59-v9.61
+   Dark overrides for inline-styled buttons added in v9.59-v9.61
    Post-answer UI: Why-wrong, Read-chapter, Difficulty, Prev, Give-up
    ======================================== */
 body.dark [data-action="wrong-reason"][data-r="no_knowledge"] { background: #450a0a !important; color: #fca5a5 !important }
@@ -93,9 +76,3 @@ body.dark [data-action="diff-rating"][data-d="med"][style*="fef9c3"]  { backgrou
 body.dark [data-action="diff-rating"][data-d="hard"][style*="fecaca"] { background: #450a0a !important; color: #fca5a5 !important }
 body.dark [data-action="prev-q"]                              { background: #1e293b !important; color: #cbd5e1 !important; border-color: #334155 !important }
 body.dark [data-action="give-up"]                             { background: #451a03 !important; color: #fde68a !important }
-
-body.study [data-action="wrong-reason"] { background: #2a1e0d !important; color: #e8d5b0 !important }
-body.study [data-action="read-chapter"] { background: #2a1e0d !important; color: #e8d5b0 !important }
-body.study [data-action="diff-rating"]  { background: #2a1e0d !important; color: #a08060 !important }
-body.study [data-action="prev-q"]       { background: #2a1e0d !important; color: #a08060 !important; border-color: #3d2a12 !important }
-body.study [data-action="give-up"]      { background: #2a1e0d !important; color: #c48a3a !important }
