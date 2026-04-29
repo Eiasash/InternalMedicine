@@ -53,21 +53,28 @@ if(G.tab!==G.lastTab){el.classList.remove('fade-in');void el.offsetWidth;el.clas
 switch(G.tab){
 case'quiz':el.innerHTML=G.onCallMode?renderOnCall():renderQuiz();break;
 case'learn':
-  {// Migration: 'drugs' sub-tab was removed in v9.97 (PR #69 — Drug Lookup duplicated ward-helper).
-  if(G.learnSub==='drugs')G.learnSub='study';
-  const _subBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
-  [{id:'study',ic:'📚',l:'Study'},{id:'flash',ic:'🃏',l:'Cards'}].map(s=>
-    '<button data-action="learn-sub" data-sub="'+s.id+'" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(G.learnSub===s.id?'700':'400')+';cursor:pointer;background:'+(G.learnSub===s.id?'#fff':'transparent')+';color:'+(G.learnSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(G.learnSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
+  // v10.0 (PR #70): Learn tab merged into Library. learnSub='flash' → Library Cards;
+  // 'study' or anything else → Library Notes (clinical study notes).
+  G.tab='lib';
+  if(G.learnSub==='flash')G.S.libSub='cards';
+  else G.S.libSub='notes';
+  G.save&&G.save();
+  el.innerHTML='';render();break;
+case'study':G.tab='lib';G.S.libSub='notes';el.innerHTML='';render();break;
+case'flash':G.tab='lib';G.S.libSub='cards';el.innerHTML='';render();break;
+case'drugs':G.tab='lib';G.S.libSub='read';el.innerHTML='';render();break;
+case'lib':
+  {const _libSub=G.S.libSub||'read';
+  const _libBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
+  [{id:'read',ic:'📖',l:'Read'},{id:'cards',ic:'🃏',l:'Cards'},{id:'notes',ic:'📝',l:'Notes'}].map(s=>
+    '<button data-action="lib-sub" data-sub="'+s.id+'" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(_libSub===s.id?'700':'400')+';cursor:pointer;background:'+(_libSub===s.id?'#fff':'transparent')+';color:'+(_libSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(_libSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
-  let _body='';
-  if(G.learnSub==='study')_body=renderStudy();
-  else if(G.learnSub==='flash')_body=renderFlash();
-  el.innerHTML=_subBar+_body;}break; // safe-innerhtml: _subBar is static HTML; _body from internal render*() functions (no user input)
-case'study':G.tab='learn';G.learnSub='study';el.innerHTML='';render();break;
-case'flash':G.tab='learn';G.learnSub='flash';el.innerHTML='';render();break;
-case'drugs':G.tab='learn';G.learnSub='study';el.innerHTML='';render();break; // legacy — drug lookup removed v9.97
-case'lib':el.innerHTML=renderLibrary();break;
-case'articles':G.libSec='articles';G.tab='lib';el.innerHTML=renderLibrary();break;
+  let _libBody='';
+  if(_libSub==='cards')_libBody=renderFlash();
+  else if(_libSub==='notes')_libBody=renderStudy();
+  else _libBody=renderLibrary();
+  el.innerHTML=_libBar+_libBody;}break; // safe-innerhtml: _libBar is static HTML; _libBody from internal render*() functions (no user input)
+case'articles':G.libSec='articles';G.tab='lib';G.S.libSub='read';el.innerHTML='';render();break;
 case'track':
   if(!G._sessionSaved&&(G._sessionOk+G._sessionNo)>=5){
     saveSessionSummary();G._sessionSaved=true;
@@ -90,7 +97,7 @@ case'more':
 case'calc':G.tab='more';G.moreSub='search';el.innerHTML='';render();break; // legacy — calc removed v9.97
 case'search':G.tab='more';G.moreSub='search';el.innerHTML='';render();break;
 case'chat':G.tab='more';G.moreSub='chat';el.innerHTML='';render();break;
-case'book':case'syl':G.tab='lib';el.innerHTML=renderLibrary();break;
+case'book':case'syl':G.tab='lib';G.S.libSub='read';el.innerHTML='';render();break;
 default:G.tab='quiz';el.innerHTML=renderQuiz();break;
 }
 // Ward modal
@@ -329,7 +336,8 @@ const _ct = document.getElementById('ct');
 _ct.addEventListener('click', (e) => {
   const el = e.target.closest('[data-action]');
   if (!el) return;
-  if (el.dataset.action === 'learn-sub') { G.learnSub = el.dataset.sub; render(); }
+  if (el.dataset.action === 'lib-sub') { G.S.libSub = el.dataset.sub; G.save&&G.save(); render(); }
+  else if (el.dataset.action === 'learn-sub') { G.learnSub = el.dataset.sub; render(); }
   else if (el.dataset.action === 'more-sub') { G.moreSub = el.dataset.sub; render(); }
 });
 initMoreEvents(_ct);

@@ -27,8 +27,16 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.97.0';
+export const APP_VERSION='10.0.0';
 export const CHANGELOG={
+  '10.0.0': [
+    '🏛️ ארכיטקטורה מחודשת — 5 טאבים → 4. Learn (📚) הוסר; התוכן עבר ל-Library כשלושה תת-טאבים: Read / Cards / Notes.',
+    '   • Read = ה-Library הקיים (Harrison reader · Articles · Past Exams) — בלי שינוי',
+    '   • Cards = מועבר מ-Learn→Cards (FSRS spaced repetition) — בלי שינוי בלוגיקה',
+    '   • Notes = מועבר מ-Learn→Study (Clinical Study Notes — תוכן קריאה לפי נושא)',
+    '🪝 Internal — חדש G.S.libSub (default \'read\'). מיגרציה: G.tab===\'learn\' & learnSub===\'flash\' → tab=\'lib\', libSub=\'cards\'; אחרת libSub=\'notes\'. data/tabs.json מצומצם ל-4 entries (Quiz / Library / Track / More). תת-טאב נשמר ב-G.S.libSub. data-action="lib-sub" handler ב-#ct delegation. אין שינוי ב-shared/fsrs.js.',
+    '🧪 Tests — tabs.length expectations עברו 5 → 4 ב-3 בדיקות (textbookChapters, expandedDataIntegrity ×2). expected core tabs רשימה צומצמה.',
+  ],
   '9.97.0': [
     '🗑️ הוסרו תת-טאבים שכפלו אפליקציות אחרות — 🧮 Calc (CrCl / CHA₂DS₂-VASc / CURB-65 / PADUA) ב-Track→More הוסר; 💊 Drug Lookup ב-Learn הוסר. ward-helper וה-formulary של שערי-צדק כבר מספקים את אותו ערך עם הקשר קליני אמיתי. נתוני G.DRUGS עדיין נטענים — חיפוש חוצה-בנק ב-More→Search ממשיך להציג תרופות.',
     '🪝 Internal — נמחקו renderCalc / calcUp / renderDrugs / drugSearch + מאזיני calc-num / calc-check / drug-search. G.S.calcVals הוסר מ-globals defaults. G.moreSub default \'calc\' → \'search\'. מיגרציה: G.moreSub===\'calc\' → \'search\'; G.learnSub===\'drugs\' → \'study\'. אין שינוי ב-shared/fsrs.js.',

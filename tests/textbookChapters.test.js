@@ -19,7 +19,7 @@
  *
  * Plus reverse cross-references that the existing suites don't cover:
  *   - every drug entry has the canonical 6-field schema (name/heb/acb/beers/cat/risk)
- *   - tabs.json defines exactly the 5 navigation tabs the renderTabs() loop expects
+ *   - tabs.json defines exactly the 4 navigation tabs the renderTabs() loop expects
  *   - topics.json has 24 topics (one per `ti` index) with non-empty keyword arrays
  */
 
@@ -162,9 +162,9 @@ describe('tabs.json — navigation schema', () => {
     tabs = loadData('tabs.json');
   });
 
-  it('is an array of exactly 5 entries', () => {
+  it('is an array of exactly 4 entries (Quiz / Library / Track / More — Learn merged into Library v10.0)', () => {
     expect(Array.isArray(tabs)).toBe(true);
-    expect(tabs.length).toBe(5);
+    expect(tabs.length).toBe(4);
   });
 
   it('every entry has id (string), ic (string emoji), l (string label)', () => {
