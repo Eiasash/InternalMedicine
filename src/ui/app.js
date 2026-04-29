@@ -35,6 +35,7 @@ import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
          showAnswerHardFail, renderSettings, toggleNotifOptIn, renderNotes,
          initMoreEvents } from './more-view.js';
 import { getCurrentUser } from '../features/auth.js';
+import { openSettings, bindSettingsEvents, refreshSettings } from './settings-overlay.js';
 
 export function renderTabs(){
 // safe-innerhtml: G.TABS is a hardcoded array of tab definitions (id/label/icon); no user input
@@ -335,12 +336,14 @@ initLibraryEvents(_ct);
 initLearnEvents(_ct);
 initTrackEvents(_ct);
 initQuizEvents(_ct);
+bindSettingsEvents();
 
 // === Header button delegation (outside #ct) ===
 document.querySelector('.hdr').addEventListener('click', (e) => {
   const el = e.target.closest('[data-action]');
   if (!el) return;
-  if (el.dataset.action === 'toggle-dark') toggleDark();
+  if (el.dataset.action === 'toggle-dark') { toggleDark(); refreshSettings(); }
+  else if (el.dataset.action === 'open-settings') openSettings();
   else if (el.dataset.action === 'show-help') showHelp();
   else if (el.dataset.action === 'goto-account') {
     // Jump straight to More → Settings, where the account block lives.
