@@ -27,8 +27,14 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.0.0';
+export const APP_VERSION='10.1.0';
 export const CHANGELOG={
+  '10.1.0': [
+    '🔬 Distractor Autopsy ב-front-and-center — אחרי מענה, ה-autopsy מופיע ראשון, מודגש (border 2px, shadow, font גדול יותר). זה הפיצ\'ר הייחודי של האפליקציה ("למה כל מסיח שגוי") ולא צריך להתחבא בין 4 מקורות הסבר.',
+    '   המשתמש דיווח: "יש 3-4 מקורות הסבר שונים... יותר מדי מידע בפנים".',
+    '📁 ההסברים האחרים (notes-based 💡 + הסבר רשמי 📝 + AI Explain 🤖) קופלו ל-<details> סגור כברירת מחדל ("📝 הסברים נוספים — לחץ להרחבה"). זמינים בלחיצה אחת, לא בפנים.',
+    '🪝 Internal — שינוי סדר rendering ב-renderQuiz() אחרי isAnswered: autopsy block קודם, אחר כך accordion. אין שינוי ב-data; אין שינוי בפעולות (data-action="ai-explain" / "mark-e-verified" עדיין עובדים בתוך ה-details).',
+  ],
   '10.0.0': [
     '🏛️ ארכיטקטורה מחודשת — 5 טאבים → 4. Learn (📚) הוסר; התוכן עבר ל-Library כשלושה תת-טאבים: Read / Cards / Notes.',
     '   • Read = ה-Library הקיים (Harrison reader · Articles · Past Exams) — בלי שינוי',

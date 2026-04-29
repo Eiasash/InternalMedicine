@@ -393,56 +393,18 @@ if(G.teachBackState.feedback){
 h+='</div>';
 }
 }
-if(G.ans&&!G.examMode){
-const note=q.ti>=0?(G.NOTES_BY_TI&&G.NOTES_BY_TI[q.ti])||null:null;
-if(note){
-const correctText=q.o[q.c];
-const sentences=note.notes.split(/\.\s+/);
-const relevant=sentences.filter(s=>s.length>20).filter(s=>{
-const sl=s.toLowerCase(),ql=q.q.toLowerCase(),cl=correctText.toLowerCase();
-return cl.split(/\s+/).filter(w=>w.length>3).some(w=>sl.includes(w.toLowerCase()))||ql.split(/\s+/).filter(w=>w.length>4).some(w=>sl.includes(w.toLowerCase()));
-}).slice(0,3);
-h+=`<div class="explain-box" style="margin-top:10px;padding:10px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:11px;line-height:1.7;color:#166534">`;
-h+=`<div style="font-weight:700;margin-bottom:4px">💡 ${note.topic}</div>`;
-if(relevant.length)h+=`<div style="margin-bottom:6px">${relevant.join('. ')}.</div>`;
-else h+=`<div style="margin-bottom:6px;color:#64748b;font-style:italic">Correct answer: <b>${correctText}</b></div>`;
-h+=`<div style="font-size:9px;color:#059669;border-top:1px solid #bbf7d0;padding-top:4px;margin-top:4px">📖 Source: ${note.ch} · ${q.t}</div>`;
-h+=`</div>`;
-}
-}
-// Built-in explanation (every question has one)
-if(G.ans&&!G.examMode&&q.e){
-const _eIss=q.e_issue;
-h+=`<div style="margin-top:8px;padding:10px 12px;background:${_eIss?'#fffbeb':'#eff6ff'};border:1px solid ${_eIss?'#fcd34d':'#bfdbfe'};border-radius:10px;font-size:11px;line-height:1.7;color:${_eIss?'#92400e':'#1e40af'};text-align:right" dir="${heDir(q.e)}">`;
-if(_eIss){h+=`<div style="font-size:10px;font-weight:700;margin-bottom:6px;padding:4px 8px;background:#fef3c7;border-radius:6px;display:flex;align-items:center;gap:6px;justify-content:space-between"><span>⚠️ ההסבר הזה עלול להיות שגוי — AI איתר חוסר עקביות מול התשובה הנכונה</span><button data-action="mark-e-verified" data-idx="${G.pool[G.qi]}" style="font-size:9px;padding:3px 8px;background:#d97706;color:#fff;border:none;border-radius:6px;cursor:pointer;flex:0 0 auto">✓ מאומת</button></div>`;}
-h+=`<div style="font-weight:700;margin-bottom:4px;font-size:10px">📝 הסבר</div>`;
-h+=`<div style="unicode-bidi:plaintext" dir="${heDir(q.e)}">${remapExplanationLetters(q.e,_shuf).replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')}</div>`;
-// Source-link chip (clickable Harrison chapter ref)
-h+=renderSourceLink(G.pool[G.qi]);
-h+=`</div>`;
-}
-// AI Explain button
-if(G.ans&&!G.examMode){
-  var _aiIdx=G.pool[G.qi];
-  h+='<div id="ai-explain-'+_aiIdx+'" style="margin-top:6px"></div>';
-  if(G._exCache[_aiIdx]&&!G._exCache[_aiIdx].err){
-    setTimeout(function(){renderExplainBox(_aiIdx);},0);
-  } else {
-    h+='<button class="btn btn-g" style="width:100%;margin-top:4px;font-size:11px" data-action="ai-explain" data-idx="'+_aiIdx+'">🤖 הסבר AI ('+(G._exCache[_aiIdx]?'נסה שוב':'קלוד אופוס')+')</button>';
-  }
-}
-// Distractor Autopsy — ALWAYS ON when answer revealed (not a toggle).
-// Renders per-option card: ✓/✗ + rationale from offline G.DIS (pre-generated).
-// Falls back to on-demand AI (G._exCache['autopsy_'+qIdx]) if offline entry missing.
+// ── Distractor Autopsy — front and center (PR #71). The differentiator
+// of this app: "wrong because / would be correct if" per option. Lives
+// at the top of the post-answer block; everything else folds into a
+// closed <details> below.
 if(G.ans&&!G.examMode){
   const _qIdx=G.pool[G.qi];
   const _dist=(G.DIS&&G.DIS[_qIdx])||null;
   const _apKey='autopsy_'+_qIdx;
   const _aiTxt=G._exCache[_apKey];
-  h+=`<div style="padding:12px;margin-top:10px;border:2px solid #f59e0b;border-radius:12px;background:#fffbeb">
-<div style="font-weight:700;font-size:11px;margin-bottom:8px">🔬 Distractor Autopsy — למה כל תשובה שגויה</div>`;
+  h+=`<div style="padding:14px;margin-top:12px;border:2px solid #f59e0b;border-radius:12px;background:#fffbeb;box-shadow:0 2px 8px rgba(245,158,11,0.12)">
+<div style="font-weight:700;font-size:13px;margin-bottom:10px;color:#92400e">🔬 Distractor Autopsy — למה כל תשובה שגויה</div>`;
   if(_dist){
-    // Offline path — render each option with sanitized rationale
     q.o.forEach((opt,i)=>{
       const _isCorrect=isOk(q,i);
       const _isUserPick=(i===G.sel);
@@ -454,8 +416,6 @@ if(G.ans&&!G.examMode){
       h+=`<div style="margin-bottom:6px;padding:8px 10px;background:${_bg};border:1px solid ${_brd};border-radius:8px;font-size:11px;line-height:1.6" dir="${heDir((_rationale||'')+' '+opt)}">`;
       h+=`<div style="font-weight:700;margin-bottom:3px">${_mark} <bdi>${sanitize(opt)}</bdi>${_pickTag}</div>`;
       if(_rationale){
-        // sanitize first, then style the literal markers. sanitize() cannot introduce
-        // HTML, and "Wrong because:" / "Would be correct if:" are literal strings.
         const _formatted=sanitize(_rationale)
           .replace(/Wrong because:/g,'<b style="color:#b91c1c">Wrong because:</b>')
           .replace(/Would be correct if:/g,'<b style="color:#059669">Would be correct if:</b>');
@@ -466,14 +426,58 @@ if(G.ans&&!G.examMode){
       h+=`</div>`;
     });
   }else if(_aiTxt){
-    // On-demand AI autopsy was cached previously (legacy path) — already sanitized+formatted
     h+=`<div style="font-size:11px;line-height:1.7;color:#1e293b;unicode-bidi:plaintext" dir="${heDir(_aiTxt)}">${_aiTxt}</div>`;
   }else{
-    // No offline data yet — auto-trigger AI once, show loading state
     h+=`<div style="font-size:11px;color:#64748b;padding:4px 0">⏳ טוען הסבר על מסיחים...</div>`;
     setTimeout(()=>{ if(!G._exCache['autopsy_'+_qIdx])aiAutopsy(_qIdx); },100);
   }
   h+=`</div>`;
+}
+
+// ── Secondary explanations: notes-based + built-in q.e + AI Explain
+// fold into one <details> accordion, closed by default. The user
+// asked for a hierarchy — autopsy is the differentiator; the rest is
+// supporting material, available on tap, not in their face.
+if(G.ans&&!G.examMode){
+  const note=q.ti>=0?(G.NOTES_BY_TI&&G.NOTES_BY_TI[q.ti])||null:null;
+  const _hasSecondary=note||q.e;
+  if(_hasSecondary){
+    h+=`<details style="margin-top:8px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc">
+<summary style="padding:10px 12px;cursor:pointer;font-weight:700;font-size:11px;color:#475569;list-style:none">📝 הסברים נוספים <span style="font-size:9px;color:#94a3b8;font-weight:400">(לחץ להרחבה)</span></summary>
+<div style="padding:0 12px 12px">`;
+    if(note){
+      const correctText=q.o[q.c];
+      const sentences=note.notes.split(/\.\s+/);
+      const relevant=sentences.filter(s=>s.length>20).filter(s=>{
+        const sl=s.toLowerCase(),ql=q.q.toLowerCase(),cl=correctText.toLowerCase();
+        return cl.split(/\s+/).filter(w=>w.length>3).some(w=>sl.includes(w.toLowerCase()))||ql.split(/\s+/).filter(w=>w.length>4).some(w=>sl.includes(w.toLowerCase()));
+      }).slice(0,3);
+      h+=`<div class="explain-box" style="margin-top:8px;padding:10px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:11px;line-height:1.7;color:#166534">`;
+      h+=`<div style="font-weight:700;margin-bottom:4px">💡 ${note.topic}</div>`;
+      if(relevant.length)h+=`<div style="margin-bottom:6px">${relevant.join('. ')}.</div>`;
+      else h+=`<div style="margin-bottom:6px;color:#64748b;font-style:italic">Correct answer: <b>${correctText}</b></div>`;
+      h+=`<div style="font-size:9px;color:#059669;border-top:1px solid #bbf7d0;padding-top:4px;margin-top:4px">📖 Source: ${note.ch} · ${q.t}</div>`;
+      h+=`</div>`;
+    }
+    if(q.e){
+      const _eIss=q.e_issue;
+      h+=`<div style="margin-top:8px;padding:10px 12px;background:${_eIss?'#fffbeb':'#eff6ff'};border:1px solid ${_eIss?'#fcd34d':'#bfdbfe'};border-radius:10px;font-size:11px;line-height:1.7;color:${_eIss?'#92400e':'#1e40af'};text-align:right" dir="${heDir(q.e)}">`;
+      if(_eIss){h+=`<div style="font-size:10px;font-weight:700;margin-bottom:6px;padding:4px 8px;background:#fef3c7;border-radius:6px;display:flex;align-items:center;gap:6px;justify-content:space-between"><span>⚠️ ההסבר הזה עלול להיות שגוי — AI איתר חוסר עקביות מול התשובה הנכונה</span><button data-action="mark-e-verified" data-idx="${G.pool[G.qi]}" style="font-size:9px;padding:3px 8px;background:#d97706;color:#fff;border:none;border-radius:6px;cursor:pointer;flex:0 0 auto">✓ מאומת</button></div>`;}
+      h+=`<div style="font-weight:700;margin-bottom:4px;font-size:10px">📝 הסבר</div>`;
+      h+=`<div style="unicode-bidi:plaintext" dir="${heDir(q.e)}">${remapExplanationLetters(q.e,_shuf).replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')}</div>`;
+      h+=renderSourceLink(G.pool[G.qi]);
+      h+=`</div>`;
+    }
+    // AI Explain — small, inline, inside the same accordion
+    var _aiIdx=G.pool[G.qi];
+    h+='<div id="ai-explain-'+_aiIdx+'" style="margin-top:6px"></div>';
+    if(G._exCache[_aiIdx]&&!G._exCache[_aiIdx].err){
+      setTimeout(function(){renderExplainBox(_aiIdx);},0);
+    } else {
+      h+='<button class="btn btn-g" style="width:100%;margin-top:6px;font-size:11px" data-action="ai-explain" data-idx="'+_aiIdx+'">🤖 הסבר AI ('+(G._exCache[_aiIdx]?'נסה שוב':'קלוד אופוס')+')</button>';
+    }
+    h+=`</div></details>`;
+  }
 }
 h+=`<div style="display:flex;gap:16px;margin-top:10px;padding-top:8px;border-top:1px solid #f1f5f9;font-size:10px;color:#94a3b8">
 <span>✅ ${G.S.qOk}</span><span>❌ ${G.S.qNo}</span><span>📊 ${pct}</span>${G.S.sr[G.pool[G.qi]]?.at?`<span style="color:#94a3b8">⏱${G.S.sr[G.pool[G.qi]].at}s avg</span>`:""}</div>`;
