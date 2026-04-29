@@ -24,8 +24,8 @@ body.editorial {
   --ed-paper-deep: #E5D7B0;  /* card surface — clearly darker cream */
   --ed-hairline:   #C8B68A;  /* rules — visible against both papers */
   --ed-ink:        #1A1F2E;
-  --ed-mute:       #6B6F7A;
-  --ed-mute-soft:  #9DA1AB;
+  --ed-mute:       #5A4F3A;  /* warm dark gray — readable on parchment */
+  --ed-mute-soft:  #7E6F54;  /* warm mid gray — secondary muted text */
   --ed-highlight:  #C9B47C;
 
   /* Pnimit brand — deep teal */
@@ -383,4 +383,41 @@ body.editorial .pill {
 body.editorial div[style*="gap:5px"][style*="flex-wrap:wrap"] {
   gap: 4px !important;
   margin-bottom: 6px !important;
+}
+
+/* ============================================================================
+ * Patch round 6 — header chip overlap + page density
+ * ========================================================================= */
+
+/* Version chip overlap fix.
+ * <span id="headerVer"> flows inline inside the h1, but the absolute-
+ * positioned dm-btn buttons (account/help/study/dark/editorial) sit on
+ * the right edge at the same vertical zone. With h1 now at 22px serif,
+ * the 9px version text gets clipped under the 👤 button. The date
+ * subline ("Wed 29 Apr · 21:04") below the title shows time, and version
+ * is visible in Settings — chip is redundant in editorial. Hide cleanly. */
+body.editorial #headerVer { display: none; }
+
+/* Inline 'Internal Medicine' badge inside h1 — tame size + recolor to
+ * brand. The earlier inline-style override caught it but inline `style="
+ * font-size:9px"` keeps the badge tiny against the new 22px serif title. */
+body.editorial .hdr h1 span[style*="font-size:9px"] {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  vertical-align: middle !important;
+  letter-spacing: 0.04em;
+}
+
+/* Tighten card density across pages.
+ * Track tab stacks 10+ cards vertically; each had margin-bottom: 10px on
+ * .card via components.css. Trim to 8px in editorial — saves ~20px across
+ * a typical Track viewport without losing breathing room. */
+body.editorial .card {
+  margin-bottom: 8px;
+}
+
+/* Track tab section spacing — sec-t blocks have implicit margin-bottom 14px
+ * via .sec-s. Reduce so heading sits closer to its content. */
+body.editorial .sec-s {
+  margin-bottom: 12px;
 }
