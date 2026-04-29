@@ -74,92 +74,9 @@ export function renderPriorityMatrix(){
   return h;
 }
 
-// Track view — renderCalc, renderTrack, calcEstScore, study plan, exam trend, cheat sheet, etc.
-export function calcUp(k,v){G.calcVals[k]=parseFloat(v)||0;G.render();}
-export function renderCalc(){
-
-let h=`<div class="sec-t">🧮 Clinical Calculators</div><div class="sec-s">CrCl · CHA₂DS₂-VASc · CURB-65 · Wells · PADUA</div>`;
-
-// CrCl
-const age=G.calcVals.age||75,wt=G.calcVals.wt||55,cr=G.calcVals.cr||1.0,fem=G.calcVals.fem===undefined?0.85:G.calcVals.fem;
-const crcl=Math.max(0,Math.round(((140-age)*wt*fem)/(72*cr)));
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">Cockcroft-Gault CrCl</h3>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-<div><label style="font-size:10px;color:#64748b">Age</label><input class="calc-in" type="number" value="${age}" data-action="calc-num" data-key="age"></div>
-<div><label style="font-size:10px;color:#64748b">Weight (kg)</label><input class="calc-in" type="number" value="${wt}" data-action="calc-num" data-key="wt"></div>
-<div><label style="font-size:10px;color:#64748b">Creatinine</label><input class="calc-in" type="number" step="0.1" value="${cr}" data-action="calc-num" data-key="cr"></div>
-<div><label style="font-size:10px;color:#64748b">Sex</label><select class="calc-in" data-action="calc-num" data-key="fem">
-<option value="0.85" ${fem<1?'selected':''}>Female (×0.85)</option><option value="1" ${fem>=1?'selected':''}>Male (×1)</option></select></div>
-</div>
-<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center">
-<span style="font-size:22px;font-weight:700;color:${crcl<30?'#dc2626':crcl<60?'#d97706':'#059669'}">${crcl} ml/min</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${crcl<30?'CKD 4-5: Avoid metformin, adjust all renally-cleared drugs':crcl<60?'CKD 3: Dose adjust many drugs':'CKD 1-2: Mild impairment'}</p>
-</div></div>`;
-
-// CHA2DS2-VASc
-const cha=Object.entries(G.calcVals).filter(([k])=>k.startsWith('cha_')).reduce((s,[k,v])=>s+v,0);
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">CHA₂DS₂-VASc</h3>`;
-[['cha_chf','CHF',1],['cha_htn','HTN',1],['cha_age75','Age ≥75',2],['cha_dm','Diabetes',1],
-['cha_stroke','Stroke/TIA',2],['cha_vasc','Vascular disease',1],['cha_age65','Age 65-74',1],['cha_sex','Female sex',1]
-].forEach(([k,l,pts])=>{
-const on=G.calcVals[k]||0;
-h+=`<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:11px;cursor:pointer">
-<span>${l} (+${pts})</span>
-<input type="checkbox" ${on?'checked':''} data-action="calc-check" data-key="${k}" data-pts="${pts}" style="width:16px;height:16px">
-</label>`;
-});
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center">
-<span style="font-size:22px;font-weight:700;color:${cha>=2?'#dc2626':'#d97706'}">${cha}</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${cha>=2?'Anticoagulate (DOAC preferred, Apixaban safest in CKD)':cha===1?'Consider anticoagulation':'Low risk — consider no therapy'}</p>
-</div></div>`;
-
-
-// CURB-65
-const curb=Object.entries(G.calcVals).filter(([k])=>k.startsWith('curb_')).reduce((s,[k,v])=>s+v,0);
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">CURB-65</h3>`;
-[['curb_conf','Confusion (new)',1],['curb_bun','BUN >20 mg/dL (>7 mmol/L)',1],['curb_rr','RR ≥30',1],['curb_bp','BP: SBP<90 or DBP≤60',1],['curb_age','Age ≥65',1]
-].forEach(([k,l,pts])=>{
-const on=G.calcVals[k]||0;
-h+=`<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:11px;cursor:pointer">
-<span>${l} (+${pts})</span>
-<input type="checkbox" ${on?'checked':''} data-action="calc-check" data-key="${k}" data-pts="${pts}" style="width:16px;height:16px">
-</label>`;
-});
-const curbRisk=curb<=1?'Low risk (<2% mortality) — consider outpatient':curb===2?'Moderate (9%) — short inpatient or supervised outpatient':'High (15-40%) — ICU if 4-5';
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center">
-<span style="font-size:22px;font-weight:700;color:${curb>=3?'#dc2626':curb>=2?'#d97706':'#059669'}">${curb}</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${curbRisk}</p>
-</div></div>`;
-
-
-// PADUA VTE Score
-const paduaItems=[
-['pad_cancer','Active cancer',3],['pad_vte','Previous VTE',3],['pad_immob','Reduced mobility (≥3 days)',3],
-['pad_throm','Known thrombophilia',3],['pad_trauma','Recent (≤1mo) trauma/surgery',2],
-['pad_age','Age ≥70',1],['pad_hf','Heart/respiratory failure',1],['pad_mi','Acute MI or stroke',1],
-['pad_infect','Acute infection/rheumatic disorder',1],['pad_obesity','Obesity (BMI ≥30)',1],['pad_hormone','Ongoing hormonal therapy',1]
-];
-const paduaScore=paduaItems.reduce((s,[k,,pts])=>s+(G.calcVals[k]?pts:0),0);
-h+=`<div class="card" style="padding:14px"><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">PADUA VTE Risk Score</h3>`;
-paduaItems.forEach(([k,l,pts])=>{
-const on=G.calcVals[k]||0;
-h+=`<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:11px;cursor:pointer">
-<span>${l} (+${pts})</span>
-<input type="checkbox" ${on?'checked':''} data-action="calc-check" data-key="${k}" data-pts="${pts}" style="width:16px;height:16px">
-</label>`;
-});
-h+=`<div style="margin-top:10px;padding:10px;background:#eff6ff;border-radius:10px;text-align:center" class="calc-result">
-<span style="font-size:22px;font-weight:700;color:${paduaScore>=4?'#dc2626':'#059669'}">${paduaScore}</span>
-<p style="font-size:10px;color:#64748b;margin-top:2px">${paduaScore>=4?'High VTE risk (≥4) — Pharmacological prophylaxis recommended':'Low VTE risk (<4) — Mechanical prophylaxis or early mobilization'}</p>
-</div></div>`;
-
-
-
-
-
-return h;
-}
-
+// Track view — renderTrack, calcEstScore, study plan, exam trend, cheat sheet, etc.
+// Note: clinical Calculators (CrCl / CHA2DS2-VASc / CURB-65 / PADUA) were
+// removed in v9.97 (PR #69) — duplicated ward-helper + SZMC formulary.
 
 // ===== TRACKER =====
 // topic index → {source:'haz'|'notes', label, action} for deep link
@@ -1101,14 +1018,5 @@ export function initTrackEvents(container) {
       if (v) { setApiKey(v); G.render(); }
     }
     else if (action === 'force-update') { window.applyUpdate(); }
-  });
-
-  container.addEventListener('change', (e) => {
-    if (e.target.dataset.action === 'calc-num') {
-      calcUp(e.target.dataset.key, e.target.value);
-    }
-    else if (e.target.dataset.action === 'calc-check') {
-      calcUp(e.target.dataset.key, e.target.checked ? parseInt(e.target.dataset.pts, 10) : 0);
-    }
   });
 }

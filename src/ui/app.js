@@ -24,11 +24,11 @@ import { submitLeaderboardScore, fetchLeaderboard, showLeaderboard, renderFeedba
 import { renderQuiz, toggleBk, uploadQImage, removeQImage, viewImg, pauseTimed,
          startTimedQ, stopTimedMode, sdCheck, sdNext, initQuizEvents } from './quiz-view.js';
 import { loadWrongSet } from './wrong-review.js';
-import { renderStudy, toggleNote, filterNotes, renderFlash, renderDrugs, initLearnEvents } from './learn-view.js';
+import { renderStudy, toggleNote, filterNotes, renderFlash, initLearnEvents } from './learn-view.js';
 import { renderLibrary, openHarrisonChapter,
          toggleHarrisonAI, submitHarrisonAI, aiSummarizeChapter, quizMeOnChapter,
          addChapterQsToBank, renderWrongAnswerLog, initLibraryEvents } from './library-view.js';
-import { renderTrack, renderCalc, calcUp, calcEstScore, renderStudyPlan, renderExamTrendCard, renderPriorityMatrix,
+import { renderTrack, calcEstScore, renderStudyPlan, renderExamTrendCard, renderPriorityMatrix,
          renderDailyPlan, renderSessionCard, setExamDate, exportCheatSheet,
          saveSessionSummary, initTrackEvents } from './track-view.js';
 import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
@@ -53,18 +53,19 @@ if(G.tab!==G.lastTab){el.classList.remove('fade-in');void el.offsetWidth;el.clas
 switch(G.tab){
 case'quiz':el.innerHTML=G.onCallMode?renderOnCall():renderQuiz();break;
 case'learn':
-  {const _subBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
-  [{id:'study',ic:'📚',l:'Study'},{id:'flash',ic:'🃏',l:'Cards'},{id:'drugs',ic:'💊',l:'Drugs'}].map(s=>
+  {// Migration: 'drugs' sub-tab was removed in v9.97 (PR #69 — Drug Lookup duplicated ward-helper).
+  if(G.learnSub==='drugs')G.learnSub='study';
+  const _subBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
+  [{id:'study',ic:'📚',l:'Study'},{id:'flash',ic:'🃏',l:'Cards'}].map(s=>
     '<button data-action="learn-sub" data-sub="'+s.id+'" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(G.learnSub===s.id?'700':'400')+';cursor:pointer;background:'+(G.learnSub===s.id?'#fff':'transparent')+';color:'+(G.learnSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(G.learnSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
   let _body='';
   if(G.learnSub==='study')_body=renderStudy();
   else if(G.learnSub==='flash')_body=renderFlash();
-  else if(G.learnSub==='drugs')_body=renderDrugs();
   el.innerHTML=_subBar+_body;}break; // safe-innerhtml: _subBar is static HTML; _body from internal render*() functions (no user input)
 case'study':G.tab='learn';G.learnSub='study';el.innerHTML='';render();break;
 case'flash':G.tab='learn';G.learnSub='flash';el.innerHTML='';render();break;
-case'drugs':G.tab='learn';G.learnSub='drugs';el.innerHTML='';render();break;
+case'drugs':G.tab='learn';G.learnSub='study';el.innerHTML='';render();break; // legacy — drug lookup removed v9.97
 case'lib':el.innerHTML=renderLibrary();break;
 case'articles':G.libSec='articles';G.tab='lib';el.innerHTML=renderLibrary();break;
 case'track':
@@ -73,19 +74,20 @@ case'track':
   }
   el.innerHTML=renderTrack();break;
 case'more':
-  {const _moreBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
-  [{id:'calc',ic:'🧮',l:'Calc'},{id:'search',ic:'🔍',l:'Search'},{id:'notes',ic:'📝',l:'Notes'},{id:'chat',ic:'💬',l:'Chat'},{id:'feedback',ic:'💡',l:'Feedback'},{id:'settings',ic:'⚙️',l:'Settings'}].map(s=>
+  {// Migration: 'calc' sub-tab was removed in v9.97 (PR #69 — Calculators duplicated ward-helper / SZMC formulary).
+  if(G.moreSub==='calc')G.moreSub='search';
+  const _moreBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
+  [{id:'search',ic:'🔍',l:'Search'},{id:'notes',ic:'📝',l:'Notes'},{id:'chat',ic:'💬',l:'Chat'},{id:'feedback',ic:'💡',l:'Feedback'},{id:'settings',ic:'⚙️',l:'Settings'}].map(s=>
     '<button data-action="more-sub" data-sub="'+s.id+'" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(G.moreSub===s.id?'700':'400')+';cursor:pointer;background:'+(G.moreSub===s.id?'#fff':'transparent')+';color:'+(G.moreSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(G.moreSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
   let _mBody='';
-  if(G.moreSub==='calc')_mBody=renderCalc();
-  else if(G.moreSub==='search')_mBody=renderSearch();
+  if(G.moreSub==='search')_mBody=renderSearch();
   else if(G.moreSub==='notes')_mBody=renderNotes();
   else if(G.moreSub==='chat')_mBody=renderChat();
   else if(G.moreSub==='feedback')_mBody=renderFeedback();
   else if(G.moreSub==='settings')_mBody=renderSettings();
   el.innerHTML=_moreBar+_mBody;}break; // safe-innerhtml: _moreBar is static HTML; _mBody from internal render*() functions (no user input)
-case'calc':G.tab='more';G.moreSub='calc';el.innerHTML='';render();break;
+case'calc':G.tab='more';G.moreSub='search';el.innerHTML='';render();break; // legacy — calc removed v9.97
 case'search':G.tab='more';G.moreSub='search';el.innerHTML='';render();break;
 case'chat':G.tab='more';G.moreSub='chat';el.innerHTML='';render();break;
 case'book':case'syl':G.tab='lib';el.innerHTML=renderLibrary();break;
@@ -299,7 +301,6 @@ _w.openHarrisonChapter = openHarrisonChapter;
 // Learn
 // toggleNote, filterNotes, fcRate: now handled by learn-view delegation
 // Track
-// calcUp: track-view delegation
 // setExamDate: track-view delegation
 // exportCheatSheet: track-view delegation
 // Cloud & social

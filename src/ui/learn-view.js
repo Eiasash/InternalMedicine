@@ -190,28 +190,9 @@ if(!dueMode){
 return h;
 }
 
-// ===== DRUG LOOKUP =====
-let drugSearch='';
-export function renderDrugs(){
-let h=`<div class="sec-t">💊 Drug Lookup</div><div class="sec-s">Beers Criteria + ACB Score Checker</div>`;
-h+=`<input class="search-box" placeholder="Search drug name..." data-action="drug-search" value="${drugSearch}" id="dsrch">`;
-const fv=drugSearch.toLowerCase();
-const filtered=G.DRUGS.filter(d=>!fv||d.name.toLowerCase().includes(fv)||d.heb.includes(fv)||(d.cat||'').toLowerCase().includes(fv));
-h+=`<div class="card">`;
-if(!filtered.length)h+=`<div style="padding:16px;text-align:center;color:#94a3b8;font-size:12px">No drugs found</div>`;
-filtered.forEach(d=>{
-h+=`<div class="drug-row"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-<span style="font-weight:700;font-size:12px">${d.name} ${d.heb?'<span style="color:#94a3b8">('+d.heb+')</span>':''}</span>
-<div style="display:flex;gap:4px">
-${d.beers?'<span class="badge badge-r">BEERS</span>':''}
-${d.acb>=3?'<span class="badge badge-r">ACB '+d.acb+'</span>':d.acb>=2?'<span class="badge badge-y">ACB '+d.acb+'</span>':d.acb>=1?'<span class="badge badge-g">ACB '+d.acb+'</span>':''}
-</div></div>
-<div style="font-size:10px;color:#64748b">${d.cat||''}</div>
-<div style="font-size:10px;color:#475569;margin-top:2px">${d.risk}</div></div>`;
-});
-h+=`</div>`;
-return h;
-}
+// Drug Lookup tab removed in v9.97 (PR #69) — duplicated ward-helper.
+// G.DRUGS data is still loaded; cross-bank search in More→Search still
+// surfaces drugs. The dedicated 💊 Drugs sub-tab in Learn is gone.
 
 function fcRate(rating) { // rating: 1=Again, 2=Hard, 3=Good, 4=Easy (FSRS)
   const dueMode = !!G.S.fcDueMode;
@@ -273,10 +254,6 @@ export function initLearnEvents(container) {
   });
   container.addEventListener('input', (e) => {
     if (e.target.dataset.action === 'filter-notes') {
-      G.render();
-    }
-    else if (e.target.dataset.action === 'drug-search') {
-      drugSearch = e.target.value; // module-scoped variable (fixes window leak bug)
       G.render();
     }
   });
