@@ -27,8 +27,14 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.1.0';
+export const APP_VERSION='10.2.0';
 export const CHANGELOG={
+  '10.2.0': [
+    '🧹 ניקיון סופי של רוויזיית v10 — Track→More התשנה ל-Track→Reference (📚). הקלפים שכפלו את ה-gear (API key · Data Management · Version footer · Force Update) הוסרו. הסיכום הקצר עכשיו: Spaced Reading · Bookmarks · Syllabus · Study Journal · Share · גרסה כצ׳יפ קצר.',
+    '   • API key, Export/Import, Cloud Backup/Restore, Reset, Force Update — כולם ב-⚙️ → Settings.',
+    '   • Track→Reference מצומצם מ-8 → 5 כרטיסי תוכן + chip גרסה.',
+    '🪝 Internal — מאזיני data-action הוסרו מ-initTrackEvents (remove-api-key / save-api-key / export-progress / import-progress / cloud-backup / cloud-restore / reset-all / force-update). share-app נשאר. import unused: BUILD_HASH / LS / safeJSONParse / fmtT / getApiKey / setApiKey / IMA_WEIGHTS / HARRISON_PDF_MAP נמחקו מ-track-view.js. אין שינוי ב-shared/fsrs.js.',
+  ],
   '10.1.0': [
     '🔬 Distractor Autopsy ב-front-and-center — אחרי מענה, ה-autopsy מופיע ראשון, מודגש (border 2px, shadow, font גדול יותר). זה הפיצ\'ר הייחודי של האפליקציה ("למה כל מסיח שגוי") ולא צריך להתחבא בין 4 מקורות הסבר.',
     '   המשתמש דיווח: "יש 3-4 מקורות הסבר שונים... יותר מדי מידע בפנים".',
