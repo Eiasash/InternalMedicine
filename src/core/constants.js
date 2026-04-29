@@ -27,8 +27,16 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.93.4';
+export const APP_VERSION='9.94.0';
 export const CHANGELOG={
+  '9.94.0': [
+    '🗂️ Track tab — שכתוב מבנה ל-4 sub-tabs (Progress / Plan / Exam / More). הגלילה האנכית של 12 כרטיסיות הוחלפה במבנה ממוקד שבו כל sub-tab מחזיק 3-4 כרטיסיות ונכנס ב-~1.5 viewports במובייל.',
+    '   • Progress: 4 stat tiles · SRS due alert · Topic Mastery Heatmap · Today\'s Session · Activity (30 days) · Leaderboard',
+    '   • Plan: Study Plan tiers · Priority Matrix · Weak Spots Map · Confidence Matrix',
+    '   • Exam: Exam date / Daily Plan · Exam Trend · Rescue Drill · Cheat Sheet export · IMA Archive',
+    '   • More: Spaced Reading Due · Bookmarks · Syllabus completion · Study Journal · API Key · Data Management · Version footer',
+    '🪝 Internal — sub-tab choice נשמר ב-G.S.trackSubtab (משחזר לאחר reload). data-action="track-subtab" handler ב-initTrackEvents. כל 4 ה-themes (light / dark / study / editorial) רנדור תקין — ה-markup ממשיך עם class="card" / "btn" / "topic" כמו שהיה. אין שינוי ב-shared/fsrs.js.',
+  ],
   '9.92.0': [
     '🐛 תיקון קריטי — Topic Mastery Heatmap הציג 100% על כל נושא שנגעת בו, גם אם רוב התשובות היו שגויות. השורש: הנוסחה ב-heatmap.js השתמשה ב-FSRS R בלבד, שהוא דעיכת זמן (R≈1 מיד אחרי כל ביקורת — נכונה או שגויה). חישוב חדש: per-card mastery = (ok/tot) × R. תשובה שגויה מורידה מאסטרי ל-0 מיידית; תשובות נכונות ישנות דועכות עם R. Fallback ל-hit-rate גולמי כשמצב FSRS חסר (legacy SM-2). 5 בדיקות חדשות, כולל regression test למקרה "wrong-just-now ≠ 100%".',
     '🐛 תיקון — Est. Score החזיר 60% מטעה כשרק נושאים בודדים נבחנו. השורש: הנוסחה הניחה 60% (neutral default) לכל נושא עם <3 תשובות, אז המשקל הכולל קרס סביב 60% גם אחרי 26 שאלות. תיקון: נושאים עם <3 תשובות מודרים מהסכימה (לא מוטענים ב-default). מחזיר null כשפחות מ-3 נושאים יש להם נתונים — UI מציג "—" עד שיש מספיק כיסוי.',
