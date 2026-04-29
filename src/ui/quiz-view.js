@@ -201,7 +201,7 @@ q.o.forEach((o,i)=>{
 let cls='qo';
 if(G.ans){cls+=' lk';if(isOk(q,i))cls+=' ok';else if(i===G.sel)cls+=' no';else cls+=' dim';}
 else if(i===G.sel)cls+=' sel';
-h+=`<button class="${cls}" data-action="pick" data-i="${i}" aria-label="Option ${i+1}: ${o}" dir="${heDir(o)}">${o}</button>`;
+h+=`<button class="${cls}" data-action="pick" data-i="${i}" dir="${heDir(o)}">${o}</button>`;
 });
 if(!G.ans)h+=`<button class="btn btn-p" data-action="sd-check"${G.sel===null?' disabled':''} aria-label="Check answer">בדוק</button>`;
 else h+=`<button class="btn btn-d" data-action="sd-next" aria-label="Next question">הבאה ←</button>`;
@@ -243,7 +243,7 @@ h+=`<div style="display:flex;justify-content:space-between;align-items:center;ma
 <div style="display:flex;gap:4px;flex-wrap:wrap">
 <button data-action="start-exam" class="btn btn-d" style="font-size:10px;padding:5px 12px" aria-label="Start exam with 150 questions">📋 Exam (150q)</button><button data-action="start-mock" class="btn btn-d" style="font-size:10px;padding:5px 12px;background:#7c3aed;color:#fff" aria-label="Start mock exam with 100 questions">🎯 Mock (100q)</button>
 <span class="tt-wrap"><button data-action="start-sd" class="btn" style="font-size:10px;padding:5px 12px;background:#fef2f2;color:#dc2626" aria-label="Start sudden death mode">💀 Sudden Death</button><button data-action="start-oncall" class="btn" style="font-size:10px;padding:5px 12px;background:#0f172a;color:#7dd3fc" aria-label="Start on-call mode">🌙 On-call</button><button class="tt-icon" tabindex="0" aria-label="Info about sudden death mode">ⓘ</button><div class="tt-box">One wrong answer ends the session. Builds high-stakes exam pressure.</div></span>
-${!G.pomoActive?'<span class="tt-wrap"><button data-action="start-pomo" class="btn" style="font-size:10px;padding:5px 12px;background:#ecfdf5;color:#059669" aria-label="Start pomodoro timer">⏱️ Pomodoro</button><button class="tt-icon" tabindex="0" aria-label="Info about pomodoro timer">ⓘ</button><div class="tt-box">25min focus / 5min break study timer. Helps maintain concentration.</div></span>':''}
+${!G.pomoActive?'<span class="tt-wrap"><button data-action="start-pomo" class="btn" style="font-size:10px;padding:5px 12px;background:#ecfdf5;color:#047857" aria-label="Start pomodoro timer">⏱️ Pomodoro</button><button class="tt-icon" tabindex="0" aria-label="Info about pomodoro timer">ⓘ</button><div class="tt-box">25min focus / 5min break study timer. Helps maintain concentration.</div></span>':''}
 </div>
 </div>`;
 h+=`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">`;
@@ -281,7 +281,7 @@ h+=`<div style="display:flex;gap:8px;margin-bottom:10px;font-size:10px;align-ite
 <span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.timedMode?'checked':''} data-action="toggle-timed"> ⏱ Timed (90s)</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">90-second countdown per question. Auto-advances when time runs out — marks as wrong. Builds exam-condition reflexes.</div></span>
 <span style="color:#64748b;font-size:10px" title="After every reveal, you see why each wrong answer is wrong and when it would be correct.">🔬 Distractor Autopsy on</span>
 </div>`;
-h+=`<div style="display:flex;gap:6px;margin-bottom:10px"><select class="calc-in" style="font-size:11px;padding:6px 10px;flex:1" data-action="topic-select">
+h+=`<div style="display:flex;gap:6px;margin-bottom:10px"><select class="calc-in" style="font-size:11px;padding:6px 10px;flex:1" data-action="topic-select" aria-label="סנן לפי נושא">
 <option value="-1"${G.filt!=='topic'?' selected':''}>📂 Filter by topic…</option>`;
 TOPICS.forEach((t,i)=>{h+=`<option value="${i}"${G.filt==='topic'&&G.topicFilt===i?' selected':''}>${t}</option>`;});
 h+=`</select>`;
@@ -324,7 +324,7 @@ if(G.ans){cls+=' lk';if(!G.examMode){if(isOk(q,origI))cls+=' ok';else if(origI==
 else if(origI===G.sel)cls+=' sel';
 const blurCls=G.blindRecall&&!G.ans&&origI!==G.sel?' qo-blur':'';
 const autopsyCls=(G.autopsyMode&&G.ans&&!G.examMode&&!isOk(q,origI)&&origI===G.autopsyDistractor)?' distractor-highlight':'';
-h+=`<button class="${cls}${blurCls}${autopsyCls}" data-action="pick" data-i="${origI}" aria-label="Option ${origI+1}" dir="${heDir(o)}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
+h+=`<button class="${cls}${blurCls}${autopsyCls}" data-action="pick" data-i="${origI}" dir="${heDir(o)}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" alt="" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
 });
 h+=`<div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">`;
 if(!G.ans){

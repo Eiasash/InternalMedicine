@@ -39,9 +39,10 @@ import { openSettings, bindSettingsEvents, refreshSettings } from './settings-ov
 
 export function renderTabs(){
 // safe-innerhtml: G.TABS is a hardcoded array of tab definitions (id/label/icon); no user input
-document.getElementById('tb').innerHTML=G.TABS.map(t=>
-`<button class="${t.id===G.tab?'on':''}" data-action="go" data-tab="${t.id}" aria-label="${t.l}"><span class="ic">${t.ic}</span>${t.l}</button>`
-).join('');
+document.getElementById('tb').innerHTML=G.TABS.map(t=>{
+  const sel=t.id===G.tab;
+  return `<button class="${sel?'on':''}" data-action="go" data-tab="${t.id}" role="tab" aria-selected="${sel}" aria-label="${t.l}"><span class="ic">${t.ic}</span>${t.l}</button>`;
+}).join('');
 }
 export function go(t){G.tab=t;renderTabs();render()}
 

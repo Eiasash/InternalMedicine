@@ -27,8 +27,17 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.2.0';
+export const APP_VERSION='10.2.1';
 export const CHANGELOG={
+  '10.2.1': [
+    '♿ Accessibility — חמישה תיקוני A11Y מבדיקת Lighthouse על האתר החי:',
+    '   • meta-viewport: הוסר user-scalable=no + maximum-scale=1.0 → המשתמש יכול עכשיו לזום (חובה לפי תקני נגישות).',
+    '   • role="tablist" קיבל role="tab" + aria-selected על כל child button ב-renderTabs() — סטטוס נבחרות נגיש לקוראי-מסך.',
+    '   • topic-select ב-Quiz קיבל aria-label="סנן לפי נושא".',
+    '   • aria-label="Option N" השגוי הוסר מ-quiz options — הטקסט הנראה משמש כשם הנגיש (label-content-name-mismatch תוקן).',
+    '   • header chip + Pomodoro button: ניגודיות צבעים מוגברת (3b82f6→1d4ed8, 64748b→475569, 059669→047857), font-size 9px→10px → AA pass.',
+    '🪝 Internal — אין שינוי בלוגיקה, אין שינוי באירועים, אין שינוי ב-shared/fsrs.js. שינויי טקסט/role/ARIA בלבד.',
+  ],
   '10.2.0': [
     '🧹 ניקיון סופי של רוויזיית v10 — Track→More התשנה ל-Track→Reference (📚). הקלפים שכפלו את ה-gear (API key · Data Management · Version footer · Force Update) הוסרו. הסיכום הקצר עכשיו: Spaced Reading · Bookmarks · Syllabus · Study Journal · Share · גרסה כצ׳יפ קצר.',
     '   • API key, Export/Import, Cloud Backup/Restore, Reset, Force Update — כולם ב-⚙️ → Settings.',
