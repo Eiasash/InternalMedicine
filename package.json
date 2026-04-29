@@ -5,20 +5,21 @@
   "scripts": {
     "dev": "vite",
     "build": "bash scripts/build.sh",
-    "hooks:install": "git config core.hooksPath scripts/git-hooks && echo '\u2713 pre-commit + pre-push hooks active'",
+    "hooks:install": "git config core.hooksPath scripts/git-hooks && echo '\u00e2\u0153\u201c pre-commit + pre-push hooks active'",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint src/ shared/ tests/",
     "format": "prettier --write 'src/**/*.{js,css}' 'shared/**/*.js' 'tests/**/*.js'",
     "format:check": "prettier --check 'src/**/*.{js,css}' 'shared/**/*.js' 'tests/**/*.js'",
-    "verify": "node scripts/sync-sw-version.cjs && python3 scripts/check-innerhtml.py && python3 scripts/check-innerhtml-pieces.py && HARRISON_HEBREW_BASELINE=0 node scripts/harrison-hebrew-baseline.cjs --strict && npm test && bash scripts/build.sh",
+    "verify": "node scripts/sync-sw-version.cjs && python3 scripts/check-innerhtml.py && python3 scripts/check-innerhtml-pieces.py && cross-env HARRISON_HEBREW_BASELINE=0 node scripts/harrison-hebrew-baseline.cjs --strict && npm test && bash scripts/build.sh",
     "build:vite": "vite build"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
     "@vitest/coverage-v8": "^4.1.4",
     "acorn": "^8.16.0",
+    "cross-env": "^10.1.0",
     "eslint": "^9.28.0",
     "globals": "^16.2.0",
     "prettier": "^3.5.3",
