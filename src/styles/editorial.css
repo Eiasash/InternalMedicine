@@ -70,6 +70,16 @@ body.editorial .hdr {
 body.editorial .hdr h1,
 body.editorial .hdr .hdr-title { color: var(--ed-brand); }
 
+/* Wordmark size — must sit ABOVE .sec-t in the hierarchy.
+ * Lost in earlier merge; re-establishing here. */
+body.editorial .hdr h1 {
+  font-size: 22px;
+  line-height: 1.15;
+}
+@media (min-width: 768px) {
+  body.editorial .hdr h1 { font-size: 26px; }
+}
+
 /* ── Cards: hairline + brand top-bar, no shadow ───────────────────────── */
 body.editorial .card {
   background: var(--ed-paper-deep);
@@ -330,9 +340,10 @@ body.editorial [style*="background: #d97706"] {
 
 /* ── More font bumps per "still small" feedback ──────────────────────── */
 
-/* Page section titles — bump further, 22 → 24 */
-body.editorial .sec-t { font-size: 24px; }
-body.editorial .sec-s { font-size: 14px; }
+/* Page section titles — sized to sit BELOW the 22px wordmark.
+ * Was 24px (taller than wordmark, inverted hierarchy). */
+body.editorial .sec-t { font-size: 20px; }
+body.editorial .sec-s { font-size: 13px; }
 
 /* Question stem (rendered as <p class="heb" style="font-size:13px">) —
  * 13px is too cramped for dense Hebrew clinical text. Override to 16px,
