@@ -290,4 +290,4 @@ export const BUILD_HASH=(()=>{const d=new Date('2026-04-15T00:00:00Z');return d.
 
 // AI proxy
 export const AI_PROXY='https://toranot.netlify.app/api/claude';
-export const AI_SECRET='shlav-a-mega-2026';
+export const AI_SECRET='shlav-a-mega-1f97f311d307-2026';

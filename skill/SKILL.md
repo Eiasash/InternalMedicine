@@ -140,7 +140,7 @@ InternalMedicine/
 
 ### Proxy (shared with Geriatrics sibling)
 - Endpoint: `https://toranot.netlify.app/api/claude`
-- Header: `x-api-secret: shlav-a-mega-2026`
+- Header: `x-api-secret: shlav-a-mega-1f97f311d307-2026`
 - Model: `sonnet` (maps to claude-sonnet-4-6)
 - Flow: Proxy first → fallback to user's personal API key
 - Friends can use the app WITHOUT their own API key (proxy covers it)
