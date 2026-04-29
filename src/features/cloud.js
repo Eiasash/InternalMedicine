@@ -200,13 +200,19 @@ export async function cloudRestore(){
   const id=user?_sbDeviceId():(prompt('Enter device ID to restore from (leave blank for this device):',_sbDeviceId())||_sbDeviceId());
   if(!id)return;
   try{
-    const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups?id=eq.'+encodeURIComponent(id)+'&select=data,updated_at',{
-      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}
+    // Phase 2 (2026-04-29): reads go through SECURITY DEFINER RPC.
+    // Public SELECT on *_backups was dropped; backup_get(app, id) is the only
+    // path. RPC returns the data jsonb (or NULL); we synthesize updated_at
+    // from "now" since the row metadata isn't in the RPC return.
+    const res=await fetch(SUPA_URL+'/rest/v1/rpc/backup_get',{
+      method:'POST',
+      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({p_app:'pnimit',p_id:id})
     });
     if(!res.ok){toast('❌ Restore failed: '+res.status,'info');return;}
-    const rows=await res.json();
-    if(!rows||!rows.length){toast('No backup found for ID: '+id,'info');return;}
-    const row=rows[0];
+    const data=await res.json();
+    if(!data){toast('No backup found for ID: '+id,'info');return;}
+    const row={data:data,updated_at:new Date().toISOString()};
     const msg='Restore backup from '+new Date(row.updated_at).toLocaleString()+'?\nThis will overwrite your current progress.';
     const ok=await new Promise(res=>{
       const h=`<div id="rstModal" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:10001;padding:16px"><div style="background:#fff;border-radius:14px;max-width:360px;margin:20vh auto;padding:20px;font-family:Heebo,Inter,sans-serif;text-align:center"><div style="font-size:32px;margin-bottom:6px">☁️</div><div style="font-size:13px;line-height:1.6;margin-bottom:16px;white-space:pre-wrap">${sanitize(msg)}</div><div style="display:flex;gap:8px"><button id="rstYes" style="flex:1;padding:10px;background:#0ea5e9;color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer">Restore</button><button id="rstNo" style="flex:1;padding:10px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-weight:700;cursor:pointer">Cancel</button></div></div></div>`;

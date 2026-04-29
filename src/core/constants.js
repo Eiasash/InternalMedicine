@@ -27,7 +27,7 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='9.90.0';
+export const APP_VERSION='9.91.0';
 export const CHANGELOG={
   '9.89.0': [
     '🌈 מפת חום נושאים — Topic Mastery Heatmap ב-Track. SVG עם 5 דרגות Viridis (colorblind-safe). מבוסס FSRS R-value (אחזרה ממוצעת לכל נושא, לא % דיוק גולמי). לחיצה על תא פותחת קוויז של אותו נושא. החליף את ה-Topic Mastery Map הישן.',
