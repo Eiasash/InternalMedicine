@@ -18,10 +18,10 @@
  * ========================================================================= */
 
 body.editorial {
-  /* Neutrals — parchment feel, warm cream undertones */
-  --ed-paper:      #F5EEDD;
-  --ed-paper-deep: #EBE3CF;
-  --ed-hairline:   #DCD5C4;
+  /* Neutrals — warm paper feel, not pure white */
+  --ed-paper:      #FAF8F4;
+  --ed-paper-deep: #F2EDE2;
+  --ed-hairline:   #E8E2D6;
   --ed-ink:        #1A1F2E;
   --ed-mute:       #6B6F7A;
   --ed-mute-soft:  #9DA1AB;
@@ -49,48 +49,18 @@ body.editorial {
 }
 
 /* ── Display serif for editorial moments ──────────────────────────────────
- * Wordmark, hero numbers in stat tiles, page section titles.
- * Typography here is the load-bearing identity of editorial mode. */
+ * Wordmark, hero numbers in stat tiles, question stem.
+ * Long Hebrew clinical prose reads better in serif at this size. */
 body.editorial .stat .n,
+body.editorial .qstem,
 body.editorial .hdr h1,
-body.editorial .sec-t,
 body.editorial .display-serif {
   font-family: 'Frank Ruhl Libre', 'David Libre', Georgia, serif;
   font-weight: 500;
-  letter-spacing: -0.01em;
-}
-
-/* Page wordmark — meaningfully larger, brand teal */
-body.editorial .hdr h1 {
-  font-size: 22px;
-  line-height: 1.1;
-}
-@media (min-width: 768px) {
-  body.editorial .hdr h1 { font-size: 28px; }
-}
-
-/* Page section titles ("📚 Study Notes", "💡 Cardiology — ACS...") */
-body.editorial .sec-t {
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 1.2;
-  margin-bottom: 6px;
-}
-body.editorial .sec-s {
-  font-size: 13px;
-  margin-bottom: 18px;
-}
-
-/* Accordion headers — confident, readable section anchors */
-body.editorial .acc-h {
-  font-size: 17px;
-  font-weight: 500;
-  padding: 16px 14px;
-  font-family: 'Frank Ruhl Libre', 'David Libre', Georgia, serif;
   letter-spacing: -0.005em;
 }
 
-/* Header: paper + hairline, not gradient ──────────────────────────── */
+/* ── Header: paper + hairline, not gradient ──────────────────────────── */
 body.editorial .hdr {
   background: var(--ed-paper);
   border-bottom: 1px solid var(--ed-hairline);
@@ -104,7 +74,7 @@ body.editorial .hdr .hdr-title { color: var(--ed-brand); }
 body.editorial .card {
   background: var(--ed-paper-deep);
   border: 1px solid var(--ed-hairline);
-  border-top: 2px solid var(--ed-brand);
+  border-top: 3px solid var(--ed-brand);
   box-shadow: none;
   border-radius: 12px;
 }
@@ -172,9 +142,16 @@ body.editorial .qo.dim {
   border-color: var(--ed-hairline);
 }
 
-/* ── Question stem: existing Heebo bold reads well per user feedback ──
- * Pnimit renders the stem as inline-styled <p class="heb"> at 13px/1.7
- * font-weight:700. Don't override family — current rendering looks good. */
+/* ── Question stem: serif + breathing line-height ────────────────────── */
+body.editorial .qstem,
+body.editorial .question-text,
+body.editorial .q-stem {
+  font-family: 'Frank Ruhl Libre', 'David Libre', Georgia, serif;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ed-ink);
+}
 
 /* ── Stat tiles: serif numbers in brand teal ─────────────────────────── */
 body.editorial .stat {
@@ -184,15 +161,13 @@ body.editorial .stat {
   box-shadow: none;
 }
 body.editorial .stat .n {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 500;
   color: var(--ed-brand);
-  line-height: 1;
 }
 body.editorial .stat .l {
   color: var(--ed-mute);
   letter-spacing: 0.1em;
-  font-size: 11px;
 }
 
 /* ── Inputs ──────────────────────────────────────────────────────────── */
