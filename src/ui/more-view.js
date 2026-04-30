@@ -4,8 +4,6 @@ import { callAI } from '../ai/client.js';
 import { AI_PROXY, AI_SECRET } from '../core/constants.js';
 import { startVoiceParser } from '../quiz/modes.js';
 import { submitFeedbackForm } from '../features/cloud.js';
-import { renderAuthSection, bindAuthEvents } from '../features/auth.js';
-import { renderStudyPlanSection, bindStudyPlanEvents } from '../features/study_plan/index.js';
 
 export function renderNotes(){
   const qnoteEntries=Object.entries(G.S.qnotes||{}).filter(([k,v])=>v&&v.trim());
@@ -102,68 +100,6 @@ qRes.slice(0,15).forEach(i=>{h+=`<div class="card heb" dir="${heDir(G.QZ[i].q)}"
 }
 }
 return h;
-}
-
-// ===== SETTINGS =====
-// notifSupported — cached once; drives the disabled state in renderSettings()
-const _notifSupported = typeof Notification !== 'undefined';
-
-export function renderSettings() {
-  const optIn = !!G.S.notifOptIn;
-  const browserPerm = _notifSupported ? Notification.permission : 'unsupported';
-  const canToggle = _notifSupported && browserPerm !== 'denied';
-
-  let permHint = '';
-  if (!_notifSupported) {
-    permHint = '<div style="font-size:10px;color:#94a3b8;margin-top:6px">הדפדפן לא תומך בהתראות.</div>';
-  } else if (browserPerm === 'denied') {
-    permHint = '<div style="font-size:10px;color:#dc2626;margin-top:6px">ההרשאה נחסמה בדפדפן. פתח הגדרות אתר כדי לאפשר מחדש.</div>';
-  } else if (optIn && browserPerm === 'granted') {
-    permHint = '<div style="font-size:10px;color:#059669;margin-top:6px">✓ תזכורת תישלח בשעה 07:00 כשיש שאלות לחזרה.</div>';
-  } else if (optIn && browserPerm !== 'granted') {
-    permHint = '<div style="font-size:10px;color:#b45309;margin-top:6px">ההרשאה טרם ניתנה — לחץ שוב כדי לבקש.</div>';
-  }
-
-  return `<div class="sec-t">⚙️ Settings</div>
-<div class="sec-s">העדפות אישיות — נשמרות מקומית במכשיר</div>
-<div class="card" style="padding:14px">
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-    <div style="flex:1">
-      <div style="font-weight:700;font-size:13px">🔔 תזכורות חזרה יומיות</div>
-      <div style="font-size:11px;color:#64748b;margin-top:4px;line-height:1.5">
-        התראה יומית ב-07:00 אם יש שאלות מוכנות לחזרה (FSRS).
-      </div>
-      ${permHint}
-    </div>
-    <button data-action="toggle-notif-opt-in"
-            ${canToggle ? '' : 'disabled'}
-            aria-pressed="${optIn}"
-            style="background:${optIn ? '#059669' : '#cbd5e1'};color:#fff;border:none;border-radius:999px;padding:6px 14px;font-size:11px;font-weight:700;cursor:${canToggle ? 'pointer' : 'not-allowed'};opacity:${canToggle ? '1' : '.5'}">
-      ${optIn ? 'פעיל' : 'כבוי'}
-    </button>
-  </div>
-</div>
-${renderAuthSection()}
-${renderStudyPlanSection()}`;
-}
-
-export async function toggleNotifOptIn() {
-  if (!_notifSupported) return;
-  if (G.S.notifOptIn) {
-    // Turning off — keep browser perm as-is; just stop scheduling.
-    G.S.notifOptIn = false;
-    G.save();
-    G.render();
-    return;
-  }
-  // Turning on — request permission if not yet granted.
-  let perm = Notification.permission;
-  if (perm === 'default') {
-    try { perm = await Notification.requestPermission(); } catch (e) { perm = 'denied'; }
-  }
-  G.S.notifOptIn = perm === 'granted';
-  G.save();
-  G.render();
 }
 
 // ===== WARD MODE RENDER =====
@@ -265,10 +201,6 @@ export function clearChat(){G.S.chat=[];G.chatLoading=false;G.save();G.render();
 
 // Event delegation for More tab — set up once on #ct container
 export function initMoreEvents(container) {
-  // Bind auth events once globally (idempotent — uses window.__authBound guard).
-  bindAuthEvents();
-  // Bind study-plan handlers (idempotent — uses window.__studyPlanBound).
-  bindStudyPlanEvents();
   container.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-action]');
     if (!btn) return;
@@ -278,7 +210,6 @@ export function initMoreEvents(container) {
     else if (action === 'chat-starter') { const t = btn.getAttribute('data-t'); if (t) sendChatStarter(t); }
     else if (action === 'send-chat') { sendChat(); }
     else if (action === 'submit-feedback') { submitFeedbackForm(); }
-    else if (action === 'toggle-notif-opt-in') { toggleNotifOptIn(); }
     else if (action === 'save-gnotes') { saveGNotes(); }
     else if (action === 'export-gnotes') { exportGNotes(); }
     else if (action === 'jump-to-q') { jumpToQuestion(parseInt(btn.dataset.idx, 10)); }

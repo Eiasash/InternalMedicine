@@ -470,7 +470,7 @@ describe('library-view AI chapter context', () => {
 // schedule only if S.notifOptIn + permission=granted.
 describe('notification opt-in flow', () => {
   const app = readFile('src/ui/app.js');
-  const moreView = readFile('src/ui/more-view.js');
+  const settingsOverlay = readFile('src/ui/settings-overlay.js');
 
   test('app.js does not auto-call Notification.requestPermission()', () => {
     expect(app).not.toMatch(/Notification\.requestPermission\s*\(/);
@@ -484,8 +484,8 @@ describe('notification opt-in flow', () => {
     expect(sched).toMatch(/schedule-notification/);
   });
 
-  test('more-view.js exposes toggleNotifOptIn and requests permission on opt-in', () => {
-    expect(moreView).toMatch(/export\s+async\s+function\s+toggleNotifOptIn/);
-    expect(moreView).toMatch(/Notification\.requestPermission\s*\(/);
+  test('settings-overlay.js exposes toggleNotifOptIn and requests permission on opt-in', () => {
+    expect(settingsOverlay).toMatch(/export\s+async\s+function\s+toggleNotifOptIn/);
+    expect(settingsOverlay).toMatch(/Notification\.requestPermission\s*\(/);
   });
 });

@@ -32,7 +32,7 @@ import { renderTrack, calcEstScore, renderStudyPlan, renderExamTrendCard, render
          renderDailyPlan, renderSessionCard, setExamDate, exportCheatSheet,
          saveSessionSummary, initTrackEvents } from './track-view.js';
 import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
-         showAnswerHardFail, renderSettings, toggleNotifOptIn, renderNotes,
+         showAnswerHardFail, renderNotes,
          initMoreEvents } from './more-view.js';
 import { getCurrentUser } from '../features/auth.js';
 import { openSettings, bindSettingsEvents, refreshSettings } from './settings-overlay.js';
@@ -83,9 +83,10 @@ case'track':
   el.innerHTML=renderTrack();break;
 case'more':
   {// Migration: 'calc' sub-tab was removed in v9.97 (PR #69 — Calculators duplicated ward-helper / SZMC formulary).
-  if(G.moreSub==='calc')G.moreSub='search';
+  // 'calc' removed v9.97 (PR #69); 'settings' merged into the gear-icon overlay v10.3.0 (PR #77).
+  if(G.moreSub==='calc'||G.moreSub==='settings')G.moreSub='search';
   const _moreBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
-  [{id:'search',ic:'🔍',l:'Search'},{id:'notes',ic:'📝',l:'Notes'},{id:'chat',ic:'💬',l:'Chat'},{id:'feedback',ic:'💡',l:'Feedback'},{id:'settings',ic:'⚙️',l:'Settings'}].map(s=>
+  [{id:'search',ic:'🔍',l:'Search'},{id:'notes',ic:'📝',l:'Notes'},{id:'chat',ic:'💬',l:'Chat'},{id:'feedback',ic:'💡',l:'Feedback'}].map(s=>
     '<button data-action="more-sub" data-sub="'+s.id+'" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(G.moreSub===s.id?'700':'400')+';cursor:pointer;background:'+(G.moreSub===s.id?'#fff':'transparent')+';color:'+(G.moreSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(G.moreSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
   let _mBody='';
@@ -93,7 +94,6 @@ case'more':
   else if(G.moreSub==='notes')_mBody=renderNotes();
   else if(G.moreSub==='chat')_mBody=renderChat();
   else if(G.moreSub==='feedback')_mBody=renderFeedback();
-  else if(G.moreSub==='settings')_mBody=renderSettings();
   el.innerHTML=_moreBar+_mBody;}break; // safe-innerhtml: _moreBar is static HTML; _mBody from internal render*() functions (no user input)
 case'calc':G.tab='more';G.moreSub='search';el.innerHTML='';render();break; // legacy — calc removed v9.97
 case'search':G.tab='more';G.moreSub='search';el.innerHTML='';render();break;

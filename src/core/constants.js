@@ -27,8 +27,16 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.2.2';
+export const APP_VERSION='10.3.0';
 export const CHANGELOG={
+  '10.3.0': [
+    '⚙️ איחוד הגדרות — כל ההגדרות מתאחדות בעמוד מסך-מלא אחד שנפתח מאייקון ה-⚙️ בכותרת. סדר ה-sections: Account · Study Plan · Theme · 🔔 Reminders · API Key · Data · Feedback · About (סך הכל 8).',
+    '   • 📅 Study Plan generator + 🔔 FSRS reminder toggle עברו מ-More→Settings ל-overlay (לא יותר שני "בתי הגדרות").',
+    '   • צ׳יפ החשבון בכותרת והאייקון ⚙️ פותחים עכשיו את אותו overlay (לפני כן צ׳יפ החשבון קפץ ל-More→Settings).',
+    '   • More tab: 5 → 4 sub-tabs. הוסר Settings sub-tab.',
+    '   • ה-overlay מאוחד מסך-מלא בכל viewport (הוסר @media min-width:600px שהציג כרטיס מרוכז של 560px במחשב).',
+    '🪝 Internal — toggleNotifOptIn + renderSettings עברו מ-more-view.js (הקובץ קוצר ב-69 שורות) ל-settings-overlay.js. regressionGuards.test.js retargeted. אין שינוי ב-shared/fsrs.js.',
+  ],
   '10.2.1': [
     '♿ Accessibility — חמישה תיקוני A11Y מבדיקת Lighthouse על האתר החי:',
     '   • meta-viewport: הוסר user-scalable=no + maximum-scale=1.0 → המשתמש יכול עכשיו לזום (חובה לפי תקני נגישות).',
