@@ -355,16 +355,7 @@ document.querySelector('.hdr').addEventListener('click', (e) => {
   if (el.dataset.action === 'toggle-dark') { toggleDark(); refreshSettings(); }
   else if (el.dataset.action === 'open-settings') openSettings();
   else if (el.dataset.action === 'show-help') showHelp();
-  else if (el.dataset.action === 'goto-account') {
-    // Jump straight to More → Settings, where the account block lives.
-    G.tab = 'more';
-    G.moreSub = 'settings';
-    renderTabs();
-    render();
-    // Scroll the Settings content into view (Settings is the last sub-tab,
-    // so the body is already on screen — this just ensures top alignment).
-    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
-  }
+  else if (el.dataset.action === 'goto-account') openSettings();
 });
 
 // === Body-level delegation for overlays, banners, modals ===
