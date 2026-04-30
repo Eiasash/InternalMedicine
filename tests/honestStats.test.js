@@ -214,4 +214,18 @@ describe('honest stats — source-level guard', () => {
     // Must contain a ≥3 (or stricter) threshold.
     expect(takeFn[0]).toMatch(/s\.tot\s*>=\s*[3-9]/);
   });
+
+  it('takeWeeklySnapshot iterates over TOPICS.length, not a hardcoded count', () => {
+    // Sibling-sync guard for the Geri v10.61.2 fix: hardcoded `i<40`
+    // (the pre-v10.41 topic count there) silently dropped the topics added
+    // when TOPICS expanded. Pnimit's TOPICS=24 so a hardcoded 24 would have
+    // the same shape of bug — guard against any literal numeric upper bound.
+    const src = readFileSync(resolve(process.cwd(), 'src', 'ui', 'app.js'), 'utf-8');
+    const takeFn = src.match(/export function takeWeeklySnapshot\(\)[\s\S]*?\n\}/);
+    expect(takeFn, 'takeWeeklySnapshot not found').not.toBeNull();
+    // Negative marker: any `for (let i=0; i<<digits>;` loop is the bug shape.
+    expect(takeFn[0]).not.toMatch(/for\s*\(\s*let\s+i\s*=\s*0\s*;\s*i\s*<\s*\d+\s*;/);
+    // Positive marker: must use TOPICS.length so future topic additions are tracked.
+    expect(takeFn[0]).toMatch(/i\s*<\s*TOPICS\.length/);
+  });
 });
