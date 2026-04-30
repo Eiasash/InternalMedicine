@@ -189,7 +189,7 @@ describe('honest stats — source-level guard', () => {
     // The original bug: `if(s.tot<3){ acc=0.60; }` defaulted to 60% neutral.
     // Static text guard: this exact string must not return.
     const src = readFileSync(resolve(process.cwd(), 'src', 'ui', 'track-view.js'), 'utf-8');
-    const calcEst = src.match(/export function calcEstScore\(\)[\s\S]*?\n\}\n/);
+    const calcEst = src.match(/export function calcEstScore\(\)[\s\S]*?\r?\n\}\r?\n/);
     expect(calcEst, 'calcEstScore function not found in track-view.js').not.toBeNull();
     expect(calcEst[0]).not.toMatch(/acc\s*=\s*0\.60/);
     expect(calcEst[0]).not.toMatch(/acc\s*=\s*0\.6\b/);
