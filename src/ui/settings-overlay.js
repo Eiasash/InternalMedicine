@@ -10,9 +10,14 @@ import { sanitize, getApiKey, setApiKey, toast } from '../core/utils.js';
 import { APP_VERSION, BUILD_HASH, LS, SUPA_URL, SUPA_ANON } from '../core/constants.js';
 import { renderAuthSection, bindAuthEvents } from '../features/auth.js';
 import { getCurrentUser } from '../features/auth.js';
+import { renderStudyPlanSection, bindStudyPlanEvents } from '../features/study_plan/index.js';
 
 let _escBound = false;
 let _bodyBound = false;
+
+// FSRS reminder support (moved from more-view.js in v10.3.0 consolidation).
+// Module-level cache: Notification API support cannot change after page load.
+const _notifSupported = typeof Notification !== 'undefined';
 
 export function isSettingsOpen() {
   const overlay = document.getElementById('settings-overlay');
@@ -28,6 +33,9 @@ export function openSettings() {
   // Focus the close button so ESC/keyboard users have a clear handle.
   const closeBtn = overlay.querySelector('[data-action="close-settings"]');
   if (closeBtn) closeBtn.focus();
+  // Bind study-plan handlers (idempotent — doc-level click guarded by
+  // window.__studyPlanBound; slider labels rebind per render via dataset flag).
+  bindStudyPlanEvents();
 }
 
 export function closeSettings() {
@@ -46,6 +54,48 @@ export function refreshSettings() {
   if (!isSettingsOpen()) return;
   const overlay = document.getElementById('settings-overlay');
   overlay.innerHTML = renderSettingsBody();
+  // Slider labels need rebinding because innerHTML wiped the prior listeners.
+  bindStudyPlanEvents();
+}
+
+// Render the FSRS reminder card (state derivation + HTML). Logic moved
+// verbatim from more-view.js:107-145 in v10.3.0 consolidation; toggleNotifOptIn
+// below is the state-mutation half. Returns inner HTML — caller wraps in
+// <section class="settings-section">.
+function _renderNotifSection() {
+  const optIn = !!G.S.notifOptIn;
+  const browserPerm = _notifSupported ? Notification.permission : 'unsupported';
+  const canToggle = _notifSupported && browserPerm !== 'denied';
+
+  let permHint = '';
+  if (!_notifSupported) {
+    permHint = '<div style="font-size:10px;color:#94a3b8;margin-top:6px">הדפדפן לא תומך בהתראות.</div>';
+  } else if (browserPerm === 'denied') {
+    permHint = '<div style="font-size:10px;color:#dc2626;margin-top:6px">ההרשאה נחסמה בדפדפן. פתח הגדרות אתר כדי לאפשר מחדש.</div>';
+  } else if (optIn && browserPerm === 'granted') {
+    permHint = '<div style="font-size:10px;color:#059669;margin-top:6px">✓ תזכורת תישלח בשעה 07:00 כשיש שאלות לחזרה.</div>';
+  } else if (optIn && browserPerm !== 'granted') {
+    permHint = '<div style="font-size:10px;color:#b45309;margin-top:6px">ההרשאה טרם ניתנה — לחץ שוב כדי לבקש.</div>';
+  }
+
+  return `
+      <div class="sec-t" style="font-size:13px">🔔 Reminders</div>
+      <div class="sec-s" style="margin-bottom:10px">תזכורות יומיות לחזרה מרווחת (FSRS)</div>
+      <div class="card" style="padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:13px">🔔 תזכורות חזרה יומיות</div>
+          <div style="font-size:11px;color:#64748b;margin-top:4px;line-height:1.5">
+            התראה יומית ב-07:00 אם יש שאלות מוכנות לחזרה.
+          </div>
+          ${permHint}
+        </div>
+        <button data-action="settings-toggle-notif-opt-in"
+                ${canToggle ? '' : 'disabled'}
+                aria-pressed="${optIn}"
+                style="background:${optIn ? '#059669' : '#cbd5e1'};color:#fff;border:none;border-radius:999px;padding:6px 14px;font-size:11px;font-weight:700;cursor:${canToggle ? 'pointer' : 'not-allowed'};opacity:${canToggle ? '1' : '.5'}">
+          ${optIn ? 'פעיל' : 'כבוי'}
+        </button>
+      </div>`;
 }
 
 function renderSettingsBody() {
@@ -67,6 +117,10 @@ function renderSettingsBody() {
     </section>
 
     <section class="settings-section">
+      ${renderStudyPlanSection()}
+    </section>
+
+    <section class="settings-section">
       <div class="sec-t" style="font-size:13px">🎨 Theme</div>
       <div class="sec-s" style="margin-bottom:10px">בחירת ערכת נושא — light או dark</div>
       <div class="card" style="padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
@@ -78,6 +132,10 @@ function renderSettingsBody() {
           ${isDark ? '☀️ Light' : '🌙 Dark'}
         </button>
       </div>
+    </section>
+
+    <section class="settings-section">
+      ${_renderNotifSection()}
     </section>
 
     <section class="settings-section">
@@ -182,13 +240,18 @@ export function bindSettingsEvents() {
   });
 }
 
-function handleSettingsAction(action, btn) {
+async function handleSettingsAction(action, btn) {
   if (action === 'close-settings') {
     closeSettings();
     return;
   }
   if (action === 'settings-toggle-dark') {
     if (typeof window.toggleDark === 'function') window.toggleDark();
+    refreshSettings();
+    return;
+  }
+  if (action === 'settings-toggle-notif-opt-in') {
+    await toggleNotifOptIn();
     refreshSettings();
     return;
   }
@@ -245,4 +308,28 @@ async function submitSettingsFeedback() {
   toast('תודה — הפידבק נשמר', 'success');
   const ta = document.getElementById('settings-fb-text');
   if (ta) ta.value = '';
+}
+
+// Toggle daily-review notifications. Moved verbatim from more-view.js:150-167
+// in v10.3.0 consolidation. Asynchronously requests browser permission on
+// first opt-in. Mutates G.S.notifOptIn — the daily-notification scheduler in
+// app.js reads that flag. The export keyword stays so the regression-guard
+// test in tests/regressionGuards.test.js can assert against this file.
+export async function toggleNotifOptIn() {
+  if (!_notifSupported) return;
+  if (G.S.notifOptIn) {
+    // Turning off — keep browser perm as-is; just stop scheduling.
+    G.S.notifOptIn = false;
+    G.save();
+    G.render();
+    return;
+  }
+  // Turning on — request permission if not yet granted.
+  let perm = Notification.permission;
+  if (perm === 'default') {
+    try { perm = await Notification.requestPermission(); } catch (e) { perm = 'denied'; }
+  }
+  G.S.notifOptIn = perm === 'granted';
+  G.save();
+  G.render();
 }
