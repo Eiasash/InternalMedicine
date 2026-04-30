@@ -1,2 +1,8 @@
 # Force Unix line endings for shell scripts (prevents Windows CRLF breaking heredocs)
 *.sh text eol=lf
+
+# Cross-repo invariant: shared/fsrs.js is byte-identical (LF) across the three
+# medical-PWA siblings (Geriatrics, InternalMedicine, FamilyMedicine). Without
+# this rule, Windows checkouts produce CRLF in the working tree and the
+# cross-repo md5 invariant check sees false-positive drift.
+shared/fsrs.js text eol=lf
