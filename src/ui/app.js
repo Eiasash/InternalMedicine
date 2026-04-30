@@ -35,6 +35,7 @@ import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
          showAnswerHardFail, renderNotes,
          initMoreEvents } from './more-view.js';
 import { getCurrentUser } from '../features/auth.js';
+import { initPostLoginRestore } from '../features/post-login-restore.js';
 import { openSettings, bindSettingsEvents, refreshSettings } from './settings-overlay.js';
 
 export function renderTabs(){
@@ -389,8 +390,13 @@ migrateToIDB().then(()=>{
   // initial Quiz render uses wrongCount() so kick it off early.
   loadWrongSet().catch(()=>{});
   renderTabs();render();
+  // Post-login auto-restore prompt (v10.4.0): subscribes to auth events and
+  // surfaces a one-tap restore modal when a user logs in on a fresh device.
+  // Must be initialized AFTER the first render so G.S is fully hydrated when
+  // the listener fires.
+  initPostLoginRestore();
   if(!localStorage.getItem('pnimit_seen_help')){localStorage.setItem('pnimit_seen_help','1');setTimeout(showHelp,500);}
-}).catch(e=>{console.error('IDB init failed, falling back to localStorage:',e);loadWrongSet().catch(()=>{});renderTabs();render();});
+}).catch(e=>{console.error('IDB init failed, falling back to localStorage:',e);loadWrongSet().catch(()=>{});renderTabs();render();initPostLoginRestore();});
 
 // Prevent accidental navigation during mock exam
 window.addEventListener('beforeunload', function(e){

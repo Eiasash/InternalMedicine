@@ -222,14 +222,67 @@ export async function cloudRestore(){
       document.getElementById('rstNo').addEventListener('click',()=>close(false));
     });
     if(ok){
-      // Pull sibling localStorage bundles out of the payload before G.S whitelist
-      try{if(Array.isArray(row.data&&row.data._mockHist))localStorage.setItem('pnimit_mock_hist',JSON.stringify(row.data._mockHist.slice(-20)));}catch(e){}
-      try{if(Array.isArray(row.data&&row.data._sessions))localStorage.setItem('pnimit_sessions',JSON.stringify(row.data._sessions.slice(-30)));}catch(e){}
-      const validated=filterRestorePayload(row.data,new Set(Object.keys(G.S)));
-      Object.assign(G.S,validated);G.save();G.render();
+      applyRestorePayload(row.data);
       toast('✅ Progress restored!','success');
     }
   }catch(e){toast('❌ Restore failed: '+e.message,'info');}
+}
+
+/**
+ * Peek at the cloud backup for the current account/device WITHOUT applying.
+ *
+ * Used by the post-login auto-restore prompt (post-login-restore.js) to
+ * determine whether there's anything to offer before surfacing UI. Returns
+ * `{ exists, data, id }`:
+ *   - exists=false → no row found (or a network error; we fail silent)
+ *   - exists=true  → `data` is the jsonb payload, ready to feed
+ *                    `applyRestorePayload()`
+ * `id` is included for telemetry/logging only.
+ *
+ * Does NOT toast or render anything — the caller decides whether to show UI.
+ * Matches the cloudRestore() RPC contract (Phase 2 backup_get).
+ */
+export async function peekCloudBackup() {
+  const id = _sbDeviceId();
+  if (!id) return { exists: false, data: null, id: null };
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/rpc/backup_get', {
+      method: 'POST',
+      headers: {
+        'apikey': _SB_KEY,
+        'Authorization': 'Bearer ' + _SB_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ p_app: 'pnimit', p_id: id }),
+    });
+    if (!res.ok) return { exists: false, data: null, id };
+    const data = await res.json();
+    if (!data) return { exists: false, data: null, id };
+    return { exists: true, data, id };
+  } catch (_) {
+    return { exists: false, data: null, id };
+  }
+}
+
+/**
+ * Hydrate G.S from a row.data payload + bundled localStorage (mock_hist,
+ * sessions). Whitelists keys against the current G.S shape (defense-in-depth
+ * via filterRestorePayload). Triggers G.save() and G.render() so the UI
+ * reflects the new state immediately.
+ *
+ * Extracted from cloudRestore() in v10.4.0 so the post-login auto-restore
+ * prompt can reuse the merge logic without going through cloudRestore()'s
+ * own confirm modal.
+ */
+export function applyRestorePayload(rowData) {
+  if (!rowData || typeof rowData !== 'object') return;
+  // Pull sibling localStorage bundles out of the payload before G.S whitelist
+  try { if (Array.isArray(rowData._mockHist)) localStorage.setItem('pnimit_mock_hist', JSON.stringify(rowData._mockHist.slice(-20))); } catch (e) {}
+  try { if (Array.isArray(rowData._sessions)) localStorage.setItem('pnimit_sessions', JSON.stringify(rowData._sessions.slice(-30))); } catch (e) {}
+  const validated = filterRestorePayload(rowData, new Set(Object.keys(G.S)));
+  Object.assign(G.S, validated);
+  G.save();
+  G.render();
 }
 
 export function getDiagnostics(){
