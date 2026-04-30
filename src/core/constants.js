@@ -27,8 +27,11 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.0';
+export const APP_VERSION='10.4.1';
 export const CHANGELOG={
+  '10.4.1': [
+    '🛡️ Defensive — `<html data-theme="light">` נקבע כברירת מחדל סטטית בקובץ HTML. רקע: `shared/tokens.css` כולל `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { ... } }` שעלול לשנות את ערכי ה-CSS variables כש-OS המשתמש במצב כהה והדף לא הצהיר במפורש על data-theme. כיום Pnimit לא קורא את design tokens (Pnimit עדיין משתמש ב-body.dark + theme.css הישן), אז אין באג גלוי — אבל ההגנה מונעת רגרסיה אם רכיב עתידי יעבור ל-tokens (כפי שקרה ב-FM v1.15.0→v1.21.0). אין שינוי בלוגיקה, אין שינוי ב-shared/tokens.css. Mirror של FM v1.21.0.',
+  ],
   '10.4.0': [
     '☁️ Auto-restore-on-login — מתחבר במכשיר חדש שאין בו עדיין נתונים? אנחנו מציעים לשחזר אוטומטית מהענן (תיבת דו-שיח אחת, שתי כפתורים: "שחזר" / "לא עכשיו"). הצעה מופיעה רק כש-(א) זה login, לא register; (ב) המכשיר ריק לחלוטין — qOk+qNo===0 ואין נתוני SR; (ג) קיים גיבוי בענן עבור שם המשתמש; (ד) לא ביקשנו את אותו דבר במכשיר הזה בעבר. סימון "לא להציג שוב" נשמר ב-localStorage לפי (מכשיר, שם משתמש), אז ההפעלה היא חד-פעמית גם אם בוחרים "לא עכשיו".',
     '🔌 Auth events — auth.js פולט כעת אירועי `pnimit:auth` (CustomEvent על `window`) + API פנימי `subscribeAuthEvents(handler)`. פעולות: login / register / logout / change-password. מאפשר למודולים אחרים להגיב למעברי auth ללא תלות ב-UI. Mirror של ward-helper v1.32.0\'s `subscribeAuthChanges` ושל Mishpacha v1.18.0 — שמירה על עקביות ה-API בין 4 ה-PWAs.',
