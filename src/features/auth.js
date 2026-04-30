@@ -100,6 +100,55 @@ export async function authChangePassword(username, oldPwd, newPwd) {
   });
 }
 
+// ───────────────────────── auth events ─────────────────────────
+// Lightweight pub/sub so other modules (e.g. post-login-restore) can react to
+// auth state transitions without coupling to the UI layer. Modeled on the
+// ward-helper subscribeAuthChanges API for cross-PWA consistency. Emits a
+// CustomEvent on `window` so consumers can also listen via the DOM if they
+// don't want to import this module.
+//
+// Action vocabulary (must stay in lockstep with sibling PWAs):
+//   'login'           — interactive login with existing account
+//   'register'        — new account created (also auto-logs in)
+//   'logout'          — explicit user logout
+//   'change-password' — password rotation while signed in
+//   'unknown'         — defensive fallback; consumers should ignore
+
+const AUTH_EVENT_NAME = 'pnimit:auth';
+const _authSubs = new Set();
+
+/**
+ * @typedef {'login'|'register'|'logout'|'change-password'|'unknown'} AuthChangeAction
+ */
+
+/**
+ * Subscribe to auth state changes. Returns an unsubscribe function.
+ * Handler is called with the action string. Errors are swallowed so a
+ * misbehaving subscriber can't break sibling subscribers.
+ */
+export function subscribeAuthEvents(handler) {
+  if (typeof handler !== 'function') return () => {};
+  _authSubs.add(handler);
+  return () => { _authSubs.delete(handler); };
+}
+
+function _dispatchAuthEvent(action) {
+  const a = (action === 'login' || action === 'register' ||
+             action === 'logout' || action === 'change-password')
+            ? action : 'unknown';
+  // In-process subscribers first.
+  for (const fn of Array.from(_authSubs)) {
+    try { fn(a); } catch (_) { /* swallow */ }
+  }
+  // DOM consumers (post-login-restore wires this way to stay decoupled from
+  // the auth module's import graph in test environments).
+  try {
+    if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+      window.dispatchEvent(new CustomEvent(AUTH_EVENT_NAME, { detail: { action: a } }));
+    }
+  } catch (_) { /* CustomEvent may be undefined in node; tests use the fn API */ }
+}
+
 /**
  * Persist a successful auth result to localStorage.
  * Caller is responsible for invoking this only after `result.ok === true`.
@@ -244,6 +293,7 @@ async function _handleLogin() {
     return;
   }
   setAuthSession(r.username, r.display_name);
+  _dispatchAuthEvent('login');
   toast('✅ התחברת בהצלחה: ' + (r.display_name || r.username), 'success');
   // Re-render so settings panel reflects logged-in state.
   if (window.G && typeof window.G.render === 'function') window.G.render();
@@ -268,6 +318,7 @@ async function _handleRegister() {
   }
   // Auto-login after register (the RPC already verifies password hash).
   setAuthSession(r.username, r.display_name);
+  _dispatchAuthEvent('register');
   toast('✅ נוצר חשבון בהצלחה: ' + (r.display_name || r.username), 'success');
   if (window.G && typeof window.G.render === 'function') window.G.render();
 }
@@ -281,6 +332,7 @@ async function _handleChangePassword() {
   if (!newPwd) return;
   const r = await authChangePassword(user.username, oldPwd, newPwd);
   if (r.ok) {
+    _dispatchAuthEvent('change-password');
     toast('✅ הסיסמה שונתה', 'success');
   } else {
     const map = {
@@ -294,6 +346,7 @@ async function _handleChangePassword() {
 function _handleLogout() {
   if (!window.confirm('להתנתק? ההתקדמות שלך נשמרת בענן ותחזור בהתחברות הבאה.')) return;
   logout();
+  _dispatchAuthEvent('logout');
   toast('הותנתקת', 'info');
   if (window.G && typeof window.G.render === 'function') window.G.render();
 }
