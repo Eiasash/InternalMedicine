@@ -27,8 +27,13 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.1';
+export const APP_VERSION='10.4.2';
 export const CHANGELOG={
+  '10.4.2': [
+    '🎨 תיקון Dark Mode לרכיבי תמונה — Pnimit מציגה 162 שאלות עם תמונות (כולן זמינות ב-Supabase). ה-render עושה שימוש ב-inline styles עם צבעי בהיר בלבד: גבול תמונה `#e2e8f0` (כמעט בלתי-נראה ברקע כהה), כפתור "📷 Attach Image" ב-`#f1f5f9` עם טקסט `#64748b` (כל-קל מדי על דפים כהים), כפתור הסרה (✕) על רקע `rgba(0,0,0,.6)` שנבלע ב-Dark Mode, וכפתור "✓ מאומת" של imgDep בכתום בהיר בלבד.',
+    '🪝 התיקון: 5 כללי CSS חדשים ב-theme.css עם attribute selectors (`img[data-action="view-img"]`, `[data-action="upload-img"]`, `[data-action="remove-img"]`, `[data-action="mark-verified"]`) ועם `!important` כדי לגבור על inline styles. אין שינוי בקוד JS, אין שינוי בנתונים. אין הקטנת default contrast במצב Light.',
+    'ℹ️ Background — אותו class-of-bug כש-FM v1.15.0 → v1.21.0: רכיבים שמשתמשים ב-inline styles עוקפים את design tokens / `body.dark` selectors, ויוצרים עיוורון ב-Dark Mode. Geri כבר נקייה (משתמשת ב-`rgb(var(--brd))`). FM נקייה (post-v1.20.0 class-based). Pnimit השלימה מעגל היום.',
+  ],
   '10.4.1': [
     '🛡️ Defensive — `<html data-theme="light">` נקבע כברירת מחדל סטטית בקובץ HTML. רקע: `shared/tokens.css` כולל `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { ... } }` שעלול לשנות את ערכי ה-CSS variables כש-OS המשתמש במצב כהה והדף לא הצהיר במפורש על data-theme. כיום Pnimit לא קורא את design tokens (Pnimit עדיין משתמש ב-body.dark + theme.css הישן), אז אין באג גלוי — אבל ההגנה מונעת רגרסיה אם רכיב עתידי יעבור ל-tokens (כפי שקרה ב-FM v1.15.0→v1.21.0). אין שינוי בלוגיקה, אין שינוי ב-shared/tokens.css. Mirror של FM v1.21.0.',
   ],

@@ -76,3 +76,15 @@ body.dark [data-action="diff-rating"][data-d="med"][style*="fef9c3"]  { backgrou
 body.dark [data-action="diff-rating"][data-d="hard"][style*="fecaca"] { background: #450a0a !important; color: #fca5a5 !important }
 body.dark [data-action="prev-q"]                              { background: #1e293b !important; color: #cbd5e1 !important; border-color: #334155 !important }
 body.dark [data-action="give-up"]                             { background: #451a03 !important; color: #fde68a !important }
+
+/* v10.4.2 — image rendering uses inline styles (border:#e2e8f0, upload-btn
+ * bg:#f1f5f9). In dark mode these become invisible/jarring on the dark body.
+ * Targeted overrides via attribute selectors — no JS change needed.
+ * The image, the upload button, the remove (✕) button, and the imgDep
+ * warning card are the four surfaces that ship inline-styled with
+ * light-theme-only colors. */
+body.dark img[data-action="view-img"]                         { border-color: #334155 !important }
+body.dark [data-action="upload-img"]                          { background: #1e293b !important; color: #94a3b8 !important; border-color: #334155 !important }
+body.dark [data-action="upload-img"] + span                   { color: #64748b !important }
+body.dark [data-action="remove-img"]                          { background: rgba(255,255,255,0.15) !important; color: #f1f5f9 !important }
+body.dark [data-action="mark-verified"]                       { background: #b45309 !important; color: #fef3c7 !important }
