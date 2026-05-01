@@ -247,9 +247,9 @@ npm run hooks:install # One-time: install pre-commit + pre-push git hooks
 Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/build.sh` → upload `dist/` → deploy to GitHub Pages.
 
 ### Release Invariants (run before declaring "shipped")
-1. **Local trinity** — `APP_VERSION + sw.js CACHE + package.json version` aligned. Caveat: `package.json.version` currently uses a 4-part scheme (`10.4.4.0`) while `src/core/constants.js` and `sw.js` ship the 3-part form (`10.4.4`). **Pass the explicit 3-part version to `verify-deploy.sh`** until the package.json suffix is normalized.
+1. **Local trinity** — `APP_VERSION (3-part) + sw.js CACHE (3-part) + package.json version (APP_VERSION + ".0", 4-part)` all aligned. The `+.0` suffix on package.json is **deliberate convention**, enforced by `tests/regressionGuards.test.js` — do NOT "normalize" it. Local guard: `scripts/sync-sw-version.cjs` checks constants.js↔sw.js. The regression test enforces the package.json↔APP_VERSION pairing.
 2. **Tests + build** — `npm run verify` (full pre-push gate).
-3. **Live witness** — after Pages rebuilds (~60–90s), `bash scripts/verify-deploy.sh 10.4.4` does a two-step check: fetches `pnimit-mega.html`, extracts the hashed `assets/pnimit-mega-*.js` bundle path, then greps the bundle for `"<version>"` literal AND verifies `sw.js` shows `CACHE='pnimit-v<version>'`. **Don't claim "deployed" until this passes.**
+3. **Live witness** — after Pages rebuilds (~60–90s), `bash scripts/verify-deploy.sh` does a two-step check: fetches `pnimit-mega.html`, extracts the hashed `assets/pnimit-mega-*.js` bundle path, greps the bundle for `"<APP_VERSION>"` literal AND verifies `sw.js` shows `CACHE='pnimit-v<APP_VERSION>'`. The script reads `APP_VERSION` directly from `src/core/constants.js` (NOT `package.json`, which has the `+.0` suffix). **Don't claim "deployed" until this passes.**
 4. **Question content edits** — any change to `data/questions.json` `o[]` text, `c` index, or `e` explanation must quote the source (Harrison 22e / Goldman / GRS) in the chat or commit message before the edit lands. Never paraphrase or fabricate option text.
 
 ---

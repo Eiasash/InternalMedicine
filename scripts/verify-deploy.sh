@@ -15,10 +15,15 @@
 # fetch the bundle, then grep for the version string.
 #
 # Usage:
-#   ./scripts/verify-deploy.sh                # uses package.json version
+#   ./scripts/verify-deploy.sh                # uses src/core/constants.js APP_VERSION
 #   ./scripts/verify-deploy.sh 10.4.4         # explicit version
 #   ./scripts/verify-deploy.sh --wait 180     # max wait seconds (default 120)
 #   ./scripts/verify-deploy.sh --no-wait      # one-shot check, no polling
+#
+# Note: IM convention is package.json version = APP_VERSION + ".0" (4-part),
+# enforced by tests/regressionGuards.test.js. The live site ships the 3-part
+# APP_VERSION, not the 4-part package.json version, so this script reads
+# APP_VERSION directly to avoid the .0 mismatch.
 #
 # Exit codes:
 #   0 — both bundle and sw.js show the expected version
@@ -46,8 +51,10 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -z "$VERSION" ]]; then
-  if ! VERSION=$(node -p "require('./package.json').version" 2>/dev/null); then
-    echo "verify-deploy: cannot read package.json version" >&2
+  # Read APP_VERSION from src/core/constants.js (3-part), NOT package.json (4-part).
+  # See header comment: package.json deliberately carries +.0 suffix per regressionGuards.test.js.
+  if ! VERSION=$(node -p "require('fs').readFileSync('src/core/constants.js','utf8').match(/APP_VERSION\s*=\s*['\"]([^'\"]+)['\"]/)[1]" 2>/dev/null); then
+    echo "verify-deploy: cannot read APP_VERSION from src/core/constants.js" >&2
     exit 2
   fi
 fi
