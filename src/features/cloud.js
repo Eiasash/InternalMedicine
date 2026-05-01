@@ -152,7 +152,7 @@ export async function cloudBackup(){
     const payload={id:_sbDeviceId(),data:{...G.S,_mockHist:mockHist,_sessions:sessions},updated_at:new Date().toISOString()};
     const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups',{
       method:'POST',
-      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json'},
       body:JSON.stringify(payload)
     });
     if(res.ok||res.status===409){
