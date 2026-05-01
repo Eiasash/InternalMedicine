@@ -174,6 +174,25 @@ export function stopTimedMode(){
 
 
 export function renderQuiz(){
+// v10.4.6 LCP fix: paint a skeleton card while questions.json is still loading.
+// The data-loader resolves _dataPromise asynchronously; without this, the quiz
+// card waits for QZ before it paints anything. Skeleton mirrors the real card's
+// structure so LCP locks at FCP instead of fluctuating when the real question
+// replaces it. The .then() in app.js (G._dataPromise.then(()=>render())) swaps
+// skeleton for real content. SD mode also requires QZ, so this guards both.
+if(!G.QZ||!G.QZ.length){
+return `<div class="card" style="padding:14px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<div style="display:flex;gap:4px;flex-wrap:wrap"><span class="tag-year" style="background:#eff6ff;color:#1d4ed8;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;opacity:.6">📝 ····</span></div>
+<span style="color:rgb(var(--fg3));font-size:10px">·/·</span>
+</div>
+<p class="heb" style="font-size:13px;font-weight:700;line-height:1.7;margin-bottom:16px;color:rgb(var(--fg2))" dir="rtl">⏳ טוען מאגר שאלות... מאגר 1,556 שאלות בעברית, נטען ברקע לשיפור מהירות הטעינה הראשונית</p>
+<div class="qo" style="opacity:.45">⠀⠀⠀⠀⠀⠀⠀⠀</div>
+<div class="qo" style="opacity:.4;margin-top:6px">⠀⠀⠀⠀⠀⠀⠀⠀</div>
+<div class="qo" style="opacity:.35;margin-top:6px">⠀⠀⠀⠀⠀⠀⠀⠀</div>
+<div class="qo" style="opacity:.3;margin-top:6px">⠀⠀⠀⠀⠀⠀⠀⠀</div>
+</div>`;
+}
 // ===== SUDDEN DEATH RENDERING =====
 if(G.sdMode){
 if(G.sdQi>=G.sdPool.length)G.sdQi=0;

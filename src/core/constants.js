@@ -35,8 +35,12 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.5';
+export const APP_VERSION='10.4.6';
 export const CHANGELOG={
+  '10.4.6': [
+    '⚡ LCP perf — preload של data/questions.json בעת HTML-parse (link rel=preload as=fetch crossorigin) + skeleton card ב-renderQuiz כש-QZ עדיין נטען. ה-preload מקדים את ה-fetch של data-loader, וה-skeleton נועל את LCP element ב-FCP במקום להתנדנד כשהשאלה האמיתית מוחלפת. ה-`crossorigin` חובה ל-`as=fetch` גם same-origin, אחרת ה-preload יושב בדלי-cache שונה וה-runtime fetch מתעלם ממנו. צפוי mobile LCP ירידה של ~0.5-1.5s. Mirror של Geriatrics v10.63.7.',
+    '🪝 Internal — אין שינוי ב-shared/fsrs.js (md5 cea66a0435… byte-identical), אין שינוי ב-engine, ב-data, או ב-tests. שינויים בלבד: pnimit-mega.html (preload tag), src/ui/quiz-view.js (skeleton early-return).',
+  ],
   '10.4.5': [
     '🩹 תיקון תוכן (3 SEVERE) — IDX 1 (PUD ללא H. pylori/NSAID): תוקן Whipple→Crohn לפי Harrison 22e ch.317. IDX 8 (CPAP adherence): תוקן 60-70%→40-60% בהסבר (לפי הספרות העדכנית). IDX 9 (RA mechanism): נכתב מחדש ה-explanation להגן על IL-6 receptor (אופציה ב\') במקום IL-2 (סתירה פנימית קודמת בין c=1 ל-e).',
     '🛡️ Internal — אין שינוי ב-engine, ב-shared/fsrs.js או ב-tests. תיקון תוכן בלבד ב-data/questions.json (idx 1, 8, 9).',
