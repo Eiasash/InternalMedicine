@@ -1,4 +1,6 @@
-# Pnimit Mega — Internal Medicine Board Prep 🏥
+# Internal Medicine Board Prep — Shlav A
+
+*Pnimit Mega — sibling of [Geriatrics Board Prep](https://github.com/Eiasash/Geriatrics) and [Family Medicine Board Prep](https://github.com/Eiasash/FamilyMedicine).* 🏥
 
 Israeli Internal Medicine (רפואה פנימית) Stage A Board Exam preparation PWA.
 
