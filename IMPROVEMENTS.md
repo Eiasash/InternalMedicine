@@ -4,6 +4,116 @@ Rolling audit log for `audit-fix-deploy` runs. Most recent at top.
 
 ---
 
+## 2026-05-01 — v10.4.4 audit-fix-deploy Round 2 (deeper-dig)
+
+**Trigger:** user-requested R2 deeper-dig run after R1 (commit `688afab`, v10.4.3). Same day; v10.4.3 was already live (Actions green, sw.js `pnimit-v10.4.3`).
+
+### R1 followups — resolution
+
+| R1 followup | R2 resolution |
+|---|---|
+| Skill file blocked at `~/.claude/skills/` and `.claude/skills/` | `.claude/skills/internal-medicine-dev/` directory existed but empty. Created in-repo `SKILL.md` (snapshot + audit primer). |
+| RLS sanity pass on Supabase | Still requires interactive OAuth; deferred to Round 3 cross-repo task (Toranot/ward-helper sessions are the canonical owners of the shared `krmlzwwelqvlfslwltol` schema). |
+| IMA_WEIGHTS sum=141 dual-count needs annotation | Added 8-line comment to `src/core/constants.js` explaining ECG dual-count + do-not-normalise rule. New test asserts the annotation persists (anti-bitrot guard). |
+| Identify 4 lightest topics | Hypertension (30), Arrhythmias & ECG (34), Neurology & Stroke (36), Endocrinology & Diabetes (41). All ≥30 — no authoring task needed; documented for human awareness. |
+
+### R2 deeper findings
+
+| Surface | Finding | Action |
+|---|---|---|
+| **Dependency** | 1 moderate `postcss <8.5.10` XSS via npm audit. Auto-fixable but Vite 6 pinned. | Documented; not blocking deploy. Will be auto-resolved on next Vite minor. |
+| **Dependency** | Vite 6 → 8 major available. Vitest 4.1.4→4.1.5 patch. ESLint 9→10 major. | Major bumps are coordinated cross-repo; defer. Skip patch unless verify drift. |
+| **Bundle** | Total `dist/` 114 MB (Harrison PDFs 59 MB dominate). Main JS chunk = 309 kB (uncompressed). CSS 22 kB. SW 3.7 kB. | Baseline locked for future regression. |
+| **Coverage** | `@vitest/coverage-v8` is installed but `vitest.config.js` has no `coverage` block. Skipped — no actionable signal without enabling. | Future R3+ candidate: enable coverage in `vitest.config.js`. |
+| **Window-bindings** | Counted exactly **16** API-surface bindings (all listed below). No drift from documented contract. | OK |
+| **HARRISON_PDF_MAP integrity (extended)** | 69 entries, 0 missing PDFs, 0 question-orphans (every `q.ch` resolves), 0 disk-orphans (every PDF in `harrison/` is mapped). All 69 mapped chapters are *unreferenced by Qs* — they exist as a curated reader atlas accessed via "Open Ch X" buttons. | OK |
+| **Per-topic-per-year coverage matrix** | 38 of 168 cells (24×7) are zero. Most-affected topics: Allergy & Immunology (7/7 zero), Toxicology (7/7), Pain & Palliative (7/7), Perioperative (5/7), Dermatology (5/7), Vascular Disease (5/7). | Logged as content-authoring backlog (R3+). |
+| **Backup/restore extended** | New tests cover: malformed JSON parse-error path, partial backup (missing keys), version-drift (older `__v` schema keys silently ignored), full PROTO_BLOCKLIST (`__proto__`/`constructor`/`prototype`). | OK — `filterRestorePayload` contract holds. |
+| **9.76 schema-rollback scar** | Verified `grep -rn "internal_medicine\." src/` empty. Cloud writes use bare `/rest/v1/pnimit_*` (= `public` schema). Test guard added. | OK |
+| **fsrs.js dual hash** | git-hash-object: `9f91faaf4f814c5747318f8f6bcf2157b883582d` · LF-md5: `cea66a0435be626eda9c1bf120d2625c` ✅ matches canonical. | OK — no sibling drift. |
+| **IMA_WEIGHTS overlap annotation** | Inline 8-line comment added explaining ti=0 (Cardiology) ↔ ti=2 (Arrhythmias & ECG) dual-count, sum=141 by design, do-NOT-normalise. Test guard locks the annotation persistence. | Resolved. |
+
+### Window-bindings list (exactly 16 — matches CLAUDE.md contract)
+
+Set in `src/ui/app.js` (`_w = window` shorthand). API surface:
+
+```
+go, render                                      // core nav (HTML shell + render-time onclick)
+setTopicFilt                                    // quiz topic filter
+openHarrisonChapter                             // library chapter navigation
+showLeaderboard, cloudBackup, cloudRestore      // track-view delegation (circular)
+sendChatStarter                                 // track-view → chat starter
+exportProgress, importProgress                  // track-view (data import/export)
+toggleDark, showHelp                            // header onclick (HTML shell)
+applyUpdate                                     // dynamic update banner (created via JS)
+shareQ                                          // quiz-view → window.shareQ() in delegation
+shareApp                                        // body-level delegation (dynamic UI)
+updateAccountChip                               // auth → header chip refresh
+```
+
+Internal flags (NOT API surface, documented for completeness): `G`, `APP_VERSION`, `__pnimitLastMockWrong`, `__authBound`, `__studyPlanBound`, `_idbSaveTimer`, `_lsWarnShown`, `__debug`, `save` (legacy alias).
+
+### Per-topic-per-year coverage matrix (zero cells)
+
+```
+ti  Topic                              Missing years
+ 3  Valvular & Endocarditis            2025-Jun
+11  Oncology & Screening               2020, 2023-Jun, 2024-May, 2025-Jun
+14  Neurology & Stroke                 2022-Jun, 2025-Jun
+15  Critical Care & Shock              2024-Oct
+16  Dermatology                        2021-Jun, 2022-Jun, 2023-Jun, 2024-May, 2024-Oct
+17  Allergy & Immunology               (all 7 years zero)
+18  Fluids & Volume                    2020, 2021-Jun, 2022-Jun, 2023-Jun, 2024-May
+19  Pain & Palliative                  (all 7 years zero)
+20  Perioperative                      5 years zero
+21  Toxicology                         (all 7 years zero)
+23  Vascular Disease                   5 years zero
+```
+
+Topics 17/19/21 (Allergy, Pain/Palliative, Toxicology) have zero per-year overlap — questions exist but are tagged `Harrison`/`Exam`/no-tag, not session-tagged. Not a bug per se; reflects how those topics surfaced from cross-source AI generation rather than past Israeli exams. Surface for content-authoring R3+.
+
+### Bundle baseline (post-build)
+
+| Asset | Size |
+|---|---|
+| `dist/` total | 114 MB |
+| `dist/data/questions.json` | (within `dist/data/` 6.2 MB) |
+| `dist/assets/pnimit-mega-*.js` (main chunk) | 309,839 bytes (303 kB) |
+| `dist/assets/pnimit-mega-*.css` | 22 kB |
+| `dist/sw.js` | 3.7 kB |
+| `dist/harrison/` (PDF atlas) | 59 MB |
+| `dist/exams/` | 21 MB |
+| `dist/questions/` (images) | 18 MB |
+
+### Test count delta
+
+R1: 654 / 34 files → R2: **692 / 35 files** (+38 tests, target was +25). New file: `tests/auditR2Expansion.test.js` (12 suites, 38 cases). Surfaces covered (different from R1):
+
+1. buildMockExamPool pairwise ordering + multi-tag intersection (Year × Topic)
+2. heDir Hebrew bidi numerics + 25%-threshold mutation guard
+3. sanitize 5-char escape + falsy-input contract
+4. fmtT seconds boundary (00:00 / 59:59 / 1:00:00 / 3:00:00)
+5. isMetaOption Hebrew + English meta-option detection (with false-positive guard)
+6. getOptShuffle determinism + meta-pin-to-end invariant
+7. remapExplanationLetters identity + non-letter no-op
+8. isOk c_accept array + null-defense (mutation-resistant)
+9. Backup/restore extended: malformed / partial / version-drift / full PROTO_BLOCKLIST
+10. Service worker: cache-name version, activate-eviction, skipWaiting, JSON_DATA_URLS pattern
+11. localStorage namespace immutability + 9.76 schema-scar regression guard
+12. IMA_WEIGHTS annotation persistence + sum===141 lock
+
+### Open R3+ candidates
+
+- **RLS pass on shared Supabase project** — interactive OAuth required; coordinate from Toranot session.
+- **Per-topic-per-year content gaps** — 38 zero cells; topic 17/19/21 fully bare on session tags. Authoring task.
+- **Coverage instrumentation** — `@vitest/coverage-v8` installed but `vitest.config.js` has no `coverage` block. Add it; identify untested files in `src/`.
+- **Dependency majors** — Vite 6→8, ESLint 9→10. Coordinate cross-repo before bumping.
+- **postcss XSS advisory** — auto-fixable; will resolve on next Vite minor patch.
+- **Mutation testing** — `stryker-mutator` would extend the "mutation-feel" tests added here to actual coverage.
+- **shared/fsrs.js cross-repo guard** — currently each repo asserts canonical md5 in tests; consider `.shared/` workspace symlink approach.
+
+---
+
 ## 2026-05-01 — v10.4.3 audit-fix-deploy cycle (HARRISON_PDF_MAP fix + test expansion)
 
 **Trigger:** user-requested deep-audit pass on all 6 medical repos. Pnimit was on `v10.4.1` after PR #78 (settings consolidation) + post-v10.3.0 IMPROVEMENTS commit `b9581bb`. Synced to `67a1515` (v10.4.1 with `post-login-restore.js` + `postLoginRestore.test.js` already merged) before audit. **Sibling concurrency:** during the cycle, a parallel session shipped `v10.4.2` (`c4c8a60`, "dark-mode CSS for image rendering surfaces"). Rebased and bumped to `v10.4.3` to coexist.

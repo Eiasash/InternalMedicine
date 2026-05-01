@@ -4,6 +4,14 @@
 export const LS='pnimit_mega';
 
 // IMA syllabus topic weights (approx % from P0064-2025)
+// reason: overlap by design — sum=141 (>100). ECG content is intentionally
+// dual-counted under both Cardiology — Coronary (ti=0) and Arrhythmias & ECG
+// (ti=2); a few other clinical-overlap cells are weighted higher than a strict
+// disjoint partition would allow because the IMA syllabus itself lists the
+// same topic under multiple subspecialties. Do NOT normalise to 100 — the
+// mock-exam weighted picker assumes these raw weights and re-deriving them
+// would shift the topic mix away from the published P0064-2025 distribution.
+// Test guard: tests/auditExpansion.test.js asserts sum===141 and length===24.
 export const IMA_WEIGHTS=[8,7,6,5,7,10,8,7,6,8,7,6,9,6,7,5,3,3,4,4,3,3,5,4];
 
 // Harrison 22e chapter → PDF path mapping
@@ -27,8 +35,13 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.3';
+export const APP_VERSION='10.4.4';
 export const CHANGELOG={
+  '10.4.4': [
+    '📝 Annotate — `IMA_WEIGHTS` constant הוסיף הסבר מפורט (8 שורות) על ה-overlap-by-design: sum=141 בכוונה, ECG dual-counted (ti=0 Cardiology + ti=2 Arrhythmias), do-NOT-normalise. מטרה: מתחזקים עתידיים לא יחשבו שזה bug ויתקנו ל-100. Mirror של ה-comment ב-tests/auditExpansion.test.js שמאמת sum===141.',
+    '🧪 Tests — נוסף `tests/auditR2Expansion.test.js` (38 בדיקות, 12 suites) המכסה: buildMockExamPool pairwise ordering · multi-tag intersection (year+topic) · heDir bidi numerics + 25%-threshold boundary · sanitize XSS escape (5 chars) + falsy-input contract · fmtT boundary (00:00 / 59:59 / 1:00:00 / 3:00:00 mock-exam) · isMetaOption mixed-language (Heb/Eng "all of the above") · getOptShuffle deterministic seeding + meta-pin invariant · remapExplanationLetters identity + non-letter no-op · isOk c_accept array support + null defense · backup-restore malformed/partial/version-drift/PROTO_BLOCKLIST extended · sw.js cache-name + activate-eviction + skipWaiting invariants · LS namespace immutability + 9.76 schema-scar guard · IMA_WEIGHTS sum===141 lock. סך הכל: 34 → 35 קבצי בדיקה, 654 → 692 בדיקות.',
+    '🪝 Internal — אין שינוי בלוגיקה. אין שינוי ב-shared/fsrs.js (LF-md5 cea66a0435be626eda9c1bf120d2625c, byte-identical עם Geriatrics/FamilyMedicine).',
+  ],
   '10.4.3': [
     '🐛 Fix — `HARRISON_PDF_MAP[458]` — הנתיב כלל escape sequence לא חוקי `%23U00e9` (URL-encoded #). הקובץ בפועל הוא `Ch458_Guillain-Barr#U00e9_Syndrome_and_Other_Immune.pdf` (Windows-safe surrogate notation). הכפתור "📖 Open Harrison Ch 458" החזיר 404 שקט. תוקן.',
     '🧪 Tests — נוסף `tests/auditExpansion.test.js` (28 בדיקות) המכסה: 24-topic contract (TOPICS/EXAM_FREQ/IMA_WEIGHTS), HARRISON_PDF_MAP integrity (כל PDF קיים), שומרי URL-encoded leak, 7-tag exam-mode coverage, IMA-bias mock-exam distribution, APP_VERSION trinity, 9.76 backup→restore regression. סך הכל: 33 → 34 קבצי בדיקה, 626 → 654 בדיקות.',
