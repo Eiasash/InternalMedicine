@@ -20,7 +20,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 - **Entry point**: `pnimit-mega.html` (155-line HTML shell) → `src/ui/app.js` (ES module)
 - **Deployment**: Push to `main` → GitHub Actions builds with Vite → deploys `dist/` to Pages
 - **Sibling apps**: Shlav A Mega (geriatrics) + Mishpacha Mega (family medicine) — all three share `shared/fsrs.js` (byte-identical, canonical md5 `cea66a0435…`) and the same Supabase project `krmlzwwelqvlfslwltol` (labeled "Toranot" in the dashboard)
-- **Current version**: v10.4.3 (as of 2026-05-01) — `HARRISON_PDF_MAP[458]` URL-encoding fix + 28-test `auditExpansion.test.js` (24-topic contract, PDF-on-disk integrity, EXAM_YEARS coverage, IMA-bias picker, 9.76 backup-restore regression). Bumped past sibling-shipped 10.4.2 (Dark Mode CSS) which landed during the audit.
+- **Current version**: v10.4.4 (as of 2026-05-01) — `HARRISON_PDF_MAP[458]` URL-encoding fix + 28-test `auditExpansion.test.js` (24-topic contract, PDF-on-disk integrity, EXAM_YEARS coverage, IMA-bias picker, 9.76 backup-restore regression). Bumped past sibling-shipped 10.4.2 (Dark Mode CSS) which landed during the audit.
 
 ---
 
@@ -28,7 +28,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 
 ### Modular ES Modules
 
-The app is split into 26 ES module source files under `src/`. The HTML shell loads two scripts:
+The app is split into 31 ES module source files under `src/`. The HTML shell loads two scripts:
 ```html
 <script src="shared/fsrs.js"></script>              <!-- plain script, shared with Geriatrics -->
 <script type="module" src="src/ui/app.js"></script>  <!-- ES module entry, imports everything -->
@@ -157,7 +157,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 ├── questions/images/            # 134 question images
 ├── syllabus/P0064-2025.pdf     # Official IMA syllabus
 │
-├── tests/                      # 654 tests across 34 files
+├── tests/                      # 654 tests across 35 files
 │   ├── dataIntegrity.test.js   # Question schema, duplicates, topic coverage
 │   ├── appIntegrity.test.js    # Module structure, SW version sync, security
 │   ├── appLogic.test.js        # Core quiz logic patterns
@@ -299,7 +299,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 
 | Metric | Value |
 |--------|-------|
-| Source modules | 26 (under src/) |
+| Source modules | 31 (under src/) |
 | Source LOC | ~5,780 |
 | Functions | ~180 |
 | ES imports | 98 |
@@ -314,7 +314,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Past exams | 7 sessions (2020–2025) |
 | Harrison chapters | ~69 PDFs |
 | Articles | 10 |
-| Test files | 34 |
+| Test files | 35 |
 | Tests | 654 |
 | CI workflows | 5 (ci, integrity-guard, weekly-audit, distractor-autopsy, deploy) |
 
