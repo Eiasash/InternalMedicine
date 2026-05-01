@@ -35,8 +35,12 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.4';
+export const APP_VERSION='10.4.5';
 export const CHANGELOG={
+  '10.4.5': [
+    '🩹 תיקון תוכן (3 SEVERE) — IDX 1 (PUD ללא H. pylori/NSAID): תוקן Whipple→Crohn לפי Harrison 22e ch.317. IDX 8 (CPAP adherence): תוקן 60-70%→40-60% בהסבר (לפי הספרות העדכנית). IDX 9 (RA mechanism): נכתב מחדש ה-explanation להגן על IL-6 receptor (אופציה ב\') במקום IL-2 (סתירה פנימית קודמת בין c=1 ל-e).',
+    '🛡️ Internal — אין שינוי ב-engine, ב-shared/fsrs.js או ב-tests. תיקון תוכן בלבד ב-data/questions.json (idx 1, 8, 9).',
+  ],
   '10.4.4': [
     '📝 Annotate — `IMA_WEIGHTS` constant הוסיף הסבר מפורט (8 שורות) על ה-overlap-by-design: sum=141 בכוונה, ECG dual-counted (ti=0 Cardiology + ti=2 Arrhythmias), do-NOT-normalise. מטרה: מתחזקים עתידיים לא יחשבו שזה bug ויתקנו ל-100. Mirror של ה-comment ב-tests/auditExpansion.test.js שמאמת sum===141.',
     '🧪 Tests — נוסף `tests/auditR2Expansion.test.js` (38 בדיקות, 12 suites) המכסה: buildMockExamPool pairwise ordering · multi-tag intersection (year+topic) · heDir bidi numerics + 25%-threshold boundary · sanitize XSS escape (5 chars) + falsy-input contract · fmtT boundary (00:00 / 59:59 / 1:00:00 / 3:00:00 mock-exam) · isMetaOption mixed-language (Heb/Eng "all of the above") · getOptShuffle deterministic seeding + meta-pin invariant · remapExplanationLetters identity + non-letter no-op · isOk c_accept array support + null defense · backup-restore malformed/partial/version-drift/PROTO_BLOCKLIST extended · sw.js cache-name + activate-eviction + skipWaiting invariants · LS namespace immutability + 9.76 schema-scar guard · IMA_WEIGHTS sum===141 lock. סך הכל: 34 → 35 קבצי בדיקה, 654 → 692 בדיקות.',
