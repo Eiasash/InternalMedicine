@@ -20,7 +20,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 - **Entry point**: `pnimit-mega.html` (155-line HTML shell) → `src/ui/app.js` (ES module)
 - **Deployment**: Push to `main` → GitHub Actions builds with Vite → deploys `dist/` to Pages
 - **Sibling apps**: Shlav A Mega (geriatrics) + Mishpacha Mega (family medicine) — all three share `shared/fsrs.js` (byte-identical, canonical md5 `cea66a0435…`) and the same Supabase project `krmlzwwelqvlfslwltol` (labeled "Toranot" in the dashboard)
-- **Current version**: v9.86.0 (as of 28/04/26) — in-app Study Plan generator, username/password accounts, built-in debug console, callAI singleton AbortController fix
+- **Current version**: v10.4.3 (as of 2026-05-01) — `HARRISON_PDF_MAP[458]` URL-encoding fix + 28-test `auditExpansion.test.js` (24-topic contract, PDF-on-disk integrity, EXAM_YEARS coverage, IMA-bias picker, 9.76 backup-restore regression). Bumped past sibling-shipped 10.4.2 (Dark Mode CSS) which landed during the audit.
 
 ---
 
@@ -157,7 +157,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 ├── questions/images/            # 134 question images
 ├── syllabus/P0064-2025.pdf     # Official IMA syllabus
 │
-├── tests/                      # 597 tests across 28 files
+├── tests/                      # 654 tests across 34 files
 │   ├── dataIntegrity.test.js   # Question schema, duplicates, topic coverage
 │   ├── appIntegrity.test.js    # Module structure, SW version sync, security
 │   ├── appLogic.test.js        # Core quiz logic patterns
@@ -165,6 +165,8 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 │   ├── serviceWorker.test.js   # SW cache config, file existence
 │   ├── coverageGaps.test.js    # Cross-module coverage verification
 │   ├── sharedFsrs.test.js      # FSRS algorithm unit tests
+│   ├── auditExpansion.test.js  # 24-topic + HARRISON_PDF_MAP + IMA-bias picker + 9.76 backup-restore (v10.4.2)
+│   ├── postLoginRestore.test.js # auto-restore-on-login flow (v10.4.0)
 │   └── (plus textbookChapters, parserBleedGuard, debugConsole, auth, studyPlanAlgorithm, regressionGuards, fsrsDeadline, …)
 │
 └── .github/workflows/
@@ -222,7 +224,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 ### Local Dev
 ```bash
 npm run dev          # Vite dev server (port 3737, auto-reload)
-npm test             # 597 tests via vitest
+npm test             # 654 tests via vitest
 npm run build        # Production build → dist/ (Vite bundle + static assets)
 npm run build:vite   # Vite-only build (no asset copy)
 npm run lint         # ESLint
@@ -312,8 +314,8 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Past exams | 7 sessions (2020–2025) |
 | Harrison chapters | ~69 PDFs |
 | Articles | 10 |
-| Test files | 28 |
-| Tests | 597 |
+| Test files | 34 |
+| Tests | 654 |
 | CI workflows | 5 (ci, integrity-guard, weekly-audit, distractor-autopsy, deploy) |
 
 ---

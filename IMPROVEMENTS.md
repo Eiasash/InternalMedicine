@@ -4,6 +4,84 @@ Rolling audit log for `audit-fix-deploy` runs. Most recent at top.
 
 ---
 
+## 2026-05-01 — v10.4.3 audit-fix-deploy cycle (HARRISON_PDF_MAP fix + test expansion)
+
+**Trigger:** user-requested deep-audit pass on all 6 medical repos. Pnimit was on `v10.4.1` after PR #78 (settings consolidation) + post-v10.3.0 IMPROVEMENTS commit `b9581bb`. Synced to `67a1515` (v10.4.1 with `post-login-restore.js` + `postLoginRestore.test.js` already merged) before audit. **Sibling concurrency:** during the cycle, a parallel session shipped `v10.4.2` (`c4c8a60`, "dark-mode CSS for image rendering surfaces"). Rebased and bumped to `v10.4.3` to coexist.
+
+### Audit findings
+
+| Severity | Finding | Action |
+|---|---|---|
+| **Medium** | `HARRISON_PDF_MAP[458]` had URL-encoded `%23U00e9` instead of literal `#U00e9` — file on disk is `harrison/Ch458_Guillain-Barr#U00e9_Syndrome_and_Other_Immune.pdf`. The "📖 Open Harrison Ch 458" button silently 404'd. | Fixed in `src/core/constants.js`. Regression-locked by `tests/auditExpansion.test.js`. |
+| **Low** | `IMA_WEIGHTS` sum = 141, not 100 (categories double-count, e.g. ECG ↔ Cardiology+Arrhythmias). Not strictly a bug but worth documenting. | Documented in test bounds (100..150). |
+| **Info** | RLS sanity pass on `krmlzwwelqvlfslwltol` deferred — Supabase MCP requires interactive OAuth. Sibling repos (Geriatrics § B, FamilyMedicine § C, Toranot § A) are responsible for shared-schema migrations and have already audited the project this cycle. | Skipped per autonomy policy; flagged for next interactive session. |
+| **Pass** | 24-topic contract: TOPICS / EXAM_FREQ / IMA_WEIGHTS all length 24 | OK |
+| **Pass** | All 24 topics have ≥30 questions (no <5 gaps) | OK |
+| **Pass** | All 7 EXAM_YEARS have ≥99 questions each | OK |
+| **Pass** | 1556 questions, 0 ti orphans (all 0..23) | OK |
+| **Pass** | HARRISON_PDF_MAP: 69 entries, 0 missing on disk after fix | OK |
+| **Pass** | `console.log` leaks: 0 ungated (all 3 properly behind `import.meta.env.DEV`) | OK |
+| **Pass** | `shared/fsrs.js` LF-normalized md5 = `cea66a0435be626eda9c1bf120d2625c` (canonical) | No drift vs § B/C |
+
+### Per-topic Q distribution (24 topics — all ≥30)
+
+```
+ 0 Cardiology — Coronary             131       12 Infectious Disease            64
+ 1 Heart Failure                      68       13 Rheumatology & Autoimmune     79
+ 2 Arrhythmias & ECG                  34       14 Neurology & Stroke            36
+ 3 Valvular & Endocarditis            59       15 Critical Care & Shock         57
+ 4 Hypertension                       30       16 Dermatology                   54
+ 5 Pulmonology & VTE                 105       17 Allergy & Immunology          53
+ 6 Gastroenterology & Hepatology      88       18 Fluids & Volume               52
+ 7 Nephrology                         62       19 Pain & Palliative             53
+ 8 Electrolytes & Acid-Base           52       20 Perioperative                 54
+ 9 Endocrinology & Diabetes           41       21 Toxicology                    56
+10 Hematology & Coagulation           93       22 Clinical Approach            130
+11 Oncology & Screening               52       23 Vascular Disease              53
+```
+
+Lightest topics (consider expansion in future cycles): Hypertension (30), Arrhythmias & ECG (34), Neurology & Stroke (36), Endocrinology & Diabetes (41).
+
+### Per-EXAM_YEAR breakdown
+
+| Tag | Q count |
+|---|---|
+| 2020 | 150 |
+| 2021-Jun | 149 |
+| 2022-Jun | 148 |
+| 2023-Jun | 150 |
+| 2024-May | 99 |
+| 2024-Oct | 100 |
+| 2025-Jun | 151 |
+| Harrison (AI) | 589 |
+| Exam (misc) | 20 |
+| **Total** | **1556** |
+
+### Fixes (commit shipped this cycle)
+
+- `v10.4.3` — single bump for HARRISON_PDF_MAP[458] fix + new test file. Trinity locked: `package.json` 10.4.3.0 ↔ `APP_VERSION` 10.4.3 ↔ `sw.js` `pnimit-v10.4.3`. (10.4.2 already taken by sibling-shipped Dark Mode CSS fix on `c4c8a60`.)
+
+### Tests
+
+- **New file:** `tests/auditExpansion.test.js` (28 tests). Targets: 24-topic contract, HARRISON_PDF_MAP integrity (PDF-on-disk + no URL-encoded leaks), EXAM_YEARS 7-tag coverage, IMA-bias mock-exam picker distribution, APP_VERSION trinity, 9.76 backup→restore regression (5 sub-cases including `__proto__` pollution + empty-allowed-set 9.76 scenario).
+- **Delta:** 626 → 654 tests, 33 → 34 files. (Baseline in skill body said `488/21`; the repo had grown organically. New baseline: **654/34**.)
+
+### Window-bindings audit
+
+16 documented API-surface bindings (per CLAUDE.md table). Internal flags (`_idbSaveTimer`, `_lsWarnShown`, `__authBound`, `__studyPlanBound`, `__pnimitLastMockWrong`, `save`, `updateAccountChip`, `__debug`, `G`, `APP_VERSION`) all unchanged. No new bindings introduced this cycle.
+
+### Sibling drift check
+
+- `shared/fsrs.js` LF-normalized md5 `cea66a0435be626eda9c1bf120d2625c` ✅ matches canonical (Geriatrics § B, FamilyMedicine § C). Not modified this cycle.
+
+### Open items / future work
+
+- Consider expanding lightest 4 topics (Hypertension, Arrhythmias & ECG, Neurology & Stroke, Endocrinology & Diabetes) toward ≥50 Q each to better reflect IMA exam distribution.
+- IMA_WEIGHTS double-counts (sum=141) is intentional (categories overlap) but consider documenting the overlap mapping inline.
+- Resolve TODO at `src/core/constants.js:16` — `'2020'` exam-tag month unresolved.
+
+---
+
 ## 2026-04-30 — post-v10.3.0 deploy verification
 
 **Trigger:** v10.3.0 ("settings consolidation") shipped via PRs #77 + #78 (merge commits `28698a0` and `2e40531`). Audit run after merge to confirm health.
