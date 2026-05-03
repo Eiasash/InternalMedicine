@@ -35,8 +35,14 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.7';
+export const APP_VERSION='10.4.8';
 export const CHANGELOG={
+  '10.4.8': [
+    '🎯 First structured exam-key audit for IM — built dataset→IMA-PDF Q-num mapping using the 2026-05-03 cross-specialty bundle parser as candidate source (token-overlap scoring, ported from Geri v3 augmenter). Mapped 673 of 947 IMA-tagged Qs (71%; remaining 274 are extreme curator paraphrases or sessions where the bundle parser had lower extraction success).',
+    '✅ 24 c_accept additions — questions where IMA accepted multiple answers post-appeal (e.g. "א ג", "ג ד") but dataset only had c set. Now correctly accepts either letter. Examples: idx=17 (2020 qn=19) → c_accept=[0,2]; idx=1531 (2024-Oct qn=16, "ב ג ד") → c_accept=[1,2,3].',
+    '✅ 4 voided questions (ALL_ACCEPTED) — sessions where the IMA published "all answers accepted" post-appeal. Set c_accept to all option indices so users get marked correct on any pick. Affected: idx=225 (2021-Jun qn=141), idx=337 (2022-Jun qn=105), idx=703 (2024-Oct qn=91), idx=752 (2025-Jun qn=41).',
+    '📋 92 single-accept disagreements logged but NOT auto-flipped — per the Geri curator-override pattern (94 c_wrong cases there were deliberate overrides where dataset is medically more correct than IMA). Saved to .audit_logs/im_audit.json for future hand-review.',
+  ],
   '10.4.6': [
     '⚡ LCP perf — preload של data/questions.json בעת HTML-parse (link rel=preload as=fetch crossorigin) + skeleton card ב-renderQuiz כש-QZ עדיין נטען. ה-preload מקדים את ה-fetch של data-loader, וה-skeleton נועל את LCP element ב-FCP במקום להתנדנד כשהשאלה האמיתית מוחלפת. ה-`crossorigin` חובה ל-`as=fetch` גם same-origin, אחרת ה-preload יושב בדלי-cache שונה וה-runtime fetch מתעלם ממנו. צפוי mobile LCP ירידה של ~0.5-1.5s. Mirror של Geriatrics v10.63.7.',
     '🪝 Internal — אין שינוי ב-shared/fsrs.js (md5 cea66a0435… byte-identical), אין שינוי ב-engine, ב-data, או ב-tests. שינויים בלבד: pnimit-mega.html (preload tag), src/ui/quiz-view.js (skeleton early-return).',
