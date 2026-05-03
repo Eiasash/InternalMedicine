@@ -53,18 +53,29 @@ export function isMetaOption(text){
   return metaPatterns.some(p=>p.test(t));
 }
 export function remapExplanationLetters(text,shuf){
+  // shuf[displayPos]=origIdx → build inverse: origIdx→displayPos
   const inv={};shuf.forEach((orig,disp)=>{inv[orig]=disp;});
-  const letters=['A','B','C','D','E'];
+  const latin=['A','B','C','D','E'];
   const heb=['א','ב','ג','ד','ה'];
-  return text.replace(/\b([A-E])\b/g,(m,letter)=>{
-    const origIdx=letters.indexOf(letter);
-    if(origIdx===-1||inv[origIdx]===undefined)return m;
-    return letters[inv[origIdx]];
-  }).replace(/(תשובה\s*)([א-ה])\b/g,(m,prefix,letter)=>{
-    const origIdx=heb.indexOf(letter);
-    if(origIdx===-1||inv[origIdx]===undefined)return m;
-    return prefix+heb[inv[origIdx]];
-  });
+  const remap=(orig,arr)=>{
+    const i=arr.indexOf(orig);
+    if(i===-1||inv[i]===undefined)return orig;
+    return arr[inv[i]];
+  };
+  // (1) Latin "B"/"Answer C"
+  // (2) Hebrew "תשובה ב'" form
+  // (3) Hebrew bare label "א'/ב' שגויה" — letter+geresh used as bullet label.
+  //     Lookbehind (?<![א-ת]) excludes mid-word gershayim like "מג'ורי" (Major).
+  //     Lookahead requires geresh + whitespace/punct/EOL so foreign-sound markers
+  //     like "ג'נטיקה" (genetics) are also rejected.
+  // Single regex with alternation prevents double-remap.
+  // v10.4.9 — was missing form (3); ported from Geri v10.64.22.
+  return text
+    .replace(/\b([A-E])\b/g,(m,l)=>remap(l,latin))
+    .replace(
+      /(?:(תשובה\s*)([א-ה])(?=['׳’]|[\s.,;:!?)]|$)|(?<![א-ת])([א-ה])(['׳’])(?=[\s.,;:!?)]|$))/g,
+      (m,p,l1,l2,ger)=>p?p+remap(l1,heb):remap(l2,heb)+ger
+    );
 }
 export function getOptShuffle(qIdx,q){
   // Return stable shuffle for this question in this session

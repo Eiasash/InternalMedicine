@@ -35,8 +35,11 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.8';
+export const APP_VERSION='10.4.9';
 export const CHANGELOG={
+  '10.4.9': [
+    '🔤 remapExplanationLetters fix — explanations referencing options as bare labels (`**א\' שגויה**`, `ב\' נכונה`) were not remapped after option shuffle, only the explicit `תשובה X\'` form was. After shuffle, users saw wrong letter cross-references in the per-option breakdown. Single-pass regex with two-branch alternation now handles both forms; mid-word gershayim (e.g. `מג\'ורי`) preserved via lookbehind. Same bug + fix as Geriatrics v10.64.22 (where it was first reported by user). 7 new regression tests in tests/remapExplanationLetters.test.js.',
+  ],
   '10.4.8': [
     '🎯 First structured exam-key audit for IM — built dataset→IMA-PDF Q-num mapping using the 2026-05-03 cross-specialty bundle parser as candidate source (token-overlap scoring, ported from Geri v3 augmenter). Mapped 673 of 947 IMA-tagged Qs (71%; remaining 274 are extreme curator paraphrases or sessions where the bundle parser had lower extraction success).',
     '✅ 24 c_accept additions — questions where IMA accepted multiple answers post-appeal (e.g. "א ג", "ג ד") but dataset only had c set. Now correctly accepts either letter. Examples: idx=17 (2020 qn=19) → c_accept=[0,2]; idx=1531 (2024-Oct qn=16, "ב ג ד") → c_accept=[1,2,3].',
