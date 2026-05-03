@@ -49,6 +49,16 @@ describe("remapExplanationLetters — v10.4.9 fix", () => {
     expect(remapExplanationLetters("Choice B is correct.", shuf)).toBe("Choice C is correct.");
   });
 
+  it("remaps Hebrew letter directly followed by ASCII letter (v10.4.10)", () => {
+    const shuf = [1, 2, 0, 3];
+    expect(remapExplanationLetters("תשובה אcorrect", shuf)).toBe("תשובה גcorrect");
+  });
+
+  it("remaps Hebrew letter directly followed by whitespace (v10.4.10)", () => {
+    const shuf = [1, 2, 0, 3];
+    expect(remapExplanationLetters("תשובה א נכונה", shuf)).toBe("תשובה ג נכונה");
+  });
+
   it("does not double-remap a letter in alternated patterns", () => {
     const swap = [1, 0, 2, 3];
     expect(remapExplanationLetters("תשובה ב' היא הנכונה", swap)).toBe("תשובה א' היא הנכונה");

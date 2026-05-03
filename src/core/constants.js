@@ -35,8 +35,11 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.9';
+export const APP_VERSION='10.4.10';
 export const CHANGELOG={
+  '10.4.10': [
+    '🔤 remapExplanationLetters lookahead generalized — broader `(?=[^א-ת]|$)` pattern from FM v1.21.8 / Geri v10.64.23. Catches "תשובה אcorrect" form (Hebrew letter directly followed by ASCII letter) that v10.4.9\'s narrower char class missed. 2 new regression tests.',
+  ],
   '10.4.9': [
     '🔤 remapExplanationLetters fix — explanations referencing options as bare labels (`**א\' שגויה**`, `ב\' נכונה`) were not remapped after option shuffle, only the explicit `תשובה X\'` form was. After shuffle, users saw wrong letter cross-references in the per-option breakdown. Single-pass regex with two-branch alternation now handles both forms; mid-word gershayim (e.g. `מג\'ורי`) preserved via lookbehind. Same bug + fix as Geriatrics v10.64.22 (where it was first reported by user). 7 new regression tests in tests/remapExplanationLetters.test.js.',
   ],

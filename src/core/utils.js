@@ -70,10 +70,14 @@ export function remapExplanationLetters(text,shuf){
   //     like "ג'נטיקה" (genetics) are also rejected.
   // Single regex with alternation prevents double-remap.
   // v10.4.9 — was missing form (3); ported from Geri v10.64.22.
+  // Lookahead `(?=[^א-ת]|$)` = "next char is not a Hebrew letter (or EOL)".
+  // Catches: geresh `'`, whitespace, ASCII letters, punct, EOL.
+  // Excludes: another Hebrew letter (so "תשובה בא" / "ג'נטיקה" stay untouched).
+  // Generalized in v10.4.10 — broader pattern from FM v1.21.8.
   return text
     .replace(/\b([A-E])\b/g,(m,l)=>remap(l,latin))
     .replace(
-      /(?:(תשובה\s*)([א-ה])(?=['׳’]|[\s.,;:!?)]|$)|(?<![א-ת])([א-ה])(['׳’])(?=[\s.,;:!?)]|$))/g,
+      /(?:(תשובה\s*)([א-ה])(?=[^א-ת]|$)|(?<![א-ת])([א-ה])(['׳’])(?=[^א-ת]|$))/g,
       (m,p,l1,l2,ger)=>p?p+remap(l1,heb):remap(l2,heb)+ger
     );
 }
