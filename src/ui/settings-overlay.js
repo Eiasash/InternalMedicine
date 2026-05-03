@@ -113,6 +113,8 @@ function renderSettingsBody() {
   <div class="settings-body">
 
     <section class="settings-section">
+      <div class="sec-t" style="font-size:13px">👤 חשבון לגיבוי לענן</div>
+      <div class="sec-s" style="margin-bottom:6px">Account (for cloud backup)</div>
       ${renderAuthSection()}
     </section>
 
@@ -139,7 +141,8 @@ function renderSettingsBody() {
     </section>
 
     <section class="settings-section">
-      <div class="sec-t" style="font-size:13px">🔑 API Key</div>
+      <div class="sec-t" style="font-size:13px">🔑 מפתח API ל-AI</div>
+      <div class="sec-s" style="margin-bottom:6px">API Key (for AI features only — לא נדרש לגיבוי / not required for cloud backup)</div>
       <div class="sec-s" style="margin-bottom:10px">Anthropic API key — מאוחסן בדפדפן בלבד</div>
       <div class="card" style="padding:14px">
         ${storedKey
@@ -293,8 +296,19 @@ async function submitSettingsFeedback() {
   try { fb = JSON.parse(localStorage.getItem('pnimit_fb_sent') || '[]'); } catch (e) {}
   fb.push(entry);
   localStorage.setItem('pnimit_fb_sent', JSON.stringify(fb));
+  // v10.4.12 fix — bug 3 from 2026-05-03 mobile session: POST /pnimit_feedback returned 400
+  // (schema/payload mismatch). The sibling FM table (`mishpacha_feedback`) ships {type,text,ts,version,uid};
+  // the prior {message,app_version} shape may not match `pnimit_feedback`'s actual columns.
+  // Send BOTH shapes so whichever set the table accepts gets through; if it still 400s, surface a toast.
+  let _fbOk = true;
   try {
-    await fetch(SUPA_URL + '/rest/v1/pnimit_feedback', {
+    const payload = {
+      // Sibling-canonical column names (matches mishpacha_feedback schema):
+      type, text, ts: entry.ts, version: APP_VERSION, uid,
+      // Legacy column names previously sent by IM (kept for compat with any older schema):
+      message: text, app_version: APP_VERSION,
+    };
+    const res = await fetch(SUPA_URL + '/rest/v1/pnimit_feedback', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -302,10 +316,15 @@ async function submitSettingsFeedback() {
         'Authorization': 'Bearer ' + SUPA_ANON,
         'Prefer': 'return=minimal',
       },
-      body: JSON.stringify({ message: text, type, app_version: APP_VERSION }),
+      body: JSON.stringify(payload),
     });
-  } catch (e) { /* offline-tolerant */ }
-  toast('תודה — הפידבק נשמר', 'success');
+    if (!res.ok) { _fbOk = false; }
+  } catch (e) { _fbOk = false; }
+  if (_fbOk) {
+    toast('תודה — הפידבק נשמר', 'success');
+  } else {
+    toast('❌ שליחת המשוב נכשלה — נסה שוב מאוחר יותר\nFeedback submission failed — try again later', 'error');
+  }
   const ta = document.getElementById('settings-fb-text');
   if (ta) ta.value = '';
 }
