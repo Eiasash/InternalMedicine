@@ -159,11 +159,28 @@ export async function cloudBackup(){
     });
     if(res.ok){
       toast('✅ Progress backed up to cloud!\nDevice ID: '+_sbDeviceId().slice(0,12)+'...','info');
+    } else if(res.status===401){
+      // RLS rejected — guest devices can backup (anon insert policy), but user-scoped
+      // ids ('user_<username>') require an auth session. Surface the actionable error
+      // and route the user to the auth section rather than failing silently.
+      // v10.4.12 fix — bug 1 from 2026-05-03 mobile session: 5 silent 401s before user noticed.
+      toast('❌ נדרשת התחברות לחשבון לגיבוי לענן\nLogin required for cloud backup','error');
+      try{
+        // If settings overlay is open, it already exposes the auth section at the top.
+        // Otherwise nudge the user to More tab where the account chip lives.
+        const overlay=document.getElementById('settings-overlay');
+        if(!overlay||overlay.hidden){
+          if(G.S){G.S.tab='more';G.save?.();}
+          G.render?.();
+        }
+        // Focus the login username field if reachable.
+        setTimeout(()=>{const u=document.getElementById('auth-li-user');if(u)u.focus();},250);
+      }catch(_){}
     } else {
       const err=await res.text();
-      toast('❌ Backup failed: '+res.status+'\n'+err.slice(0,200),'info');
+      toast('❌ Backup failed: '+res.status+'\n'+err.slice(0,200),'error');
     }
-  }catch(e){toast('❌ Backup failed: '+e.message,'info');}
+  }catch(e){toast('❌ Backup failed: '+e.message,'error');}
   if(btn){btn.disabled=false;btn.textContent='☁️ Backup to Cloud';}
 }
 // Filter a restore payload to only the keys that already exist in the

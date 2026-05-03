@@ -35,8 +35,14 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.11';
+export const APP_VERSION='10.4.12';
 export const CHANGELOG={
+  '10.4.12': [
+    '🩹 Supabase auth UX — 3 mobile-session bugs from 2026-05-03 debug report fixed.',
+    '   • cloudBackup 401 silent failure — user tapped backup 5× expecting feedback; got nothing because RLS rejection was swallowed. Now toasts "❌ נדרשת התחברות לחשבון לגיבוי לענן / Login required for cloud backup" + routes to More tab and focuses login field. 401 branch added BEFORE the generic else (the 409 fallback was already removed in v10.4.11 with merge-duplicates).',
+    '   • API-key vs Supabase-auth confusion — user entered Anthropic API key thinking it would enable cloud backup. Settings overlay now has explicit section headers: "👤 חשבון לגיבוי לענן (Account — for cloud backup)" above the auth controls; "🔑 מפתח API ל-AI (for AI features only — לא נדרש לגיבוי)" above the key input. Visual disambiguation, no auth-flow refactor.',
+    '   • Feedback POST 400 — payload/schema mismatch on pnimit_feedback. Now sends BOTH column shapes ({type,text,ts,version,uid} sibling-canonical + {message,app_version} legacy) so the table accepts whichever it has, plus toast on non-OK response: "❌ שליחת המשוב נכשלה / Feedback submission failed". Cleaner schema audit deferred — actual table columns not in repo SQL (only the schema-rename migration is).',
+  ],
   '10.4.11': [
     '🩹 Citation audit (2 SEVERE) — staged canonical Harrison 22e TOC (505 chapters) at data/harrison_22e_toc.json (mirror of Geri PR #146). Caught 2 transposed Ch # citations missed by curator: idx=1 (PUD): ch.317 "Cardiac Arrest" → ch.335 "Peptic Ulcer Disease and Related Disorders" (the v10.4.5 Whipple→Crohn fix landed the right answer with the wrong chapter number). idx=9 (Tocilizumab/RA): ch.354 "MASLD/Steatohepatitis" → ch.370 "Rheumatoid Arthritis". Other 21 cited Harrison chapters validated against canonical TOC.',
     '🛡️ CI guards (3 new in tests/textbookChapters.test.js) — every Harrison Ch cited in q.e/q.q/q.ref must exist in harrison_22e_toc.json (catches OOB and unknown); titled citations "Ch X — TITLE" must share ≥1 strong (4+ char, non-stopword) token with canonical title (catches transpositions); same Ch # cited across questions must carry consistent title (catches drift).',
