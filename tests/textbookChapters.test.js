@@ -238,3 +238,129 @@ describe('Topic distribution balance — quantitative', () => {
     expect(max / total, `max=${max}/${total}`).toBeLessThanOrEqual(0.2);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Harrison citation correctness — guards inspired by Geriatrics PRs #146-151
+// (4-Harrison-transposition catch via canonical TOC). IM uses Harrison heavily;
+// these guards prevent transposed Ch # citations from regressing into the
+// data set silently.
+// ---------------------------------------------------------------------------
+const HARRISON_STOPWORDS = new Set([
+  'with','this','that','from','have','been','more','most','when','what','some',
+  'than','only','also','each','about','into','over','such','very','other',
+  'their','these','those','which','where','will','shall','disease','approach',
+  'patient',
+]);
+
+function harrisonTokens(s) {
+  if (!s) return new Set();
+  // niqqud strip + lowercase + 4+ char Latin tokens, drop stopwords
+  const norm = String(s).replace(/[֑-ׇ]/g, '').toLowerCase();
+  const out = new Set();
+  for (const m of norm.matchAll(/[a-z]{4,}/g)) {
+    if (!HARRISON_STOPWORDS.has(m[0])) out.add(m[0]);
+  }
+  return out;
+}
+
+describe('Harrison citation correctness — vs harrison_22e_toc.json', () => {
+  let questions, toc;
+  beforeAll(() => {
+    questions = loadData('questions.json');
+    toc = loadData('harrison_22e_toc.json');
+  });
+
+  it('TOC has the expected canonical 505 chapters', () => {
+    expect(Object.keys(toc).length).toBe(505);
+    expect(toc['1']).toBeTruthy();
+    expect(toc['505']).toBeTruthy();
+  });
+
+  // GUARD 1: every Harrison Ch cited in q.e (or q.ref if present) must be
+  // a key in harrison_22e_toc.json — catches >505 OOB and unknown chapters.
+  it('every Harrison Ch cited in any question exists in the canonical TOC', () => {
+    const offenders = [];
+    const re = /Harrison[^.]{0,80}?\b(?:Ch(?:apter|\.)?|ch\.?)\s*(\d{1,3})/gi;
+    questions.forEach((q, i) => {
+      for (const field of ['e', 'q', 'ref']) {
+        const v = q[field] || '';
+        if (typeof v !== 'string') continue;
+        for (const m of v.matchAll(re)) {
+          const n = String(parseInt(m[1], 10));
+          if (!toc[n]) {
+            offenders.push({ idx: i, field, ch: n, snippet: v.slice(Math.max(0, m.index - 20), m.index + 40) });
+          }
+        }
+      }
+    });
+    expect(offenders, `Unknown Harrison chapters cited:\n${offenders.slice(0, 10).map(o => `  idx=${o.idx} ${o.field} Ch${o.ch}: ${o.snippet}`).join('\n')}`).toEqual([]);
+  });
+
+  // GUARD 2: for titled citations of the form `Ch X — TITLE` (or `Ch X (TITLE)`)
+  // where X exists in TOC, the cited TITLE must share at least one strong
+  // (4+ char, non-stopword) token with the canonical title.
+  // Catches transpositions like "Harrison Ch 311 — Acute Kidney Injury"
+  // when 311 is actually "Approach to the Patient with Critical Illness"
+  // and 321 is "Acute Kidney Injury".
+  it('titled Harrison citations share at least one strong token with the canonical title', () => {
+    const titledRe = /Harrison\s*Ch\s*(\d+)\s*(?:[—–\-]|\()\s*([^·\n)]{3,150}?)\s*(?:[·\n)]|$)/gi;
+    const mismatches = [];
+    const seenPair = new Set();
+    questions.forEach((q, i) => {
+      for (const field of ['e', 'q', 'ref']) {
+        const v = q[field] || '';
+        if (typeof v !== 'string') continue;
+        for (const m of v.matchAll(titledRe)) {
+          const n = String(parseInt(m[1], 10));
+          const cited = m[2].trim().replace(/[*—–\-\s]+$/, '').trim();
+          if (cited.length < 3) continue;
+          const canon = toc[n]?.title;
+          if (!canon) continue; // GUARD 1 covers this case
+          const ct = harrisonTokens(cited);
+          const ot = harrisonTokens(canon);
+          if (!ct.size || !ot.size) continue;
+          let overlap = false;
+          for (const t of ct) if (ot.has(t)) { overlap = true; break; }
+          if (!overlap) {
+            const k = `${n}|${cited.toLowerCase()}`;
+            if (seenPair.has(k)) continue;
+            seenPair.add(k);
+            mismatches.push({ idx: i, field, ch: n, cited, canon });
+          }
+        }
+      }
+    });
+    expect(mismatches, `Titled Harrison citations whose title disagrees with canonical TOC:\n${mismatches.slice(0, 8).map(o => `  idx=${o.idx} ${o.field} Ch${o.ch}\n    cited: ${o.cited}\n    canon: ${o.canon}`).join('\n')}`).toEqual([]);
+  });
+
+  // GUARD 3: self-consistency — the same Harrison Ch # cited in N different
+  // questions should always carry the same TITLE. Drift = curator typo.
+  it('same Harrison Ch is cited with consistent title across the question bank', () => {
+    const titledRe = /Harrison\s*Ch\s*(\d+)\s*(?:[—–\-]|\()\s*([^·\n)]{3,150}?)\s*(?:[·\n)]|$)/gi;
+    const titlesByCh = new Map(); // ch -> Map(normalizedTitle -> [{idx,field,title}])
+    const norm = (s) => s.replace(/[֑-ׇ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+    questions.forEach((q, i) => {
+      for (const field of ['e', 'q', 'ref']) {
+        const v = q[field] || '';
+        if (typeof v !== 'string') continue;
+        for (const m of v.matchAll(titledRe)) {
+          const n = String(parseInt(m[1], 10));
+          const t = m[2].trim().replace(/[*—–\-\s]+$/, '').trim();
+          if (t.length < 3) continue;
+          if (!titlesByCh.has(n)) titlesByCh.set(n, new Map());
+          const bucket = titlesByCh.get(n);
+          const k = norm(t);
+          if (!bucket.has(k)) bucket.set(k, []);
+          bucket.get(k).push({ idx: i, field, title: t });
+        }
+      }
+    });
+    const conflicts = [];
+    for (const [ch, bucket] of titlesByCh) {
+      if (bucket.size > 1) {
+        conflicts.push({ ch, variants: Array.from(bucket.entries()).map(([k, recs]) => ({ title: recs[0].title, count: recs.length })) });
+      }
+    }
+    expect(conflicts, `Harrison Ch cited with conflicting titles:\n${conflicts.slice(0, 5).map(c => `  Ch${c.ch}: ${c.variants.map(v => `"${v.title}"×${v.count}`).join(' vs ')}`).join('\n')}`).toEqual([]);
+  });
+});

@@ -35,8 +35,13 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.10';
+export const APP_VERSION='10.4.11';
 export const CHANGELOG={
+  '10.4.11': [
+    '🩹 Citation audit (2 SEVERE) — staged canonical Harrison 22e TOC (505 chapters) at data/harrison_22e_toc.json (mirror of Geri PR #146). Caught 2 transposed Ch # citations missed by curator: idx=1 (PUD): ch.317 "Cardiac Arrest" → ch.335 "Peptic Ulcer Disease and Related Disorders" (the v10.4.5 Whipple→Crohn fix landed the right answer with the wrong chapter number). idx=9 (Tocilizumab/RA): ch.354 "MASLD/Steatohepatitis" → ch.370 "Rheumatoid Arthritis". Other 21 cited Harrison chapters validated against canonical TOC.',
+    '🛡️ CI guards (3 new in tests/textbookChapters.test.js) — every Harrison Ch cited in q.e/q.q/q.ref must exist in harrison_22e_toc.json (catches OOB and unknown); titled citations "Ch X — TITLE" must share ≥1 strong (4+ char, non-stopword) token with canonical title (catches transpositions); same Ch # cited across questions must carry consistent title (catches drift).',
+    '🧰 Chaos hardening — clipboard.writeText calls in src/ui/app.js (shareQ, shareApp) wrapped with .catch() to silence iOS Safari NotAllowedError when called outside user gesture; setSelectionRange in app.js focus-restore guarded with try/catch (range/date/checkbox inputs throw); cloud.js cloudBackup POST→409→PATCH retry chain replaced with single atomic POST + Prefer: resolution=merge-duplicates header (race-free upsert).',
+  ],
   '10.4.10': [
     '🔤 remapExplanationLetters lookahead generalized — broader `(?=[^א-ת]|$)` pattern from FM v1.21.8 / Geri v10.64.23. Catches "תשובה אcorrect" form (Hebrew letter directly followed by ASCII letter) that v10.4.9\'s narrower char class missed. 2 new regression tests.',
   ],

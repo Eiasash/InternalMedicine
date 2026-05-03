@@ -150,21 +150,14 @@ export async function cloudBackup(){
     try{mockHist=JSON.parse(localStorage.getItem('pnimit_mock_hist')||'[]');}catch(e){}
     try{sessions=JSON.parse(localStorage.getItem('pnimit_sessions')||'[]');}catch(e){}
     const payload={id:_sbDeviceId(),data:{...G.S,_mockHist:mockHist,_sessions:sessions},updated_at:new Date().toISOString()};
+    // Single atomic upsert via PostgREST `Prefer: resolution=merge-duplicates`.
+    // Replaces the prior POST→409→PATCH retry chain (race-prone, double-write on conflict).
     const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups',{
       method:'POST',
-      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json'},
+      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
       body:JSON.stringify(payload)
     });
-    if(res.ok||res.status===409){
-      // If 409, try upsert
-      if(res.status===409){
-        const patchRes=await fetch(SUPA_URL+'/rest/v1/pnimit_backups?id=eq.'+_sbDeviceId(),{
-          method:'PATCH',
-          headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json'},
-          body:JSON.stringify({data:{...G.S,_mockHist:mockHist,_sessions:sessions},updated_at:new Date().toISOString()})
-        });
-        if(!patchRes.ok){const pe=await patchRes.text();toast('❌ Backup update failed: '+patchRes.status+'\n'+pe.slice(0,200),'info');return;}
-      }
+    if(res.ok){
       toast('✅ Progress backed up to cloud!\nDevice ID: '+_sbDeviceId().slice(0,12)+'...','info');
     } else {
       const err=await res.text();

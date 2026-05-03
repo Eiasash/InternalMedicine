@@ -23,7 +23,7 @@
 ],
 "c": 3,
 "t": "2020",
-"e": "## הסבר\n\n**התשובה הנכונה: ד — Crohn's disease**\n\nעל פי Harrison's Principles of Internal Medicine 22e ch.317, הגורמים המוכרים ל-Peptic Ulcer Disease בהיעדר H. pylori ו-NSAID הם:\n1. **Zollinger-Ellison Syndrome** (גסטרינומה) — היפרסקרציה של חומצה\n2. **Crohn's disease** עם מעורבות תריסריון/קיבה\n3. **היפרקלצמיה**\n4. **Stress ulcers** (במצבי דחק חמורים)\n\n**Crohn's disease** יכולה לערב את התריסריון והקיבה ולגרום לכיבים פפטיים גם בהיעדר H. pylori או NSAID. זוהי האבחנה הסבירה ביותר מבין האפשרויות שניתנו.\n\n**למה השאר שגויות:**\n- א' (Ulcerative colitis) — מוגבלת ל-colon, לא גורמת ל-PUD בקיבה/תריסריון.\n- ב' (Celiac disease) — אטרופיית villi בתריסריון/ג'ג'ונום, לא כיבים פפטיים.\n- ג' (Whipple's disease) — Tropheryma whipplei גורם ל-malabsorption (שלשול, ירידה במשקל, ארתרלגיה). אינו גורם מוכר ל-PUD ב-Harrison 22e.\n\nמקור: Harrison's Principles of Internal Medicine 22e, ch.317.",
+"e": "## הסבר\n\n**התשובה הנכונה: ד — Crohn's disease**\n\nעל פי Harrison's Principles of Internal Medicine 22e ch.335, הגורמים המוכרים ל-Peptic Ulcer Disease בהיעדר H. pylori ו-NSAID הם:\n1. **Zollinger-Ellison Syndrome** (גסטרינומה) — היפרסקרציה של חומצה\n2. **Crohn's disease** עם מעורבות תריסריון/קיבה\n3. **היפרקלצמיה**\n4. **Stress ulcers** (במצבי דחק חמורים)\n\n**Crohn's disease** יכולה לערב את התריסריון והקיבה ולגרום לכיבים פפטיים גם בהיעדר H. pylori או NSAID. זוהי האבחנה הסבירה ביותר מבין האפשרויות שניתנו.\n\n**למה השאר שגויות:**\n- א' (Ulcerative colitis) — מוגבלת ל-colon, לא גורמת ל-PUD בקיבה/תריסריון.\n- ב' (Celiac disease) — אטרופיית villi בתריסריון/ג'ג'ונום, לא כיבים פפטיים.\n- ג' (Whipple's disease) — Tropheryma whipplei גורם ל-malabsorption (שלשול, ירידה במשקל, ארתרלגיה). אינו גורם מוכר ל-PUD ב-Harrison 22e.\n\nמקור: Harrison's Principles of Internal Medicine 22e, ch.335.",
 "ti": 6,
 "e_issue": true,
 "st": "obstructive_lung",
@@ -148,7 +148,7 @@
 ],
 "c": 1,
 "t": "2020",
-"e": "## הסבר\n\n**התשובה הנכונה: ב' — עיכוב הרצפטור ל-IL-6**\n\nTocilizumab ו-Sarilumab הם נוגדנים מונוקלונליים נגד הרצפטור של IL-6, ומהווים טיפול ביולוגי יעיל ב-Rheumatoid Arthritis. IL-6 הוא ציטוקין מרכזי בפתוגנזה של RA — מקדם דלקת סינוביאלית, פעילות אוסטיאוקלסטים והרס סחוס.\n\n**למה התשובות האחרות שגויות:**\n- א' (עיכוב IL-6 הציטוקין עצמו) — אין תרופות מאושרות ב-RA הפועלות באופן זה. Olamkicept ניסיוני בלבד.\n- ג' (עיכוב IL-2) — Basiliximab (anti-IL-2R) משמש למניעת דחיית שתל באיברים, לא ל-RA.\n- ד' (עיכוב הרצפטור ל-IL-5) — IL-5 קשור ל-eosinophils ומחלות אלרגיות (אסתמה אאוזינופילית, EGPA), לא ל-RA.\n\nמקור: Harrison's Principles of Internal Medicine 22e, ch.354.",
+"e": "## הסבר\n\n**התשובה הנכונה: ב' — עיכוב הרצפטור ל-IL-6**\n\nTocilizumab ו-Sarilumab הם נוגדנים מונוקלונליים נגד הרצפטור של IL-6, ומהווים טיפול ביולוגי יעיל ב-Rheumatoid Arthritis. IL-6 הוא ציטוקין מרכזי בפתוגנזה של RA — מקדם דלקת סינוביאלית, פעילות אוסטיאוקלסטים והרס סחוס.\n\n**למה התשובות האחרות שגויות:**\n- א' (עיכוב IL-6 הציטוקין עצמו) — אין תרופות מאושרות ב-RA הפועלות באופן זה. Olamkicept ניסיוני בלבד.\n- ג' (עיכוב IL-2) — Basiliximab (anti-IL-2R) משמש למניעת דחיית שתל באיברים, לא ל-RA.\n- ד' (עיכוב הרצפטור ל-IL-5) — IL-5 קשור ל-eosinophils ומחלות אלרגיות (אסתמה אאוזינופילית, EGPA), לא ל-RA.\n\nמקור: Harrison's Principles of Internal Medicine 22e, ch.370.",
 "ti": 13,
 "e_issue": true,
 "st": "anemia_rbc"
