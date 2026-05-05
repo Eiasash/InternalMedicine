@@ -22,7 +22,7 @@ Modular ES module PWA with Vite build tooling.
 
 | Resource | Count |
 |----------|-------|
-| Questions | 1,472 MCQs |
+| Questions | 1,556 MCQs |
 | Topics | 24 subspecialties |
 | Study Notes | 24 |
 | Flashcards | 155 |

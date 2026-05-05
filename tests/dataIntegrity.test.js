@@ -229,3 +229,50 @@ describe('tabs.json', () => {
     expect(tabs).toBeDefined();
   });
 });
+
+// ── doc currency: stale-question-count regression guard (2026-05-05) ──
+//
+// Pnimit's questions.json has grown from 1,472 → 1,556 over recent ingestion
+// passes. README.md drifted at "1,472 MCQs" while CLAUDE.md was kept current
+// at 1,556 — caught by web-Claude doc audit on 2026-05-05.
+//
+// This mirrors the Geri repo's STALE_COUNTS guard: scan repo-root docs for
+// past Q-count totals, allow lines with explicit historical-context markers.
+// To declare a new "current" total: drop the now-current number from
+// STALE_COUNTS below. To document a past number legitimately: include
+// `stale`, `obsolete`, `legacy`, `historical`, `pre-`, `(was`, or `CHANGELOG`
+// on the same line.
+
+describe('doc currency: stale Q-count regression guard', () => {
+  test('repo-root docs have no current-state stale Q-count claims', () => {
+    const repoRoot = resolve(import.meta.dirname, '..');
+    const DOC_FILES = ['CLAUDE.md', 'README.md', 'IMPROVEMENTS.md'];
+    // Past live totals that should never appear without a historical marker.
+    // Add a new value here once questions.json has moved past it AND docs
+    // have been refreshed.
+    const STALE_COUNTS = ['1,472', '1472'];
+    const HISTORICAL_MARKERS = [
+      'stale', 'Stale', 'STALE',
+      'obsolete', 'legacy', 'historical',
+      'pre-', '(was', 'was ~', 'CHANGELOG',
+    ];
+    const fs = require('fs');
+    const violations = [];
+    for (const rel of DOC_FILES) {
+      const abs = resolve(repoRoot, rel);
+      if (!fs.existsSync(abs)) continue;
+      const lines = fs.readFileSync(abs, 'utf-8').split('\n');
+      lines.forEach((line, i) => {
+        const hits = STALE_COUNTS.filter((s) => line.includes(s));
+        if (hits.length === 0) return;
+        const exempt = HISTORICAL_MARKERS.some((m) => line.includes(m));
+        if (!exempt) {
+          violations.push(
+            `${rel}:${i + 1}: stale count [${hits.join(', ')}] without historical marker — line: ${line.trim().slice(0, 120)}`
+          );
+        }
+      });
+    }
+    expect(violations).toEqual([]);
+  });
+});
