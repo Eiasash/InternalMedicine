@@ -131,6 +131,20 @@ describe('service worker (sw.js)', () => {
     expect(sw).toContain('supabase-backup');
   });
 
+  // Sibling-parity guard (Geri tests/serviceWorker.test.js): the
+  // background-sync handler reads pending_sync from IDB and clears it
+  // after a successful POST. Without these guards a refactor could
+  // silently drop the read or the cleanup, breaking the offline-write
+  // recovery path.
+  test('reads pending_sync from IndexedDB', () => {
+    expect(sw).toContain('pending_sync');
+    expect(sw).toContain('indexedDB.open');
+  });
+
+  test('clears pending_sync after successful backup', () => {
+    expect(sw).toMatch(/delete.*pending_sync|objectStore.*delete/s);
+  });
+
   test('has SKIP_WAITING message handler', () => {
     expect(sw).toContain('SKIP_WAITING');
   });
