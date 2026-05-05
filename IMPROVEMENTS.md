@@ -4,6 +4,47 @@ Rolling audit log for `audit-fix-deploy` runs. Most recent at top.
 
 ---
 
+## 2026-05-05 — v10.4.13 deep audit (audit-only, no behavior change)
+
+**Trigger:** workspace-wide deep audit pass across the 4 medical PWAs (Geriatrics, InternalMedicine, FamilyMedicine, ward-helper). IM's just-shipped state is v10.4.13 (Track-Q sibling propagation, cloud backup write path 401 fix landed today).
+
+**Outcome:** 🟢 audit-only — backlog has no real engineering items that fit the 4-hour cross-repo budget. **No code change, no trinity bump, no live witness gate.**
+
+### Watch-item spot-checks (all green)
+
+| Watch item | File | Status |
+|---|---|---|
+| Honest-stats null-on-sparse-input (v9.92.x baseline) | `tests/honestStats.test.js` | exists, runs in `npm run verify` |
+| Auto-restore-on-login gate (qOk+qNo=0 + no SR + suppress) | `tests/postLoginRestore.test.js:58-89` | `_isFreshState` covers the 3-condition gate |
+| `package.json` 4-part `+.0` quirk | `tests/regressionGuards.test.js:436` | `expect(pkg.version).toBe(\`${appVer}.0\`)` — pinning the deliberate convention per CLAUDE.md |
+| HARRISON_PDF_MAP URL-encode regression (v10.4.3 fix) | `src/core/constants.js` | grep `%[0-9A-F]{2}` clean — only hits a CHANGELOG narrative quote |
+| Track-Q backup_set RPC round-trip | `src/features/cloud.js:152-159` | RPC URL + `{p_app:'pnimit', p_id, p_data}` body shape live; verify-deploy.sh witnessed v10.4.13 today |
+
+### `npm run verify` — clean
+
+Full pre-push gate ran green. 692+ tests pass across 35+ files (per latest baseline; lockstep with the v10.4.13 propagation).
+
+### Backlog items NOT shipped (with rationale)
+
+| Item | Why not shipped this pass |
+|---|---|
+| `shared/fsrs.js isChronicFail()` Boolean-coercion patch | Cross-repo coordinated bump (Geri + IM + FM in lockstep) — needs explicit 3-repo session. R3+ candidate per `IMPROVEMENTS.md` v10.4.4 R2 deferral. |
+| Vite 6→8 / ESLint 9→10 majors | Cross-repo coordinated, plugin compat verification needed. R3+ candidate. |
+| `@vitest/coverage-v8` config block | Speculative — coverage % is noisy on a hand-tested codebase. YAGNI per cross-repo skill convention. |
+| Live RLS sanity pass on `krmlzwwelqvlfslwltol` | Supabase MCP requires interactive OAuth. Owned by Toranot CI cron pattern (proposed in FM `IMPROVEMENTS.md`). |
+| Per-topic-per-year content gaps (38 zero cells) | Content-authoring task, not engineering. |
+| Topic 17/19/21 zero session-tag overlap (Allergy, Pain/Palliative, Toxicology) | Same — content authoring, not in-scope. |
+
+### Web Claude lane
+
+`claude/web-doc-currency-20260505` is open on origin. This audit deliberately did NOT touch `CLAUDE.md` or `tests/docCurrency.test.js` to leave that lane clean for web Claude's PR/merge.
+
+### PAT audit
+
+No GitHub PAT, Anthropic API key, or Supabase service-role key shapes appeared in this terminal session's visible context. If other concurrent sessions exposed any, rotate per `~/.claude/CLAUDE.md` security rules.
+
+---
+
 ## 2026-05-01 — v10.4.4 audit-fix-deploy Round 2 (deeper-dig)
 
 **Trigger:** user-requested R2 deeper-dig run after R1 (commit `688afab`, v10.4.3). Same day; v10.4.3 was already live (Actions green, sw.js `pnimit-v10.4.3`).
