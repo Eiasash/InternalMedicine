@@ -20,7 +20,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 - **Entry point**: `pnimit-mega.html` (155-line HTML shell) → `src/ui/app.js` (ES module)
 - **Deployment**: Push to `main` → GitHub Actions builds with Vite → deploys `dist/` to Pages
 - **Sibling apps**: Shlav A Mega (geriatrics) + Mishpacha Mega (family medicine) — all three share `shared/fsrs.js` (byte-identical, canonical md5 `cea66a0435…`) and the same Supabase project `krmlzwwelqvlfslwltol` (labeled "Toranot" in the dashboard)
-- **Current version**: v10.4.3 (as of 2026-05-01) — `HARRISON_PDF_MAP[458]` URL-encoding fix + 28-test `auditExpansion.test.js` (24-topic contract, PDF-on-disk integrity, EXAM_YEARS coverage, IMA-bias picker, 9.76 backup-restore regression). Bumped past sibling-shipped 10.4.2 (Dark Mode CSS) which landed during the audit.
+- **Current version**: v10.4.13 — `HARRISON_PDF_MAP[458]` URL-encoding fix + 28-test `auditExpansion.test.js` (24-topic contract, PDF-on-disk integrity, EXAM_YEARS coverage, IMA-bias picker, 9.76 backup-restore regression). Bumped past sibling-shipped 10.4.2 (Dark Mode CSS) which landed during the audit.
 
 ---
 
