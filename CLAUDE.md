@@ -20,7 +20,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 - **Entry point**: `pnimit-mega.html` (155-line HTML shell) → `src/ui/app.js` (ES module)
 - **Deployment**: Push to `main` → GitHub Actions builds with Vite → deploys `dist/` to Pages
 - **Sibling apps**: Shlav A Mega (geriatrics) + Mishpacha Mega (family medicine) — all three share `shared/fsrs.js` (byte-identical, canonical md5 `cea66a0435…`) and the same Supabase project `krmlzwwelqvlfslwltol` (labeled "Toranot" in the dashboard)
-- **Current version**: v10.4.13 — `HARRISON_PDF_MAP[458]` URL-encoding fix + 28-test `auditExpansion.test.js` (24-topic contract, PDF-on-disk integrity, EXAM_YEARS coverage, IMA-bias picker, 9.76 backup-restore regression). Bumped past sibling-shipped 10.4.2 (Dark Mode CSS) which landed during the audit.
+- **Current version**: v10.4.14 — Cloud-sync API key with user account (sibling-paired with Geriatrics v10.64.48 / FamilyMedicine v1.21.6). API key (`pnimit_apikey` localStorage) now travels in cloudBackup payload via existing `backup_set` RPC, restored client-side in `applyRestorePayload` so cross-device login carries the key automatically. Two-line change in `src/features/cloud.js`. Backwards-compat: legacy backups without `_apikey` ignored via typeof check.
 
 ---
 

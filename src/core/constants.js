@@ -35,7 +35,7 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.13';
+export const APP_VERSION='10.4.14';
 export const CHANGELOG={
   '10.4.13': [
     '☁️ Cloud backup 401 truly fixed — Track-Q sibling propagation. v10.4.12 made the 401 toast actionable (route + focus); this release fixes the root cause. Phase 2 (2026-04-29) migrated reads to SECURITY DEFINER RPC backup_get but left writes on direct POST /rest/v1/pnimit_backups. The new sb_publishable_* key format interacts differently with RLS than the legacy anon JWT — direct INSERTs return 401/PG-42501 even with permissive policies. v10.4.12 misdiagnosed this as "user-scoped ids require auth"; actually a key-format/role-context regression. Same backup_set SECURITY DEFINER RPC that fixed Geriatrics v10.64.42 (deployed in shared Supabase project krmlzwwelqvlfslwltol) — client now POSTs to /rest/v1/rpc/backup_set with p_app:"pnimit". Server-side now() eliminates client clock-skew back-dates. Tested e2e: 200 OK + correct read-back via existing backup_get path.',
