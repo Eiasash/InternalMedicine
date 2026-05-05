@@ -149,13 +149,18 @@ export async function cloudBackup(){
     let mockHist=[],sessions=[];
     try{mockHist=JSON.parse(localStorage.getItem('pnimit_mock_hist')||'[]');}catch(e){}
     try{sessions=JSON.parse(localStorage.getItem('pnimit_sessions')||'[]');}catch(e){}
-    const payload={id:_sbDeviceId(),data:{...G.S,_mockHist:mockHist,_sessions:sessions},updated_at:new Date().toISOString()};
-    // Single atomic upsert via PostgREST `Prefer: resolution=merge-duplicates`.
-    // Replaces the prior POST→409→PATCH retry chain (race-prone, double-write on conflict).
-    const res=await fetch(SUPA_URL+'/rest/v1/pnimit_backups',{
+    const _bundled={...G.S,_mockHist:mockHist,_sessions:sessions};
+    // v10.4.13 (Track-Q sibling propagation): write path migrated to SECURITY
+    // DEFINER RPC backup_set, mirroring the Phase-2 read path (backup_get).
+    // Direct PostgREST INSERT was returning 401/PG-42501 under the new
+    // sb_publishable_* key format even with permissive RLS — the RPC bypasses
+    // RLS via SECURITY DEFINER and uses server-side now() (no clock skew).
+    // Fixed in shared Supabase project krmlzwwelqvlfslwltol; same RPC powers
+    // Geriatrics v10.64.42 and FamilyMedicine.
+    const res=await fetch(SUPA_URL+'/rest/v1/rpc/backup_set',{
       method:'POST',
-      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
-      body:JSON.stringify(payload)
+      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({p_app:'pnimit',p_id:_sbDeviceId(),p_data:_bundled})
     });
     if(res.ok){
       toast('✅ Progress backed up to cloud!\nDevice ID: '+_sbDeviceId().slice(0,12)+'...','info');
