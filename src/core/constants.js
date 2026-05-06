@@ -37,6 +37,18 @@ export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & EC
 // Version & changelog
 export const APP_VERSION='10.4.17';
 export const CHANGELOG={
+  '10.4.17': [
+    '🔑 _handleLogin reads api_key from auth_login_user response — saves a cloudRestore round-trip on flaky networks. Companion to the 2026-05-06 Supabase migration that added api_key column to app_users + auto-sync trigger from cloudBackup writes. _handleLogin now calls setApiKey(r.api_key) on successful login, AFTER setAuthSession (typeof guard for backwards compat with older RPC versions). Empty string clears (parity with backup-payload-based path which still works in parallel). Sibling-paired with Geri v10.64.50 / Mishpacha v1.21.14 — all three apps share the auth_login_user RPC contract on Supabase project krmlzwwelqvlfslwltol.',
+  ],
+  '10.4.16': [
+    '🛡️ Pre-emptive defensive toLowerCase guards in src/ui/more-view.js. The FM 7-hour chaos run on 2026-05-05 caught 4,890 pageerrors from item.q.toLowerCase()/n.topic.toLowerCase()/d.name.toLowerCase() crashes when any data record had a missing field. Pre-emptively wrapped the same-shape search code with (field||\'\').toLowerCase() before chaos hits IM. Sibling-shared with FM v1.21.13 (a). One bad data record poisoned every keystroke in FM; this defense ensures IM cannot regress the same way.',
+  ],
+  '10.4.15': [
+    '🐛 P0 fix — startTimedQ ReferenceError in engine.js. The setTimeout closure called bare startTimedQ but engine.js does not import it; on tab-switch + return the timed-quiz countdown threw ReferenceError silently, leaving the question frozen. Fix: bind startTimedQ on G in app.js after import, replace setTimeout(startTimedQ, 100) with setTimeout(()=>G.startTimedQ&&G.startTimedQ(), 100). Same fix shipped sibling-paired in FM v1.21.13 (c).',
+  ],
+  '10.4.14': [
+    '☁️ Cloud-sync API key with user account — Anthropic API key (pnimit_apikey localStorage) is now included in the cloudBackup() payload sent via backup_set RPC, and restored client-side in applyRestorePayload() during cloudRestore / post-login auto-restore. Effect: log in on a new device → API key arrives with the rest of your progress, no manual re-entry. Backwards compat: legacy backup rows without _apikey are ignored (typeof rowData._apikey === "string" guard) so existing users see no behavior change until their next backup. Sibling-paired with Geri v10.64.48 / Mishpacha v1.21.12.',
+  ],
   '10.4.13': [
     '☁️ Cloud backup 401 truly fixed — Track-Q sibling propagation. v10.4.12 made the 401 toast actionable (route + focus); this release fixes the root cause. Phase 2 (2026-04-29) migrated reads to SECURITY DEFINER RPC backup_get but left writes on direct POST /rest/v1/pnimit_backups. The new sb_publishable_* key format interacts differently with RLS than the legacy anon JWT — direct INSERTs return 401/PG-42501 even with permissive policies. v10.4.12 misdiagnosed this as "user-scoped ids require auth"; actually a key-format/role-context regression. Same backup_set SECURITY DEFINER RPC that fixed Geriatrics v10.64.42 (deployed in shared Supabase project krmlzwwelqvlfslwltol) — client now POSTs to /rest/v1/rpc/backup_set with p_app:"pnimit". Server-side now() eliminates client clock-skew back-dates. Tested e2e: 200 OK + correct read-back via existing backup_get path.',
   ],
