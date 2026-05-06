@@ -8,7 +8,7 @@ export function renderStudy(){
 let h=`<div class="sec-t">📚 Study Notes</div><div class="sec-s">Internal Medicine Board Prep · Harrison's 22e + Required Articles</div>`;
 h+=`<input class="search-box" placeholder="Search topics..." data-action="filter-notes" id="nfilt">`;
 const fv=document.getElementById('nfilt')?.value?.toLowerCase()||'';
-G.NOTES.filter(n=>n.topic.toLowerCase().includes(fv)||n.notes.toLowerCase().includes(fv)).forEach(n=>{
+G.NOTES.filter(n=>(n.topic||'').toLowerCase().includes(fv)||(n.notes||'').toLowerCase().includes(fv)).forEach(n=>{
 const i=n.id;
 h+=`<div class="card"><button class="acc-h" data-action="toggle-note" data-id="${i}">
 <div style="display:flex;align-items:center;gap:8px"><span style="font-weight:700;font-size:12px">${n.topic}</span>
