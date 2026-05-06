@@ -27,6 +27,14 @@ export default defineConfig({
       reporter: ['text', 'html', 'json-summary'],
       include: ['src/**/*.js'],
       exclude: ['**/node_modules/**', '**/dist/**', 'tests/**', 'shared/**'],
+      // Ratchet floor: set just below current baseline (measured 2026-05-06).
+      // Raise these when coverage improves; never lower without a written reason.
+      thresholds: {
+        statements: 16,
+        branches: 13,
+        functions: 18,
+        lines: 19,
+      },
     },
   },
 });
