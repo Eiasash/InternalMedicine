@@ -20,7 +20,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 - **Entry point**: `pnimit-mega.html` (155-line HTML shell) → `src/ui/app.js` (ES module)
 - **Deployment**: Push to `main` → GitHub Actions builds with Vite → deploys `dist/` to Pages
 - **Sibling apps**: Shlav A Mega (geriatrics) + Mishpacha Mega (family medicine) — all three share `shared/fsrs.js` (byte-identical, canonical md5 `cea66a0435…`) and the same Supabase project `krmlzwwelqvlfslwltol` (labeled "Toranot" in the dashboard)
-- **Current version**: v10.4.14 — Cloud-sync API key with user account (sibling-paired with Geriatrics v10.64.48 / FamilyMedicine v1.21.6). API key (`pnimit_apikey` localStorage) now travels in cloudBackup payload via existing `backup_set` RPC, restored client-side in `applyRestorePayload` so cross-device login carries the key automatically. Two-line change in `src/features/cloud.js`. Backwards-compat: legacy backups without `_apikey` ignored via typeof check.
+- **Current version**: v10.4.15 — startTimedQ ReferenceError fix (sibling-paired with Mishpacha v1.21.13). 7h × 15-user chaos run on 2026-05-05 caught 38 `startTimedQ is not defined` pageerrors — `engine.js` called the bare name inside `setTimeout` but couldn't import it (would create engine→quiz-view→track-view→engine circular dep). Bound on `G` in app.js boot, engine.js now uses `G.startTimedQ`.
 
 ---
 
