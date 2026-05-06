@@ -157,7 +157,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 ├── questions/images/            # 134 question images
 ├── syllabus/P0064-2025.pdf     # Official IMA syllabus
 │
-├── tests/                      # 654 tests across 34 files
+├── tests/                      # 756 tests across 40 files
 │   ├── dataIntegrity.test.js   # Question schema, duplicates, topic coverage
 │   ├── appIntegrity.test.js    # Module structure, SW version sync, security
 │   ├── appLogic.test.js        # Core quiz logic patterns
@@ -167,6 +167,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 │   ├── sharedFsrs.test.js      # FSRS algorithm unit tests
 │   ├── auditExpansion.test.js  # 24-topic + HARRISON_PDF_MAP + IMA-bias picker + 9.76 backup-restore (v10.4.2)
 │   ├── postLoginRestore.test.js # auto-restore-on-login flow (v10.4.0)
+│   ├── apiKeyLoginRestore.test.js # api-key cloud sync v10.4.14-17 (cloudBackup _apikey, startTimedQ G-binding, defensive toLowerCase, _handleLogin r.api_key)
 │   └── (plus textbookChapters, parserBleedGuard, debugConsole, auth, studyPlanAlgorithm, regressionGuards, fsrsDeadline, …)
 │
 └── .github/workflows/
@@ -224,7 +225,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 ### Local Dev
 ```bash
 npm run dev          # Vite dev server (port 3737, auto-reload)
-npm test             # 654 tests via vitest
+npm test             # 756 tests via vitest
 npm run build        # Production build → dist/ (Vite bundle + static assets)
 npm run build:vite   # Vite-only build (no asset copy)
 npm run lint         # ESLint
@@ -320,8 +321,8 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Past exams | 7 sessions (2020–2025) |
 | Harrison chapters | ~69 PDFs |
 | Articles | 10 |
-| Test files | 34 |
-| Tests | 654 |
+| Test files | 40 |
+| Tests | 756 |
 | CI workflows | 5 (ci, integrity-guard, weekly-audit, distractor-autopsy, deploy) |
 
 ---
