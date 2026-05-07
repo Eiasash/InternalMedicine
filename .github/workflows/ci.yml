@@ -176,7 +176,7 @@ jobs:
       # ── Install + Test + Build ──
       - name: Install dependencies
         run: npm ci
-      - name: Run tests
-        run: npx vitest run
+      - name: Run tests with coverage gate
+        run: npx vitest run --coverage
       - name: Verify production build
         run: bash scripts/build.sh
