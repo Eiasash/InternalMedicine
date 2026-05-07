@@ -20,7 +20,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 - **Entry point**: `pnimit-mega.html` (155-line HTML shell) → `src/ui/app.js` (ES module)
 - **Deployment**: Push to `main` → GitHub Actions builds with Vite → deploys `dist/` to Pages
 - **Sibling apps**: Shlav A Mega (geriatrics) + Mishpacha Mega (family medicine) — all three share `shared/fsrs.js` (byte-identical, canonical md5 `cea66a0435…`) and the same Supabase project `krmlzwwelqvlfslwltol` (labeled "Toranot" in the dashboard)
-- **Current version**: v10.4.17 — Login response carries api_key (Supabase migration 2026-05-06: app_users.api_key column + auth_login_user returns api_key + auto-sync trigger from backup writes). On successful login, calls setApiKey(r.api_key) directly — saves a cloudRestore round-trip. Sibling-paired with Geriatrics v10.64.50 / Mishpacha v1.21.14.
+- **Current version**: v10.4.18 — Auth-error UX port from ward-helper PR #100 (v1.39.13). `_handleChangePassword` no longer renders bare `שגיאה` — maps invalid_password/invalid_credentials/weak_password/network/bad_response to friendly Hebrew, falls through to `שגיאה (code): message` for unknown codes so users can self-diagnose. No breadcrumb infra in this repo, so the wh `changePassword.start/.ok/.err` traces are intentionally omitted.
 
 ---
 
