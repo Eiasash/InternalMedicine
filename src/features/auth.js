@@ -338,13 +338,28 @@ async function _handleChangePassword() {
   if (r.ok) {
     _dispatchAuthEvent('change-password');
     toast('✅ הסיסמה שונתה', 'success');
-  } else {
-    const map = {
-      invalid_credentials: 'הסיסמה הנוכחית שגויה',
-      weak_password: 'הסיסמה החדשה קצרה מדי',
-    };
-    toast('❌ ' + (map[r.error] || r.message || r.error), 'info');
+    return;
   }
+  // Error UX: never render bare 'שגיאה'. Always include the error code (and
+  // server message when present) so users can self-diagnose / report. Mirrors
+  // ward-helper PR #100 pattern. Keep wording in lockstep with sibling PWAs.
+  let msg;
+  if (r.error === 'invalid_password' || r.error === 'invalid_credentials') {
+    msg = 'סיסמה ישנה שגויה';
+  } else if (r.error === 'weak_password') {
+    msg = 'סיסמה חדשה חלשה — לפחות 6 תווים, לא רק ספרות.';
+  } else if (r.error === 'network' || r.error === 'bad_response') {
+    msg = `בעיית רשת. בדוק חיבור ונסה שוב.${r.message ? ` (${r.message})` : ''}`;
+  } else if (r.error && r.message) {
+    msg = `שגיאה (${r.error}): ${r.message}`;
+  } else if (r.error) {
+    msg = `שגיאה: ${r.error}`;
+  } else if (r.message) {
+    msg = `שגיאת שרת: ${r.message}`;
+  } else {
+    msg = 'שגיאה לא ידועה. נסה שוב או דווח על הבעיה.';
+  }
+  toast('❌ ' + msg, 'info');
 }
 
 function _handleLogout() {

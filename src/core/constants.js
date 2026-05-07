@@ -35,8 +35,11 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.17';
+export const APP_VERSION='10.4.18';
 export const CHANGELOG={
+  '10.4.18': [
+    '🛡️ Auth-error UX — _handleChangePassword no longer renders bare `שגיאה`. Maps invalid_password/invalid_credentials → "סיסמה ישנה שגויה", weak_password → bilingual hint, network/bad_response → networking msg with optional server message in parens. Unknown codes still surface code+message (`שגיאה (X): Y`) so users can self-diagnose. Cross-port from ward-helper PR #100 (v1.39.13) — sibling auth UIs share the same flat RPC response shape so the pattern transplants cleanly. No breadcrumb infra in this repo, so the wh `changePassword.start/.ok/.err` traces are intentionally omitted.',
+  ],
   '10.4.17': [
     '🔑 _handleLogin reads api_key from auth_login_user response — saves a cloudRestore round-trip on flaky networks. Companion to the 2026-05-06 Supabase migration that added api_key column to app_users + auto-sync trigger from cloudBackup writes. _handleLogin now calls setApiKey(r.api_key) on successful login, AFTER setAuthSession (typeof guard for backwards compat with older RPC versions). Empty string clears (parity with backup-payload-based path which still works in parallel). Sibling-paired with Geri v10.64.50 / Mishpacha v1.21.14 — all three apps share the auth_login_user RPC contract on Supabase project krmlzwwelqvlfslwltol.',
   ],
