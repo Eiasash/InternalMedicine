@@ -35,8 +35,11 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.18';
+export const APP_VERSION='10.4.19';
 export const CHANGELOG={
+  '10.4.19': [
+    '🏆 Leaderboard write goes through SECURITY DEFINER RPC (pnimit_leaderboard_upsert). Direct-POST path was working (table accepts ISO ts via timestamptz auto-cast) but vulnerable to the sb_publishable_* key + RLS failure mode that already broke backups (Track-Q precedent in Geri). RPC bypasses RLS. accuracy is GENERATED ALWAYS in the table schema and is computed automatically — RPC must NOT assign it. Sibling-aligned with mishpacha/shlav RPCs.',
+  ],
   '10.4.18': [
     '🛡️ Auth-error UX — _handleChangePassword no longer renders bare `שגיאה`. Maps invalid_password/invalid_credentials → "סיסמה ישנה שגויה", weak_password → bilingual hint, network/bad_response → networking msg with optional server message in parens. Unknown codes still surface code+message (`שגיאה (X): Y`) so users can self-diagnose. Cross-port from ward-helper PR #100 (v1.39.13) — sibling auth UIs share the same flat RPC response shape so the pattern transplants cleanly. No breadcrumb infra in this repo, so the wh `changePassword.start/.ok/.err` traces are intentionally omitted.',
   ],

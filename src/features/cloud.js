@@ -25,12 +25,16 @@ if(est==null)return{skipped:'no_est',answered:totalAnswered};
 const streak=G.S.streak||0;
 const readiness=est;
 let uid=getUserId();
-const payload={uid,answered:totalAnswered,correct:totalCorrect,streak,readiness,ts:new Date().toISOString()};
+// Use SECURITY DEFINER RPC instead of direct table POST. Direct POSTs
+// silently fail with PG 42501 under sb_publishable_* keys
+// (project_supabase_publishable_key_rls.md); the RPC bypasses RLS.
+// Migration: supabase/migrations/20260508000000_leaderboard_upsert.sql
+const rpcPayload={p_uid:uid,p_answered:totalAnswered,p_correct:totalCorrect,p_streak:streak,p_readiness:readiness,p_ts:new Date().toISOString()};
 try{
-  const res=await fetch(SUPA_URL+'/rest/v1/pnimit_leaderboard',{
+  const res=await fetch(SUPA_URL+'/rest/v1/rpc/pnimit_leaderboard_upsert',{
     method:'POST',
-    headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Prefer':'resolution=merge-duplicates'},
-    body:JSON.stringify(payload)
+    headers:{'Content-Type':'application/json','apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON},
+    body:JSON.stringify(rpcPayload)
   });
   if(!res.ok){console.warn('Leaderboard submit non-ok',res.status);return{submitted:false,status:res.status};}
   return{submitted:true};
