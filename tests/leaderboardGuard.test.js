@@ -78,11 +78,17 @@ describe('submitLeaderboardScore \u2014 threshold guard', () => {
     expect(result).toEqual({ submitted: true });
     expect(fetch).toHaveBeenCalledTimes(1);
     const [url, init] = fetch.mock.calls[0];
-    expect(url).toContain('/rest/v1/pnimit_leaderboard');
+    // Post-migration 20260508: write goes through SECURITY DEFINER RPC, not direct table POST.
+    expect(url).toContain('/rest/v1/rpc/pnimit_leaderboard_upsert');
     expect(init.method).toBe('POST');
     const payload = JSON.parse(init.body);
-    expect(payload.answered).toBe(20);
-    expect(payload.readiness).toBe(82);
+    expect(payload.p_answered).toBe(20);
+    expect(payload.p_readiness).toBe(82);
+    // RPC contract — every required parameter is present.
+    expect(payload.p_uid).toBeTruthy();
+    expect(typeof payload.p_correct).toBe('number');
+    expect(typeof payload.p_streak).toBe('number');
+    expect(typeof payload.p_ts).toBe('string');
   });
 
   it('reports submitted:false when server rejects', async () => {

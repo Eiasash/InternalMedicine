@@ -20,7 +20,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 - **Entry point**: `pnimit-mega.html` (155-line HTML shell) → `src/ui/app.js` (ES module)
 - **Deployment**: Push to `main` → GitHub Actions builds with Vite → deploys `dist/` to Pages
 - **Sibling apps**: Shlav A Mega (geriatrics) + Mishpacha Mega (family medicine) — all three share `shared/fsrs.js` (byte-identical, canonical md5 `cea66a0435…`) and the same Supabase project `krmlzwwelqvlfslwltol` (labeled "Toranot" in the dashboard)
-- **Current version**: v10.4.18 — Auth-error UX port from ward-helper PR #100 (v1.39.13). `_handleChangePassword` no longer renders bare `שגיאה` — maps invalid_password/invalid_credentials/weak_password/network/bad_response to friendly Hebrew, falls through to `שגיאה (code): message` for unknown codes so users can self-diagnose. No breadcrumb infra in this repo, so the wh `changePassword.start/.ok/.err` traces are intentionally omitted.
+- **Current version**: v10.4.19 — Leaderboard write switched to SECURITY DEFINER RPC (`pnimit_leaderboard_upsert`). Direct-POST path was working but vulnerable to the sb_publishable_* RLS failure mode that already broke backups in Geri (Track-Q precedent). RPC bypasses RLS. `accuracy` is GENERATED ALWAYS in the table schema and computed automatically — RPC must NOT assign it. Sibling-aligned with mishpacha/shlav RPCs, all written 2026-05-08.
 
 ---
 
