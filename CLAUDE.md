@@ -20,6 +20,15 @@ These four rules are the floor. They override any conflicting guidance later in 
 - **Entry point**: `pnimit-mega.html` (155-line HTML shell) → `src/ui/app.js` (ES module)
 - **Deployment**: Push to `main` → GitHub Actions builds with Vite → deploys `dist/` to Pages
 - **Sibling apps**: Shlav A Mega (geriatrics) + Mishpacha Mega (family medicine) — all three share `shared/fsrs.js` (byte-identical, canonical md5 `cea66a0435…`) and the same Supabase project `krmlzwwelqvlfslwltol` (labeled "Toranot" in the dashboard)
+## Chaos doctor-bot v4 (2026-05-08)
+
+`scripts/chaos-doctor-bot-v4.mjs` — sibling-port of FM's canonical v4 bot. IM-specific adaptations: navigates to `[data-action="go"][data-tab="quiz"]` first (IM lands on `lib` tab, not quiz), reads explanation from `.explain-box`. Pure helper at `scripts/lib/extractJson.mjs` (10 unit tests in `tests/chaosBotV4ExtractJson.test.js`).
+
+- **Run**: `CLAUDE_API_KEY=$key CHAOS_USERS=10 CHAOS_DURATION_MS=21600000 CHAOS_HEADLESS=1 CHAOS_COST_CAP_USD=8 node scripts/chaos-doctor-bot-v4.mjs`
+- **First overnight run** 2026-05-08: 91% appIdx capture rate, surfaced 59 distinct flagged IM questions where AI judge said the app's answer was wrong. Top hits include EBV-vs-CMV (Hairy Leukoplakia), ALI compression-stockings-vs-heparin data-entry error, NNT math contradictions. See `~/repos/FINDINGS_v4_2026-05-08.md`.
+
+## Current version
+
 - **Current version**: v10.4.19 — Leaderboard write switched to SECURITY DEFINER RPC (`pnimit_leaderboard_upsert`). Direct-POST path was working but vulnerable to the sb_publishable_* RLS failure mode that already broke backups in Geri (Track-Q precedent). RPC bypasses RLS. `accuracy` is GENERATED ALWAYS in the table schema and computed automatically — RPC must NOT assign it. Sibling-aligned with mishpacha/shlav RPCs, all written 2026-05-08.
 
 ---
