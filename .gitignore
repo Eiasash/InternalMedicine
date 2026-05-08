@@ -6,3 +6,15 @@ generated-*.json
 .DS_Store
 *.log
 scripts/__pycache__/
+
+# Local pre-edit snapshots of questions.json (created by audit scripts/edits)
+data/questions.json.bak*
+
+# Chaos bot run artifacts — large per-run jsonl + screenshots, regenerable
+chaos-reports/v4-overnight-*/
+chaos-reports/*.log
+chaos-reports/*.jsonl
+
+# Auto-audit / triage snapshots — local-only working state
+.audit_logs/
+*.local-backup.json
