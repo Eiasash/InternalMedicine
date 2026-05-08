@@ -427,15 +427,18 @@ Validate the APP's claimed answer ${appLetter} against board-level internal-medi
     log.actions.push({ at: nowIso(), type: 'next' });
   }
   await sleep(rand(800, 1700));
-  // Leaderboard hook — fire window.showLeaderboard() every 25th answered.
+  // Leaderboard hook — prefer window.submitLeaderboardScore direct call
+  // (works from any tab); fall back to window.showLeaderboard which only
+  // submits when #leaderboard-box DOM is mounted. Sibling-aligned with Geri.
   log._lbCount = (log._lbCount || 0) + 1;
   if (log._lbCount % 25 === 0) {
     try {
       const fired = await page.evaluate(() => {
-        if (typeof window.showLeaderboard === 'function') { window.showLeaderboard(); return true; }
-        return false;
+        if (typeof window.submitLeaderboardScore === 'function') { window.submitLeaderboardScore(); return 'submit'; }
+        if (typeof window.showLeaderboard === 'function') { window.showLeaderboard(); return 'show'; }
+        return null;
       });
-      if (fired) log.actions.push({ at: nowIso(), type: 'leaderboard-submit', after: log._lbCount });
+      if (fired) log.actions.push({ at: nowIso(), type: 'leaderboard-submit', via: fired, after: log._lbCount });
     } catch (_) { /* swallow */ }
     await sleep(rand(800, 1500));
   }
