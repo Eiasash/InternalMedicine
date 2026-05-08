@@ -486,23 +486,37 @@ async function ensureOnPracticeQuiz(page, log) {
     await page.locator('[data-action]').first().waitFor({ state: 'attached', timeout: 12_000 });
   } catch (_) { return false; }
 
+  // Step 1b — IM-specific: G.tab='lib' is the boot default (src/ui/app.js:66).
+  // Click the quiz tab via [data-action="go"][data-tab="quiz"] to navigate
+  // before any of the quiz selectors can be found.
+  const quizTab = page.locator('[data-action="go"][data-tab="quiz"]').first();
+  if ((await quizTab.count().catch(() => 0)) > 0) {
+    await tryClick(quizTab, CONFIG.actionTimeoutMs).catch(() => {});
+    await sleep(rand(800, 1500));
+  }
+
   // Step 2: if a stem is visible AND a check-answer button exists, we're
-  // already in practice mode — done.
-  const stemVisible = await page.locator('h2.quiz-question, .quiz-question').count().catch(() => 0);
+  // already in practice mode — done. IM uses `<p class="heb">` for the stem
+  // (no `h2.quiz-question`); .heb fallback covers it.
+  const stemVisible = await page.locator('h2.quiz-question, .quiz-question, .heb').count().catch(() => 0);
   const checkVisible = await page.locator('[data-action="check-answer"]').count().catch(() => 0);
   if (stemVisible > 0 && checkVisible > 0) return true;
 
   // Step 3: if a stem is visible but no check button, we're in exam mode.
-  // Try to escape via filter click which sets filt and rebuilds the practice
-  // pool. Fall back to a fresh navigation.
+  // Reset state by navigating to the bare URL — drops exam state.
   if (stemVisible > 0 && checkVisible === 0) {
     log.actions.push({ at: nowIso(), type: 'mode-escape', from: 'exam-mode-detected' });
-    // Reset state by navigating to the bare URL — drops exam state.
     try {
       await page.goto(CONFIG.url, { waitUntil: 'domcontentloaded', timeout: CONFIG.navigationTimeoutMs });
       await page.waitForLoadState('networkidle', { timeout: 10_000 }).catch(() => {});
       await sleep(rand(1500, 2500));
     } catch (_) { /* fall */ }
+    // Re-click the quiz tab after reload.
+    const quizTab2 = page.locator('[data-action="go"][data-tab="quiz"]').first();
+    if ((await quizTab2.count().catch(() => 0)) > 0) {
+      await tryClick(quizTab2, CONFIG.actionTimeoutMs).catch(() => {});
+      await sleep(rand(800, 1500));
+    }
   }
 
   // Step 4: not in a quiz — try setting filter=all (lands on practice mode pool).
