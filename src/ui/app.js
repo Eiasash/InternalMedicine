@@ -320,6 +320,7 @@ _w.openHarrisonChapter = openHarrisonChapter;
 // exportCheatSheet: track-view delegation
 // Cloud & social
 _w.showLeaderboard = showLeaderboard;
+_w.submitLeaderboardScore = submitLeaderboardScore;
 _w.cloudBackup = cloudBackup; _w.cloudRestore = cloudRestore;
 
 // More
