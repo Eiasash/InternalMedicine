@@ -29,7 +29,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 
 ## Current version
 
-- **Current version**: v10.4.19 — Leaderboard write switched to SECURITY DEFINER RPC (`pnimit_leaderboard_upsert`). Direct-POST path was working but vulnerable to the sb_publishable_* RLS failure mode that already broke backups in Geri (Track-Q precedent). RPC bypasses RLS. `accuracy` is GENERATED ALWAYS in the table schema and computed automatically — RPC must NOT assign it. Sibling-aligned with mishpacha/shlav RPCs, all written 2026-05-08.
+- **Current version**: v10.4.20 — `window.submitLeaderboardScore` exposed for programmatic submit (chaos-bot leaderboard hook), pairing with v10.4.19's SECURITY DEFINER RPC (`pnimit_leaderboard_upsert`). Direct-POST path was vulnerable to the sb_publishable_* RLS failure mode that already broke backups in Geri (Track-Q precedent). RPC bypasses RLS. `accuracy` is GENERATED ALWAYS in the table schema and computed automatically — RPC must NOT assign it. Sibling-aligned with mishpacha/shlav RPCs.
 
 ---
 
