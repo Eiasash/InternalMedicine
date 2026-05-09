@@ -46,6 +46,7 @@ import { createWriteStream } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { extractJson } from './lib/extractJson.mjs';
+import { resolveAppVerdict, displayToCanonical } from './lib/optionResolver.mjs';
 
 const DEFAULT_URL = 'https://eiasash.github.io/InternalMedicine/';
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
@@ -305,8 +306,14 @@ async function doctorOneQuestion(page, workerId, log) {
     return { advanced: false, stemHash };
   }
 
-  // Click option + check
-  const optBtn = page.locator(`[data-action="pick"][data-i="${aiIdx}"]`).first();
+  // Click option + check.
+  // `aiIdx` is a DISPLAY position (the AI saw served-order options labeled
+  // A..D). The DOM's `data-i` attribute is a CANONICAL index. Translate
+  // before locating the button — without this step, when shuffle ≠ identity,
+  // the bot clicks the wrong option entirely.
+  const aiCanonicalIdx = displayToCanonical(q.options, aiIdx);
+  const aiClickIdx = aiCanonicalIdx == null ? aiIdx : aiCanonicalIdx;
+  const optBtn = page.locator(`[data-action="pick"][data-i="${aiClickIdx}"]`).first();
   await tryClick(optBtn, CONFIG.actionTimeoutMs).catch((e) => {
     log.bugs.push({ at: nowIso(), type: 'action-error', context: 'doctor-pick', message: e.message });
   });
@@ -324,10 +331,15 @@ async function doctorOneQuestion(page, workerId, log) {
   }
   await sleep(rand(900, 1700));
 
-  // Detect app's correct idx + explanation + source
+  // Detect app's correct idx + explanation + source.
+  // `appIdx` is a CANONICAL index (`data-i` on the .ok button). `aiIdx` is
+  // a DISPLAY position. Compare them in the same frame — translate appIdx
+  // into a display position via the served-options mapping, then compare.
   const appIdx = await detectAppCorrectIdx(page);
   const { explanation, source } = await extractExplanationAndSource(page);
-  const disagrees = appIdx != null && appIdx !== aiIdx;
+  const appVerdict = resolveAppVerdict(q.options, appIdx);
+  const appDisplayIdx = appVerdict ? appVerdict.displayIdx : null;
+  const disagrees = appDisplayIdx != null && appDisplayIdx !== aiIdx;
 
   // v4: methodology guard. If appIdx is null after a check click in practice
   // mode, our entry path probably fell back to exam mode. Log it so we can
@@ -350,22 +362,30 @@ async function doctorOneQuestion(page, workerId, log) {
     return { advanced: true, stemHash };
   }
 
-  // 2) Judge — v4 prompt validates the APP, not blends with AI's pick
-  const appLetter = 'ABCD'[appIdx];
+  // 2) Judge — v4 prompt validates the APP, not blends with AI's pick.
+  // The judge model's letter space is DISPLAY frame (it sees served options
+  // labeled A..D in the order they appear). `appIdx` is canonical, so we
+  // resolve it to (displayLetter, canonicalText) before writing the
+  // "App's claimed correct answer" sentence. Quoting the option TEXT (not
+  // just a letter) protects the prompt against any future served↔canonical
+  // drift — the model sees both the letter it's labeling and the exact
+  // option string the app says is correct.
+  const appLetter = appVerdict ? appVerdict.displayLetter : '?';
+  const appText = appVerdict ? appVerdict.canonicalText : '(unresolved)';
   const userPrompt2 = `Question (Hebrew):
 ${q.stem}
 
 Options:
 ${q.options.map((o, i) => `${'ABCD'[i]}. ${o.text}`).join('\n')}
 
-App's claimed correct answer: ${appLetter}
+App's claimed correct answer: ${appLetter} (${appText})
 App's explanation:
 ${(explanation || '(no explanation rendered)').slice(0, 1500)}
 ${source ? `\nApp's cited source: ${source}` : ''}
 
 (Context — NOT for adjudication: AI prior pick was ${aiLetter}: ${pickJson.why || 'no rationale'})
 
-Validate the APP's claimed answer ${appLetter} against board-level internal-medicine evidence.`;
+Validate the APP's claimed answer ${appLetter} (${appText}) against board-level internal-medicine evidence.`;
   let judgeResp = null;
   try { judgeResp = await callClaude(SYS_DOCTOR_JUDGE, userPrompt2, { maxTokens: 400 }); }
   catch (e) { log.bugs.push({ at: nowIso(), type: 'ai-error', context: 'judge', message: e.message }); }
@@ -397,13 +417,17 @@ Validate the APP's claimed answer ${appLetter} against board-level internal-medi
     log.actions.push({ at: nowIso(), type: 'ai-source', plausible: sourceJson.citation_plausible, citation: cite, conf: sourceJson.confidence });
   }
 
-  // Record finding
+  // Record finding.
+  // `appIdx` retains the raw canonical index (data-i) for backwards
+  // compatibility with v3+v4 records; new fields `appDisplayIdx` /
+  // `appLetter` reflect the served frame the judge actually saw.
   const finding = {
     workerId,
     stem: q.stem.slice(0, 300),
     options: q.options.map((o) => o.text.slice(0, 120)),
+    optionCanonicalIdx: q.options.map((o) => Number(o.idx)),
     aiLetter, aiIdx, aiWhy: pickJson.why || null, aiConf: pickJson.confidence,
-    appIdx, appLetter,
+    appIdx, appDisplayIdx, appLetter, appText,
     disagrees,
     judge: judgeJson,
     source: sourceJson,
