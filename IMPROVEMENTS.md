@@ -4,6 +4,103 @@ Rolling audit log for `audit-fix-deploy` runs. Most recent at top.
 
 ---
 
+## 2026-05-10 — v10.4.20 audit (audit-only, no behavior change)
+
+**Trigger:** user-invoked `audit-fix-deploy` § E (autonomous mode, override rules 1-4). IM is at v10.4.20 from 2026-05-08 (`window.submitLeaderboardScore` exposed for chaos-bot programmatic submit; pairs with v10.4.19's SECURITY DEFINER RPC `pnimit_leaderboard_upsert`).
+
+**Outcome:** 🟢 audit-only — every gate green, no real engineering issue surfaced. **No code change, no trinity bump, no PR, no live witness gate beyond the curl below.** Mirrors 2026-05-05 v10.4.13 precedent.
+
+### STEP 0 detection — confirmed
+
+- `pnimit-mega.html` ✓ + `src/core/constants.js` ✓
+- `package.json` name = `pnimit-mega` ✓, version = `10.4.20.0` (deliberate `+.0` 4-part suffix per `regressionGuards.test.js:436`)
+- branch `main`, working tree clean (only untracked `chaos-reports/` working artifact, gitignored per commit `8839b2c`)
+- Two-Claude check (`git fetch --all && git log --all --since="2 days ago"`) — no live `claude/web-*` lanes; last web lane `claude/web-pnimit-tier2-bleed-guard` merged in `2e09d55`
+
+### Audit checks — all green
+
+| Check | Result |
+|---|---|
+| `node scripts/sync-sw-version.cjs` | OK: version 10.4.20 (constants.js APP_VERSION === sw.js CACHE === dist/sw.js CACHE) |
+| `python3 scripts/check-innerhtml.py` | OK: No unsanitized innerHTML interpolation |
+| `python3 scripts/check-innerhtml-pieces.py` | OK: 8 sites, all sanitized or annotated |
+| `node scripts/harrison-hebrew-baseline.cjs --strict` | OK: 0 ≤ baseline 0 (1556 questions scanned) |
+| `npm test` | **805 tests pass / 805 / 46 files** (Vitest 4.1.5, 1.22s) |
+| `bash scripts/build.sh` | OK: dist 118M, CACHE=`pnimit-v10.4.20`, 13 cached paths verified, manifest fixed |
+| Total Q count | 1556 (matches CLAUDE.md target) |
+| Per-tag breakdown | 7 session-tags non-empty (2020:150, 2021-Jun:149, 2022-Jun:148, 2023-Jun:150, 2024-May:99, 2024-Oct:100, 2025-Jun:151) + Harrison:589 + Exam:20 |
+| 24-topic coverage (ti < 5) | 0 weak topics — every ti 0..23 has ≥ 5 Qs |
+| TOPICS / EXAM_FREQ / IMA_WEIGHTS lengths | 24 / 24 / 24 ✓ (all three exact length contract holds) |
+| HARRISON_PDF_MAP missing files | 0 |
+| Question `ch` refs without PDF map entry | 0 (no orphans) |
+| `shared/fsrs.js` git-hash | `89aa3940a942c03201d9d89db02a90665b2910a8` — **byte-identical** with Geriatrics + FamilyMedicine siblings ✓ |
+| Ungated `console.log` in `src/` | 0 |
+| TODO/FIXME in `src/` | 1 (benign content note in `constants.js:24` re: 2020 month-of-exam unresolved) |
+
+### Live witness — already PASS
+
+```
+$ curl -sL https://eiasash.github.io/InternalMedicine/sw.js | grep CACHE
+const CACHE='pnimit-v10.4.20';
+```
+
+Live serves `pnimit-v10.4.20`, exactly matching `src/core/constants.js`. No drift. No reason to re-deploy.
+
+### Watch-item spot-checks (all green)
+
+| Watch item | File | Status |
+|---|---|---|
+| Honest-stats null-on-sparse-input (v9.92.x baseline) | `tests/honestStats.test.js` | exists, runs in `npm run verify` |
+| Auto-restore-on-login gate (qOk+qNo=0 + no SR + suppress) | `tests/postLoginRestore.test.js` | covered |
+| `package.json` 4-part `+.0` quirk | `tests/regressionGuards.test.js:436` | locked, did NOT normalize |
+| HARRISON_PDF_MAP[458] silent-404 fix (v10.4.4) | `src/core/constants.js` | resolves; no orphans in scan |
+| Track-Q backup_set RPC round-trip | `src/features/cloud.js` | `pnimit_leaderboard_upsert` SECURITY DEFINER live as of v10.4.19 |
+| Chaos-bot v4 `window.submitLeaderboardScore` | `src/features/cloud.js` | exposed v10.4.20 (current) |
+| Parser-bleed q-stem-truncation guard | `tests/parserBleedGuard.test.js` | tier-2 guard added in PR #103 (web Claude lane) |
+| Chaos-bot v4 served↔canonical option-frame | `tests/chaosBotV4OptionResolver.test.js` | fix shipped in PR #104 (`198a35e`) |
+
+### Window-bindings reconciliation (NOT a drift)
+
+`grep -E "window\.X =" src/` returns 15 unique LHS assignments. CLAUDE.md says "16 (API surface)". Different denominators — CLAUDE.md's 16 includes HTML-shell `onclick=` users (`toggleStudyMode`, `showHelp`) that are *used* from `pnimit-mega.html` but assigned via different patterns. Total `window.X` references across `src/` + `pnimit-mega.html` = 44 unique; the docented "16" subset accounts for the API-surface bindings the architecture intentionally keeps. **No real divergence — do not refactor.**
+
+### CLAUDE.md count-drift (cosmetic, NOT shipped this pass)
+
+CLAUDE.md "Codebase Metrics" lists `Test files: 40 / Tests: 756` — actual is `46 / 805` (since 2026-05-08 chaos-bot PRs #100-104 added `chaosBotV4ExtractJson`, `chaosBotV4OptionResolver`, `parserBleedGuard`, `leaderboardGuard`, etc.). The `claude-md-drift-refresh` monthly routine (1st-of-month 09:00 Jerusalem) will pick this up; manual fix would conflict with that lane. **Defer.**
+
+### Backlog NOT shipped (with rationale)
+
+| Item | Why not shipped this pass |
+|---|---|
+| Chaos-bot v4 IM findings (~59 distinct flagged Qs from 2026-05-08 overnight) | Per `feedback_bot_triage_queues_have_high_false_positives` memory: do NOT auto-flip from bot output. Sample 10 per-Q sheets first. Content-authoring task with curator-override risk; not engineering. |
+| `shared/fsrs.js isChronicFail()` Boolean-coercion patch | Cross-repo coordinated bump (Geri + IM + FM in lockstep). R3+ candidate. Already deferred 2026-05-05. |
+| Vite 7→8 / ESLint 9→10 majors | Cross-repo plugin compat verification needed. R3+ candidate. |
+| `@vitest/coverage-v8` config block | Speculative — coverage % is noisy on hand-tested codebase. Per CLAUDE.md rule #2 ("Nothing speculative"). |
+| Live RLS sanity pass on `krmlzwwelqvlfslwltol` | Supabase MCP requires interactive OAuth; owned by Toranot CI cron pattern. |
+| `window.submitLeaderboardScore` documentation in CLAUDE.md "Remaining Window Bindings" table | Cosmetic; will land in monthly drift refresh routine. |
+
+### PAT audit
+
+No GitHub PAT, Anthropic API key, or Supabase service-role key shapes appeared in this terminal session's visible context. `chaos-reports/` is gitignored.
+
+### Output template
+
+```
+INTERNALMEDICINE — AUDIT-ONLY (no PR, no deploy)
+Profile: § E
+Detection: ✓ (pnimit-mega.html + constants.js + name=pnimit-mega + version 10.4.20.0)
+Audit findings: 0 actionable issues
+Fixes shipped: 0
+Tests added: 0
+Trinity bump: n/a — local v10.4.20 == live v10.4.20, no reason to bump
+CI status: n/a — no push this cycle (last green build at 198a35e)
+verify-deploy.sh: n/a — no deploy this cycle (live curl already confirms pnimit-v10.4.20)
+Live URL: https://eiasash.github.io/InternalMedicine/ — serving v10.4.20 ✓
+IMPROVEMENTS.md: updated ✓
+Open follow-ups: chaos-bot v4 findings triage (content task), CLAUDE.md test-count refresh (monthly drift routine)
+```
+
+---
+
 ## 2026-05-05 — v10.4.13 deep audit (audit-only, no behavior change)
 
 **Trigger:** workspace-wide deep audit pass across the 4 medical PWAs (Geriatrics, InternalMedicine, FamilyMedicine, ward-helper). IM's just-shipped state is v10.4.13 (Track-Q sibling propagation, cloud backup write path 401 fix landed today).
