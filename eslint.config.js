@@ -81,6 +81,16 @@ export default [
     },
   },
   {
-    ignores: ['dist/', 'node_modules/', 'harrison_chapters.json', 'data/', 'scripts/'],
+    files: ['sw.js'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'script',
+      globals: {
+        ...globals.serviceworker,
+      },
+    },
+  },
+  {
+    ignores: ['dist/', 'node_modules/', 'harrison_chapters.json', 'data/', 'scripts/', 'chaos-reports/'],
   },
 ];
