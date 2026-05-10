@@ -31,8 +31,6 @@ vi.mock('../src/sr/spaced-repetition.js', () => ({
 
 import {
   EXAM_FREQ,
-  EXAM_YEARS,
-  TOPICS,
   IMA_WEIGHTS,
   APP_VERSION,
 } from '../src/core/constants.js';

@@ -303,7 +303,7 @@ describe('Harrison citation correctness — vs harrison_22e_toc.json', () => {
   // when 311 is actually "Approach to the Patient with Critical Illness"
   // and 321 is "Acute Kidney Injury".
   it('titled Harrison citations share at least one strong token with the canonical title', () => {
-    const titledRe = /Harrison\s*Ch\s*(\d+)\s*(?:[—–\-]|\()\s*([^·\n)]{3,150}?)\s*(?:[·\n)]|$)/gi;
+    const titledRe = /Harrison\s*Ch\s*(\d+)\s*(?:[—–-]|\()\s*([^·\n)]{3,150}?)\s*(?:[·\n)]|$)/gi;
     const mismatches = [];
     const seenPair = new Set();
     questions.forEach((q, i) => {
@@ -336,7 +336,7 @@ describe('Harrison citation correctness — vs harrison_22e_toc.json', () => {
   // GUARD 3: self-consistency — the same Harrison Ch # cited in N different
   // questions should always carry the same TITLE. Drift = curator typo.
   it('same Harrison Ch is cited with consistent title across the question bank', () => {
-    const titledRe = /Harrison\s*Ch\s*(\d+)\s*(?:[—–\-]|\()\s*([^·\n)]{3,150}?)\s*(?:[·\n)]|$)/gi;
+    const titledRe = /Harrison\s*Ch\s*(\d+)\s*(?:[—–-]|\()\s*([^·\n)]{3,150}?)\s*(?:[·\n)]|$)/gi;
     const titlesByCh = new Map(); // ch -> Map(normalizedTitle -> [{idx,field,title}])
     const norm = (s) => s.replace(/[֑-ׇ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
     questions.forEach((q, i) => {
@@ -358,7 +358,7 @@ describe('Harrison citation correctness — vs harrison_22e_toc.json', () => {
     const conflicts = [];
     for (const [ch, bucket] of titlesByCh) {
       if (bucket.size > 1) {
-        conflicts.push({ ch, variants: Array.from(bucket.entries()).map(([k, recs]) => ({ title: recs[0].title, count: recs.length })) });
+        conflicts.push({ ch, variants: Array.from(bucket.entries()).map(([, recs]) => ({ title: recs[0].title, count: recs.length })) });
       }
     }
     expect(conflicts, `Harrison Ch cited with conflicting titles:\n${conflicts.slice(0, 5).map(c => `  Ch${c.ch}: ${c.variants.map(v => `"${v.title}"×${v.count}`).join(' vs ')}`).join('\n')}`).toEqual([]);
