@@ -18,3 +18,7 @@ chaos-reports/*.jsonl
 # Auto-audit / triage snapshots — local-only working state
 .audit_logs/
 *.local-backup.json
+
+# 2026-05-10: chaos-bot output + test coverage (prevent git add -A near-misses)
+chaos-reports/
+coverage/
