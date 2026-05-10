@@ -118,3 +118,34 @@ describe('a11y v10.4.22 — residual contrast clears', () => {
     expect(componentsCss).toMatch(/^\.pill\.on\s*\{\s*background:\s*var\(--app-primary\)/m);
   });
 });
+
+describe('a11y v10.4.23 — skip-link mobile out-of-bounds guard', () => {
+  // Browser-tested 2026-05-10 against the FM/Geri sibling: legacy
+  // `.skip-link { left:-9999px }` inflated documentElement.scrollWidth to
+  // 10385px on 390-wide mobile viewports. Body had overflow-x:hidden but
+  // <html> had overflow-x:visible, so the phantom width affected Lighthouse,
+  // pinch-zoom math, and JS reading scrollWidth. Fix replaces off-screen
+  // pattern with WCAG canonical clip-rect visually-hidden pattern. These
+  // guards prevent drive-by reintroduction. Sibling-aligned with Geri
+  // tests/a11yIssue125.test.js + FM tests/a11yContrast2026-05-10.test.js.
+
+  it('.skip-link rule does NOT use left:-9999 (or other large negative)', () => {
+    const m = utilitiesCss.match(/\.skip-link\s*\{[^}]+\}/);
+    expect(m, '.skip-link CSS rule must exist').not.toBeNull();
+    expect(m[0]).not.toMatch(/left:\s*-\d{3,}/);
+  });
+
+  it('.skip-link rule uses the visually-hidden clip pattern', () => {
+    const m = utilitiesCss.match(/\.skip-link\s*\{[^}]+\}/);
+    expect(m).not.toBeNull();
+    expect(m[0]).toMatch(/clip:\s*rect\(\s*0(?:px)?\s*,\s*0(?:px)?\s*,\s*0(?:px)?\s*,\s*0(?:px)?\s*\)/);
+  });
+
+  it('.skip-link:focus restores width/height for visible focus state', () => {
+    const m = utilitiesCss.match(/\.skip-link:focus\s*\{[^}]+\}/);
+    expect(m, '.skip-link:focus rule must exist').not.toBeNull();
+    expect(m[0]).toMatch(/width:\s*auto/);
+    expect(m[0]).toMatch(/height:\s*auto/);
+    expect(m[0]).toMatch(/clip:\s*auto/);
+  });
+});
