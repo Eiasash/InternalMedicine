@@ -91,3 +91,30 @@ describe('a11y v10.4.21 — JS render inline-style fixes', () => {
     expect(quizViewJs).not.toMatch(/data-action="start-sd"[^>]*background:#fef2f2;color:#dc2626/);
   });
 });
+
+describe('a11y v10.4.22 — residual contrast clears', () => {
+  let componentsCss = '';
+  beforeAll(() => {
+    componentsCss = readFileSync(resolve(import.meta.dirname, '../src/styles/components.css'), 'utf-8');
+  });
+
+  it('✎ note button unset-state uses slate-600 (#475569, 6.04:1), not slate-500 (#64748b, 4.34:1)', () => {
+    // Both ✎ note and ☆ bookmark share the same inline ternary pattern
+    expect(quizViewJs).toMatch(/color:\$\{[^}]*qnotes[^}]*\?'#92400e':'#475569'\}/);
+    expect(quizViewJs).not.toMatch(/color:\$\{[^}]*qnotes[^}]*\?'#92400e':'#64748b'\}/);
+  });
+
+  it('pnimit-skin .tabs button.on scoped override uses blue-700 (#1d4ed8, 8.6:1 AAA)', () => {
+    expect(layoutCss).toMatch(/html\[data-skin="pnimit"\]\s+\.tabs button\.on\s*\{\s*color:\s*#1d4ed8\s*\}/);
+    expect(layoutCss).toMatch(/body\.dark\[data-skin="pnimit"\]\s+\.tabs button\.on[^{]*\{\s*color:\s*var\(--app-primary\)\s*\}/);
+  });
+
+  it('pnimit-skin .pill.on scoped override uses blue-700 background (#1d4ed8, 8.6:1 with white)', () => {
+    expect(componentsCss).toMatch(/html\[data-skin="pnimit"\]\s+\.pill\.on\s*\{\s*background:\s*#1d4ed8\s*\}/);
+    expect(componentsCss).toMatch(/body\.dark\[data-skin="pnimit"\]\s+\.pill\.on[^{]*\{\s*background:\s*var\(--app-primary\)\s*\}/);
+  });
+
+  it('base .pill.on rule is unchanged (still uses --app-primary for non-pnimit skins)', () => {
+    expect(componentsCss).toMatch(/^\.pill\.on\s*\{\s*background:\s*var\(--app-primary\)/m);
+  });
+});

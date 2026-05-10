@@ -4,6 +4,10 @@
 /* === Pills === */
 .pill { display: inline-flex; align-items: center; min-height: 32px; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; transition: .15s; cursor: pointer }
 .pill.on { background: var(--app-primary); color: var(--app-on-primary); box-shadow: 0 2px 6px rgba(59,130,246,.25) }
+/* v10.4.22 a11y fix: pnimit-skin --app-primary is #3b82f6 (sky-500); white-on-sky-500 = 3.81:1, fails AA. Override pill.on bg to blue-700 (#1d4ed8) at 8.6:1 with white text. Same scoped pattern as FM v1.21.20 mishpacha-skin override. */
+html[data-skin="pnimit"] .pill.on { background: #1d4ed8 }
+body.dark[data-skin="pnimit"] .pill.on,
+html[data-skin="pnimit"] body.dark .pill.on { background: var(--app-primary) }
 .pill:not(.on) { background: #fff; color: #64748b; border: 1px solid #e2e8f0 }
 
 /* === Buttons === */
