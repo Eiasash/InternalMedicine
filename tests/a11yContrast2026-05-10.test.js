@@ -1,0 +1,93 @@
+/**
+ * Accessibility regression guards for IM v10.4.21 contrast port from
+ * Geri v10.64.82-87 + FM v1.21.20-21 a11y campaigns.
+ *
+ * Live playwright re-audit on v10.4.20 found 26 contrast violations
+ * (gradient-blindspot dm-btn false positives excluded). Each test below
+ * pins one of the 10 fixes shipped in v10.4.21.
+ */
+
+import { describe, it, expect, beforeAll } from 'vitest';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+
+let html = '';
+let utilitiesCss = '';
+let layoutCss = '';
+let quizViewJs = '';
+
+beforeAll(() => {
+  const root = resolve(import.meta.dirname, '..');
+  html = readFileSync(resolve(root, 'pnimit-mega.html'), 'utf-8');
+  utilitiesCss = readFileSync(resolve(root, 'src/styles/utilities.css'), 'utf-8');
+  layoutCss = readFileSync(resolve(root, 'src/styles/layout.css'), 'utf-8');
+  quizViewJs = readFileSync(resolve(root, 'src/ui/quiz-view.js'), 'utf-8');
+});
+
+describe('a11y v10.4.21 — html dir + headerVer', () => {
+  it('document root has explicit dir="rtl"', () => {
+    expect(html).toMatch(/<html[^>]*lang="he"[^>]*dir="rtl"/);
+  });
+
+  it('#headerVer span uses slate-300 (#cbd5e1) for dark gradient bg, not slate-600 (#475569)', () => {
+    const m = html.match(/<span id="headerVer"[^>]*>/);
+    expect(m).toBeTruthy();
+    expect(m[0]).toContain('color:#cbd5e1');
+    expect(m[0]).not.toContain('color:#475569');
+  });
+});
+
+describe('a11y v10.4.21 — utilities.css', () => {
+  it('skip-link bg is #2563eb (4.78:1 AA), not #3b82f6 (3.68:1)', () => {
+    const m = utilitiesCss.match(/\.skip-link\s*\{[^}]+\}/);
+    expect(m).toBeTruthy();
+    expect(m[0]).toContain('background: #2563eb');
+    expect(m[0]).not.toContain('background: #3b82f6');
+  });
+
+  it('.tt-icon uses slate-300 bg + slate-700 fg (5.65:1 AA), not slate-200 + slate-500 (3.77:1)', () => {
+    const m = utilitiesCss.match(/\.tt-icon\s*\{[^}]+\}/);
+    expect(m).toBeTruthy();
+    expect(m[0]).toContain('background: #cbd5e1');
+    expect(m[0]).toContain('color: #475569');
+    expect(m[0]).not.toContain('background: #e2e8f0');
+  });
+});
+
+describe('a11y v10.4.21 — layout.css (.hdr p + tabs)', () => {
+  it('.hdr p uses slate-300 (#cbd5e1) on dark gradient, not slate-500 (#64748b)', () => {
+    expect(layoutCss).toMatch(/\.hdr p \{[^}]*color: #cbd5e1/);
+    expect(layoutCss).not.toMatch(/\.hdr p \{[^}]*color: #64748b/);
+  });
+
+  it('.tabs button:not(.on) uses slate-500 (#64748b, 4.65:1 AA), not slate-400 (#94a3b8)', () => {
+    expect(layoutCss).toMatch(/\.tabs button:not\(\.on\) \{[^}]*color: #64748b/);
+    expect(layoutCss).not.toMatch(/\.tabs button:not\(\.on\) \{[^}]*color: #94a3b8/);
+  });
+});
+
+describe('a11y v10.4.21 — JS render inline-style fixes', () => {
+  it('quiz counter span uses slate-500 inline (was slate-400)', () => {
+    // Line ~333: <span style="color:#64748b;font-size:10px">${G.qi+1}/${G.pool.length}</span>
+    expect(quizViewJs).toMatch(/<span style="color:#64748b;font-size:10px">\$\{G\.qi\+1\}\/\$\{G\.pool\.length\}<\/span>/);
+    expect(quizViewJs).not.toMatch(/<span style="color:#94a3b8;font-size:10px">\$\{G\.qi\+1\}\/\$\{G\.pool\.length\}/);
+  });
+
+  it('stats wrapper uses slate-500 inline (✅ qOk / ❌ qNo / 📊 pct row)', () => {
+    // Line ~501: <div style="...color:#64748b">
+    expect(quizViewJs).toMatch(/border-top:1px solid #f1f5f9;font-size:10px;color:#64748b">[^]*?<span>✅/);
+    expect(quizViewJs).not.toMatch(/border-top:1px solid #f1f5f9;font-size:10px;color:#94a3b8">/);
+  });
+
+  it('"👁 לא יודע" give-up button uses amber-800 (#92400e, 6.89:1 AAA), not amber-600', () => {
+    // Line ~351 give-up button
+    expect(quizViewJs).toMatch(/data-action="give-up"[^>]*background:#fff3e0;color:#92400e/);
+    expect(quizViewJs).not.toMatch(/data-action="give-up"[^>]*background:#fff3e0;color:#d97706/);
+  });
+
+  it('"💀 Sudden Death" button uses red-700 (#b91c1c, 6.27:1 AA), not red-600 (#dc2626)', () => {
+    // Line ~264 start-sd button
+    expect(quizViewJs).toMatch(/data-action="start-sd"[^>]*background:#fef2f2;color:#b91c1c/);
+    expect(quizViewJs).not.toMatch(/data-action="start-sd"[^>]*background:#fef2f2;color:#dc2626/);
+  });
+});

@@ -1,7 +1,8 @@
 /* === Header === */
 .hdr { background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; padding: 10px 16px; position: sticky; top: 0; z-index: 40 }
 .hdr h1 { font-size: 16px; font-weight: 700; letter-spacing: -.5px }
-.hdr p { font-size: 11px; color: #64748b; margin-top: 1px }
+/* v10.4.21 a11y fix: .hdr is dark slate gradient; slate-500 (#64748b) on it is ~3:1 fails AA. slate-300 (#cbd5e1) is ~12:1 AAA. Same fix as Geri v82-v87 / FM v1.21.21. */
+.hdr p { font-size: 11px; color: #cbd5e1; margin-top: 1px }
 .dm-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; padding: 4px; opacity: .7 }
 
 /* === Bottom Tabs === */
@@ -9,7 +10,8 @@
 .tabs::-webkit-scrollbar { display: none }
 .tabs button { flex: 0 0 auto; min-width: 52px; min-height: 44px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 6px 6px; transition: .15s; font-size: 10px; font-weight: 600 }
 .tabs button.on { color: var(--app-primary) }
-.tabs button:not(.on) { color: #94a3b8 }
+/* v10.4.21 a11y fix: slate-400 (#94a3b8) on white tabs bar is 2.69:1 fails AA. slate-500 (#64748b) hits 4.65:1 AA. */
+.tabs button:not(.on) { color: #64748b }
 .tabs .ic { font-size: 18px }
 
 /* === Content Area === */

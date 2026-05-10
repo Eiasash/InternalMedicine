@@ -261,7 +261,7 @@ h+=`<div style="display:flex;justify-content:space-between;align-items:center;ma
 <div class="sec-t">Quiz</div>
 <div style="display:flex;gap:4px;flex-wrap:wrap">
 <button data-action="start-exam" class="btn btn-d" style="font-size:10px;padding:5px 12px" aria-label="Start exam with 150 questions">📋 Exam (150q)</button><button data-action="start-mock" class="btn btn-d" style="font-size:10px;padding:5px 12px;background:#7c3aed;color:#fff" aria-label="Start mock exam with 100 questions">🎯 Mock (100q)</button>
-<span class="tt-wrap"><button data-action="start-sd" class="btn" style="font-size:10px;padding:5px 12px;background:#fef2f2;color:#dc2626" aria-label="Start sudden death mode">💀 Sudden Death</button><button data-action="start-oncall" class="btn" style="font-size:10px;padding:5px 12px;background:#0f172a;color:#7dd3fc" aria-label="Start on-call mode">🌙 On-call</button><button class="tt-icon" tabindex="0" aria-label="Info about sudden death mode">ⓘ</button><div class="tt-box">One wrong answer ends the session. Builds high-stakes exam pressure.</div></span>
+<span class="tt-wrap"><button data-action="start-sd" class="btn" style="font-size:10px;padding:5px 12px;background:#fef2f2;color:#b91c1c" aria-label="Start sudden death mode">💀 Sudden Death</button><button data-action="start-oncall" class="btn" style="font-size:10px;padding:5px 12px;background:#0f172a;color:#7dd3fc" aria-label="Start on-call mode">🌙 On-call</button><button class="tt-icon" tabindex="0" aria-label="Info about sudden death mode">ⓘ</button><div class="tt-box">One wrong answer ends the session. Builds high-stakes exam pressure.</div></span>
 ${!G.pomoActive?'<span class="tt-wrap"><button data-action="start-pomo" class="btn" style="font-size:10px;padding:5px 12px;background:#ecfdf5;color:#047857" aria-label="Start pomodoro timer">⏱️ Pomodoro</button><button class="tt-icon" tabindex="0" aria-label="Info about pomodoro timer">ⓘ</button><div class="tt-box">25min focus / 5min break study timer. Helps maintain concentration.</div></span>':''}
 </div>
 </div>`;
@@ -330,7 +330,7 @@ h+=`<div style="display:flex;justify-content:space-between;align-items:center;ma
 <div style="display:flex;align-items:center;gap:8px">
 <button data-action="speak-q" class="speech-btn${G.isSpeaking?' speaking':''}" title="Read aloud" aria-label="Read question aloud">🔊</button>
 <button data-action="share-q" id="shbtn" class="share-btn" title="Share" aria-label="Share question">📋</button><button data-action="toggle-qnote" style="font-size:14px;width:34px;height:34px;min-height:34px;background:${(G.S.qnotes&&G.S.qnotes[G.pool[G.qi]])?'#fef3c7':'#f1f5f9'};color:${(G.S.qnotes&&G.S.qnotes[G.pool[G.qi]])?'#92400e':'#64748b'};border:1px solid ${(G.S.qnotes&&G.S.qnotes[G.pool[G.qi]])?'#fbbf24':'#e2e8f0'};border-radius:50%;cursor:pointer;display:inline-flex;align-items:center;justify-content:center" title="Note for this question" aria-label="Note">✎</button><button data-action="toggle-bk" style="font-size:14px;width:34px;height:34px;min-height:34px;background:${bk?'#fef3c7':'#f1f5f9'};color:${bk?'#92400e':'#64748b'};border:1px solid ${bk?'#fbbf24':'#e2e8f0'};border-radius:50%;cursor:pointer;display:inline-flex;align-items:center;justify-content:center" title="Bookmark" aria-label="Bookmark">${bk?'★':'☆'}</button>
-<span style="color:#94a3b8;font-size:10px">${G.qi+1}/${G.pool.length}</span>
+<span style="color:#64748b;font-size:10px">${G.qi+1}/${G.pool.length}</span>
 </div></div>`;
 h+=`<p class="heb" style="font-size:13px;font-weight:700;line-height:1.7;margin-bottom:${q.img?'10':'16'}px" dir="${heDir(q.q)}">${q.q}</p>`;
 if(G.S.qnotes&&G.S.qnotes[G.pool[G.qi]]){h+=`<div style="margin:0 0 12px;padding:8px 10px;background:#fffbeb;border-right:3px solid #d97706;border-radius:8px;font-size:11px;line-height:1.6;color:#475569;text-align:right;cursor:pointer" dir="${heDir(G.S.qnotes[G.pool[G.qi]])}" data-action="toggle-qnote" title="Click to edit">📝 ${sanitize(G.S.qnotes[G.pool[G.qi]])}</div>`;}
@@ -348,7 +348,7 @@ h+=`<button class="${cls}${blurCls}${autopsyCls}" data-action="pick" data-i="${o
 h+=`<div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">`;
 if(!G.ans){
 const _confLabel='';
-h+=`<div style="display:flex;gap:6px;align-items:center"><button class="btn btn-p" data-action="check-answer"${G.sel===null?' disabled':''} aria-label="Check answer" style="flex:1;min-height:44px">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" data-action="give-up" style="background:#fff3e0;color:#d97706;font-size:11px;padding:6px 14px;min-height:44px" aria-label="Show answer">👁 לא יודע</button>`;h+=`</div>`;}
+h+=`<div style="display:flex;gap:6px;align-items:center"><button class="btn btn-p" data-action="check-answer"${G.sel===null?' disabled':''} aria-label="Check answer" style="flex:1;min-height:44px">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" data-action="give-up" style="background:#fff3e0;color:#92400e;font-size:11px;padding:6px 14px;min-height:44px" aria-label="Show answer">👁 לא יודע</button>`;h+=`</div>`;}
 else{
 // POST-ANSWER: Next button FIRST
 h+=`<div style="display:flex;gap:6px;align-items:stretch;margin-bottom:8px">`;
@@ -498,8 +498,8 @@ if(G.ans&&!G.examMode){
     h+=`</div></details>`;
   }
 }
-h+=`<div style="display:flex;gap:16px;margin-top:10px;padding-top:8px;border-top:1px solid #f1f5f9;font-size:10px;color:#94a3b8">
-<span>✅ ${G.S.qOk}</span><span>❌ ${G.S.qNo}</span><span>📊 ${pct}</span>${G.S.sr[G.pool[G.qi]]?.at?`<span style="color:#94a3b8">⏱${G.S.sr[G.pool[G.qi]].at}s avg</span>`:""}</div>`;
+h+=`<div style="display:flex;gap:16px;margin-top:10px;padding-top:8px;border-top:1px solid #f1f5f9;font-size:10px;color:#64748b">
+<span>✅ ${G.S.qOk}</span><span>❌ ${G.S.qNo}</span><span>📊 ${pct}</span>${G.S.sr[G.pool[G.qi]]?.at?`<span style="color:#64748b">⏱${G.S.sr[G.pool[G.qi]].at}s avg</span>`:""}</div>`;
 h+=`</div>`;
 return h;
 }
