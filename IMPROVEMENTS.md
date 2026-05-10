@@ -4,6 +4,107 @@ Rolling audit log for `audit-fix-deploy` runs. Most recent at top.
 
 ---
 
+## 2026-05-10 — IM ESLint 10 warning categorization (mirror of FM #49)
+
+**Read-only triage of the lint surface revealed by PR #106 (Vite 8 + ESLint 10 majors upgrade), after PR #107 (4 `no-useless-assignment` cleared).** No source-code edits in this pass. Goal: size the drain, identify what can be auto-fixed vs config-fixed vs hand-drained, and surface what cannot.
+
+**Actual counts** (from `npx eslint . --format json` on commit at `claude/term-im-lint-categorization-2026-05-10` head):
+
+| Severity | Count |
+|---|---|
+| Warnings | 180 |
+| Errors  | 37 |
+| **Total** | **217** |
+
+### By rule
+
+| Rule | Severity | Count | Top files |
+|---|---|---|---|
+| `no-unused-vars` | warn | 179 | `src/ui/app.js` (86), `src/features/cloud.js` (16), `src/ui/library-view.js` (10), `src/ui/track-view.js` (9), `src/quiz/engine.js` (7) |
+| `no-undef` | error | 34 | `sw.js` (34) — *only file* |
+| `no-useless-assignment` | error | 2 | `src/debug/console.js:97`, `src/ui/app.js:80` |
+| `no-empty` | error | 1 | `shared/install-promo.js:82` |
+| `prefer-const` | warn | 1 | `src/features/cloud.js:27` |
+
+**Severity vs FM delta worth noting:** IM's `eslint.config.js` keeps `no-unused-vars` at **warn** for `src/**` and `shared/**` (FM upgraded to **error** in src/). This is why IM's warn/error split is 180/37 vs FM's 187/63 even though IM is the smaller surface (217 vs 250). Promoting IM to error to match the sibling is a separate editorial decision — not in scope for this audit.
+
+### `no-unused-vars` subcategorization (179 total)
+
+| Sub-pattern | Count | Auto-fixable? | Notes |
+|---|---|---|---|
+| `unused-binding` (declared / `let`-assigned but never read; `Allowed unused vars must match /^_/u`) | 111 | No | ESLint 10 does not auto-fix declared variables (semantically unsafe — could hide intentional declarations or destructuring slots). |
+| `caught-error` (bare `'X' is defined but never used`, no "Allowed" suffix) | 61 | No | These are `catch (e)` / `catch (_)` clauses. ESLint 10 changed `no-unused-vars`'s `caughtErrors` default from `'none'` (pre-9) to `'all'`. IM's config sets `argsIgnorePattern` and `varsIgnorePattern` but no `caughtErrorsIgnorePattern` — so `^_` doesn't shield catch params here. Two paths to clear (see drain strategy). |
+| `unused-arg` (`Allowed unused args must match /^_/u`) | 7 | No | Trivially satisfied by renaming param to `_<name>`. |
+
+**`no-undef` is environment-config noise, not real bugs:**
+- `sw.js` (34) — uses `self`, `caches`, `fetch`, `clients`, `URL`, `indexedDB`, `console`. Service-worker globals; needs `globals: globals.serviceworker` (or per-file override) in `eslint.config.js`. **Unlike FM, IM has zero chaos-reports noise** — IM's `eslint.config.js:84` already ignores `scripts/`.
+
+### Auto-fix reality check
+
+`npx eslint . --fix` will only clear **1 warning** (the `prefer-const` site). Per ESLint's `fix` field on each message:
+
+| Rule | Reported | Has `fix` payload | Has only `suggestions` |
+|---|---|---|---|
+| `prefer-const` | 1 | 1 | 0 |
+| `no-unused-vars` | 179 | 0 | 123 (suggestions, not auto-applied) |
+| `no-undef` | 34 | 0 | 0 |
+| `no-useless-assignment` | 2 | 0 | 0 |
+| `no-empty` | 1 | 0 | 1 |
+
+### By drain difficulty
+
+| Bucket | Count | Effort estimate |
+|---|---|---|
+| **TRIVIAL** — `prefer-const` (auto-fix), `no-undef` (config-only fix in `eslint.config.js`: add `serviceworker` globals for `sw.js`) | 1 + 34 = **35** | ~5 min total: one `--fix` invocation + one config-file edit. Lower than FM (55) only because IM has no chaos-reports noise. |
+| **TRIVIAL-EDITORIAL** — `caught-error` subset of `no-unused-vars` (61). Two options: (a) one-line config `caughtErrorsIgnorePattern: '^_'` + bulk rename `catch (e)` → `catch (_e)` across ~16 files, or (b) one-line config `caughtErrors: 'none'` to silence the rule for catch params (matches pre-ESLint-9 behavior, also silences future). | **61** | ~20 min for option (a); <2 min for option (b). **Surface the choice — don't pre-commit.** |
+| **SAFE-MANUAL** — `unused-arg` rename to `_<name>` | **7** | ~30s/site = ~5 min. Each site needs a glance to confirm the param is part of an externally-imposed signature (Promise constructor reject, event handler) rather than dead code. |
+| **MEDIUM-MANUAL** — `unused-binding` (111 declared/assigned but never read) | **111** | ~1 min/site = ~110 min if treated as bulk delete; faster if grouped by file (81 sit in `src/ui/app.js` alone — likely dead imports / leftover handler bindings from the v10.4.x window-binding reduction work). Half are likely safe deletions. |
+| **RISKY** — none | **0** | IM has **zero** `no-useless-escape` (FM had 9 in its hot-path `src/core/constants.js` and `tests/textbookChapters.test.js` regex ref-parsers). IM's `no-useless-assignment` (2 stragglers) is closer to SAFE-MANUAL than RISKY: PR #107 already cleared 4 of these by hand; the remaining 2 (`debug/console.js:97`, `app.js:80`) are mechanical dead-store deletions. |
+| **DEFER (cross-repo)** — `shared/install-promo.js:82` `no-empty` + `shared/install-promo.js` 1× var + `shared/fsrs.js:104` 1× catch | **3** | <2 min each, but `shared/` files are workspace-shared. Per `.shared/README.md`, fix in `.shared/install-promo.js` and propagate to all 6 siblings; `shared/fsrs.js` is byte-identical across the 3 medical PWAs (canonical md5 `71f9f2d4…`) — coordinate with Geri + FM. The `no-empty` site is the **same site** as FM's. Bundle into a coordinated workspace-level pass. |
+
+### Recommended drain strategy
+
+| PR | Scope | Risk | Reviewer cost |
+|---|---|---|---|
+| **PR1 (autonomous)** | `eslint.config.js` only — add `serviceworker` globals for `sw.js` (per-file or via override). Clears **34 `no-undef`** with zero source-code touch. | Low (config-only) | <2 min |
+| **PR2 (autonomous)** | `npx eslint . --fix` — clears **1 `prefer-const`** in `src/features/cloud.js:27` (`let uid` → `const uid`). 1-line diff. | Trivial | <2 min |
+| **PR3 (editorial decision needed)** | Either (a) add `caughtErrorsIgnorePattern: '^_'` + rename catch params (~16 files) or (b) set `caughtErrors: 'none'` (1-line silencer). Clears **61 `no-unused-vars`** in catch clauses. **Recommend asking user before this PR.** | Low | 1-line config or ~20-min rename |
+| **PR4 (semi-auto)** | Rename **7 `unused-arg`** params to `_<name>`. Mechanical edit, glance per site to confirm signature is externally-imposed. | Low | ~5 min |
+| **PR5 (semi-auto)** | Delete **2 `no-useless-assignment`** stragglers (`debug/console.js:97`, `app.js:80`) — mirrors PR #107's pattern. | Low | ~5 min |
+| **PR6 (manual, file-batched)** | Drain **111 `unused-binding`** by file — one PR for `src/ui/app.js` (81 sites, likely the bulk of dead imports), one for the long-tail (~30 sites across ~10 files). Visual diff per file. | Medium-Low (most are dead imports from earlier refactors) | ~30 min/PR × 2 PRs |
+| **(deferred)** | **3 cross-repo** `shared/` reports. Land in `.shared/install-promo.js` first, then propagate to all 6 siblings; `shared/fsrs.js` catch needs trinity-coordinated bump. Bundle into the next workspace-level `.shared/` propagation pass. | Cross-repo coordination | Per workspace policy, not per-repo |
+
+**Net**: PR1 + PR2 alone clear **35 of 217** (16%) for ~5 min of autonomous work and a near-zero-risk diff. PR3 option (b) bumps that to **96/217 (44%)** with one extra config line; PR3 option (a) achieves the same 96 with a more intent-preserving rename. PR4+PR5 add another **9** with light review. Bulk of the surface (111 unused bindings) is mechanical-but-volume work, best batched by file — and 73% of it lives in `src/ui/app.js` alone.
+
+### What I am NOT recommending
+
+- **Single mega-PR clearing all 217** — review fatigue, revert risk on `no-unused-vars` where each "dead" binding could be a load-bearing destructuring slot or an intentional re-export.
+- **Pre-committing the `caughtErrors` editorial choice** — both paths have trade-offs (option (a) preserves intent visibility, option (b) silences future too). Surface to user.
+- **Promoting `no-unused-vars` from `warn` to `error` in IM `src/**`** to match FM — that would mass-fail every existing PR; do this only after the queue is drained and as a separate decision.
+- **Bumping lint to a CI-gating step in this pass** — current state is that 217 lint reports do not block CI. Promoting lint-to-CI before draining the queue would mass-fail every existing PR. PR1+PR2 should land first; CI-gate is a separate later decision.
+- **Editing `shared/install-promo.js` or `shared/fsrs.js` in IM directly** — those files are workspace-shared. The `no-empty` fix needs to land in `.shared/install-promo.js` and be propagated to all 6 siblings in the same session, or `auto-audit` will open issues within 30 min. `shared/fsrs.js` (canonical md5 `71f9f2d4…`) is byte-identical across Geri/IM/FM — any edit needs all 3 in lockstep.
+
+### Sibling parity (vs FM PR #49)
+
+| Repo | Total | Warn | Error | TRIVIAL drainable in PR1+PR2 | RISKY |
+|---|---|---|---|---|---|
+| FM (PR #49 baseline) | 250 | 187 | 63 | 55 (22%) | 9 (`no-useless-escape`) |
+| IM (this audit) | **217** | 180 | 37 | **35 (16%)** — lower % only because IM has no chaos-reports noise (already ignored) | **0** |
+
+IM is the smaller and cleaner surface. With PR3 option (b) layered on, IM's drainable jumps to 96/217 (44%), beating FM's PR1+PR2 ratio. FM has executed PR1+PR2 (60/250 cleared, 24%) — IM PR1+PR2 of this plan should land at ~similar-or-better velocity given fewer config knobs to turn.
+
+### Mechanical reproducer for the next audit
+```bash
+cd C:\Users\User\repos\InternalMedicine
+npx eslint . --format json > /tmp/im_lint.json 2>/dev/null
+# (on Windows + Node, copy to C:/tmp/ first — Node sees /tmp as C:\tmp)
+node -e "JSON.parse(require('fs').readFileSync('C:/tmp/im_lint.json','utf8')).forEach(f => f.messages.forEach(m => console.log(f.filePath, m.line, m.ruleId, m.message)))"
+```
+
+**No version bump.** **No quartet bump** (`package.json` 4-part `10.4.20.0` left alone — regression test enforces). Memo-only PR; live verify-deploy still PASSES at v10.4.20.
+
+---
+
 ## 2026-05-10 — v10.4.20 audit (audit-only, no behavior change)
 
 **Trigger:** user-invoked `audit-fix-deploy` § E (autonomous mode, override rules 1-4). IM is at v10.4.20 from 2026-05-08 (`window.submitLeaderboardScore` exposed for chaos-bot programmatic submit; pairs with v10.4.19's SECURITY DEFINER RPC `pnimit_leaderboard_upsert`).
