@@ -35,8 +35,11 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.23';
+export const APP_VERSION='10.4.24';
 export const CHANGELOG={
+  '10.4.24': [
+    '♿ Header toolbar dark-on-dark fix — 3 of 4 `.dm-btn` toolbar buttons (🌓 ⚙️ ❓) were rendering at default browser ButtonText color (typically `rgb(0,0,0)`) on the .hdr dark slate gradient (#0f172a→#1e293b). Contrast ~1:1 → invisible buttons. Only the 👤 account button had explicit `color:#fff` inline. Browser-tested 2026-05-10 at 390×844 via Playwright. Fix: added `color:#fff; background:rgba(255,255,255,0.12); border-radius:50%; width:32px; height:32px;` to the .dm-btn rule + a `:hover` opacity bump. Sibling-aligned with Geri v10.64.90 (slate-800 text on slate-800 gradient end-stop) + FM v1.21.27 (PR shipped alongside). Trinity bumped 10.4.23 → 10.4.24 (3-part APP_VERSION + sw.js, 4-part package.json per IM convention).',
+  ],
   '10.4.23': [
     '♿ Mobile out-of-bounds fix — `.skip-link` no longer uses `left:-9999px`. Browser-tested 2026-05-10 against the FM/Geri sibling at 390×844 viewport via Playwright: legacy off-screen-positioning inflated `documentElement.scrollWidth` to 10385px (= 9999 abs(x) + 386 body width, exact). Body had `overflow-x:hidden` so users did not see lateral scroll, but `<html>` had `overflow-x:visible` so the phantom width still affected Lighthouse audits, pinch-zoom math, and any JS reading scrollWidth. Switched `src/styles/utilities.css` to the WCAG canonical visually-hidden clip pattern (`width:1px; height:1px; clip:rect(0,0,0,0); overflow:hidden; white-space:nowrap`); `:focus` restores `width:auto; height:auto; clip:auto`. Sibling-aligned with Geri v10.64.89 + FM v1.21.26. 3 new regression guards in tests/a11yContrast2026-05-10.test.js asserting (1) no `left:-\\d{3,}` literal in `.skip-link` rule, (2) `clip:rect(0,0,0,0)` present, (3) `:focus` restores width/height/clip. Trinity: APP_VERSION + sw.js + package.json (4-part) all aligned at 10.4.23.',
   ],

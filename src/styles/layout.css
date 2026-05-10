@@ -3,7 +3,9 @@
 .hdr h1 { font-size: 16px; font-weight: 700; letter-spacing: -.5px }
 /* v10.4.21 a11y fix: .hdr is dark slate gradient; slate-500 (#64748b) on it is ~3:1 fails AA. slate-300 (#cbd5e1) is ~12:1 AAA. Same fix as Geri v82-v87 / FM v1.21.21. */
 .hdr p { font-size: 11px; color: #cbd5e1; margin-top: 1px }
-.dm-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; padding: 4px; opacity: .7 }
+/* v10.4.24 a11y fix: .hdr is a dark slate gradient (#0f172a→#1e293b). Default button color (ButtonText, typically rgb(0,0,0)) on this gradient = ~1:1 contrast → invisible toolbar buttons. Browser-tested 2026-05-10: 4 .dm-btn buttons (🌓 ⚙️ ❓ 👤-fallback) rendered at rgb(0,0,0). White-on-white-tint matches sibling Geri v10.64.90 + FM v1.21.27 pattern. */
+.dm-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; padding: 4px; opacity: .9; color: #fff; background: rgba(255,255,255,0.12); border: none; border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer }
+.dm-btn:hover { opacity: 1; background: rgba(255,255,255,0.18) }
 
 /* === Bottom Tabs === */
 .tabs { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e2e8f0; display: flex; z-index: 50; box-shadow: 0 -2px 10px rgba(0,0,0,.06); padding-bottom: max(4px, env(safe-area-inset-bottom)); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none }
