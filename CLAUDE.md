@@ -29,7 +29,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 
 ## Current version
 
-- **Current version**: v10.4.21 — accessibility port from Geri v10.64.82-87 + FM v1.21.20-21. 10 contrast fixes covering header, tabs, tooltips, quiz counter, stats wrapper, "👁 לא יודע" + "💀 Sudden Death" buttons. `<html dir="rtl">` added. Prior v10.4.20: `window.submitLeaderboardScore` exposed for programmatic submit (chaos-bot leaderboard hook), pairing with v10.4.19's SECURITY DEFINER RPC (`pnimit_leaderboard_upsert`). Direct-POST path was vulnerable to the sb_publishable_* RLS failure mode that already broke backups in Geri (Track-Q precedent). RPC bypasses RLS. `accuracy` is GENERATED ALWAYS in the table schema and computed automatically — RPC must NOT assign it. Sibling-aligned with mishpacha/shlav RPCs.
+- **Current version**: v10.4.22 — a11y residuals: ✎ note + ☆ bookmark unset state slate-500 → slate-600; pnimit-skin scoped overrides on `.tabs button.on` and `.pill.on` (sky-500 → blue-700, 3.81→8.6:1 AAA). Closes IM a11y campaign. Prior v10.4.21: accessibility port from Geri v10.64.82-87 + FM v1.21.20-21. 10 contrast fixes covering header, tabs, tooltips, quiz counter, stats wrapper, "👁 לא יודע" + "💀 Sudden Death" buttons. `<html dir="rtl">` added. Prior v10.4.20: `window.submitLeaderboardScore` exposed for programmatic submit (chaos-bot leaderboard hook), pairing with v10.4.19's SECURITY DEFINER RPC (`pnimit_leaderboard_upsert`). Direct-POST path was vulnerable to the sb_publishable_* RLS failure mode that already broke backups in Geri (Track-Q precedent). RPC bypasses RLS. `accuracy` is GENERATED ALWAYS in the table schema and computed automatically — RPC must NOT assign it. Sibling-aligned with mishpacha/shlav RPCs.
 
 ---
 
