@@ -517,7 +517,7 @@ export function renderStudyPlan(){
             let accBadge = '';
             if(topicStat && topicStat.tot > 0){
               const acc = Math.round(topicStat.ok / topicStat.tot * 100);
-              let badgeColor = '#94a3b8';
+              let badgeColor;
               if(acc >= 70) badgeColor = '#059669';
               else if(acc >= 50) badgeColor = '#d97706';
               else badgeColor = '#dc2626';
@@ -830,7 +830,7 @@ export function renderTrack(){
      {id:'more',ic:'📚',l:'Reference'}].map(s=>
       '<button data-action="track-subtab" data-sub="'+s.id+'" style="flex:1;min-height:44px;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(sub===s.id?'700':'400')+';cursor:pointer;background:'+(sub===s.id?'#fff':'transparent')+';color:'+(sub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(sub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
     ).join('')+'</div>';
-  let body='';
+  let body;
   if(sub==='progress')body=_trackProgressBody();
   else if(sub==='plan')body=_trackPlanBody();
   else if(sub==='exam')body=_trackExamBody();
