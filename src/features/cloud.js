@@ -24,7 +24,7 @@ const est=calcEstScore();
 if(est==null)return{skipped:'no_est',answered:totalAnswered};
 const streak=G.S.streak||0;
 const readiness=est;
-let uid=getUserId();
+const uid=getUserId();
 // Use SECURITY DEFINER RPC instead of direct table POST. Direct POSTs
 // silently fail with PG 42501 under sb_publishable_* keys
 // (project_supabase_publishable_key_rls.md); the RPC bypasses RLS.
