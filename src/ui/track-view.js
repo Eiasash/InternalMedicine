@@ -1,8 +1,7 @@
 import G from '../core/globals.js';
-import { TOPICS, EXAM_FREQ, IMA_WEIGHTS, APP_VERSION } from '../core/constants.js';
-import { sanitize, heDir } from '../core/utils.js';
+import { TOPICS, EXAM_FREQ, APP_VERSION } from '../core/constants.js';
+import { heDir } from '../core/utils.js';
 import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, isExamTrap, getChaptersDueForReading } from '../sr/spaced-repetition.js';
-import { isChronicFail } from '../sr/fsrs-bridge.js';
 import { setFilt, startTopicMiniExam, buildPool } from '../quiz/engine.js';
 import { buildRescuePool } from '../sr/spaced-repetition.js';
 import { renderWrongAnswerLog } from './library-view.js';

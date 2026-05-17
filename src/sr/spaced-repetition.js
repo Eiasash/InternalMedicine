@@ -1,5 +1,5 @@
 import G from '../core/globals.js';
-import { fsrsR, fsrsInterval, fsrsInitNew, fsrsUpdate, fsrsMigrateFromSM2, isChronicFail, fsrsIntervalWithDeadline } from './fsrs-bridge.js';
+import { fsrsR, fsrsInitNew, fsrsUpdate, fsrsMigrateFromSM2, fsrsIntervalWithDeadline } from './fsrs-bridge.js';
 
 import { toast } from '../core/utils.js';
 // Spaced repetition, SRS scoring, activity tracking — extracted from pnimit-mega.html
