@@ -1,15 +1,14 @@
 // App entry point — orchestrates all modules, wires up window bindings for onclick handlers
 import '../debug/console.js'; // FIRST IMPORT: installs console/fetch/error wrappers before anything else runs
 import G from '../core/globals.js';
-import { APP_VERSION, LS, TOPICS, EXAM_FREQ, CHANGELOG, BUILD_HASH } from '../core/constants.js';
-import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey, toast, isOk} from "../core/utils.js";
+import { APP_VERSION, TOPICS, CHANGELOG } from '../core/constants.js';
+import { toast, isOk} from "../core/utils.js";
 import { migrateToIDB } from '../core/state.js';
 import '../core/data-loader.js'; // side-effect: populates G.QZ, G.TABS, etc.
 import '../clock.js'; // side-effect: header clock (#hdr-sub)
-import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, buildRescuePool,
-         srScore, trackChapterRead, getChaptersDueForReading, isExamTrap } from '../sr/spaced-repetition.js';
-import { buildPool, setFilt, setTopicFilt, startOnCallMode, exitOnCallMode, flipCard,
-         onCallPick, renderOnCall, runExplainOnCall, pick, check, next, _storeDiff,
+import { getDueQuestions } from '../sr/spaced-repetition.js';
+import { setTopicFilt,
+         renderOnCall, _storeDiff,
          startTopicMiniExam, endMiniExam, startExam, startMockExam, endExam, endMockExam,
          checkMockIntercept, showMockExamResult, buildMockExamPool,
          replayMockWrong, replayLastMockWrong } from '../quiz/engine.js';
@@ -77,7 +76,7 @@ case'lib':
   [{id:'read',ic:'📖',l:'Read'},{id:'cards',ic:'🃏',l:'Cards'},{id:'notes',ic:'📝',l:'Notes'}].map(s=>
     '<button data-action="lib-sub" data-sub="'+s.id+'" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(_libSub===s.id?'700':'400')+';cursor:pointer;background:'+(_libSub===s.id?'#fff':'transparent')+';color:'+(_libSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(_libSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
-  let _libBody='';
+  let _libBody;
   if(_libSub==='cards')_libBody=renderFlash();
   else if(_libSub==='notes')_libBody=renderStudy();
   else _libBody=renderLibrary();
