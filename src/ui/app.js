@@ -9,19 +9,13 @@ import '../clock.js'; // side-effect: header clock (#hdr-sub)
 import { getDueQuestions } from '../sr/spaced-repetition.js';
 import { setTopicFilt,
          renderOnCall, _storeDiff,
-         startTopicMiniExam, endMiniExam, startExam, startMockExam, endExam, endMockExam,
-         checkMockIntercept, showMockExamResult, buildMockExamPool,
          replayMockWrong, replayLastMockWrong } from '../quiz/engine.js';
-import { requestWakeLock, startPomodoro, stopPomodoro, startSuddenDeath, endSuddenDeath,
-         speakQuestion, startNextBestStep, startVoiceParser } from '../quiz/modes.js';
-import { callAI } from '../ai/client.js';
-import { explainWithAI, aiAutopsy, gradeTeachBack, renderExplainBox, toggleFlagExplain,
-         startVoiceTeachBack } from '../ai/explain.js';
-import { submitLeaderboardScore, fetchLeaderboard, showLeaderboard, renderFeedback,
-         submitFeedbackForm, cloudBackup, cloudRestore, getDiagnostics, submitReport,
-         saveAnswerReport, _sbDeviceId } from '../features/cloud.js';
-import { renderQuiz, toggleBk, uploadQImage, removeQImage, viewImg, pauseTimed,
-         startTimedQ, stopTimedMode, sdCheck, sdNext, initQuizEvents } from './quiz-view.js';
+import { requestWakeLock } from '../quiz/modes.js';
+import { submitLeaderboardScore, showLeaderboard, renderFeedback,
+         cloudBackup, cloudRestore,
+         _sbDeviceId } from '../features/cloud.js';
+import { renderQuiz,
+         startTimedQ, initQuizEvents } from './quiz-view.js';
 // v10.4.15: bind startTimedQ on G so engine.js can call G.startTimedQ() without
 // needing a direct import (which would create a circular dep:
 // engine.js → quiz-view.js → track-view.js → engine.js). 7h chaos run on
@@ -29,15 +23,13 @@ import { renderQuiz, toggleBk, uploadQImage, removeQImage, viewImg, pauseTimed,
 // unbound name; sibling-paired with Mishpacha v1.21.13.
 G.startTimedQ = startTimedQ;
 import { loadWrongSet } from './wrong-review.js';
-import { renderStudy, toggleNote, filterNotes, renderFlash, initLearnEvents } from './learn-view.js';
+import { renderStudy, renderFlash, initLearnEvents } from './learn-view.js';
 import { renderLibrary, openHarrisonChapter,
-         toggleHarrisonAI, submitHarrisonAI, aiSummarizeChapter, quizMeOnChapter,
-         addChapterQsToBank, renderWrongAnswerLog, initLibraryEvents } from './library-view.js';
-import { renderTrack, calcEstScore, renderStudyPlan, renderExamTrendCard, renderPriorityMatrix,
-         renderDailyPlan, renderSessionCard, setExamDate, exportCheatSheet,
+         initLibraryEvents } from './library-view.js';
+import { renderTrack,
          saveSessionSummary, initTrackEvents } from './track-view.js';
-import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
-         showAnswerHardFail, renderNotes,
+import { renderSearch, renderChat, sendChatStarter,
+         renderNotes,
          initMoreEvents } from './more-view.js';
 import { getCurrentUser } from '../features/auth.js';
 import { initPostLoginRestore } from '../features/post-login-restore.js';
