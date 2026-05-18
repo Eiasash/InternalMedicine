@@ -94,7 +94,7 @@
     (e) => {
       const t = e.target;
       if (!t || !t.tagName) return;
-      let label = '';
+      let label;
       if (t.id) label = '#' + t.id;
       else if (t.className && typeof t.className === 'string') label = '.' + t.className.split(/\s+/)[0];
       else label = t.tagName.toLowerCase();

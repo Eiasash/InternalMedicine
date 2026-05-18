@@ -3,7 +3,6 @@ import { TOPICS, EXAM_FREQ, EXAM_YEARS } from '../core/constants.js';
 import { sanitize, fmtT, toast, heDir, isOk } from "../core/utils.js";
 import { getDueQuestions, getTopicStats, isExamTrap, srScore } from '../sr/spaced-repetition.js';
 import { callAI } from '../ai/client.js';
-import { buildRescuePool } from '../sr/spaced-repetition.js';
 import { aiAutopsy } from '../ai/explain.js';
 import { buildWrongPool, recordResult } from '../ui/wrong-review.js';
 

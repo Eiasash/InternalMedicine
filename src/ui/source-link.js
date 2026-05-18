@@ -4,7 +4,7 @@
 // migration adds `q.ref = {s,ch,l}`, that takes precedence.
 import G from '../core/globals.js';
 import { TOPIC_REF } from './track-view.js';
-import { HARRISON_PDF_MAP, TOPICS } from '../core/constants.js';
+import { HARRISON_PDF_MAP } from '../core/constants.js';
 
 // Resolve the source for a question. Returns { ch, label, kind } or null.
 export function resolveSource(q) {

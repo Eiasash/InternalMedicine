@@ -1,7 +1,6 @@
 import G from '../core/globals.js';
-import { TOPICS } from '../core/constants.js';
 import { sanitize } from '../core/utils.js';
-import { fsrsR, fsrsInterval, fsrsInitNew, fsrsUpdate } from '../sr/fsrs-bridge.js';
+import { fsrsR, fsrsInitNew, fsrsUpdate } from '../sr/fsrs-bridge.js';
 
 export function toggleNote(i){G.openNote=G.openNote===i?null:i;G.render();}
 export function renderStudy(){

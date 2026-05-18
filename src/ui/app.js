@@ -1,28 +1,21 @@
 // App entry point — orchestrates all modules, wires up window bindings for onclick handlers
 import '../debug/console.js'; // FIRST IMPORT: installs console/fetch/error wrappers before anything else runs
 import G from '../core/globals.js';
-import { APP_VERSION, LS, TOPICS, EXAM_FREQ, CHANGELOG, BUILD_HASH } from '../core/constants.js';
-import { sanitize, fmtT, safeJSONParse, getApiKey, setApiKey, toast, isOk} from "../core/utils.js";
+import { APP_VERSION, TOPICS, CHANGELOG } from '../core/constants.js';
+import { toast, isOk} from "../core/utils.js";
 import { migrateToIDB } from '../core/state.js';
 import '../core/data-loader.js'; // side-effect: populates G.QZ, G.TABS, etc.
 import '../clock.js'; // side-effect: header clock (#hdr-sub)
-import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, buildRescuePool,
-         srScore, trackChapterRead, getChaptersDueForReading, isExamTrap } from '../sr/spaced-repetition.js';
-import { buildPool, setFilt, setTopicFilt, startOnCallMode, exitOnCallMode, flipCard,
-         onCallPick, renderOnCall, runExplainOnCall, pick, check, next, _storeDiff,
-         startTopicMiniExam, endMiniExam, startExam, startMockExam, endExam, endMockExam,
-         checkMockIntercept, showMockExamResult, buildMockExamPool,
+import { getDueQuestions } from '../sr/spaced-repetition.js';
+import { setTopicFilt,
+         renderOnCall, _storeDiff,
          replayMockWrong, replayLastMockWrong } from '../quiz/engine.js';
-import { requestWakeLock, startPomodoro, stopPomodoro, startSuddenDeath, endSuddenDeath,
-         speakQuestion, startNextBestStep, startVoiceParser } from '../quiz/modes.js';
-import { callAI } from '../ai/client.js';
-import { explainWithAI, aiAutopsy, gradeTeachBack, renderExplainBox, toggleFlagExplain,
-         startVoiceTeachBack } from '../ai/explain.js';
-import { submitLeaderboardScore, fetchLeaderboard, showLeaderboard, renderFeedback,
-         submitFeedbackForm, cloudBackup, cloudRestore, getDiagnostics, submitReport,
-         saveAnswerReport, _sbDeviceId } from '../features/cloud.js';
-import { renderQuiz, toggleBk, uploadQImage, removeQImage, viewImg, pauseTimed,
-         startTimedQ, stopTimedMode, sdCheck, sdNext, initQuizEvents } from './quiz-view.js';
+import { requestWakeLock } from '../quiz/modes.js';
+import { submitLeaderboardScore, showLeaderboard, renderFeedback,
+         cloudBackup, cloudRestore,
+         _sbDeviceId } from '../features/cloud.js';
+import { renderQuiz,
+         startTimedQ, initQuizEvents } from './quiz-view.js';
 // v10.4.15: bind startTimedQ on G so engine.js can call G.startTimedQ() without
 // needing a direct import (which would create a circular dep:
 // engine.js → quiz-view.js → track-view.js → engine.js). 7h chaos run on
@@ -30,15 +23,13 @@ import { renderQuiz, toggleBk, uploadQImage, removeQImage, viewImg, pauseTimed,
 // unbound name; sibling-paired with Mishpacha v1.21.13.
 G.startTimedQ = startTimedQ;
 import { loadWrongSet } from './wrong-review.js';
-import { renderStudy, toggleNote, filterNotes, renderFlash, initLearnEvents } from './learn-view.js';
+import { renderStudy, renderFlash, initLearnEvents } from './learn-view.js';
 import { renderLibrary, openHarrisonChapter,
-         toggleHarrisonAI, submitHarrisonAI, aiSummarizeChapter, quizMeOnChapter,
-         addChapterQsToBank, renderWrongAnswerLog, initLibraryEvents } from './library-view.js';
-import { renderTrack, calcEstScore, renderStudyPlan, renderExamTrendCard, renderPriorityMatrix,
-         renderDailyPlan, renderSessionCard, setExamDate, exportCheatSheet,
+         initLibraryEvents } from './library-view.js';
+import { renderTrack,
          saveSessionSummary, initTrackEvents } from './track-view.js';
-import { renderSearch, renderChat, sendChat, sendChatStarter, clearChat,
-         showAnswerHardFail, renderNotes,
+import { renderSearch, renderChat, sendChatStarter,
+         renderNotes,
          initMoreEvents } from './more-view.js';
 import { getCurrentUser } from '../features/auth.js';
 import { initPostLoginRestore } from '../features/post-login-restore.js';
@@ -77,7 +68,7 @@ case'lib':
   [{id:'read',ic:'📖',l:'Read'},{id:'cards',ic:'🃏',l:'Cards'},{id:'notes',ic:'📝',l:'Notes'}].map(s=>
     '<button data-action="lib-sub" data-sub="'+s.id+'" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(_libSub===s.id?'700':'400')+';cursor:pointer;background:'+(_libSub===s.id?'#fff':'transparent')+';color:'+(_libSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(_libSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
-  let _libBody='';
+  let _libBody;
   if(_libSub==='cards')_libBody=renderFlash();
   else if(_libSub==='notes')_libBody=renderStudy();
   else _libBody=renderLibrary();

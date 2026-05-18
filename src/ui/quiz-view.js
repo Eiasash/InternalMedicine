@@ -1,7 +1,7 @@
 import G from '../core/globals.js';
 import { SUPA_URL, SUPA_ANON, TOPICS, EXAM_YEARS } from '../core/constants.js';
-import { sanitize, heDir, fmtT, safeJSONParse, getOptShuffle, remapExplanationLetters, isMetaOption, toast, isOk} from "../core/utils.js";
-import { getDueQuestions, getWeakTopics, isExamTrap, srScore, getTopicStats, buildRescuePool } from '../sr/spaced-repetition.js';
+import { sanitize, heDir, fmtT, safeJSONParse, getOptShuffle, remapExplanationLetters, toast, isOk} from "../core/utils.js";
+import { getDueQuestions, getWeakTopics, isExamTrap, srScore, buildRescuePool } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
 import { renderExplainBox, toggleFlagExplain, explainWithAI, aiAutopsy, gradeTeachBack, startVoiceTeachBack } from '../ai/explain.js';
 import { TOPIC_REF } from './track-view.js';

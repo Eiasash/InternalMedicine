@@ -1,8 +1,8 @@
 import G from '../core/globals.js';
-import { TOPICS, HARRISON_PDF_MAP, APP_VERSION, SYLLABUS_VERSION } from '../core/constants.js';
-import { sanitize, heDir, safeJSONParse, toast, isOk} from "../core/utils.js";
+import { TOPICS } from '../core/constants.js';
+import { sanitize, heDir, toast, isOk} from "../core/utils.js";
 import { callAI } from '../ai/client.js';
-import { getTopicStats, trackChapterRead, getChaptersDueForReading } from '../sr/spaced-repetition.js';
+import { getTopicStats, trackChapterRead } from '../sr/spaced-repetition.js';
 import { TOPIC_REF } from './track-view.js';
 import { submitReport } from '../features/cloud.js';
 import { buildPool } from '../quiz/engine.js';
