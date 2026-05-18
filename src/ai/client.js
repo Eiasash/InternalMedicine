@@ -1,4 +1,3 @@
-import G from '../core/globals.js';
 import { AI_PROXY, AI_SECRET } from '../core/constants.js';
 import { getApiKey } from '../core/utils.js';
 

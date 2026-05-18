@@ -1,9 +1,9 @@
 import G from '../core/globals.js';
 import { SUPA_URL, SUPA_ANON, TOPICS, APP_VERSION } from '../core/constants.js';
-import { sanitize, fmtT, toast, getApiKey, setApiKey } from '../core/utils.js';
+import { sanitize, toast, getApiKey, setApiKey } from '../core/utils.js';
 import { callAI } from '../ai/client.js';
 import { calcEstScore } from '../ui/track-view.js';
-import { getTopicStats, getDueQuestions } from '../sr/spaced-repetition.js';
+import { getTopicStats } from '../sr/spaced-repetition.js';
 import { getUserId, getCurrentUser } from './auth.js';
 
 // Cloud sync, leaderboard, feedback, diagnostics — extracted from pnimit-mega.html

@@ -5,7 +5,7 @@
 // to localStorage when IDB is unavailable (test/SSR/private mode). The full set lives
 // in G.wrongSet (a Map: qIdx → {ts, streak}) so reads are zero-cost in render hot paths.
 import G from '../core/globals.js';
-import { TOPICS, EXAM_FREQ } from '../core/constants.js';
+import { EXAM_FREQ } from '../core/constants.js';
 
 const LS_KEY = 'pnimit_wrong_review_v1';
 const IDB_NAME = 'pnimit_mega_db';

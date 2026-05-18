@@ -1,6 +1,5 @@
 import G from '../core/globals.js';
 import { sanitize, toast, heDir } from '../core/utils.js';
-import { callAI } from '../ai/client.js';
 import { AI_PROXY, AI_SECRET } from '../core/constants.js';
 import { startVoiceParser } from '../quiz/modes.js';
 import { submitFeedbackForm } from '../features/cloud.js';
