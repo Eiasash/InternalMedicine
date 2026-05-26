@@ -173,6 +173,14 @@ jobs:
           print('OK: Clean of geriatrics content')
           PYEOF
 
+      # ── Corpus Manifest In Sync ──
+      - name: Verify .corpus_manifest.json matches questions.json
+        run: node scripts/regen_manifest.cjs --check
+
+      # ── Cross-Repo Syllabus Sync (network) ──
+      - name: Verify Geri syllabus Pnimit matches IM corpus
+        run: node scripts/check-syllabus-sync.cjs
+
       # ── Install + Test + Build ──
       - name: Install dependencies
         run: npm ci
