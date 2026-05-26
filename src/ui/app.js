@@ -393,7 +393,16 @@ migrateToIDB().then(()=>{
   // Must be initialized AFTER the first render so G.S is fully hydrated when
   // the listener fires.
   initPostLoginRestore();
-  if(!localStorage.getItem('pnimit_seen_help')){localStorage.setItem('pnimit_seen_help','1');setTimeout(showHelp,500);}
+  if(!localStorage.getItem('pnimit_seen_help')){
+    localStorage.setItem('pnimit_seen_help','1');
+    // perf (#82): defer the first-visit help-overlay autoshow until the
+    // page is idle so it doesn't become the LCP element. Sibling of FM #76.
+    if(typeof requestIdleCallback==='function'){
+      requestIdleCallback(()=>setTimeout(showHelp,300),{timeout:3000});
+    }else{
+      setTimeout(showHelp,1500);
+    }
+  }
 }).catch(e=>{console.error('IDB init failed, falling back to localStorage:',e);loadWrongSet().catch(()=>{});renderTabs();render();initPostLoginRestore();});
 
 // Prevent accidental navigation during mock exam
