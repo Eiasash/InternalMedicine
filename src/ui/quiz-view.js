@@ -222,7 +222,7 @@ if(G.ans){cls+=' lk';if(isOk(q,i))cls+=' ok';else if(i===G.sel)cls+=' no';else c
 else if(i===G.sel)cls+=' sel';
 h+=`<button class="${cls}" data-action="pick" data-i="${i}" dir="${heDir(o)}">${o}</button>`;
 });
-if(!G.ans)h+=`<button class="btn btn-p" data-action="sd-check"${G.sel===null?' disabled':''} aria-label="Check answer">בדוק</button>`;
+if(!G.ans)h+=`<button class="btn btn-p" data-action="sd-check"${G.sel===null?' disabled':''} aria-label="בדוק — check answer">בדוק</button>`;
 else h+=`<button class="btn btn-d" data-action="sd-next" aria-label="Next question">הבאה ←</button>`;
 h+=`</div>`;
 // Leaderboard
@@ -260,7 +260,7 @@ if(!G.examMode){
 h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
 <div class="sec-t">Quiz</div>
 <div style="display:flex;gap:4px;flex-wrap:wrap">
-<button data-action="start-exam" class="btn btn-d" style="font-size:10px;padding:5px 12px" aria-label="Start exam with 150 questions">📋 Exam (150q)</button><button data-action="start-mock" class="btn btn-d" style="font-size:10px;padding:5px 12px;background:#7c3aed;color:#fff" aria-label="Start mock exam with 100 questions">🎯 Mock (100q)</button>
+<button data-action="start-exam" class="btn btn-d" style="font-size:10px;padding:5px 12px" aria-label="Exam (150q) — start full 150-question exam">📋 Exam (150q)</button><button data-action="start-mock" class="btn btn-d" style="font-size:10px;padding:5px 12px;background:#7c3aed;color:#fff" aria-label="Mock (100q) — start mock exam with 100 questions">🎯 Mock (100q)</button>
 <span class="tt-wrap"><button data-action="start-sd" class="btn" style="font-size:10px;padding:5px 12px;background:#fef2f2;color:#b91c1c" aria-label="Start sudden death mode">💀 Sudden Death</button><button data-action="start-oncall" class="btn" style="font-size:10px;padding:5px 12px;background:#0f172a;color:#7dd3fc" aria-label="Start on-call mode">🌙 On-call</button><button class="tt-icon" tabindex="0" aria-label="Info about sudden death mode">ⓘ</button><div class="tt-box">One wrong answer ends the session. Builds high-stakes exam pressure.</div></span>
 ${!G.pomoActive?'<span class="tt-wrap"><button data-action="start-pomo" class="btn" style="font-size:10px;padding:5px 12px;background:#ecfdf5;color:#047857" aria-label="Start pomodoro timer">⏱️ Pomodoro</button><button class="tt-icon" tabindex="0" aria-label="Info about pomodoro timer">ⓘ</button><div class="tt-box">25min focus / 5min break study timer. Helps maintain concentration.</div></span>':''}
 </div>
@@ -348,7 +348,7 @@ h+=`<button class="${cls}${blurCls}${autopsyCls}" data-action="pick" data-i="${o
 h+=`<div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">`;
 if(!G.ans){
 const _confLabel='';
-h+=`<div style="display:flex;gap:6px;align-items:center"><button class="btn btn-p" data-action="check-answer"${G.sel===null?' disabled':''} aria-label="Check answer" style="flex:1;min-height:44px">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" data-action="give-up" style="background:#fff3e0;color:#92400e;font-size:11px;padding:6px 14px;min-height:44px" aria-label="Show answer">👁 לא יודע</button>`;h+=`</div>`;}
+h+=`<div style="display:flex;gap:6px;align-items:center"><button class="btn btn-p" data-action="check-answer"${G.sel===null?' disabled':''} aria-label="בדוק — check answer" style="flex:1;min-height:44px">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" data-action="give-up" style="background:#fff3e0;color:#92400e;font-size:11px;padding:6px 14px;min-height:44px" aria-label="לא יודע — show me the answer">👁 לא יודע</button>`;h+=`</div>`;}
 else{
 // POST-ANSWER: Next button FIRST
 h+=`<div style="display:flex;gap:6px;align-items:stretch;margin-bottom:8px">`;

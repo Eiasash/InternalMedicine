@@ -209,7 +209,7 @@ ov.innerHTML=`<div style="max-width:420px;margin:0 auto;background:#fff;border-r
 <div style="font-size:10px;line-height:1.7;color:#047857">
 ${(CHANGELOG[APP_VERSION]||CHANGELOG[Object.keys(CHANGELOG).sort().pop()]||['No changelog available']).map(c=>'<b>'+c.split(' — ')[0]+'</b>'+(c.includes(' — ')?' — '+c.split(' — ').slice(1).join(' — '):'')).join('<br>')}
 </div></div>
-${sec('Quiz Filters','📝','#059669',
+${sec('Quiz Filters','📝','#047857',
 '<b>הכל</b> — כל '+G.QZ.length.toLocaleString()+' השאלות, מעורבב<br>'+
 '<b>2020–Jun25</b> — סינון לפי מועד מבחן<br>'+
 '<b>🔥 Hard</b> — שאלות שטעית בהן, הגרועות קודם<br>'+
@@ -219,7 +219,7 @@ ${sec('Quiz Filters','📝','#059669',
 '<b>📋 Exam</b> — מבחן מדומה 150 שאלות (3 שעות)<br>'+
 '<b>💀 Sudden Death</b> — טעות אחת = סוף המשחק'
 )}
-${sec('AI Study Tools','🤖','#8b5cf6',
+${sec('AI Study Tools','🤖','#6d28d9',
 'כל יכולות ה-AI עובדות בלי מפתח API — דרך פרוקסי משותף.<br><br>'+
 '<b>🤖 AI Explain</b> — הסבר בעברית לתשובה הנכונה<br>'+
 '<b>🔬 Distractor Autopsy</b> — AI מסביר למה כל הסחות דעת שגויה ומתי הייתה נכונה<br>'+
