@@ -1,0 +1,103 @@
+{
+  "schema": "corpus-manifest-v1",
+  "repo": "InternalMedicine",
+  "total_questions": 1556,
+  "topics": [
+    {
+      "id": 0,
+      "n_questions": 131
+    },
+    {
+      "id": 1,
+      "n_questions": 68
+    },
+    {
+      "id": 2,
+      "n_questions": 34
+    },
+    {
+      "id": 3,
+      "n_questions": 59
+    },
+    {
+      "id": 4,
+      "n_questions": 30
+    },
+    {
+      "id": 5,
+      "n_questions": 105
+    },
+    {
+      "id": 6,
+      "n_questions": 88
+    },
+    {
+      "id": 7,
+      "n_questions": 62
+    },
+    {
+      "id": 8,
+      "n_questions": 52
+    },
+    {
+      "id": 9,
+      "n_questions": 41
+    },
+    {
+      "id": 10,
+      "n_questions": 93
+    },
+    {
+      "id": 11,
+      "n_questions": 52
+    },
+    {
+      "id": 12,
+      "n_questions": 64
+    },
+    {
+      "id": 13,
+      "n_questions": 79
+    },
+    {
+      "id": 14,
+      "n_questions": 36
+    },
+    {
+      "id": 15,
+      "n_questions": 57
+    },
+    {
+      "id": 16,
+      "n_questions": 54
+    },
+    {
+      "id": 17,
+      "n_questions": 53
+    },
+    {
+      "id": 18,
+      "n_questions": 52
+    },
+    {
+      "id": 19,
+      "n_questions": 53
+    },
+    {
+      "id": 20,
+      "n_questions": 54
+    },
+    {
+      "id": 21,
+      "n_questions": 56
+    },
+    {
+      "id": 22,
+      "n_questions": 130
+    },
+    {
+      "id": 23,
+      "n_questions": 53
+    }
+  ]
+}
