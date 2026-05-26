@@ -103,34 +103,43 @@ function main() {
       console.error(`DRIFT: ${path.relative(ROOT, MANIFEST_PATH)} does not exist. Run: node scripts/regen_manifest.cjs`);
       process.exit(1);
     }
-    const currentStr = fs.readFileSync(MANIFEST_PATH, 'utf-8');
-    if (currentStr !== nextStr) {
-      console.error(`DRIFT: ${path.relative(ROOT, MANIFEST_PATH)} is out of sync with data/questions.json.`);
+    let current;
+    try {
+      current = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf-8'));
+    } catch (e) {
+      console.error(`DRIFT: ${path.relative(ROOT, MANIFEST_PATH)} is not valid JSON: ${e.message}`);
       console.error(`Run: node scripts/regen_manifest.cjs`);
-      // Brief drift summary
-      try {
-        const current = JSON.parse(currentStr);
-        if (current.total_questions !== next.total_questions) {
-          console.error(`  total_questions: manifest=${current.total_questions}, corpus=${next.total_questions}`);
-        }
-        const curMap = new Map((current.topics || []).map(t => [t.id, t.n_questions]));
-        const nextMap = new Map(next.topics.map(t => [t.id, t.n_questions]));
-        const allIds = new Set([...curMap.keys(), ...nextMap.keys()]);
-        let drifted = 0;
-        for (const id of [...allIds].sort((a, b) => a - b)) {
-          if (curMap.get(id) !== nextMap.get(id)) {
-            console.error(`  topic ${id}: manifest=${curMap.get(id) ?? '(missing)'}, corpus=${nextMap.get(id) ?? '(missing)'}`);
-            drifted += 1;
-          }
-        }
-        console.error(`  drifted topics: ${drifted}`);
-      } catch {
-        // Fall through — main message is enough
-      }
       process.exit(1);
     }
-    console.log(`OK: ${path.relative(ROOT, MANIFEST_PATH)} is in sync with data/questions.json (${next.total_questions} questions, ${next.topics.length} topics).`);
-    process.exit(0);
+    // Structural (semantic) diff — line-ending-agnostic, key-order-agnostic.
+    // Raw byte-compare false-positives on Windows with core.autocrlf=true.
+    const drifts = [];
+    if (current.schema !== next.schema) {
+      drifts.push(`schema: manifest=${current.schema}, expected=${next.schema}`);
+    }
+    if (current.repo !== next.repo) {
+      drifts.push(`repo: manifest=${current.repo}, expected=${next.repo}`);
+    }
+    if (current.total_questions !== next.total_questions) {
+      drifts.push(`total_questions: manifest=${current.total_questions}, corpus=${next.total_questions}`);
+    }
+    const curMap = new Map((current.topics || []).map(t => [t.id, t.n_questions]));
+    const nextMap = new Map(next.topics.map(t => [t.id, t.n_questions]));
+    const allIds = new Set([...curMap.keys(), ...nextMap.keys()]);
+    for (const id of [...allIds].sort((a, b) => a - b)) {
+      if (curMap.get(id) !== nextMap.get(id)) {
+        drifts.push(`topic ${id}: manifest=${curMap.get(id) ?? '(missing)'}, corpus=${nextMap.get(id) ?? '(missing)'}`);
+      }
+    }
+    if (drifts.length === 0) {
+      console.log(`OK: ${path.relative(ROOT, MANIFEST_PATH)} is in sync with data/questions.json (${next.total_questions} questions, ${next.topics.length} topics).`);
+      process.exit(0);
+    }
+    console.error(`DRIFT: ${path.relative(ROOT, MANIFEST_PATH)} is out of sync with data/questions.json:`);
+    for (const d of drifts) console.error(`  ${d}`);
+    console.error(`  drifted fields: ${drifts.length}`);
+    console.error(`Run: node scripts/regen_manifest.cjs`);
+    process.exit(1);
   }
 
   fs.writeFileSync(MANIFEST_PATH, nextStr);
