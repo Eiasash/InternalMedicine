@@ -448,7 +448,13 @@ if(G.ans&&!G.examMode){
     h+=`<div style="font-size:11px;line-height:1.7;color:#1e293b;unicode-bidi:plaintext" dir="${heDir(_aiTxt)}">${_aiTxt}</div>`;
   }else{
     h+=`<div style="font-size:11px;color:#64748b;padding:4px 0">⏳ טוען הסבר על מסיחים...</div>`;
-    setTimeout(()=>{ if(!G._exCache['autopsy_'+_qIdx])aiAutopsy(_qIdx); },100);
+    // _distLoading guard (added with PR #124 deferred-fetch refactor):
+    // when distractors.json is still in-flight from the data-loader's
+    // requestIdleCallback fetch, do NOT fall through to aiAutopsy —
+    // that would burn a paid AI call for a question whose curated
+    // rationale is about to arrive. data-loader calls G.render() once
+    // G.DIS lands, which re-enters this branch with _dist populated.
+    if (!G._distLoading) setTimeout(()=>{ if(!G._exCache['autopsy_'+_qIdx])aiAutopsy(_qIdx); },100);
   }
   h+=`</div>`;
 }
