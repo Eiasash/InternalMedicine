@@ -190,6 +190,10 @@ export function takeWeeklySnapshot(){
 // ===== SHARED AI PROXY =====
 
 export function showHelp(){
+// Dedupe — if a #help-overlay is already mounted, no-op. Prevents the
+// deferred first-visit autoshow from stacking on top of a manual Help-button
+// click during the 2-3s defer window. Caught by Codex on FM #76 (sibling).
+if(document.getElementById('help-overlay'))return;
 const ov=document.createElement('div');
 ov.id='help-overlay';
 ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px';
@@ -393,7 +397,16 @@ migrateToIDB().then(()=>{
   // Must be initialized AFTER the first render so G.S is fully hydrated when
   // the listener fires.
   initPostLoginRestore();
-  if(!localStorage.getItem('pnimit_seen_help')){localStorage.setItem('pnimit_seen_help','1');setTimeout(showHelp,500);}
+  if(!localStorage.getItem('pnimit_seen_help')){
+    localStorage.setItem('pnimit_seen_help','1');
+    // perf (#82): defer the first-visit help-overlay autoshow until the
+    // page is idle so it doesn't become the LCP element. Sibling of FM #76.
+    if(typeof requestIdleCallback==='function'){
+      requestIdleCallback(()=>setTimeout(showHelp,300),{timeout:3000});
+    }else{
+      setTimeout(showHelp,1500);
+    }
+  }
 }).catch(e=>{console.error('IDB init failed, falling back to localStorage:',e);loadWrongSet().catch(()=>{});renderTabs();render();initPostLoginRestore();});
 
 // Prevent accidental navigation during mock exam
