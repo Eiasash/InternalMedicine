@@ -422,18 +422,22 @@ migrateToIDB().then(()=>{
     let _autoshowFired=false;
     const _tryAutoshow=(e)=>{
       if(_autoshowFired)return;
-      // Gate on e.isTrusted so programmatic scrollTo / dispatchEvent / focus
-      // from app code don't count as user engagement. Sibling fix to FM
-      // post-#79 deploy verify — confirmed via Lighthouse LCP element
-      // trace that the first render() call hits app.js:51's
-      // `window.scrollTo({top:0})` which fires a scroll event with
-      // isTrusted=false. Safety-net path passes no `e` → !e is true →
-      // proceeds (intended).
+      // Defense-in-depth: reject dispatchEvent / .click() / similar synthetic
+      // events. window.scrollTo() emits trusted scroll though (browser-
+      // generated), which is why we also dropped scroll from the trigger
+      // list below.
       if(e && e.isTrusted===false) return;
       _autoshowFired=true;
       setTimeout(showHelp,50);
     };
-    ['click','keyup','scroll'].forEach(ev=>
+    // Trigger list: click + keyup only. scroll dropped — Codex P1+P2 on FM
+    // #80 / sibling: src/ui/app.js:51's first-render
+    // `window.scrollTo({top:0})` fires a browser-generated scroll with
+    // isTrusted=true, so the isTrusted gate doesn't catch it; and the
+    // {once:true} registration means the synthetic event consumes the
+    // listener, breaking real subsequent scrolls. Real users click/type
+    // before scrolling — scroll was redundant.
+    ['click','keyup'].forEach(ev=>
       window.addEventListener(ev,_tryAutoshow,{once:true,passive:true})
     );
     // Safety net 30s — past Lighthouse's simulated-throttling window.
