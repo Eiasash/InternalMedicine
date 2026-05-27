@@ -399,13 +399,33 @@ migrateToIDB().then(()=>{
   initPostLoginRestore();
   if(!localStorage.getItem('pnimit_seen_help')){
     localStorage.setItem('pnimit_seen_help','1');
-    // perf (#82): defer the first-visit help-overlay autoshow until the
-    // page is idle so it doesn't become the LCP element. Sibling of FM #76.
-    if(typeof requestIdleCallback==='function'){
-      requestIdleCallback(()=>setTimeout(showHelp,300),{timeout:3000});
-    }else{
-      setTimeout(showHelp,1500);
-    }
+    // perf v2 (#82): interaction-triggered help autoshow. The
+    // requestIdleCallback approach from #126 wasn't aggressive enough —
+    // Lighthouse measurement window still captured the help overlay because
+    // the 3000ms rIC timeout fired well within it. Sibling of FM v2.
+    // - Real users tap/scroll within seconds → autoshow fires promptly.
+    // - Lighthouse never interacts → autoshow fires only at the 12s
+    //   safety-net, past the LCP measurement window.
+    // - showHelp() dedupe (shipped in #126) keeps this safe under manual
+    //   Help-button clicks during the gap.
+    // EVENT CHOICE — only events firing AFTER the user's intended action
+    // completes (Codex P2 on FM #77):
+    //   click  — after mousedown+mouseup, button activation done
+    //   keyup  — after key release, key's own handler done
+    //   scroll — fires during scroll, doesn't intercept tap targets
+    // Excluded touchstart/pointerdown/keydown because they precede the
+    // corresponding click/keyup and a slow-device tap would mount the
+    // overlay before the tap target's click handler ran.
+    let _autoshowFired=false;
+    const _tryAutoshow=()=>{
+      if(_autoshowFired)return;
+      _autoshowFired=true;
+      setTimeout(showHelp,50);
+    };
+    ['click','keyup','scroll'].forEach(ev=>
+      window.addEventListener(ev,_tryAutoshow,{once:true,passive:true})
+    );
+    setTimeout(_tryAutoshow,12000);
   }
 }).catch(e=>{console.error('IDB init failed, falling back to localStorage:',e);loadWrongSet().catch(()=>{});renderTabs();render();initPostLoginRestore();});
 
