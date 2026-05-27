@@ -153,7 +153,9 @@ body.dark .badge-info    {background:#172554;color:#93c5fd}
 <div id="settings-overlay" hidden></div>
 
 <!-- FSRS shared library (plain script, shared with Geriatrics repo) -->
-<script src="shared/fsrs.js"></script>
+<!-- defer: sibling of FM #?. Classic-defer + module-defer interleave in
+     document order per HTML spec, so fsrs.js still executes before app.js. -->
+<script src="shared/fsrs.js" defer></script>
 <!-- App entry point (ES module — imports all other modules) -->
 <script type="module" src="src/ui/app.js"></script>
 <!-- Shared PWA install promo (canonical .shared/install-promo.js) -->
