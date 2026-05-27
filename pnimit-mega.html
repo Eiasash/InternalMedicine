@@ -16,6 +16,12 @@
      on mobile real-LCP. crossorigin is required for as="fetch" even same-origin
      — credentials mode must match the fetch() call (default same-origin). -->
 <link rel="preload" href="%BASE_URL%data/questions.json" as="fetch" type="application/json" crossorigin>
+<!-- Preload the Heebo Latin weights used by the <h1> (LCP element).
+     Sibling of FM #82. h1 default = 700, 'Internal Medicine' badge = 600,
+     version stamp = 500. Eliminates font-swap-induced bimodal LCP. -->
+<link rel="preload" href="fonts/heebo-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/heebo-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/heebo-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <title>Pnimit Mega — Internal Medicine Board Prep</title>
 <link rel="stylesheet" href="shared/tokens.css">
 <style id="clinical-kit">
