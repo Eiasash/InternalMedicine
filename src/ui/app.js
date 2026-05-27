@@ -428,7 +428,12 @@ migrateToIDB().then(()=>{
     ['click','keyup','scroll'].forEach(ev=>
       window.addEventListener(ev,_tryAutoshow,{once:true,passive:true})
     );
-    setTimeout(_tryAutoshow,12000);
+    // Safety net 30s — sibling of FM PR. The 12s value from #127 still
+    // leaked the CHANGELOG overlay as LCP in some Lighthouse runs because
+    // simulated throttling stretched real-time 12s inside the sample window.
+    // 30s is past every reasonable simulation budget; users idle 30s+ are
+    // gone, and the interaction trigger picks them up when they return.
+    setTimeout(_tryAutoshow,30000);
   }
 }).catch(e=>{console.error('IDB init failed, falling back to localStorage:',e);loadWrongSet().catch(()=>{});renderTabs();render();initPostLoginRestore();});
 
