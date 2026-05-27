@@ -408,13 +408,21 @@ migrateToIDB().then(()=>{
     //   safety-net, past the LCP measurement window.
     // - showHelp() dedupe (shipped in #126) keeps this safe under manual
     //   Help-button clicks during the gap.
+    // EVENT CHOICE — only events firing AFTER the user's intended action
+    // completes (Codex P2 on FM #77):
+    //   click  — after mousedown+mouseup, button activation done
+    //   keyup  — after key release, key's own handler done
+    //   scroll — fires during scroll, doesn't intercept tap targets
+    // Excluded touchstart/pointerdown/keydown because they precede the
+    // corresponding click/keyup and a slow-device tap would mount the
+    // overlay before the tap target's click handler ran.
     let _autoshowFired=false;
     const _tryAutoshow=()=>{
       if(_autoshowFired)return;
       _autoshowFired=true;
       setTimeout(showHelp,50);
     };
-    ['click','keydown','scroll','touchstart','pointerdown'].forEach(ev=>
+    ['click','keyup','scroll'].forEach(ev=>
       window.addEventListener(ev,_tryAutoshow,{once:true,passive:true})
     );
     setTimeout(_tryAutoshow,12000);
