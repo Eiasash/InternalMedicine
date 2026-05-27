@@ -21,7 +21,9 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 const ROOT = resolve(import.meta.dirname, '..');
+// APP_VERSION remains in constants.js; CHANGELOG was extracted to changelog.js for code-splitting.
 const constantsJs = readFileSync(resolve(ROOT, 'src/core/constants.js'), 'utf-8');
+const changelogJs = readFileSync(resolve(ROOT, 'src/core/changelog.js'), 'utf-8');
 
 describe('CHANGELOG drift guard', () => {
   it('APP_VERSION export is parseable from src/core/constants.js', () => {
@@ -37,13 +39,13 @@ describe('CHANGELOG drift guard', () => {
     // CHANGELOG entries take the form `'<version>':[` inside the export const CHANGELOG={...} block.
     const entryRegex = new RegExp(`'${version.replace(/\./g, '\\.')}'\\s*:\\s*\\[`);
     expect(
-      constantsJs,
+      changelogJs,
       `CHANGELOG missing an entry for current APP_VERSION='${version}'. ` +
       `Add an entry like "'${version}': [ '...' ]," inside the export const CHANGELOG={ block.`
     ).toMatch(entryRegex);
   });
 
   it('CHANGELOG export opens with a known marker (sanity check)', () => {
-    expect(constantsJs).toMatch(/export\s+const\s+CHANGELOG\s*=\s*\{/);
+    expect(changelogJs).toMatch(/export\s+const\s+CHANGELOG\s*=\s*\{/);
   });
 });
