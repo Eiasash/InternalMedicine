@@ -420,19 +420,23 @@ migrateToIDB().then(()=>{
     // corresponding click/keyup and a slow-device tap would mount the
     // overlay before the tap target's click handler ran.
     let _autoshowFired=false;
-    const _tryAutoshow=()=>{
+    const _tryAutoshow=(e)=>{
       if(_autoshowFired)return;
+      // Gate on e.isTrusted so programmatic scrollTo / dispatchEvent / focus
+      // from app code don't count as user engagement. Sibling fix to FM
+      // post-#79 deploy verify — confirmed via Lighthouse LCP element
+      // trace that the first render() call hits app.js:51's
+      // `window.scrollTo({top:0})` which fires a scroll event with
+      // isTrusted=false. Safety-net path passes no `e` → !e is true →
+      // proceeds (intended).
+      if(e && e.isTrusted===false) return;
       _autoshowFired=true;
       setTimeout(showHelp,50);
     };
     ['click','keyup','scroll'].forEach(ev=>
       window.addEventListener(ev,_tryAutoshow,{once:true,passive:true})
     );
-    // Safety net 30s — sibling of FM PR. The 12s value from #127 still
-    // leaked the CHANGELOG overlay as LCP in some Lighthouse runs because
-    // simulated throttling stretched real-time 12s inside the sample window.
-    // 30s is past every reasonable simulation budget; users idle 30s+ are
-    // gone, and the interaction trigger picks them up when they return.
+    // Safety net 30s — past Lighthouse's simulated-throttling window.
     setTimeout(_tryAutoshow,30000);
   }
 }).catch(e=>{console.error('IDB init failed, falling back to localStorage:',e);loadWrongSet().catch(()=>{});renderTabs();render();initPostLoginRestore();});
