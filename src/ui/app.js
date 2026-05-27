@@ -420,19 +420,27 @@ migrateToIDB().then(()=>{
     // corresponding click/keyup and a slow-device tap would mount the
     // overlay before the tap target's click handler ran.
     let _autoshowFired=false;
-    const _tryAutoshow=()=>{
+    const _tryAutoshow=(e)=>{
       if(_autoshowFired)return;
+      // Defense-in-depth: reject dispatchEvent / .click() / similar synthetic
+      // events. window.scrollTo() emits trusted scroll though (browser-
+      // generated), which is why we also dropped scroll from the trigger
+      // list below.
+      if(e && e.isTrusted===false) return;
       _autoshowFired=true;
       setTimeout(showHelp,50);
     };
-    ['click','keyup','scroll'].forEach(ev=>
+    // Trigger list: click + keyup only. scroll dropped — Codex P1+P2 on FM
+    // #80 / sibling: src/ui/app.js:51's first-render
+    // `window.scrollTo({top:0})` fires a browser-generated scroll with
+    // isTrusted=true, so the isTrusted gate doesn't catch it; and the
+    // {once:true} registration means the synthetic event consumes the
+    // listener, breaking real subsequent scrolls. Real users click/type
+    // before scrolling — scroll was redundant.
+    ['click','keyup'].forEach(ev=>
       window.addEventListener(ev,_tryAutoshow,{once:true,passive:true})
     );
-    // Safety net 30s — sibling of FM PR. The 12s value from #127 still
-    // leaked the CHANGELOG overlay as LCP in some Lighthouse runs because
-    // simulated throttling stretched real-time 12s inside the sample window.
-    // 30s is past every reasonable simulation budget; users idle 30s+ are
-    // gone, and the interaction trigger picks them up when they return.
+    // Safety net 30s — past Lighthouse's simulated-throttling window.
     setTimeout(_tryAutoshow,30000);
   }
 }).catch(e=>{console.error('IDB init failed, falling back to localStorage:',e);loadWrongSet().catch(()=>{});renderTabs();render();initPostLoginRestore();});
