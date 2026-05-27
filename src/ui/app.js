@@ -1,7 +1,7 @@
 // App entry point — orchestrates all modules, wires up window bindings for onclick handlers
 import '../debug/console.js'; // FIRST IMPORT: installs console/fetch/error wrappers before anything else runs
 import G from '../core/globals.js';
-import { APP_VERSION, TOPICS, CHANGELOG } from '../core/constants.js';
+import { APP_VERSION, TOPICS } from '../core/constants.js';
 import { toast, isOk} from "../core/utils.js";
 import { migrateToIDB } from '../core/state.js';
 import '../core/data-loader.js'; // side-effect: populates G.QZ, G.TABS, etc.
@@ -189,11 +189,14 @@ export function takeWeeklySnapshot(){
 
 // ===== SHARED AI PROXY =====
 
-export function showHelp(){
+export async function showHelp(){
 // Dedupe — if a #help-overlay is already mounted, no-op. Prevents the
 // deferred first-visit autoshow from stacking on top of a manual Help-button
 // click during the 2-3s defer window. Caught by Codex on FM #76 (sibling).
 if(document.getElementById('help-overlay'))return;
+// CHANGELOG is large (~46KB raw). Lazy-load it only when the help overlay
+// actually opens — keeps it out of the critical-path bundle. Sibling of FM #78.
+const { CHANGELOG } = await import('../core/changelog.js');
 const ov=document.createElement('div');
 ov.id='help-overlay';
 ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px';
