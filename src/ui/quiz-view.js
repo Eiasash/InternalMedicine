@@ -258,11 +258,11 @@ h+=G.examMode?(()=>{
 })():'';
 if(!G.examMode){
 h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-<div class="sec-t">Quiz</div>
+<div class="sec-t">חידון</div>
 <div style="display:flex;gap:4px;flex-wrap:wrap">
-<button data-action="start-exam" class="btn btn-d" style="font-size:10px;padding:5px 12px" aria-label="Exam (150q) — start full 150-question exam">📋 Exam (150q)</button><button data-action="start-mock" class="btn btn-d" style="font-size:10px;padding:5px 12px;background:#7c3aed;color:#fff" aria-label="Mock (100q) — start mock exam with 100 questions">🎯 Mock (100q)</button>
-<span class="tt-wrap"><button data-action="start-sd" class="btn" style="font-size:10px;padding:5px 12px;background:#fef2f2;color:#b91c1c" aria-label="Start sudden death mode">💀 Sudden Death</button><button data-action="start-oncall" class="btn" style="font-size:10px;padding:5px 12px;background:#0f172a;color:#7dd3fc" aria-label="Start on-call mode">🌙 On-call</button><button class="tt-icon" tabindex="0" aria-label="Info about sudden death mode">ⓘ</button><div class="tt-box">One wrong answer ends the session. Builds high-stakes exam pressure.</div></span>
-${!G.pomoActive?'<span class="tt-wrap"><button data-action="start-pomo" class="btn" style="font-size:10px;padding:5px 12px;background:#ecfdf5;color:#047857" aria-label="Start pomodoro timer">⏱️ Pomodoro</button><button class="tt-icon" tabindex="0" aria-label="Info about pomodoro timer">ⓘ</button><div class="tt-box">25min focus / 5min break study timer. Helps maintain concentration.</div></span>':''}
+<button data-action="start-exam" class="btn btn-d" style="font-size:10px;padding:5px 12px" aria-label="מבחן (150 שאלות) — התחל מבחן מלא של 150 שאלות">📋 מבחן (150)</button><button data-action="start-mock" class="btn btn-d" style="font-size:10px;padding:5px 12px;background:#7c3aed;color:#fff" aria-label="סימולציה (100 שאלות) — התחל מבחן סימולציה של 100 שאלות">🎯 סימולציה (100)</button>
+<span class="tt-wrap"><button data-action="start-sd" class="btn" style="font-size:10px;padding:5px 12px;background:#fef2f2;color:#b91c1c" aria-label="התחל מצב מוות פתאומי">💀 מוות פתאומי</button><button data-action="start-oncall" class="btn" style="font-size:10px;padding:5px 12px;background:#0f172a;color:#7dd3fc" aria-label="התחל מצב תורנות">🌙 תורנות</button><button class="tt-icon" tabindex="0" aria-label="מידע על מצב מוות פתאומי">ⓘ</button><div class="tt-box">תשובה שגויה אחת מסיימת את המשחק. בונה לחץ של תנאי מבחן.</div></span>
+${!G.pomoActive?'<span class="tt-wrap"><button data-action="start-pomo" class="btn" style="font-size:10px;padding:5px 12px;background:#ecfdf5;color:#047857" aria-label="התחל טיימר פומודורו">⏱️ פומודורו</button><button class="tt-icon" tabindex="0" aria-label="מידע על טיימר פומודורו">ⓘ</button><div class="tt-box">25 דק׳ ריכוז / 5 דק׳ הפסקה. עוזר לשמור על ריכוז.</div></span>':''}
 </div>
 </div>`;
 h+=`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">`;
@@ -270,38 +270,38 @@ const _trapCount=G.QZ.filter((_,i)=>isExamTrap(i)).length;
 const _aiCount=G.QZ.filter(q=>q.t==='Harrison').length;
 const _yearSel=Array.isArray(G.years)?G.years:[];
 const _inYearMode=G.filt==='years'&&_yearSel.length>0;
-const filts=[['all',`הכל (${G.QZ.length})`],['2020','20'],['2021-Jun','Jun21'],['2022-Jun','Jun22'],['2023-Jun','Jun23'],['2024-May','May24'],['2024-Oct','Oct24'],['2025-Jun','Jun25'],...(_aiCount>0?[['Harrison',`🤖 AI (${_aiCount})`]]:[]),['hard','🔥 Hard'],['slow','⏱️ Slow'],['weak','🎯 Weak'],['due','🔄 Due'],...(_trapCount>0?[['traps',`🪤 Traps (${_trapCount})`]]:[]),['nbs','🎯 Next Best Step']];
+const filts=[['all',`הכל (${G.QZ.length})`],['2020','20'],['2021-Jun','Jun21'],['2022-Jun','Jun22'],['2023-Jun','Jun23'],['2024-May','May24'],['2024-Oct','Oct24'],['2025-Jun','Jun25'],...(_aiCount>0?[['Harrison',`🤖 AI (${_aiCount})`]]:[]),['hard','🔥 קשות'],['slow','⏱️ איטיות'],['weak','🎯 חלשות'],['due','🔄 לחזרה'],...(_trapCount>0?[['traps',`🪤 מלכודות (${_trapCount})`]]:[]),['nbs','🎯 השלב הבא']];
 // Rescue Drill pill
 const _weakForPill=getWeakTopics(3);
-if(_weakForPill.length&&_weakForPill[0].pct!==null&&_weakForPill[0].pct<65)filts.push(['rescue','🚨 Rescue']);
-if(dueN>0)filts.push(['due',`🔄 Due (${dueN})`]);
+if(_weakForPill.length&&_weakForPill[0].pct!==null&&_weakForPill[0].pct<65)filts.push(['rescue','🚨 חילוץ']);
+if(dueN>0)filts.push(['due',`🔄 לחזרה (${dueN})`]);
 // Wrong-answer review pill (persistent across reloads via IDB)
 const _wrongN=wrongCount();
-if(_wrongN>0)filts.push(['wrong',`❌ Review wrong (${_wrongN})`]);
+if(_wrongN>0)filts.push(['wrong',`❌ סקור טעויות (${_wrongN})`]);
 filts.forEach(([f,l])=>{
 if(f==='rescue')h+=`<span class="pill ${G.filt==='rescue'?'on':''}" data-action="filter-rescue">${l}</span>`;
 else if(f==='wrong')h+=`<span class="pill ${G.filt==='wrong'?'on':''}" data-action="filter-wrong">${l}</span>`;
 else if(f==='nbs')h+=`<span class="pill ${G.filt==='nbs'?'on':''}" data-action="filter-nbs">${l}</span>`;
 else if(EXAM_YEARS.includes(f)){
   const _yOn=_yearSel.includes(f);
-  h+=`<span class="pill ${_yOn?'on':''}" data-action="filter-year" data-f="${f}" title="Click to toggle — multi-select allowed">${l}${_yOn?' ✓':''}</span>`;
+  h+=`<span class="pill ${_yOn?'on':''}" data-action="filter-year" data-f="${f}" title="לחץ להחלפה — בחירה מרובה אפשרית">${l}${_yOn?' ✓':''}</span>`;
 }
 else if(f==='all')h+=`<span class="pill ${G.filt==='all'&&!_inYearMode?'on':''}" data-action="filter" data-f="${f}">${l}</span>`;
 else h+=`<span class="pill ${G.filt===f&&G.filt!=='topic'?'on':''}" data-action="filter" data-f="${f}">${l}</span>`;
 });
 // "Clear years" pill, visible only when ≥2 years are selected to reduce clutter
 if(_yearSel.length>=2){
-  h+=`<span class="pill" style="background:#fef2f2;color:#dc2626" data-action="filter-year-clear" title="Clear exam year filter">✕ ${_yearSel.length} years</span>`;
+  h+=`<span class="pill" style="background:#fef2f2;color:#dc2626" data-action="filter-year-clear" title="נקה סינון שנים">✕ ${_yearSel.length} שנים</span>`;
 }
 h+=`</div>`;
 // Mode toggles — Distractor Autopsy is always on (rendered on every reveal), no toggle
 h+=`<div style="display:flex;gap:8px;margin-bottom:10px;font-size:10px;align-items:center">
-<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.blindRecall?'checked':''} data-action="toggle-blind"> 🙈 Cover Options</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">Hides answer choices — forces you to recall the answer before seeing options.</div></span>
-<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.timedMode?'checked':''} data-action="toggle-timed"> ⏱ Timed (90s)</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">90-second countdown per question. Auto-advances when time runs out — marks as wrong. Builds exam-condition reflexes.</div></span>
-<span style="color:#64748b;font-size:10px" title="After every reveal, you see why each wrong answer is wrong and when it would be correct.">🔬 Distractor Autopsy on</span>
+<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.blindRecall?'checked':''} data-action="toggle-blind"> 🙈 כסה תשובות</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">מסתיר את אפשרויות התשובה — מאלץ להיזכר בתשובה לפני שרואים אותן.</div></span>
+<span class="tt-wrap"><label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${G.timedMode?'checked':''} data-action="toggle-timed"> ⏱ טיימר (90 שנ׳)</label><button class="tt-icon" tabindex="0">ⓘ</button><div class="tt-box">ספירה לאחור של 90 שניות לשאלה. מתקדם אוטומטית כשהזמן נגמר — נחשב כתשובה שגויה. בונה רפלקסים של תנאי מבחן.</div></span>
+<span style="color:#64748b;font-size:10px" title="לאחר כל חשיפת תשובה, רואים מדוע כל מסיח שגוי ומתי הוא היה נכון.">🔬 Distractor Autopsy פעיל</span>
 </div>`;
 h+=`<div style="display:flex;gap:6px;margin-bottom:10px"><select class="calc-in" style="font-size:11px;padding:6px 10px;flex:1" data-action="topic-select" aria-label="סנן לפי נושא">
-<option value="-1"${G.filt!=='topic'?' selected':''}>📂 Filter by topic…</option>`;
+<option value="-1"${G.filt!=='topic'?' selected':''}>📂 סנן לפי נושא…</option>`;
 TOPICS.forEach((t,i)=>{h+=`<option value="${i}"${G.filt==='topic'&&G.topicFilt===i?' selected':''}>${t}</option>`;});
 h+=`</select>`;
 // Feature 2: Topic mini-exam button
@@ -352,8 +352,8 @@ h+=`<div style="display:flex;gap:6px;align-items:center"><button class="btn btn-
 else{
 // POST-ANSWER: Next button FIRST
 h+=`<div style="display:flex;gap:6px;align-items:stretch;margin-bottom:8px">`;
-if(!G.examMode)h+=`<button class="btn" data-action="prev-q" style="flex:0 0 auto;min-height:48px;padding:0 14px;font-size:11px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;border-radius:10px;${G.qi<=0?'opacity:0.4;pointer-events:none;':''}" aria-label="Previous question">קודמת ←</button>`;
-h+=`<button class="btn btn-d" data-action="next-q" aria-label="${G.examMode&&G.qi+1>=150?'Finish exam':'Next question'}" style="flex:1;min-height:48px;padding:10px 18px;font-size:14px;font-weight:700">${G.examMode&&G.qi+1>=150?'סיים':'→ הבאה'}</button>`;
+if(!G.examMode)h+=`<button class="btn" data-action="prev-q" style="flex:0 0 auto;min-height:48px;padding:0 14px;font-size:11px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;border-radius:10px;${G.qi<=0?'opacity:0.4;pointer-events:none;':''}" aria-label="שאלה קודמת">קודמת ←</button>`;
+h+=`<button class="btn btn-d" data-action="next-q" aria-label="${G.examMode&&G.qi+1>=150?'סיים מבחן':'שאלה הבאה'}" style="flex:1;min-height:48px;padding:10px 18px;font-size:14px;font-weight:700">${G.examMode&&G.qi+1>=150?'סיים':'→ הבאה'}</button>`;
 h+=`</div>`;
 
 // Why-wrong (secondary)
