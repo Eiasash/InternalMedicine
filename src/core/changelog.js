@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.26': [
+    'תוקן באג קריטי שגרם לקריסה (is not a function) בכפתור בדוק ובחישובי מנוע החזרה FSRS. ספריית fsrs.js המשותפת נטענה בעיכוב ורצה אחרי קוד האפליקציה במקום לפניו, כך שהפונקציות של מנוע החזרה לא היו זמינות. כעת היא נטענת לפני האפליקציה. תיקון זהה לזה שבוצע באפליקציית Mishpacha.',
+  ],
   '10.4.25': [
     'Silent auto-update — fixes the stale-bundle trap where a new version label appeared (HTML served network-first) while old cache-first JS/CSS kept running. A freshly-installed service worker now auto-activates (skipWaiting) while an old one controls the page, and the resulting controllerchange triggers one automatic reload onto the new assets. Guards: no reload on first install, and no reload loop. The manual update banner is kept only as a fallback. Ported from the FM fix (mishpacha v1.21.38). One last manual update lands users on this version, then every future update is automatic.',
   ],
