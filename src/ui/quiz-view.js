@@ -359,28 +359,28 @@ h+=`</div>`;
 // Why-wrong (secondary)
 if(!G.examMode&&!isOk(q,G.sel)&&!G._wrongReason){
 h+=`<div style="margin-bottom:8px">
-<div style="font-size:11px;font-weight:700;color:#dc2626;margin-bottom:6px">Why did you get it wrong?</div>
+<div style="font-size:11px;font-weight:700;color:#dc2626;margin-bottom:6px">למה טעית?</div>
 <div style="display:flex;gap:6px;flex-wrap:wrap">
-<button class="btn" style="font-size:11px;padding:8px 12px;min-height:40px;background:#fef2f2;color:#991b1b" data-action="wrong-reason" data-r="no_knowledge">📚 Didn't know</button>
-<button class="btn" style="font-size:11px;padding:8px 12px;min-height:40px;background:#fffbeb;color:#92400e" data-action="wrong-reason" data-r="misread">👓 Misread</button>
-<button class="btn" style="font-size:11px;padding:8px 12px;min-height:40px;background:#eff6ff;color:#1e40af" data-action="wrong-reason" data-r="between_2">⚖️ Between 2</button>
-<button class="btn" style="font-size:11px;padding:8px 12px;min-height:40px;background:#f5f3ff;color:#6d28d9" data-action="wrong-reason" data-r="silly">🤦 Silly</button>
+<button class="btn" style="font-size:11px;padding:8px 12px;min-height:40px;background:#fef2f2;color:#991b1b" data-action="wrong-reason" data-r="no_knowledge">📚 לא ידעתי</button>
+<button class="btn" style="font-size:11px;padding:8px 12px;min-height:40px;background:#fffbeb;color:#92400e" data-action="wrong-reason" data-r="misread">👓 קריאה שגויה</button>
+<button class="btn" style="font-size:11px;padding:8px 12px;min-height:40px;background:#eff6ff;color:#1e40af" data-action="wrong-reason" data-r="between_2">⚖️ היסוס בין שתיים</button>
+<button class="btn" style="font-size:11px;padding:8px 12px;min-height:40px;background:#f5f3ff;color:#6d28d9" data-action="wrong-reason" data-r="silly">🤦 טעות טיפשית</button>
 </div></div>`;
 }
 // Read chapter
 if(!G.examMode&&!isOk(q,G.sel)&&q.ti>=0){
 const _chRef=TOPIC_REF[q.ti];
 if(_chRef&&_chRef.s==='har'){
-h+=`<button class="btn" data-action="read-chapter" style="font-size:11px;padding:10px 12px;min-height:44px;background:#ede9fe;color:#7c3aed;margin-bottom:6px;width:100%;font-weight:700">📖 Read: ${_chRef.l} — you're weak here</button>`;
+h+=`<button class="btn" data-action="read-chapter" style="font-size:11px;padding:10px 12px;min-height:44px;background:#ede9fe;color:#7c3aed;margin-bottom:6px;width:100%;font-weight:700">📖 קרא: ${_chRef.l} — נקודת חולשה</button>`;
 }
 }
 // Difficulty
 if(!G.examMode){
 h+=`<div style="display:flex;gap:6px;margin-bottom:8px;align-items:center;flex-wrap:wrap">
-<span style="font-size:10px;color:#94a3b8">Difficulty:</span>
-<button class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;${G._diffRating==='easy'?'background:#dcfce7;color:#166534':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="easy">Easy</button>
-<button class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;${G._diffRating==='med'?'background:#fef9c3;color:#854d0e':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="med">Medium</button>
-<button class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;${G._diffRating==='hard'?'background:#fecaca;color:#991b1b':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="hard">Hard</button>
+<span style="font-size:10px;color:#94a3b8">דרגת קושי:</span>
+<button class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;${G._diffRating==='easy'?'background:#dcfce7;color:#166534':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="easy">קלה</button>
+<button class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;${G._diffRating==='med'?'background:#fef9c3;color:#854d0e':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="med">בינונית</button>
+<button class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;${G._diffRating==='hard'?'background:#fecaca;color:#991b1b':'background:#f8fafc;color:#94a3b8'}" data-action="diff-rating" data-d="hard">קשה</button>
 </div>`;
 }
 }
@@ -390,17 +390,17 @@ h+=`</div>`;
 if(G.ans&&!G.examMode&&isOk(q,G.sel)){
 if(!G.teachBackState){
 h+='<div style="margin-top:12px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:12px">';
-h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:#065f46;unicode-bidi:plaintext" dir="auto">🎓 Teach-Back: הסבר מדוע זו התשובה הנכונה</span><button data-action="voice-teachback" id="tb-mic-btn" style="font-size:16px;padding:4px 8px;background:#ecfdf5;border:none;border-radius:8px;cursor:pointer" title="הקלט קולי" aria-label="Record voice teach-back">🎙️</button></div>';
-h+='<textarea id="tbInput" dir="auto" style="width:100%;min-height:60px;resize:vertical;font-family:Heebo,sans-serif;border:1px solid #a7f3d0;border-radius:8px;padding:8px;font-size:12px;unicode-bidi:plaintext;text-align:start" placeholder="הקלד את ההסבר שלך..." aria-label="Teach-back explanation"></textarea>';
+h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:#065f46;unicode-bidi:plaintext" dir="auto">🎓 לַמֵּד בחזרה: הסבר מדוע זו התשובה הנכונה</span><button data-action="voice-teachback" id="tb-mic-btn" style="font-size:16px;padding:4px 8px;background:#ecfdf5;border:none;border-radius:8px;cursor:pointer" title="הקלט קולי" aria-label="הקלט קולי למד-בחזרה">🎙️</button></div>';
+h+='<textarea id="tbInput" dir="auto" style="width:100%;min-height:60px;resize:vertical;font-family:Heebo,sans-serif;border:1px solid #a7f3d0;border-radius:8px;padding:8px;font-size:12px;unicode-bidi:plaintext;text-align:start" placeholder="הקלד את ההסבר שלך..." aria-label="הסבר למד-בחזרה"></textarea>';
 h+='<div style="display:flex;gap:8px;margin-top:8px">';
-h+='<button class="btn btn-g" style="flex:1;font-size:11px" data-action="grade-teachback" aria-label="Grade teach-back with AI">🤖 Grade it</button>';
-h+='<button class="btn btn-o" style="font-size:11px" data-action="skip-teachback" aria-label="Skip teach-back">דלג</button>';
+h+='<button class="btn btn-g" style="flex:1;font-size:11px" data-action="grade-teachback" aria-label="דרג למד-בחזרה עם AI">🤖 דרג</button>';
+h+='<button class="btn btn-o" style="font-size:11px" data-action="skip-teachback" aria-label="דלג על למד-בחזרה">דלג</button>';
 h+='</div></div>';
 }else if(G.teachBackState==='grading'){
-h+='<div style="margin-top:12px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:12px;text-align:center"><div style="font-size:12px;color:#065f46">⏳ Grading...</div></div>';
+h+='<div style="margin-top:12px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:12px;text-align:center"><div style="font-size:12px;color:#065f46">⏳ מדרג...</div></div>';
 }else if(G.teachBackState&&G.teachBackState!=='skip'){
 var scoreEmoji=G.teachBackState.score===3?'🟢':G.teachBackState.score===2?'🟡':'🔴';
-var scoreLabel=G.teachBackState.score===3?'Excellent!':G.teachBackState.score===2?'Partial':'Needs work';
+var scoreLabel=G.teachBackState.score===3?'מצוין!':G.teachBackState.score===2?'חלקי':'דורש עבודה';
 h+='<div style="margin-top:12px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:12px">';
 h+='<div style="font-size:13px;font-weight:700;margin-bottom:4px">'+scoreEmoji+' '+scoreLabel+'</div>';
 if(G.teachBackState.feedback){
