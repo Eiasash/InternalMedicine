@@ -22,6 +22,9 @@
 <link rel="preload" href="fonts/heebo-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
 <link rel="preload" href="fonts/heebo-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
 <link rel="preload" href="fonts/heebo-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
+<!-- fsrs.js must execute (blocking) before the deferred app.js module that Vite
+     hoists into <head>; preload it here so only ~ms of parse blocks, not fetch. -->
+<link rel="preload" href="shared/fsrs.js" as="script" fetchpriority="high">
 <title>Pnimit Mega — Internal Medicine Board Prep</title>
 <link rel="stylesheet" href="shared/tokens.css">
 <style id="clinical-kit">
@@ -164,9 +167,15 @@ body.dark .badge-info    {background:#172554;color:#93c5fd}
 <div id="settings-overlay" hidden></div>
 
 <!-- FSRS shared library (plain script, shared with Geriatrics repo) -->
-<!-- defer: sibling of FM #?. Classic-defer + module-defer interleave in
-     document order per HTML spec, so fsrs.js still executes before app.js. -->
-<script src="shared/fsrs.js" defer></script>
+<!-- MUST be blocking (non-defer). Vite hoists the app.js module entry into
+     <head>; a deferred fsrs.js (runs after parse, document order AFTER the
+     head module) would evaluate src/sr/fsrs-bridge.js with undefined globals
+     → "X is not a function" crash on boot and on every answer check. A
+     blocking script runs DURING parse, before the deferred module, so the
+     window.fsrs* globals exist first. Preloaded in <head> so the cost is ~ms
+     of parse, not fetch. DO NOT re-add defer/async — guarded by
+     tests/fsrsLoadOrder.test.js. (Identical to the FM v1.21.43 fix.) -->
+<script src="shared/fsrs.js"></script>
 <!-- App entry point (ES module — imports all other modules) -->
 <script type="module" src="src/ui/app.js"></script>
 <!-- Shared PWA install promo (canonical .shared/install-promo.js) -->
