@@ -78,7 +78,12 @@ while true; do
   if [[ -n "$bundle_path" ]]; then
     bundle_url="https://eiasash.github.io${bundle_path}"
     bundle_body=$(curl -sf -A 'Mozilla/5.0 verify-deploy' --max-time 30 "${bundle_url}" || true)
-    if printf '%s' "$bundle_body" | grep -qF "\"${VERSION}\""; then
+    # Match the version surrounded by ANY quote char. Vite/esbuild minifies string
+    # literals as template literals (backticks: `10.4.25`), not the double quotes
+    # this used to grep for — so the old `"${VERSION}"` pattern never matched and
+    # the witness always false-FAILed. Escape dots so 10.4.25 can't match 10X4X25.
+    ver_re=$(printf '%s' "${VERSION}" | sed 's/\./\\./g')
+    if printf '%s' "$bundle_body" | grep -qE "[\"'\`]${ver_re}[\"'\`]"; then
       bundle_ok=1
     fi
   fi
