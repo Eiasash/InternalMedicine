@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.25': [
+    'Silent auto-update — fixes the stale-bundle trap where a new version label appeared (HTML served network-first) while old cache-first JS/CSS kept running. A freshly-installed service worker now auto-activates (skipWaiting) while an old one controls the page, and the resulting controllerchange triggers one automatic reload onto the new assets. Guards: no reload on first install, and no reload loop. The manual update banner is kept only as a fallback. Ported from the FM fix (mishpacha v1.21.38). One last manual update lands users on this version, then every future update is automatic.',
+  ],
   '10.4.24': [
     '♿ Header toolbar dark-on-dark fix — 3 of 4 `.dm-btn` toolbar buttons (🌓 ⚙️ ❓) were rendering at default browser ButtonText color (typically `rgb(0,0,0)`) on the .hdr dark slate gradient (#0f172a→#1e293b). Contrast ~1:1 → invisible buttons. Only the 👤 account button had explicit `color:#fff` inline. Browser-tested 2026-05-10 at 390×844 via Playwright. Fix: added `color:#fff; background:rgba(255,255,255,0.12); border-radius:50%; width:32px; height:32px;` to the .dm-btn rule + a `:hover` opacity bump. Sibling-aligned with Geri v10.64.90 (slate-800 text on slate-800 gradient end-stop) + FM v1.21.27 (PR shipped alongside). Trinity bumped 10.4.23 → 10.4.24 (3-part APP_VERSION + sw.js, 4-part package.json per IM convention).',
   ],

@@ -1,7 +1,14 @@
-// Service-worker registration + update-banner UI.
-// Extracted from src/ui/app.js to mirror Geriatrics' src/sw-update.js.
+// Service-worker registration + auto-update.
+// Mirrors Geriatrics' src/sw-update.js. Updates apply SILENTLY (v10.4.25):
+// a freshly-installed SW auto-skipWaitings while an old one controls the page,
+// and the resulting controllerchange triggers ONE reload onto the new assets.
+// Fixes the stale-bundle trap (new version label via network-first HTML, old
+// cache-first JS/CSS still running). Guards: _hadController (no first-install
+// reload) and _refreshing (no reload loop). Banner kept as a fallback only.
 
 let _dismissKey;
+let _refreshing = false;
+let _hadController = false;
 
 export function showUpdateBanner() {
   if (document.getElementById('update-banner')) return;
@@ -41,18 +48,31 @@ export function initSWUpdate(appVersion) {
   if (!('serviceWorker' in navigator)) return Promise.resolve(null);
   _dismissKey = 'pnimit_update_dismissed_' + appVersion;
 
+  _hadController = !!navigator.serviceWorker.controller;
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (_refreshing) return;
+    if (!_hadController) { _hadController = true; return; }
+    _refreshing = true;
+    window.location.reload();
+  });
+
+  const _autoApply = (worker) => {
+    if (worker) { try { worker.postMessage({ type: 'SKIP_WAITING' }); } catch (e) { /* noop */ } }
+  };
+
   caches.keys().then(ks => {
     const old = ks.filter(k => k.startsWith('pnimit-') && k !== 'pnimit-v' + appVersion);
     old.forEach(k => { caches.delete(k); if(import.meta.env.DEV)console.log('Deleted old cache:', k); });
   });
 
   return navigator.serviceWorker.register('sw.js').then(reg => {
-    if (reg.waiting && navigator.serviceWorker.controller) showUpdateBanner();
+    if (reg.waiting && navigator.serviceWorker.controller) { _autoApply(reg.waiting); showUpdateBanner(); }
     reg.addEventListener('updatefound', () => {
       const nw = reg.installing;
       if (!nw) return;
       nw.addEventListener('statechange', () => {
-        if (nw.state === 'installed' && navigator.serviceWorker.controller) showUpdateBanner();
+        if (nw.state === 'installed' && navigator.serviceWorker.controller) { _autoApply(nw); showUpdateBanner(); }
       });
     });
     reg.update().catch(() => {});
