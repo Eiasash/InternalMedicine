@@ -1,12 +1,12 @@
 {
   "name": "pnimit-mega",
-  "version": "10.4.26.0",
+  "version": "10.4.27.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "bash scripts/build.sh",
-    "hooks:install": "git config core.hooksPath scripts/git-hooks && echo '\u00e2\u0153\u201c pre-commit + pre-push hooks active'",
+    "hooks:install": "git config core.hooksPath scripts/git-hooks && echo 'âœ“ pre-commit + pre-push hooks active'",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
