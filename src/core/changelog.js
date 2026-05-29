@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.27': [
+    'fix(data): q137 (microcytic-anemia vignette, idx 137) had a duplicate answer option — both option C and option D read Thalassemia Minor. Replaced option C with Anemia of chronic disease so all four options are distinct; the correct answer is unchanged (Thalassemia Minor). No other questions touched.'
+  ],
   '10.4.26': [
     'תוקן באג קריטי שגרם לקריסה (is not a function) בכפתור בדוק ובחישובי מנוע החזרה FSRS. ספריית fsrs.js המשותפת נטענה בעיכוב ורצה אחרי קוד האפליקציה במקום לפניו, כך שהפונקציות של מנוע החזרה לא היו זמינות. כעת היא נטענת לפני האפליקציה. תיקון זהה לזה שבוצע באפליקציית Mishpacha.',
   ],
