@@ -147,14 +147,22 @@ body.dark .badge-info    {background:#172554;color:#93c5fd}
 
 <a href="#ct" class="skip-link">Skip to content</a>
 <div class="hdr" style="position:relative">
+<!-- v10.4.28: header restructured to flexbox (.hdr-bar), porting FM v1.25.4 fix.
+     Icons live in .dm-row (flex, no absolute positioning) so they can no longer
+     overlap the RTL title/date. Version stamp stays OUTSIDE <h1> (LCP). -->
+<div class="hdr-bar">
+<div class="hdr-titleblock">
 <h1>Pnimit Mega <span style="font-size:10px;font-weight:600;color:#1d4ed8;vertical-align:middle;background:#eff6ff;padding:2px 6px;border-radius:6px;margin-right:4px">Internal Medicine</span></h1>
-<!-- LCP fix (sibling of FM #?): version stamp moved out of <h1> so the
-     h1 bounding box is finalized at first paint. JS populates #headerVer
-     after IDB init, which would otherwise re-measure h1 LCP to that
-     later paint. -->
-<div style="font-size:10px;font-weight:500;line-height:1;margin-top:2px"><span id="headerVer" style="color:#cbd5e1"></span></div>
-<button class="dm-btn" data-action="toggle-dark" title="Dark Mode" aria-label="Toggle dark mode">🌓</button><button class="dm-btn" data-action="open-settings" title="Settings" aria-label="Settings" style="right:44px;font-size:13px">⚙️</button><button class="dm-btn" data-action="show-help" title="Help" aria-label="Help" style="right:82px;font-size:11px">❓</button><button class="dm-btn" data-action="goto-account" title="Account" aria-label="Account / Login" id="hdr-account-btn" style="right:120px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.08);border:none;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;padding:0;color:#fff">👤</button>
+<div class="hdr-ver"><span id="headerVer" style="color:#cbd5e1"></span></div>
 <p id="hdr-sub">Loading...</p>
+</div>
+<div class="dm-row">
+<button class="dm-btn" data-action="goto-account" title="Account" aria-label="Account / Login" id="hdr-account-btn">👤</button>
+<button class="dm-btn" data-action="show-help" title="Help" aria-label="Help">❓</button>
+<button class="dm-btn" data-action="open-settings" title="Settings" aria-label="Settings">⚙️</button>
+<button class="dm-btn" data-action="toggle-dark" title="Dark Mode" aria-label="Toggle dark mode">🌓</button>
+</div>
+</div>
 </div>
 
 <div class="ct" id="ct" role="main"></div>

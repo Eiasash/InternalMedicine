@@ -47,7 +47,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 
 ## Current version
 
-- **Current version**: v10.4.27 — silent auto-update (controllerchange-driven one-shot reload onto fresh assets; guarded against first-install reload + loops). Fixes the stale-bundle trap (new version label via network-first HTML, old cache-first JS/CSS still running). Banner kept as fallback. Ported from FM v1.21.38.
+- **Current version**: v10.4.28 — header restructured to flexbox so the toolbar icons (account/help/settings/dark) no longer overlap the RTL title and date. Ported from FM v1.25.4. Prior: v10.4.27 — silent auto-update (controllerchange-driven one-shot reload onto fresh assets; guarded against first-install reload + loops). Fixes the stale-bundle trap (new version label via network-first HTML, old cache-first JS/CSS still running). Banner kept as fallback. Ported from FM v1.21.38.
 
 ---
 

@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.28': [
+    '🧱 הכותרת נבנתה מחדש (flexbox) — אייקוני הכלים (חשבון / עזרה / הגדרות / מצב כהה) עברו משכבה אבסולוטית לשורת flex, כך שאינם חופפים עוד לכותרת "Pnimit Mega" ולשורת התאריך/גרסה.'
+  ],
   '10.4.27': [
     'fix(data): q137 (microcytic-anemia vignette, idx 137) had a duplicate answer option — both option C and option D read Thalassemia Minor. Replaced option C with Anemia of chronic disease so all four options are distinct; the correct answer is unchanged (Thalassemia Minor). No other questions touched.'
   ],
