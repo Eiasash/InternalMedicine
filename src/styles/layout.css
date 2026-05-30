@@ -4,7 +4,13 @@
 /* v10.4.21 a11y fix: .hdr is dark slate gradient; slate-500 (#64748b) on it is ~3:1 fails AA. slate-300 (#cbd5e1) is ~12:1 AAA. Same fix as Geri v82-v87 / FM v1.21.21. */
 .hdr p { font-size: 11px; color: #cbd5e1; margin-top: 1px }
 /* v10.4.24 a11y fix: .hdr is a dark slate gradient (#0f172a→#1e293b). Default button color (ButtonText, typically rgb(0,0,0)) on this gradient = ~1:1 contrast → invisible toolbar buttons. Browser-tested 2026-05-10: 4 .dm-btn buttons (🌓 ⚙️ ❓ 👤-fallback) rendered at rgb(0,0,0). White-on-white-tint matches sibling Geri v10.64.90 + FM v1.21.27 pattern. */
-.dm-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; padding: 4px; opacity: .9; color: #fff; background: rgba(255,255,255,0.12); border: none; border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer }
+.hdr-bar { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px }
+.hdr-titleblock { min-width: 0; flex: 1 1 auto }
+.hdr-ver { font-size: 10px; font-weight: 500; line-height: 1; color: #cbd5e1; margin-top: 2px }
+/* v10.4.28: icons are flex items in .dm-row (was position:absolute right:Npx, which
+   overlapped the RTL title/date). Ported from FM v1.25.4. */
+.dm-row { display: flex; align-items: center; gap: 5px; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; max-width: 55% }
+.dm-btn { position: static; transform: none; font-size: 14px; padding: 0; opacity: .9; color: #fff; background: rgba(255,255,255,0.12); border: none; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; flex: 0 0 auto }
 .dm-btn:hover { opacity: 1; background: rgba(255,255,255,0.18) }
 
 /* === Bottom Tabs === */
