@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.34': [
+    'fix(dark): dark-mode light-island fixes — several surfaces shipped inline light backgrounds (#fff / #fef2f2 / #fffbeb) that overrode body.dark .card or inherited a light bg, so in dark mode they rendered as bright islands: the general-notes textarea + panel, the per-question note cards (More tab), the "questions due" alert (Track tab), and the chat error bubble. Added body.dark overrides in theme.css (with gnotes-panel / qnote-card / due-alert class hooks), matching the existing v10.4.2 attribute-selector idiom. From the 2026-05-31 read-only audit.'
+  ],
   '10.4.33': [
     'fix(bidi): Harrison reader renders English chapter prose/titles LTR — the chapter title, section headings, and body <p> carried no dir, so English text inherited the page dir="rtl" (right-anchored, justify-from-right, punctuation/number reordering). Added dir="auto" + unicode-bidi:plaintext (text-align:start on the prose) so each block derives its own base direction from content — English now reads left-to-right. From the 2026-05-31 read-only audit.'
   ],
