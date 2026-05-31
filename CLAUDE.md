@@ -47,7 +47,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 
 ## Current version
 
-- **Current version**: v10.4.33 — Harrison reader bidi: English chapter prose/titles now render LTR. The chapter title, section headings, and body `<p>` had no `dir`, so English inherited the page `dir="rtl"`; added `dir="auto"` + `unicode-bidi:plaintext` (text-align:start on the prose) so each block derives direction from its content. From the 2026-05-31 read-only audit. Prior: v10.4.32 — a11y labels for the icon-only image-remove ✕ + two ⓘ tooltip toggles. Prior: v10.4.31 — sticky header restored (removed an inline `position:relative` overriding `.hdr{position:sticky}`).
+- **Current version**: v10.4.34 — dark-mode light-island fixes: surfaces with inline light backgrounds (`#fff`/`#fef2f2`/`#fffbeb`) that overrode `body.dark .card` (general-notes textarea + panel, per-question note cards, the "due" alert, chat error bubble) now have `body.dark` overrides in theme.css (via gnotes-panel / qnote-card / due-alert hooks). From the 2026-05-31 read-only audit. Prior: v10.4.33 — Harrison reader English prose/titles render LTR (`dir="auto"` + `unicode-bidi:plaintext`). Prior: v10.4.32 — a11y labels for icon-only controls (image-remove ✕ + two ⓘ toggles).
 
 ---
 

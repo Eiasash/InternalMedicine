@@ -77,6 +77,18 @@ body.dark [data-action="diff-rating"][data-d="hard"][style*="fecaca"] { backgrou
 body.dark [data-action="prev-q"]                              { background: #1e293b !important; color: #cbd5e1 !important; border-color: #334155 !important }
 body.dark [data-action="give-up"]                             { background: #451a03 !important; color: #fde68a !important }
 
+/* Dark: light-island fixes — inline #fff / #fef2f2 / #fffbeb surfaces that
+   override body.dark .card or inherit a light bg (v10.4.34, 2026-05-31 audit) */
+body.dark .chat-msg-err        { background: #450a0a !important; color: #fca5a5 !important; border-color: #7f1d1d !important }
+body.dark #gnotes-ta           { background: #0f172a !important; color: #e2e8f0 !important; border-color: #334155 !important }
+body.dark .gnotes-panel        { background: #422006 !important; border-color: #92400e !important }
+body.dark .gnotes-panel > div:first-child { color: #fcd34d !important }
+body.dark .qnote-card          { background: #1e293b !important; border-color: #334155 !important }
+body.dark .qnote-card > div:nth-child(2)  { color: #e2e8f0 !important }
+body.dark .due-alert           { background: #450a0a !important; border-color: #7f1d1d !important }
+body.dark .due-alert div[style*="dc2626"] { color: #fca5a5 !important }
+body.dark .due-alert div[style*="64748b"] { color: #cbd5e1 !important }
+
 /* v10.4.2 — image rendering uses inline styles (border:#e2e8f0, upload-btn
  * bg:#f1f5f9). In dark mode these become invisible/jarring on the dark body.
  * Targeted overrides via attribute selectors — no JS change needed.
