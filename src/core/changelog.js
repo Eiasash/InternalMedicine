@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.30': [
+    'fix(ref): source-link wrong-chapter fix — 6 topics (Hypertension, Dermatology, Allergy/Immunology, Perioperative, Toxicology, Vascular) had TOPIC_REF.ch=56 (Fluid & Electrolyte) — a placeholder unrelated to the topic — so the "📖 Source" chip + "read chapter" button + daily-plan "Open" opened the WRONG Harrison chapter on ~300 questions. The in-app reader holds only a 69-chapter curated subset with no covering chapter for these 6 topics, so per "no source > wrong source" the refs were REMOVED (resolveSource→null → no chip) rather than re-pointed to another guess. The correct ch:56 topics (Electrolytes, Fluids/Volume) are unchanged. From the 2026-05-31 read-only audit. No question content touched.'
+  ],
   '10.4.29': [
     '⚡ ביצועים: הוסר preload מיותר של shared/fsrs.js שגרם לאזהרת "preloaded but not used" ×4 בכל טעינה בקונסול. הסקריפט החוסם שמטעין את fsrs.js וסדר הטעינה (fsrsLoadOrder) נשמרו ללא שינוי; הקונסול נקי מאזהרות.'
   ],

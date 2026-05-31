@@ -47,7 +47,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 
 ## Current version
 
-- **Current version**: v10.4.29 — dropped the unused shared/fsrs.js preload (eliminated the "preloaded but not used" ×4/load console warning; the blocking script tag that loads fsrs.js and load order are unchanged). Prior: v10.4.28 — header restructured to flexbox so the toolbar icons (account/help/settings/dark) no longer overlap the RTL title and date. Ported from FM v1.25.4. Prior: v10.4.27 — silent auto-update (controllerchange-driven one-shot reload onto fresh assets; guarded against first-install reload + loops). Fixes the stale-bundle trap (new version label via network-first HTML, old cache-first JS/CSS still running). Banner kept as fallback. Ported from FM v1.21.38.
+- **Current version**: v10.4.30 — source-link wrong-chapter fix: 6 topics (Hypertension/Dermatology/Allergy/Perioperative/Toxicology/Vascular) carried a `TOPIC_REF.ch=56` (Fluid & Electrolyte) placeholder, so the "📖 Source" chip + read-chapter button + daily-plan "Open" opened the wrong Harrison chapter on ~300 questions. The in-app reader holds only a 69-chapter curated subset with no covering chapter for these topics, so per "no source > wrong source" the refs were removed (resolveSource→null, no chip) rather than re-pointed to a guess. From the 2026-05-31 read-only audit; no question content touched. Prior: v10.4.29 — dropped the unused shared/fsrs.js preload (eliminated the "preloaded but not used" ×4/load console warning). Prior: v10.4.28 — header restructured to flexbox so the toolbar icons (account/help/settings/dark) no longer overlap the RTL title and date. Ported from FM v1.25.4.
 
 ---
 

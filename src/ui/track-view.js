@@ -84,7 +84,6 @@ export const TOPIC_REF={
 1:{s:'har',ch:316,l:'Harrison Ch 252-264'},
 2:{s:'har',ch:247,l:'Harrison Ch 247-251'},
 3:{s:'har',ch:133,l:'Harrison Ch 265-277'},
-4:{s:'har',ch:56,l:'Harrison Ch 278-281'},
 5:{s:'har',ch:295,l:'Harrison Ch 282-305'},
 6:{s:'har',ch:332,l:'Harrison Ch 306-370'},
 7:{s:'har',ch:321,l:'Harrison Ch 319-322'},
@@ -96,14 +95,16 @@ export const TOPIC_REF={
 13:{s:'har',ch:375,l:'Harrison Ch 375-387'},
 14:{s:'har',ch:437,l:'Harrison Ch 433-459'},
 15:{s:'har',ch:314,l:'Harrison Ch 311-317'},
-16:{s:'har',ch:56,l:'Harrison Ch 54-72'},
-17:{s:'har',ch:56,l:'Harrison Ch 342-345'},
 18:{s:'har',ch:56,l:'Harrison Ch 55-58'},
 19:{s:'har',ch:14,l:'Harrison Ch 14-18'},
-20:{s:'har',ch:56,l:'Harrison Ch 311-317'},
-21:{s:'har',ch:56,l:'Harrison Ch 455-460'},
 22:{s:'har',ch:56,l:'Harrison Ch 13-72'},
-23:{s:'har',ch:56,l:'Harrison Ch 278-281'},
+// ti 4,16,17,20,21,23 (Hypertension, Dermatology, Allergy/Immunology, Perioperative,
+// Toxicology, Vascular) intentionally have NO entry. The in-app Harrison reader holds only a
+// 69-chapter curated subset (== HARRISON_PDF_MAP) with no covering chapter for these topics;
+// their prior ch:56 was a wrong Fluid/Electrolyte placeholder. Per "no source > wrong source"
+// (read-only audit 2026-05-31), the ref is omitted → resolveSource()→null → no Source chip,
+// no read-chapter button, no daily-plan "Open". Re-add ONLY with a chapter verified present
+// in harrison_chapters.json.
 };
 
 export function renderExamTrendCard(){
