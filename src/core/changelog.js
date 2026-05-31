@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.29': [
+    '⚡ ביצועים: הוסר preload מיותר של shared/fsrs.js שגרם לאזהרת "preloaded but not used" ×4 בכל טעינה בקונסול. הסקריפט החוסם שמטעין את fsrs.js וסדר הטעינה (fsrsLoadOrder) נשמרו ללא שינוי; הקונסול נקי מאזהרות.'
+  ],
   '10.4.28': [
     '🧱 הכותרת נבנתה מחדש (flexbox) — אייקוני הכלים (חשבון / עזרה / הגדרות / מצב כהה) עברו משכבה אבסולוטית לשורת flex, כך שאינם חופפים עוד לכותרת "Pnimit Mega" ולשורת התאריך/גרסה.'
   ],
