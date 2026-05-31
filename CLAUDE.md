@@ -37,7 +37,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 - **App version**: see `APP_VERSION` in `src/core/constants.js` (source of truth)
 - **Entry point**: `pnimit-mega.html` (155-line HTML shell) → `src/ui/app.js` (ES module)
 - **Deployment**: Push to `main` → GitHub Actions builds with Vite → deploys `dist/` to Pages
-- **Sibling apps**: Shlav A Mega (geriatrics) + Mishpacha Mega (family medicine) — all three share `shared/fsrs.js` (byte-identical, canonical md5 `cea66a0435…`) and the same Supabase project `krmlzwwelqvlfslwltol` (labeled "Toranot" in the dashboard)
+- **Sibling apps**: Shlav A Mega (geriatrics) + Mishpacha Mega (family medicine) — all three share `shared/fsrs.js` (byte-identical, canonical LF md5 `71f9f2d4…`; was `cea66a0435…` pre-2026-04-22 LF normalization) and the same Supabase project `krmlzwwelqvlfslwltol` (labeled "Toranot" in the dashboard)
 ## Chaos doctor-bot v4 (2026-05-08)
 
 `scripts/chaos-doctor-bot-v4.mjs` — sibling-port of FM's canonical v4 bot. IM-specific adaptations: navigates to `[data-action="go"][data-tab="quiz"]` first (IM lands on `lib` tab, not quiz), reads explanation from `.explain-box`. Pure helper at `scripts/lib/extractJson.mjs` (10 unit tests in `tests/chaosBotV4ExtractJson.test.js`).
@@ -159,8 +159,12 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 │   │   ├── learn-view.js       # renderStudy, renderFlash, renderDrugs, fcRate
 │   │   ├── library-view.js     # renderLibrary, Harrison reader, AI chapter tools
 │   │   ├── track-view.js       # renderTrack, renderCalc, study plan, analytics
-│   │   └── more-view.js        # renderSearch, renderChat, AI chat
-│   └── styles/                 # 8 CSS files (base, layout, components, quiz, track, chat, theme, utilities)
+│   │   ├── more-view.js        # renderSearch, renderChat, AI chat
+│   │   ├── heatmap.js          # topic-accuracy heatmap (SVG grid)
+│   │   ├── wrong-review.js     # wrong-answer review queue
+│   │   ├── source-link.js      # per-question Harrison source chip (TOPIC_REF)
+│   │   └── settings-overlay.js # ⚙️ settings modal (API key, data mgmt, force-update)
+│   └── styles/                 # 9 CSS files (base, layout, components, quiz, track, chat, theme, utilities, settings) + shared/tokens.css
 │
 ├── shared/
 │   └── fsrs.js                 # FSRS-4.5 algorithm (plain script, shared with Geriatrics)
@@ -218,9 +222,14 @@ Functions still on `window` due to circular import constraints or HTML shell usa
   "t": "Jun23",
   "ti": 5,
   "e": "AI-generated explanation (Hebrew)",
-  "img": "https://...supabase.co/..." 
+  "img": "https://...supabase.co/...",
+  "st": "anemia_rbc",
+  "c_accept": [1, 3],
+  "e_issue": true,
+  "imgDep": true
 }
 ```
+Optional fields: `st` (finer subtopic tag — display/analytics only, read by no code path), `c_accept` (array of extra accepted answer indices for IMA post-appeal multi-answer / voided questions; honored by `isOk()` in `utils.js`), `e_issue` (explanation flagged unreliable → shows a UI banner, clearable), `imgDep` (image-dependent question → warning banner).
 
 ### notes.json
 ```json
@@ -286,12 +295,12 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 
 | Session | Questions | Year Tag |
 |---------|-----------|----------|
-| 2020 | 139 | `2020` |
+| 2020 | 150 | `2020` |
 | June 2021 | 149 | `2021-Jun` |
 | June 2022 | 148 | `2022-Jun` |
-| June 2023 | 147 | `2023-Jun` |
+| June 2023 | 150 | `2023-Jun` |
 | May 2024 | 99 | `2024-May` |
-| October 2024 | 99 | `2024-Oct` |
+| October 2024 | 100 | `2024-Oct` |
 | June 2025 | 151 | `2025-Jun` |
 | Exam (misc) | 20 | `Exam` |
 | Harrison (AI) | 589 | `Harrison` |
@@ -344,7 +353,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Notes | 24 |
 | Flashcards | 155 |
 | Drugs | 53 |
-| Question images | 116 linked, 134 on disk |
+| Question images | 162 (Supabase-hosted) |
 | Past exams | 7 sessions (2020–2025) |
 | Harrison chapters | ~69 PDFs |
 | Articles | 10 |
