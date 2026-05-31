@@ -288,7 +288,7 @@ const prevCh=curIdx>0?allSylChNums[curIdx-1]:null;
 const nextCh=curIdx<allSylChNums.length-1?allSylChNums[curIdx+1]:null;
 h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
 <button data-action="close-chapter" style="background:#f1f5f9;border:none;border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer">← Back</button>
-<div style="font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Ch ${G.harChOpen}: ${ch.title}</div>
+<div dir="auto" style="font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;unicode-bidi:plaintext">Ch ${G.harChOpen}: ${ch.title}</div>
 </div>
 <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
 ${prevCh?`<button data-action="open-chapter" data-ch="${prevCh}" style="font-size:10px;padding:5px 10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">‹ Ch ${prevCh}</button>`:''}
@@ -312,8 +312,8 @@ ${_tpct!==null?`<span style="font-weight:700;color:${_tpct>=70?'#059669':_tpct>=
 </div>`;
 }
 ch.sections.forEach(sec=>{
-if(sec.title){h+=`<div style="font-size:13px;font-weight:800;color:#7c3aed;margin:18px 0 8px;padding-bottom:4px;border-bottom:2px solid #ede9fe">${sec.title}</div>`;}
-sec.content.forEach(p=>{h+=`<p style="font-size:11.5px;line-height:1.9;color:#1e293b;margin:0 0 10px;text-align:justify">${p}</p>`;});
+if(sec.title){h+=`<div dir="auto" style="font-size:13px;font-weight:800;color:#7c3aed;margin:18px 0 8px;padding-bottom:4px;border-bottom:2px solid #ede9fe;unicode-bidi:plaintext">${sec.title}</div>`;}
+sec.content.forEach(p=>{h+=`<p dir="auto" style="font-size:11.5px;line-height:1.9;color:#1e293b;margin:0 0 10px;text-align:start;unicode-bidi:plaintext">${p}</p>`;});
 });
 h+=`</div>`;
 }else if(G._harLoading){
