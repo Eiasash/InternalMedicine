@@ -565,7 +565,6 @@ export function initQuizEvents(container) {
     else if (action === 'ai-explain') {
       explainWithAI(parseInt(el.dataset.idx, 10));
     }
-    else if (action === 'ai-autopsy') { aiAutopsy(G.pool[G.qi]); }
 
     // === Mode controls ===
     else if (action === 'quit-sd') { endSuddenDeath(); }
@@ -636,7 +635,6 @@ export function initQuizEvents(container) {
   container.addEventListener('change', (e) => {
     const action = e.target.dataset?.action;
     if (action === 'toggle-blind') { G.blindRecall = e.target.checked; G.render(); }
-    else if (action === 'toggle-autopsy') { G.autopsyMode = e.target.checked; G.render(); }
     else if (action === 'toggle-timed') {
       G.timedMode = e.target.checked;
       if (G.timedMode) { clearInterval(G.timedInt); G.timedSec = 90; G.render(); setTimeout(startTimedQ, 50); }

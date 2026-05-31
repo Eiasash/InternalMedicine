@@ -870,13 +870,6 @@ export function initTrackEvents(container) {
     else if (action === 'goto-lib-harrison') {
       G.tab = 'lib'; G.libSec = 'harrison'; G.render();
     }
-    else if (action === 'start-mini-exam') {
-      startTopicMiniExam(parseInt(el.dataset.ti, 10));
-    }
-    // Session dismiss
-    else if (action === 'dismiss') {
-      el.parentElement.style.display = 'none';
-    }
     // Study Plan
     else if (action === 'sp-toggle') {
       G.S.spOpen = !G.S.spOpen; G.save(); G.render();
@@ -910,7 +903,7 @@ export function initTrackEvents(container) {
       setTimeout(() => { window.sendChatStarter('Give me a concise board-review summary of ' + name + ' in internal medicine. Cover: key definitions, diagnostic criteria, management pearls, exam traps, and must-know numbers. Format with bold headings.'); }, 100);
     }
     // Heatmap tile (legacy ASCII grid + new SVG heatmap)
-    else if (action === 'goto-quiz-topic' || action === 'heatmap-topic') {
+    else if (action === 'heatmap-topic') {
       G.tab = 'quiz'; G.filt = 'topic';
       G.topicFilt = parseInt(el.dataset.ti, 10);
       buildPool(); G.render();
@@ -963,8 +956,6 @@ export function initTrackEvents(container) {
     else if (action === 'toggle-cm') {
       G.S._cmOpen = !G.S._cmOpen; G.save(); G.render();
     }
-    // Share remains — it's a discovery card, not a setting.
-    else if (action === 'share-app') { window.shareApp(); }
     // Note: API key, data management, force-update were moved to the
     // ⚙️ gear → Settings overlay in v10.2 (PR #72) — handlers there.
   });

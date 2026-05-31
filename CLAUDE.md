@@ -47,7 +47,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 
 ## Current version
 
-- **Current version**: v10.4.34 — dark-mode light-island fixes: surfaces with inline light backgrounds (`#fff`/`#fef2f2`/`#fffbeb`) that overrode `body.dark .card` (general-notes textarea + panel, per-question note cards, the "due" alert, chat error bubble) now have `body.dark` overrides in theme.css (via gnotes-panel / qnote-card / due-alert hooks). From the 2026-05-31 read-only audit. Prior: v10.4.33 — Harrison reader English prose/titles render LTR (`dir="auto"` + `unicode-bidi:plaintext`). Prior: v10.4.32 — a11y labels for icon-only controls (image-remove ✕ + two ⓘ toggles).
+- **Current version**: v10.4.35 — event-handler hygiene: killed the `#ct` double-fire class (all `initXxxEvents` bind the same container, so a data-action handled in two of them fired twice). Renamed the library year-jump `filter-year`→`goto-quiz-year` (it had collided with the quiz year-toggle), dropped track-view's redundant `share-app`/`dismiss`/`start-mini-exam` duplicate handlers (quiz-view/app.js-body catch them via bubbling), and removed 4 dead handler cases. `delegationCollision.test.js` guards no data-action is handled in >1 init. From the 2026-05-31 read-only audit. Prior: v10.4.34 — dark-mode light-island fixes. Prior: v10.4.33 — Harrison reader English prose/titles render LTR.
 
 ---
 
