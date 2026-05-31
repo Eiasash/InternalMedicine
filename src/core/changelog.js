@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.35': [
+    'fix(events): handler hygiene — killed the #ct double-fire class. All five initXxxEvents bind to the same #ct container, so any data-action handled in two of them fired twice per click (outcome order-dependent). Renamed the library "jump to quiz by year" action (filter-year -> goto-quiz-year) so it no longer collides with the quiz year-filter toggle; removed the redundant duplicate handlers in track-view (share-app / dismiss / start-mini-exam — the quiz-view and app.js body listeners already catch them via bubbling); and removed 4 dead handler cases never emitted (submit-report, ai-autopsy, toggle-autopsy, goto-quiz-topic). New delegationCollision.test.js guards that no data-action is handled in >1 init. From the 2026-05-31 read-only audit.'
+  ],
   '10.4.34': [
     'fix(dark): dark-mode light-island fixes — several surfaces shipped inline light backgrounds (#fff / #fef2f2 / #fffbeb) that overrode body.dark .card or inherited a light bg, so in dark mode they rendered as bright islands: the general-notes textarea + panel, the per-question note cards (More tab), the "questions due" alert (Track tab), and the chat error bubble. Added body.dark overrides in theme.css (with gnotes-panel / qnote-card / due-alert class hooks), matching the existing v10.4.2 attribute-selector idiom. From the 2026-05-31 read-only audit.'
   ],
