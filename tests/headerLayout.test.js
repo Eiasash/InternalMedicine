@@ -36,4 +36,11 @@ describe('header layout — flex, no absolute-icon overlap (v10.4.28 regression 
     expect(m).toBeTruthy();
     expect(m[0]).toContain('color:#cbd5e1');
   });
+  it('.hdr div has no inline position override, so the stylesheet sticky applies (v10.4.31)', () => {
+    const hdrOpen = (html.match(/<div class="hdr"[^>]*>/) || [''])[0];
+    expect(hdrOpen).toBeTruthy();
+    // an inline position:relative here silently defeats .hdr{position:sticky} (the 10.4.31 bug)
+    expect(hdrOpen).not.toMatch(/position\s*:/);
+    expect(css).toMatch(/\.hdr\s*\{[^}]*position:\s*sticky/);
+  });
 });
