@@ -41,6 +41,18 @@ describe('resolveSource', () => {
     expect(s.ch).toBe(999);
     expect(s.label).toBe('Override Ch 999');
   });
+  it('returns null for the 6 audit-removed placeholder topics (no Source chip)', () => {
+    // ti 4,16,17,20,21,23 carried a wrong ch:56 placeholder; removed 2026-05-31
+    // (no covering Harrison chapter in the 69-ch reader; "no source > wrong source").
+    for (const ti of [4, 16, 17, 20, 21, 23]) {
+      expect(resolveSource({ ti }), `ti ${ti} should resolve to null`).toBeNull();
+    }
+  });
+  it('still resolves the topics that keep a verified ref', () => {
+    for (const ti of [0, 3, 8, 14, 18]) {
+      expect(resolveSource({ ti }), `ti ${ti} should still resolve`).toBeTruthy();
+    }
+  });
 });
 
 describe('renderSourceLink', () => {
