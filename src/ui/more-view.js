@@ -7,7 +7,7 @@ import { submitFeedbackForm } from '../features/cloud.js';
 export function renderNotes(){
   const qnoteEntries=Object.entries(G.S.qnotes||{}).filter(([k,v])=>v&&v.trim());
   let h='<div class="sec-t">📝 Notes</div><div class="sec-s">כתוב הערות אישיות ומחשבות ללימוד — נשמר אוטומטית בדפדפן</div>';
-  h+=`<div style="padding:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;margin-bottom:12px">
+  h+=`<div class="gnotes-panel" style="padding:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;margin-bottom:12px">
     <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:8px">📓 פנקס כללי</div>
     <textarea id="gnotes-ta" dir="auto" placeholder="כתוב הערות, רשמים, פרלים מרפואה... הכל נשמר בדפדפן שלך."
       style="width:100%;min-height:180px;resize:vertical;font-family:Heebo,Inter,sans-serif;border:1px solid #e2e8f0;border-radius:10px;padding:10px;font-size:12px;line-height:1.7;background:#fff;color:#0f172a">${sanitize(G.S.gnotes||'')}</textarea>
@@ -25,7 +25,7 @@ export function renderNotes(){
     qnoteEntries.forEach(([idx,txt])=>{
       const q=G.QZ[idx];if(!q)return;
       const preview=(q.q||'').slice(0,80);
-      h+=`<div style="padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:10px">
+      h+=`<div class="qnote-card" style="padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:10px">
         <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;text-align:right" dir="${heDir(preview)}">${sanitize(preview)}${q.q.length>80?'…':''}</div>
         <div style="font-size:11px;color:#0f172a;text-align:right;line-height:1.6;margin-bottom:6px;white-space:pre-wrap" dir="${heDir(txt)}">${sanitize(txt)}</div>
         <div style="display:flex;gap:6px">
