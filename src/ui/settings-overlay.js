@@ -7,7 +7,7 @@
 // Library merge) reduce the More tab to nothing once these items live here.
 import G from '../core/globals.js';
 import { sanitize, getApiKey, setApiKey, toast } from '../core/utils.js';
-import { APP_VERSION, BUILD_HASH, LS, SUPA_URL, SUPA_ANON } from '../core/constants.js';
+import { APP_VERSION, LS, SUPA_URL, SUPA_ANON } from '../core/constants.js';
 import { renderAuthSection, bindAuthEvents } from '../features/auth.js';
 import { getCurrentUser } from '../features/auth.js';
 import { renderStudyPlanSection, bindStudyPlanEvents } from '../features/study_plan/index.js';
@@ -197,7 +197,7 @@ function renderSettingsBody() {
       <div class="card" style="padding:14px;text-align:center">
         <div style="font-weight:700;font-size:13px;margin-bottom:6px">Pnimit Mega</div>
         <div style="font-size:11px;color:#64748b;line-height:1.8">
-          <div>v${sanitize(APP_VERSION)} · build ${sanitize(BUILD_HASH)}</div>
+          <div>v${sanitize(APP_VERSION)}</div>
           <div>Israeli Internal Medicine Board Prep · P0064-2025</div>
           <div>Harrison's 22e · ${G.QZ ? G.QZ.length : '—'} Questions</div>
           <div style="margin-top:8px">${buildDate}</div>

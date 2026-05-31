@@ -35,14 +35,12 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.35';
+export const APP_VERSION='10.4.36';
 // CHANGELOG moved to ./changelog.js for code-splitting. Dynamically
 // imported in showHelp() so the large export doesn't load in the
 // critical path. Sibling of FM #78.
 export const SYLLABUS_VERSION='P0064-2025';
 export const SYLLABUS_DATE='2025-01-01';
-
-export const BUILD_HASH=(()=>{const d=new Date('2026-04-15T00:00:00Z');return d.toISOString().slice(0,10).replace(/-/g,'');})();
 
 // AI proxy
 export const AI_PROXY='https://toranot.netlify.app/api/claude';

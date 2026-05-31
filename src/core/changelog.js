@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.36': [
+    'chore: code hygiene — (1) the toast helper used the invalid CSS `direction:auto` (no such keyword → the declaration is dropped → English toasts inherited the page RTL); replaced with `unicode-bidi:plaintext`. (2) the loading skeleton referenced undefined `--fg2` / `--fg3` CSS custom properties (invalid color → dropped); replaced with literal slate. (3) removed the frozen BUILD_HASH constant (hardcoded to 2026-04-15, shown as a misleading "build 20260415" in Settings) — the app version already identifies the build. From the 2026-05-31 read-only audit.'
+  ],
   '10.4.35': [
     'fix(events): handler hygiene — killed the #ct double-fire class. All five initXxxEvents bind to the same #ct container, so any data-action handled in two of them fired twice per click (outcome order-dependent). Renamed the library "jump to quiz by year" action (filter-year -> goto-quiz-year) so it no longer collides with the quiz year-filter toggle; removed the redundant duplicate handlers in track-view (share-app / dismiss / start-mini-exam — the quiz-view and app.js body listeners already catch them via bubbling); and removed 4 dead handler cases never emitted (submit-report, ai-autopsy, toggle-autopsy, goto-quiz-topic). New delegationCollision.test.js guards that no data-action is handled in >1 init. From the 2026-05-31 read-only audit.'
   ],
