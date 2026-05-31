@@ -12,7 +12,7 @@ export function toast(msg,type='info',ms=3500){
     const d=document.createElement('div');
     d.setAttribute('role','status');
     d.setAttribute('aria-live','polite');
-    d.style.cssText=`position:fixed;left:50%;transform:translateX(-50%);bottom:calc(70px + env(safe-area-inset-bottom));background:${bg};color:#fff;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:600;font-family:Heebo,Inter,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:10000;max-width:90vw;text-align:center;direction:auto;white-space:pre-wrap;line-height:1.5`;
+    d.style.cssText=`position:fixed;left:50%;transform:translateX(-50%);bottom:calc(70px + env(safe-area-inset-bottom));background:${bg};color:#fff;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:600;font-family:Heebo,Inter,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:10000;max-width:90vw;text-align:center;unicode-bidi:plaintext;white-space:pre-wrap;line-height:1.5`;
     d.textContent=msg;
     document.body.appendChild(d);
     setTimeout(()=>{d.style.transition='opacity .3s';d.style.opacity='0';setTimeout(()=>d.remove(),300);},ms);

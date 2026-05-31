@@ -47,7 +47,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 
 ## Current version
 
-- **Current version**: v10.4.35 — event-handler hygiene: killed the `#ct` double-fire class (all `initXxxEvents` bind the same container, so a data-action handled in two of them fired twice). Renamed the library year-jump `filter-year`→`goto-quiz-year` (it had collided with the quiz year-toggle), dropped track-view's redundant `share-app`/`dismiss`/`start-mini-exam` duplicate handlers (quiz-view/app.js-body catch them via bubbling), and removed 4 dead handler cases. `delegationCollision.test.js` guards no data-action is handled in >1 init. From the 2026-05-31 read-only audit. Prior: v10.4.34 — dark-mode light-island fixes. Prior: v10.4.33 — Harrison reader English prose/titles render LTR.
+- **Current version**: v10.4.36 — code hygiene: fixed the toast's invalid `direction:auto` CSS (→ `unicode-bidi:plaintext`), the loading skeleton's undefined `--fg2`/`--fg3` vars (→ literal slate), and removed the frozen `BUILD_HASH` (hardcoded 2026-04-15, shown as a misleading "build 20260415" in Settings — the version already identifies the build). From the 2026-05-31 read-only audit. Prior: v10.4.35 — event-handler hygiene (killed the `#ct` double-fire class; `filter-year`→`goto-quiz-year`, dropped redundant duplicate handlers). Prior: v10.4.34 — dark-mode light-island fixes.
 
 ---
 
