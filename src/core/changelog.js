@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.32': [
+    'a11y: accessible names for icon-only controls — the image-remove ✕ button (data-action=remove-img) gained aria-label/title="הסר תמונה" (it deletes the attached question image; previously announced only as "✕"), and the two unlabeled ⓘ tooltip toggles in the quiz builder (cover-answers + 90s-timer) gained aria-labels, matching the sudden-death / pomodoro ⓘ siblings that were already labeled. From the 2026-05-31 read-only audit.'
+  ],
   '10.4.31': [
     'fix(ui): sticky header restored — removed the inline style="position:relative" on the .hdr div that was overriding the stylesheet .hdr{position:sticky;top:0}. The relative positioning was a leftover from the v10.4.28 flexbox refactor (it was needed when .dm-btn used position:absolute; .dm-btn is now position:static, so the inline relative was both unnecessary and harmful). The toolbar (dark/settings/help/account) now stays pinned while scrolling a long quiz+explanation page. From the 2026-05-31 read-only audit.'
   ],
