@@ -100,3 +100,20 @@ body.dark [data-action="upload-img"]                          { background: #1e2
 body.dark [data-action="upload-img"] + span                   { color: #64748b !important }
 body.dark [data-action="remove-img"]                          { background: rgba(255,255,255,0.15) !important; color: #f1f5f9 !important }
 body.dark [data-action="mark-verified"]                       { background: #b45309 !important; color: #fef3c7 !important }
+
+/* ========================================
+   Dark — inverse dark-on-dark fix (v10.4.37, 2026-05-31 suite-wide audit, P1)
+   Reader prose (Harrison), study notes, flashcard fronts, and section headings
+   hardcode a dark inline color (#1e293b/#0f172a/#334155) that collides 1:1 with
+   the dark .card / .fc / body background → text colour == background == invisible.
+   Rescue to light text; :not([style*="background"]) skips light-islands (code
+   blocks, note editors, modal overlays) that carry their own light bg. The ^= /
+   ;color anchors avoid false-matching border-color / background-color. Missed by
+   the earlier light-island-only dark audit; companion to FM v1.25.6 + Geri.
+   ======================================== */
+body.dark [style^="color:#1e293b"]:not([style*="background"]),
+body.dark [style*=";color:#1e293b"]:not([style*="background"]),
+body.dark [style^="color:#0f172a"]:not([style*="background"]),
+body.dark [style*=";color:#0f172a"]:not([style*="background"]),
+body.dark [style^="color:#334155"]:not([style*="background"]),
+body.dark [style*=";color:#334155"]:not([style*="background"]) { color: #e2e8f0 !important }

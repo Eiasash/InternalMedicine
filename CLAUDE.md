@@ -47,7 +47,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 
 ## Current version
 
-- **Current version**: v10.4.36 — code hygiene: fixed the toast's invalid `direction:auto` CSS (→ `unicode-bidi:plaintext`), the loading skeleton's undefined `--fg2`/`--fg3` vars (→ literal slate), and removed the frozen `BUILD_HASH` (hardcoded 2026-04-15, shown as a misleading "build 20260415" in Settings — the version already identifies the build). From the 2026-05-31 read-only audit. Prior: v10.4.35 — event-handler hygiene (killed the `#ct` double-fire class; `filter-year`→`goto-quiz-year`, dropped redundant duplicate handlers). Prior: v10.4.34 — dark-mode light-island fixes.
+- **Current version**: v10.4.37 — fix(dark): core content was invisible in dark mode. The Harrison reader prose, study notes, flashcard fronts, and section headings hardcode a dark inline `color:#1e293b`/`#0f172a` that collides 1:1 with the dark `.card`/`.fc`/body background → text == bg → invisible. A light-island scan can't see this inverse bug, so the v10.4.34 dark-mode pass (which fixed the *light*-background islands) and the 2026-05-31 audit both missed it. `theme.css` now rescues the hardcoded dark inline colours to light text under `body.dark`, with `:not([style*=background])` skipping legitimate light-islands. Verified live on the real reader. Suite-wide P1 (companion to FamilyMedicine v1.25.6 + Geriatrics). Prior: v10.4.36 — code hygiene (invalid toast `direction:auto`, undefined skeleton vars, frozen `BUILD_HASH` removed). Prior: v10.4.35 — event-handler hygiene (killed the `#ct` double-fire class).
 
 ---
 

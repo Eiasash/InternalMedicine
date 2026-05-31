@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.37': [
+    'fix(dark): core content was invisible in dark mode. The Harrison in-app reader prose, study notes, flashcard fronts, and section headings hardcode a dark inline color (#1e293b/#0f172a) that collides 1:1 with the dark `.card`/`.fc`/body background → text colour == background → invisible. A light-island scan (hunting hardcoded *light* backgrounds) structurally cannot see this inverse bug, so the 2026-05-31 dark-mode audit missed it (it was live since long before). theme.css now rescues the hardcoded dark inline colours to light text under `body.dark`, with `:not([style*=background])` skipping legitimate light-islands (code blocks, note editors, overlays). Verified on the live deployed reader (real chapter prose flips #1e293b→#e2e8f0). Suite-wide P1; companion to FamilyMedicine v1.25.6 + Geriatrics.'
+  ],
   '10.4.36': [
     'chore: code hygiene — (1) the toast helper used the invalid CSS `direction:auto` (no such keyword → the declaration is dropped → English toasts inherited the page RTL); replaced with `unicode-bidi:plaintext`. (2) the loading skeleton referenced undefined `--fg2` / `--fg3` CSS custom properties (invalid color → dropped); replaced with literal slate. (3) removed the frozen BUILD_HASH constant (hardcoded to 2026-04-15, shown as a misleading "build 20260415" in Settings) — the app version already identifies the build. From the 2026-05-31 read-only audit.'
   ],
