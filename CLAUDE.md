@@ -47,7 +47,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 
 ## Current version
 
-- **Current version**: v10.4.32 — a11y labels: the icon-only image-remove ✕ button and the two unlabeled ⓘ tooltip toggles (cover-answers, 90s-timer) in the quiz builder gained `aria-label`s, matching the already-labeled sudden-death/pomodoro ⓘ siblings. From the 2026-05-31 read-only audit. Prior: v10.4.31 — sticky header restored (removed an inline `position:relative` that overrode `.hdr{position:sticky}`; leftover from the v10.4.28 flexbox refactor). Prior: v10.4.30 — source-link wrong-chapter fix: 6 topics' `ch:56` placeholder refs removed per "no source > wrong source" (no covering chapter in the 69-ch reader).
+- **Current version**: v10.4.33 — Harrison reader bidi: English chapter prose/titles now render LTR. The chapter title, section headings, and body `<p>` had no `dir`, so English inherited the page `dir="rtl"`; added `dir="auto"` + `unicode-bidi:plaintext` (text-align:start on the prose) so each block derives direction from its content. From the 2026-05-31 read-only audit. Prior: v10.4.32 — a11y labels for the icon-only image-remove ✕ + two ⓘ tooltip toggles. Prior: v10.4.31 — sticky header restored (removed an inline `position:relative` overriding `.hdr{position:sticky}`).
 
 ---
 
