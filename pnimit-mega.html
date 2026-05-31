@@ -22,9 +22,7 @@
 <link rel="preload" href="fonts/heebo-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
 <link rel="preload" href="fonts/heebo-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
 <link rel="preload" href="fonts/heebo-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
-<!-- fsrs.js must execute (blocking) before the deferred app.js module that Vite
-     hoists into <head>; preload it here so only ~ms of parse blocks, not fetch. -->
-<link rel="preload" href="shared/fsrs.js" as="script" fetchpriority="high">
+<!-- shared/fsrs.js is intentionally NOT preloaded: Vite rewrites the preload href to a hashed chunk that the classic blocking script tag for shared/fsrs.js (further down) never executes, so the browser warns "preloaded but not used". That blocking tag handles load order. -->
 <title>Pnimit Mega — Internal Medicine Board Prep</title>
 <link rel="stylesheet" href="shared/tokens.css">
 <style id="clinical-kit">
