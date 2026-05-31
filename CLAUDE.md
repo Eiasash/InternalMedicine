@@ -188,7 +188,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 ├── questions/images/            # 134 question images
 ├── syllabus/P0064-2025.pdf     # Official IMA syllabus
 │
-├── tests/                      # 756 tests across 40 files
+├── tests/                      # 838 tests across 52 files
 │   ├── dataIntegrity.test.js   # Question schema, duplicates, topic coverage
 │   ├── appIntegrity.test.js    # Module structure, SW version sync, security
 │   ├── appLogic.test.js        # Core quiz logic patterns
@@ -205,8 +205,8 @@ Functions still on `window` due to circular import constraints or HTML shell usa
     ├── ci.yml                  # JSON validation, schema, tests, build (on push/PR)
     ├── integrity-guard.yml     # 6 gates: syntax, critical functions, module structure
     ├── weekly-audit.yml        # Weekly: full audit + security + docs drift
-    ├── distractor-autopsy.yml  # Distractor-pool integrity scan
-    └── deploy.yml              # Build with Vite → deploy dist/ to GitHub Pages
+    ├── deploy.yml              # Build with Vite → deploy dist/ to GitHub Pages
+    └── notify-auto-audit.yml   # repository_dispatch → Eiasash/auto-audit on merge (closes cron gap)
 ```
 
 ---
@@ -261,7 +261,7 @@ Optional fields: `st` (finer subtopic tag — display/analytics only, read by no
 ### Local Dev
 ```bash
 npm run dev          # Vite dev server (port 3737, auto-reload)
-npm test             # 756 tests via vitest
+npm test             # 838 tests via vitest
 npm run build        # Production build → dist/ (Vite bundle + static assets)
 npm run build:vite   # Vite-only build (no asset copy)
 npm run lint         # ESLint
@@ -357,9 +357,9 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Past exams | 7 sessions (2020–2025) |
 | Harrison chapters | ~69 PDFs |
 | Articles | 10 |
-| Test files | 40 |
-| Tests | 756 |
-| CI workflows | 5 (ci, integrity-guard, weekly-audit, distractor-autopsy, deploy) |
+| Test files | 52 |
+| Tests | 838 |
+| CI workflows | 5 (ci, integrity-guard, weekly-audit, deploy, notify-auto-audit) |
 
 ---
 
@@ -370,8 +370,8 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | `ci.yml` | Push/PR to main | JSON validation, question schema, SW version sync, topic coverage, no geriatrics content, innerHTML audit, tests, Vite build |
 | `integrity-guard.yml` | Push/PR to main | JS syntax (all 26 modules), critical functions, required files, function count regression, truncated code patterns, SW file refs |
 | `weekly-audit.yml` | Sunday 06:00 UTC | Full data audit + security (eval, innerHTML) + version drift + tests + build |
-| `distractor-autopsy.yml` | Push/PR touching distractors | Distractor-pool integrity (mirrors Geriatrics v10.34 parser-bleed audit) |
 | `deploy.yml` | Push to main | Install → test → build → deploy dist/ to GitHub Pages |
+| `notify-auto-audit.yml` | Push to main | Fires `repository_dispatch` (event `watched-repo-merge`) to `Eiasash/auto-audit` so its probe runs seconds-after-merge instead of waiting on the 30-min cron; no-op if `AUTO_AUDIT_DISPATCH_PAT` is unset |
 
 ---
 
