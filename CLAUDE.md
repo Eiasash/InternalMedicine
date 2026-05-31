@@ -47,7 +47,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 
 ## Current version
 
-- **Current version**: v10.4.31 — sticky header restored: removed an inline `style="position:relative"` on the `.hdr` div that was overriding the stylesheet's `.hdr{position:sticky;top:0}` (a leftover from the v10.4.28 flexbox refactor — `.dm-btn` is now `position:static`, so the inline relative was unnecessary and harmful). The toolbar (dark/settings/help/account) now stays pinned while scrolling a long quiz+explanation page. From the 2026-05-31 read-only audit. Prior: v10.4.30 — source-link wrong-chapter fix: 6 topics carried a `TOPIC_REF.ch=56` (Fluid & Electrolyte) placeholder, so the "📖 Source" chip + read-chapter button opened the wrong Harrison chapter on ~300 questions; the refs were removed per "no source > wrong source" (no covering chapter in the 69-ch reader). Prior: v10.4.29 — dropped the unused shared/fsrs.js preload (eliminated the "preloaded but not used" ×4/load console warning).
+- **Current version**: v10.4.32 — a11y labels: the icon-only image-remove ✕ button and the two unlabeled ⓘ tooltip toggles (cover-answers, 90s-timer) in the quiz builder gained `aria-label`s, matching the already-labeled sudden-death/pomodoro ⓘ siblings. From the 2026-05-31 read-only audit. Prior: v10.4.31 — sticky header restored (removed an inline `position:relative` that overrode `.hdr{position:sticky}`; leftover from the v10.4.28 flexbox refactor). Prior: v10.4.30 — source-link wrong-chapter fix: 6 topics' `ch:56` placeholder refs removed per "no source > wrong source" (no covering chapter in the 69-ch reader).
 
 ---
 
