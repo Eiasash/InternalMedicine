@@ -46,8 +46,13 @@ const ALLOWLIST = new Set([]);
 
 const isHeb = (ch) => /[֐-׿]/.test(ch);
 const PFX = new Set('ובהלמכש'); // 1-letter Hebrew prefixes — always glued to the next token
+const FINAL = /[ךםןףץ]/;       // word-final-form letters — impossible except at word-end
 function hasSpacedHebrew(s) {
   const t = String(s).split(/\s+/);
+  // (c) a lone word-final-form letter (ךםןףץ) — always a fractured word-final letter (zero FP:
+  //     a final form can never be a standalone label or prefix). Sibling-parity with the
+  //     Geriatrics/FamilyMedicine guards; added v10.4.41.
+  for (const tok of t) if (tok.length === 1 && FINAL.test(tok)) return true;
   for (let k = 0; k < t.length - 1; k++) {
     const a = t[k], b = t[k + 1];
     // (a) >=2 consecutive single-Hebrew-letter tokens — e.g. "ת ו פע ו ת"
