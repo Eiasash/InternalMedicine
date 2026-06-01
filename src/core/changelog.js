@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.38': [
+    'fix(data): repair intra-word spaced-Hebrew (PDF/BIDI extraction artifact) in 3 questions via surgical PURE de-spacing — only spaces removed, 0 character changes, 0 answer-key (c) changes: idx 415 "ציטוגנטי ו ת"→"ציטוגנטיות", idx 743 "מ י ימת"→"מיימת", idx 800 "ת ו פע ו ת"→"תופעות" + "ל טיפול"→"לטיפול". New tests/spacedHebrewGuard.test.js ratchet (ported from Geriatrics v10.64.145) flags any future spaced-Hebrew. 3 entangled cases (idx 807 \'ע י\'→\'ע"י\', 824 \'מ ה בין\'→\'מבין\', 1544 scrambled letters before "נוגדנים") are QUARANTINED in the guard allowlist pending reconstruction from the source exam PDFs (InternalMedicine/exams/) — a verbatim-source read needing sign-off, like Geriatrics #316. Question count unchanged (1556).'
+  ],
   '10.4.37': [
     'fix(dark): core content was invisible in dark mode. The Harrison in-app reader prose, study notes, flashcard fronts, and section headings hardcode a dark inline color (#1e293b/#0f172a) that collides 1:1 with the dark `.card`/`.fc`/body background → text colour == background → invisible. A light-island scan (hunting hardcoded *light* backgrounds) structurally cannot see this inverse bug, so the 2026-05-31 dark-mode audit missed it (it was live since long before). theme.css now rescues the hardcoded dark inline colours to light text under `body.dark`, with `:not([style*=background])` skipping legitimate light-islands (code blocks, note editors, overlays). Verified on the live deployed reader (real chapter prose flips #1e293b→#e2e8f0). Suite-wide P1; companion to FamilyMedicine v1.25.6 + Geriatrics.'
   ],
