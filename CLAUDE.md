@@ -55,7 +55,7 @@ These four rules are the floor. They override any conflicting guidance later in 
 
 ### Modular ES Modules
 
-The app is split into 26 ES module source files under `src/`. The HTML shell loads two scripts:
+The app is split into 32 ES module source files under `src/`. The HTML shell loads two scripts:
 ```html
 <script src="shared/fsrs.js"></script>              <!-- plain script, shared with Geriatrics -->
 <script type="module" src="src/ui/app.js"></script>  <!-- ES module entry, imports everything -->
@@ -188,7 +188,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 ├── questions/images/            # 134 question images
 ├── syllabus/P0064-2025.pdf     # Official IMA syllabus
 │
-├── tests/                      # 838 tests across 52 files
+├── tests/                      # 838 tests across 54 files
 │   ├── dataIntegrity.test.js   # Question schema, duplicates, topic coverage
 │   ├── appIntegrity.test.js    # Module structure, SW version sync, security
 │   ├── appLogic.test.js        # Core quiz logic patterns
@@ -275,7 +275,7 @@ npm run hooks:install # One-time: install pre-commit + pre-push git hooks
 
 ### Production Build
 `scripts/build.sh` runs:
-1. `npx vite build` → bundles 26 modules into one JS + one CSS (content-hashed)
+1. `npx vite build` → bundles 32 modules into one JS + one CSS (content-hashed)
 2. Copies static assets (data/, harrison_chapters.json, shared/, exams/, articles/, harrison/, questions/, syllabus/)
 3. Fixes manifest.json path (Vite hashes it, sed reverts)
 4. Generates production SW (simplified: caches HTML + data JSON, stale-while-revalidate for hashed assets)
@@ -342,7 +342,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 
 | Metric | Value |
 |--------|-------|
-| Source modules | 26 (under src/) |
+| Source modules | 32 (under src/) |
 | Source LOC | ~5,780 |
 | Functions | ~180 |
 | ES imports | 98 |
@@ -357,7 +357,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Past exams | 7 sessions (2020–2025) |
 | Harrison chapters | ~69 PDFs |
 | Articles | 10 |
-| Test files | 52 |
+| Test files | 54 |
 | Tests | 838 |
 | CI workflows | 5 (ci, integrity-guard, weekly-audit, deploy, notify-auto-audit) |
 
@@ -368,7 +368,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Workflow | Trigger | Checks |
 |----------|---------|--------|
 | `ci.yml` | Push/PR to main | JSON validation, question schema, SW version sync, topic coverage, no geriatrics content, innerHTML audit, tests, Vite build |
-| `integrity-guard.yml` | Push/PR to main | JS syntax (all 26 modules), critical functions, required files, function count regression, truncated code patterns, SW file refs |
+| `integrity-guard.yml` | Push/PR to main | JS syntax (all 32 modules), critical functions, required files, function count regression, truncated code patterns, SW file refs |
 | `weekly-audit.yml` | Sunday 06:00 UTC | Full data audit + security (eval, innerHTML) + version drift + tests + build |
 | `deploy.yml` | Push to main | Install → test → build → deploy dist/ to GitHub Pages |
 | `notify-auto-audit.yml` | Push to main | Fires `repository_dispatch` (event `watched-repo-merge`) to `Eiasash/auto-audit` so its probe runs seconds-after-merge instead of waiting on the 30-min cron; no-op if `AUTO_AUDIT_DISPATCH_PAT` is unset |
