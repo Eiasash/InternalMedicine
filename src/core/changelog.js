@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.39': [
+    'fix(data): repair 11 more intra-word spaced-Hebrew questions via surgical PURE de-spacing — a single UNAMBIGUOUS Hebrew prefix (ב/ל/מ/כ) cleaved from its word, e.g. "ב טיפול"→"בטיפול", "מ בין"→"מבין", "ל גרום"→"לגרום". Provably space-only: 0 character changes, 0 answer-key changes, Q count unchanged (1556). idx 84/205/398/413/517/714/723/761/834/860/861. Surfaced by Codex IM #157 P2 — the prior >=2-consecutive-singles detector missed single-prefix splits; tests/spacedHebrewGuard.test.js now flags both patterns. Only ב/ל/מ/כ are auto-glued: ו and ה are AMBIGUOUS (ו can be word-final, e.g. "ו איז"=split of "איזו"; ה can be a SUFFIX, e.g. "מחלק ה"→"מחלקה", "באיז ה"→"באיזה") so gluing them forward makes non-words — Codex IM #158 P2 caught three. The 14 ו/ה-ambiguous + scrambled cases (451/499/743/759/776/779/789/807/824/833/836/851/855/1544) are QUARANTINED for source-PDF reconstruction + sign-off (Geri #316). Trinity 10.4.38->10.4.39.'
+  ],
   '10.4.38': [
     'fix(data): repair intra-word spaced-Hebrew (PDF/BIDI extraction artifact) in 3 questions via surgical PURE de-spacing — only spaces removed, 0 character changes, 0 answer-key (c) changes: idx 415 "ציטוגנטי ו ת"→"ציטוגנטיות", idx 743 "מ י ימת"→"מיימת", idx 800 "ת ו פע ו ת"→"תופעות" + "ל טיפול"→"לטיפול". New tests/spacedHebrewGuard.test.js ratchet (ported from Geriatrics v10.64.145) flags any future spaced-Hebrew. 3 entangled cases (idx 807 \'ע י\'→\'ע"י\', 824 \'מ ה בין\'→\'מבין\', 1544 scrambled letters before "נוגדנים") are QUARANTINED in the guard allowlist pending reconstruction from the source exam PDFs (InternalMedicine/exams/) — a verbatim-source read needing sign-off, like Geriatrics #316. Question count unchanged (1556).'
   ],
