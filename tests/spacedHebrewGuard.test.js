@@ -14,17 +14,25 @@
  *   v10.4.39 — idx 84/205/398/413/517/714/723/761/834/860/861 (single ב/ל/מ/כ prefix splits)
  *
  * Only ב/ל/מ/כ are auto-glued — those standalone letters are unambiguously prefixes. ו and
- * ה are NOT auto-glued: they are AMBIGUOUS. ו can be word-final ("ו איז" is the split of
- * "איזו" — moving the ו forward gives the non-word "ואיז"), and ה can be a SUFFIX of the
- * PRECEDING word ("מחלק ה פנימית"→"מחלקה פנימית", "באיז ה סוג"→"באיזה סוג", "נמוכ ה"→"נמוכה").
- * Gluing those forward creates malformed Hebrew — Codex IM #158 P2 caught three such cases.
- * So any question containing a ו/ה split (or scrambled letters / a gershayim artifact) is
- * QUARANTINED for reconstruction from the source exam PDFs (InternalMedicine/exams/) via the
- * render-the-clean-visual-layer method (Geriatrics PR #316), requiring a verbatim source
- * read + sign-off (no guessing). 14 quarantined — see ALLOWLIST below.
+ * ה are AMBIGUOUS. ו can be word-final ("ו איז" is the split of "איזו" — moving the ו forward
+ * gives the non-word "ואיז"), and ה can be a SUFFIX of the PRECEDING word ("מחלק ה פנימית"→
+ * "מחלקה פנימית", "באיז ה סוג"→"באיזה סוג", "נמוכ ה"→"נמוכה"). Gluing those forward creates
+ * malformed Hebrew — Codex IM #158 P2 caught three such cases. So 14 ו/ה-split + scrambled +
+ * gershayim-artifact questions were QUARANTINED rather than mechanically de-spaced.
  *
- * RATCHET: any NEW spaced-Hebrew (outside the allowlist) fails. When a quarantined case is
- * reconstructed from source, remove its idx from ALLOWLIST in that PR.
+ * v10.4.40 (2026-06-01) — all 14 quarantined questions RECONSTRUCTED from their source exam
+ * booklets (InternalMedicine/exams/) via the render-the-clean-visual-layer method (Geriatrics
+ * PR #316): each page rendered @300–600 DPI, the clean visual Hebrew read directly, and the
+ * stem + every option transcribed verbatim from the source. Fixes went beyond the flagged
+ * span where the booklet dictated — ו word-final reorders (איזו), ה suffix/displacement,
+ * BIDI punctuation regrouping ((Death Rattle), "רפליקטיבי"?, ע"י), a parser-bleed (idx 851
+ * o[3] "Prednisone שאלות על מאמרים"→"Prednisone"), and a scramble (idx 1544 o[2] "י לי ע ת"→
+ * "עליית"). Answer keys (c) UNCHANGED for all 14; Hebrew-letter multiset preserved everywhere
+ * except the 851 bleed. ALLOWLIST is now EMPTY — the dataset is fully clean of spaced-Hebrew.
+ *
+ * RATCHET: any spaced-Hebrew now fails (allowlist empty). If a future ingest reintroduces the
+ * artifact, repair from source (render-the-visual) before merge — do not re-grow the allowlist
+ * for anything mechanically fixable.
  */
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
@@ -33,8 +41,8 @@ import { resolve } from 'path';
 const ROOT = resolve(import.meta.dirname, '..');
 const QZ = JSON.parse(readFileSync(resolve(ROOT, 'data/questions.json'), 'utf-8'));
 
-// Ambiguous (ו word-final / ה suffix) + scrambled cases awaiting source-PDF reconstruction (see header).
-const ALLOWLIST = new Set([451, 499, 743, 759, 776, 779, 789, 807, 824, 833, 836, 851, 855, 1544]);
+// EMPTY — all 14 ambiguous/scrambled cases reconstructed from source @ v10.4.40 (see header).
+const ALLOWLIST = new Set([]);
 
 const isHeb = (ch) => /[֐-׿]/.test(ch);
 const PFX = new Set('ובהלמכש'); // 1-letter Hebrew prefixes — always glued to the next token
