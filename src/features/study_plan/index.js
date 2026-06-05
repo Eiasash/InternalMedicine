@@ -145,7 +145,7 @@ export function renderStudyPlanSection() {
 
   let h = `
 <div class="sec-t" style="font-size:13px;margin-top:18px">📅 תכנית לימוד</div>
-<div style="padding:14px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:12px" dir="rtl">
+<div style="padding:14px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:12px" dir="auto">
   <div style="font-size:11px;color:#475569;margin-bottom:12px;line-height:1.6">
     תכנית לימוד שבועית משוקללת לפי תדירות הופעת נושאים בבחינות שלב א׳ פנימית קודמות (1,556 שאלות,
     24 נושאים). הנתונים אמפיריים — מבוססים על מאגר השאלות של האפליקציה, לא על ניחוש.
@@ -197,7 +197,7 @@ export function renderStudyPlanSection() {
 function _renderPlan(display) {
   const s = display.summary;
   let h = `
-<div style="padding:14px;background:#f0fdfa;border:1px solid #99f6e4;border-radius:12px;margin-bottom:12px" dir="rtl">
+<div style="padding:14px;background:#f0fdfa;border:1px solid #99f6e4;border-radius:12px;margin-bottom:12px" dir="auto">
   <div style="font-size:13px;font-weight:700;color:#134e4a;margin-bottom:8px">📊 סיכום</div>
   <div style="font-size:11px;color:#0f172a;line-height:1.8">
     <div>תאריך הבחינה: <strong>${sanitize(s.exam_date)}</strong></div>
@@ -211,7 +211,7 @@ function _renderPlan(display) {
   h += `<div class="sec-t" style="font-size:12px;margin-top:8px">🗓 שבועות לימוד</div>`;
   display.weeks.forEach((w) => {
     h += `
-<details style="margin-bottom:6px;border:1px solid #e2e8f0;border-radius:10px;background:#fff" dir="rtl">
+<details style="margin-bottom:6px;border:1px solid #e2e8f0;border-radius:10px;background:#fff" dir="auto">
   <summary style="padding:10px 12px;cursor:pointer;font-size:12px;font-weight:700;color:#0f172a;list-style:none">
     שבוע ${w.idx} — ${sanitize(w.start_date)} → ${sanitize(w.end_date)}
     <span style="float:left;color:#0891b2;font-weight:400">${w.used_hours}h • ${w.topics.length} נושאים</span>
@@ -244,7 +244,7 @@ function _renderPlan(display) {
     h += `<div class="sec-t" style="font-size:12px;margin-top:12px">🎯 שבועות מוק וחזרה</div>`;
     display.ramp_weeks.forEach((r) => {
       h += `
-<div style="margin-bottom:6px;padding:10px 12px;border:1px solid #fde68a;border-radius:10px;background:#fffbeb" dir="rtl">
+<div style="margin-bottom:6px;padding:10px 12px;border:1px solid #fde68a;border-radius:10px;background:#fffbeb" dir="auto">
   <div style="font-size:12px;font-weight:700;color:#92400e">
     ${sanitize(r.mock_label)} — שבוע ${r.idx}
     <span style="float:left;color:#b45309;font-weight:400;font-size:11px">${sanitize(r.start_date)} → ${sanitize(r.end_date)}</span>

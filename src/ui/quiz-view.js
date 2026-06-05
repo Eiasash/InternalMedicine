@@ -186,7 +186,7 @@ return `<div class="card" style="padding:14px">
 <div style="display:flex;gap:4px;flex-wrap:wrap"><span class="tag-year" style="background:#eff6ff;color:#1d4ed8;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;opacity:.6">📝 ····</span></div>
 <span style="color:#94a3b8;font-size:10px">·/·</span>
 </div>
-<p class="heb" style="font-size:13px;font-weight:700;line-height:1.7;margin-bottom:16px;color:#64748b" dir="rtl">⏳ טוען מאגר שאלות... מאגר 1,556 שאלות בעברית, נטען ברקע לשיפור מהירות הטעינה הראשונית</p>
+<p class="heb" style="font-size:13px;font-weight:700;line-height:1.7;margin-bottom:16px;color:#64748b" dir="auto">⏳ טוען מאגר שאלות... מאגר 1,556 שאלות בעברית, נטען ברקע לשיפור מהירות הטעינה הראשונית</p>
 <div class="qo" style="opacity:.45">⠀⠀⠀⠀⠀⠀⠀⠀</div>
 <div class="qo" style="opacity:.4;margin-top:6px">⠀⠀⠀⠀⠀⠀⠀⠀</div>
 <div class="qo" style="opacity:.35;margin-top:6px">⠀⠀⠀⠀⠀⠀⠀⠀</div>

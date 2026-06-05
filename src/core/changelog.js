@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.42': [
+    'chore(a11y/docs): sibling-parity polish from the 2026-06-05 audit. (1) Converted 5 hard-coded dir="rtl" containers to dir="auto" (study_plan/index.js x4, ui/quiz-view.js loading text x1) — pure-Hebrew today so zero visual change, but matches the Geri/FM a11y convention so a future English/drug-name interpolation derives its own base direction instead of inheriting forced RTL. (2) Documented the EXAM_YEARS comment: the bare 2020 token is an intentional source-data gap (month not printed on the available booklet), not a stale TODO, and the t field legitimately carries Harrison + Exam (20 curated supplemental Qs) tags outside EXAM_YEARS. 0 data/answer-key changes; 1556 unchanged. Trinity 10.4.41->10.4.42.'
+  ],
   '10.4.41': [
     'fix(data): repair 4 intra-word spaced-Hebrew FRACTURES — a lone NON-prefix Hebrew letter wedged inside a word (a class the a/b detector rules missed) — verified against the source exam-booklet VISUAL renders (fitz): idx334 "צ נתורים"→"צנתורים" (catheters, Q102/2022-Jun), idx442 "לאר ת ריטיס"→"לארתריטיס" (septic arthritis, Q66/2023-Jun), idx752 "א הי"→"היא" (trazodone is the drug of choice, Q41/2025-Jun — a multiset-preserving reorder), idx860 "בס י כוי"→"בסיכוי" (ARTESIA no difference in chance, Q149/2025-Jun). All pure-despace or Hebrew-letter-multiset-preserved; 0 answer-key changes; Q count unchanged (1556). Extended spacedHebrewGuard with rule (c) — a lone word-final-form letter (ךםןףץ) is always a fractured word-final letter (zero false positives; sibling-parity with Geriatrics/FamilyMedicine). ALLOWLIST stays EMPTY. tests/fractureRepair.test.js pins the 4. Trinity 10.4.40->10.4.41.'
   ],
