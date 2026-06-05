@@ -21,7 +21,13 @@ export const HARRISON_PDF_MAP={"14":"harrison/Ch14_Pain_Pathophysiology_and_Mana
 export const EXAM_FREQ=[50,45,40,30,45,60,50,40,35,50,45,35,55,35,40,30,15,15,20,20,15,15,25,20];
 
 // Past-exam session tokens (question `t` field). Order matches filter-pill display.
-// Canonical format YYYY-Mon. `2020` kept bare — month unresolved (TODO: confirm from source).
+// Canonical format YYYY-Mon. `2020` kept bare intentionally — the month is not
+// printed on the 2020 IMA booklet available to us, so it stays unsuffixed (this
+// is a documented source-data gap, not a code action item).
+// NOTE: the `t` field also carries values OUTSIDE this list and that is by
+// design: `Harrison` (textbook-derived Qs) and `Exam` (20 curated supplemental
+// board-style Qs, each with a valid ti + st). EXAM_YEARS is only the 7 dated
+// IMA sessions used for the year filter-pills; it is NOT the full tag universe.
 export const EXAM_YEARS=['2020','2021-Jun','2022-Jun','2023-Jun','2024-May','2024-Oct','2025-Jun'];
 
 // Supabase (shared Toranot project — shared w/ Toranot / FamilyMedicine / Geriatrics)
@@ -35,7 +41,7 @@ export const SUPA_ANON='sb_publishable_tUuqQQ8RKMvLDwTz5cKkOg_o_y-rHtw';
 export const TOPICS=['Cardiology — Coronary','Heart Failure','Arrhythmias & ECG','Valvular & Endocarditis','Hypertension','Pulmonology & VTE','Gastroenterology & Hepatology','Nephrology','Electrolytes & Acid-Base','Endocrinology & Diabetes','Hematology & Coagulation','Oncology & Screening','Infectious Disease','Rheumatology & Autoimmune','Neurology & Stroke','Critical Care & Shock','Dermatology','Allergy & Immunology','Fluids & Volume','Pain & Palliative','Perioperative','Toxicology','Clinical Approach & Diagnostics','Vascular Disease'];
 
 // Version & changelog
-export const APP_VERSION='10.4.41';
+export const APP_VERSION='10.4.42';
 // CHANGELOG moved to ./changelog.js for code-splitting. Dynamically
 // imported in showHelp() so the large export doesn't load in the
 // critical path. Sibling of FM #78.
