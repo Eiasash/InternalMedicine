@@ -10,6 +10,9 @@ scripts/__pycache__/
 # Local pre-edit snapshots of questions.json (created by audit scripts/edits)
 data/questions.json.bak*
 
+# Orphan AI-generation scratch stub (no in-repo producer) — prevent git add -A commits
+data/gapfill.generated.json
+
 # Chaos bot run artifacts — large per-run jsonl + screenshots, regenerable
 chaos-reports/v4-overnight-*/
 chaos-reports/*.log
