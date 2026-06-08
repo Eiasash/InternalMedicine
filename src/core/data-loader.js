@@ -17,6 +17,10 @@ q.ti=best>=0?best:8;
 // ===== DATA LOADER (v10.0) =====
 G._dataPromise = (async function loadDataArrays() {
   const basePath = './data/';
+  // Kick off the (non-fatal) high-yield bank fetch CONCURRENTLY with the critical batch below — it
+  // resolves during the work that follows, so awaiting it after the user-generated merge adds no new
+  // serial round-trip and no partial-pool render window (Codex IM #165 P2b).
+  const _hyPromise = fetch(basePath + 'highyield.json').then(r => (r.ok ? r.json() : null)).catch(() => null);
   // LCP fix (issue #82): distractors.json is ~2.5MB and is only consumed
   // in quiz-view.js:421 AFTER the user answers a question (`if(G.ans &&
   // !G.examMode)`). Eager-loading it in the startup Promise.all gates
@@ -119,6 +123,17 @@ G._dataPromise = (async function loadDataArrays() {
     const _xc=safeJSONParse('pnimit_custom_qs',[]);
     const _xAll=[..._xp,..._xc].filter(q=>q&&typeof q.q==='string'&&Array.isArray(q.o)&&q.o.length===4&&Number.isInteger(q.c)&&q.c>=0&&q.c<=3&&typeof q.ti==='number');
     if(_xAll.length){G.QZ.push(..._xAll);if(import.meta.env.DEV)console.log('Loaded '+_xAll.length+' user-generated questions');}
+    // High-yield AI bank (data/highyield.json, tag AI-2026-hy) — additive, non-fatal if absent.
+    // A SEPARATE file, NOT merged into data/questions.json, so it leaves the count-lock + the cross-repo
+    // corpus-manifest/Geri-syllabus contract untouched. Appended LAST (after questions.json AND the
+    // user-generated merge above) so it takes the highest G.QZ indices and shifts NO existing question
+    // index — progress/SRS/notes are keyed by numeric index (Codex IM #165 P2a). _hyPromise was kicked
+    // off in parallel with the critical batch, so this await is effectively instant (Codex IM #165 P2b).
+    try {
+      const _hy = await _hyPromise;
+      const _hyV = Array.isArray(_hy) ? _hy.filter(q=>q&&typeof q.q==='string'&&Array.isArray(q.o)&&q.o.length===4&&Number.isInteger(q.c)&&q.c>=0&&q.c<=3&&Number.isInteger(q.ti)) : [];
+      if(_hyV.length){G.QZ.push(..._hyV);if(import.meta.env.DEV)console.log('Loaded '+_hyV.length+' high-yield questions');}
+    } catch(e){ if(import.meta.env.DEV)console.warn('high-yield bank load skipped:', e&&e.message); }
     if(import.meta.env.DEV)console.log('Data loaded: ' + G.QZ.length + ' questions, ' + G.NOTES.length + ' notes');
     if(window.takeWeeklySnapshot)window.takeWeeklySnapshot();
   } catch (error) {

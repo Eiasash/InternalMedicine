@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG={
+  '10.4.43': [
+    'content(highyield): +236 AI-generated high-yield board MCQs in a NEW separate bank (data/highyield.json, tag AI-2026-hy) loaded additively by data-loader.js and labeled AI High-Yield in the quiz UI for transparency. Deliberately NOT merged into data/questions.json, so the count-lock + the cross-repo corpus-manifest/Geri-syllabus contract stay untouched (questions.json still 1556). Pipeline: scripts/gen_highyield.mjs (Toranot proxy, Harrison 22e) then scripts/verify_questions.mjs key/explanation judge (0/310 conflicts) then scripts/audit_keys_blind.mjs blind board-evidence audit (opus); 74 disagreement/low-confidence flags HELD OUT pending human key review. Trinity 10.4.42 to 10.4.43.'
+  ],
   '10.4.42': [
     'chore(a11y/docs): sibling-parity polish from the 2026-06-05 audit. (1) Converted 5 hard-coded dir="rtl" containers to dir="auto" (study_plan/index.js x4, ui/quiz-view.js loading text x1) — pure-Hebrew today so zero visual change, but matches the Geri/FM a11y convention so a future English/drug-name interpolation derives its own base direction instead of inheriting forced RTL. (2) Documented the EXAM_YEARS comment: the bare 2020 token is an intentional source-data gap (month not printed on the available booklet), not a stale TODO, and the t field legitimately carries Harrison + Exam (20 curated supplemental Qs) tags outside EXAM_YEARS. 0 data/answer-key changes; 1556 unchanged. Trinity 10.4.41->10.4.42.'
   ],
