@@ -25,3 +25,4 @@ chaos-reports/*.jsonl
 # 2026-05-10: chaos-bot output + test coverage (prevent git add -A near-misses)
 chaos-reports/
 coverage/
+data/highyield.generated.json
