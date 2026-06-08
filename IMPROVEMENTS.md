@@ -4,6 +4,46 @@ Rolling audit log for `audit-fix-deploy` runs. Most recent at top.
 
 ---
 
+## 2026-06-08 — §E.6 self-improve scan (read-only; clean)
+
+Full §E audit + §E.6 self-improve scan against v10.4.42. **Clean.** `npm run verify`
+green (sync-sw-version, innerHTML guards, Harrison-Hebrew baseline `--strict` 0≤0,
+846 tests across 55 files, build). RLS sanity pass **N/A** — no schema-adjacent
+change this run.
+
+Factual scan results:
+- **Data**: 1556 Qs; per-tag {2020:150, 2021-Jun:149, 2022-Jun:148, 2023-Jun:150,
+  2024-May:99, 2024-Oct:100, 2025-Jun:151, Harrison:589, Exam:20} — 2024 split into
+  two ~half sessions by design, no thin tag. All 24 topics ≥ 8 Qs.
+- **Harrison linkage**: `HARRISON_PDF_MAP` 69 entries = 69 PDFs on disk; `TOPIC_REF`
+  18/18 `s:'har'` refs resolve in `harrison_chapters.json` (guarded by
+  `topicRefCoverage.test.js`). No orphans.
+- **Sibling contract**: `shared/fsrs.js` md5 `71f9f2d4…` = canonical Geriatrics copy.
+  No drift.
+- **Code hygiene**: console.log all DEV-gated; no inline APP_VERSION; 0 stale TODO/FIXME
+  (the bare `2020` in `EXAM_YEARS` is documented intentional source-data, not a TODO);
+  0 skipped/todo tests.
+
+### Deferred (prioritized)
+
+- **[P3] Test-coverage gaps** — `src/services/supabaseAuth.js` (thin Supabase-auth
+  wrappers: signInWithGitHub / signOut / getSession / getUser / onAuthStateChange)
+  and `src/clock.js` (trivial helper) have zero direct test references. Low ROI —
+  meaningful coverage needs a supabase-client mock for what are mostly pass-throughs.
+  Batch into a single services-coverage pass rather than shipping tautological mock
+  tests.
+- **[P3] CLAUDE.md count drift** — Codebase Metrics + the `tests/` comment say "54
+  files / 838 tests"; disk is now **55 / 846**. Left for the monthly
+  `claude-md-drift-refresh` routine (next 2026-07-01) per the workspace currency-drift
+  ownership rule; not worth a manual multi-location edit here.
+- **[P3 / skill, not repo]** The audit-fix-deploy **§E.6 "Harrison orphans" scan
+  command is stale**: it walks `x.ch` + `HARRISON_PDF_MAP`, but IM questions carry no
+  `ch` field — chapter linkage is per-*topic* via `TOPIC_REF` → `harrison_chapters.json`.
+  The command therefore reports a vacuous "0 orphans" rather than checking the real
+  structure (`topicRefCoverage.test.js` is the actual guard). Fix belongs in
+  `~/.claude/skills/audit-fix-deploy/SKILL.md` §E.1 — flagged for Eias (skill edits
+  need explicit named-file consent; out of scope for this run).
+
 ## 2026-05-10 — IM ESLint 10 warning categorization (mirror of FM #49)
 
 **Read-only triage of the lint surface revealed by PR #106 (Vite 8 + ESLint 10 majors upgrade), after PR #107 (4 `no-useless-assignment` cleared).** No source-code edits in this pass. Goal: size the drain, identify what can be auto-fixed vs config-fixed vs hand-drained, and surface what cannot.
