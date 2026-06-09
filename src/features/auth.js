@@ -126,7 +126,14 @@ export async function syncApiKeyToAccount(apiKey) {
     : 'אישור סיסמה — הסרת המפתח גם מהחשבון (ביטול = הסרה מהמכשיר בלבד):';
   const pwd = window.prompt(msg);
   if (!pwd) return { ok: false, error: 'cancelled' };
-  return authSetApiKey(user.username, pwd, apiKey || '');
+  // _rpc lets fetch rejections bubble (unlike the Geri sibling) — catch here so
+  // an offline save still reaches the caller's warn-toast + refreshSettings
+  // path instead of aborting the handler (#353 round-3 Codex P2).
+  try {
+    return await authSetApiKey(user.username, pwd, apiKey || '');
+  } catch (e) {
+    return { ok: false, error: 'network', message: String(e) };
+  }
 }
 
 // ───────────────────────── auth events ─────────────────────────

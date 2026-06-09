@@ -74,6 +74,13 @@ describe('#353 — API-key account sync (IM port)', () => {
     );
   });
 
+  it('sync never throws: fetch rejections are caught and returned as {ok:false} (round-3 P2)', () => {
+    const fn = auth.slice(auth.indexOf('export async function syncApiKeyToAccount'));
+    expect(fn).toContain('try {');
+    expect(fn).toContain("return await authSetApiKey(user.username, pwd, apiKey || '');");
+    expect(fn).toMatch(/catch \(e\) \{\s*return \{ ok: false, error: 'network'/);
+  });
+
   it('has-key state offers a sync-to-account button for logged-in users (#353 P2)', () => {
     expect(overlay).toContain('data-action="settings-sync-api-key"');
     const start = overlay.indexOf("if (action === 'settings-sync-api-key')");
