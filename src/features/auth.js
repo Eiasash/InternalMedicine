@@ -17,8 +17,8 @@ import { SUPA_URL, SUPA_ANON } from '../core/constants.js';
 import { sanitize, toast, setApiKey } from '../core/utils.js';
 
 const AUTH_LS_KEY = 'pnimit_authUser';
-const UID_LS_KEY  = 'pnimit_uid';
-const DEV_LS_KEY  = 'pnimit_devid';
+const UID_LS_KEY = 'pnimit_uid';
+const DEV_LS_KEY = 'pnimit_devid';
 
 // ───────────────────────────── state ─────────────────────────────
 
@@ -31,10 +31,14 @@ export function getCurrentUser() {
     if (!u || typeof u !== 'object' || typeof u.username !== 'string') return null;
     if (!/^[a-z0-9][a-z0-9_-]{2,31}$/.test(u.username)) return null;
     return u;
-  } catch (_) { return null; }
+  } catch (_) {
+    return null;
+  }
 }
 
-export function isLoggedIn() { return !!getCurrentUser(); }
+export function isLoggedIn() {
+  return !!getCurrentUser();
+}
 
 /**
  * Unified user identifier. When logged in, returns the username; otherwise a
@@ -59,8 +63,8 @@ async function _rpc(fn, body) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'apikey':       SUPA_ANON,
-      'Authorization': 'Bearer ' + SUPA_ANON,
+      apikey: SUPA_ANON,
+      Authorization: 'Bearer ' + SUPA_ANON,
     },
     body: JSON.stringify(body),
   });
@@ -100,6 +104,31 @@ export async function authChangePassword(username, oldPwd, newPwd) {
   });
 }
 
+export async function authSetApiKey(username, password, apiKey) {
+  return _rpc('auth_set_api_key', {
+    p_username: username || '',
+    p_password: password || '',
+    p_api_key: apiKey || '',
+  });
+}
+
+// v10.4.45 (#353, Geri sibling): keys saved/rotated after the v10.4.44 _apikey
+// backup removal no longer reach app_users.api_key (the backup trigger feed is
+// gone), so a new device's login would restore a stale key. Sync at the save
+// moment via auth_set_api_key — the RPC requires re-auth, so collect the
+// password with window.prompt (same pattern as _handleChangePassword).
+// Empty apiKey clears the account copy (parity with setApiKey('')).
+export async function syncApiKeyToAccount(apiKey) {
+  const user = getCurrentUser();
+  if (!user) return { ok: false, error: 'not_logged_in' };
+  const msg = apiKey
+    ? 'אישור סיסמה — סנכרון המפתח לחשבון (ביטול = שמירה במכשיר זה בלבד):'
+    : 'אישור סיסמה — הסרת המפתח גם מהחשבון (ביטול = הסרה מהמכשיר בלבד):';
+  const pwd = window.prompt(msg);
+  if (!pwd) return { ok: false, error: 'cancelled' };
+  return authSetApiKey(user.username, pwd, apiKey || '');
+}
+
 // ───────────────────────── auth events ─────────────────────────
 // Lightweight pub/sub so other modules (e.g. post-login-restore) can react to
 // auth state transitions without coupling to the UI layer. Modeled on the
@@ -129,16 +158,26 @@ const _authSubs = new Set();
 export function subscribeAuthEvents(handler) {
   if (typeof handler !== 'function') return () => {};
   _authSubs.add(handler);
-  return () => { _authSubs.delete(handler); };
+  return () => {
+    _authSubs.delete(handler);
+  };
 }
 
 function _dispatchAuthEvent(action) {
-  const a = (action === 'login' || action === 'register' ||
-             action === 'logout' || action === 'change-password')
-            ? action : 'unknown';
+  const a =
+    action === 'login' ||
+    action === 'register' ||
+    action === 'logout' ||
+    action === 'change-password'
+      ? action
+      : 'unknown';
   // In-process subscribers first.
   for (const fn of Array.from(_authSubs)) {
-    try { fn(a); } catch (_) { /* swallow */ }
+    try {
+      fn(a);
+    } catch (_) {
+      /* swallow */
+    }
   }
   // DOM consumers (post-login-restore wires this way to stay decoupled from
   // the auth module's import graph in test environments).
@@ -146,7 +185,9 @@ function _dispatchAuthEvent(action) {
     if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
       window.dispatchEvent(new CustomEvent(AUTH_EVENT_NAME, { detail: { action: a } }));
     }
-  } catch (_) { /* CustomEvent may be undefined in node; tests use the fn API */ }
+  } catch (_) {
+    /* CustomEvent may be undefined in node; tests use the fn API */
+  }
 }
 
 /**
@@ -199,7 +240,7 @@ export function renderAuthSection() {
 <div class="sec-t" style="font-size:13px;margin-top:18px">👤 חשבון</div>
 <div style="padding:14px;background:#ecfeff;border:1px solid #a5f3fc;border-radius:12px;margin-bottom:12px">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-    <div style="width:36px;height:36px;border-radius:50%;background:#0891b2;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">${sanitize((user.displayName || user.username).slice(0,1).toUpperCase())}</div>
+    <div style="width:36px;height:36px;border-radius:50%;background:#0891b2;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">${sanitize((user.displayName || user.username).slice(0, 1).toUpperCase())}</div>
     <div style="flex:1;min-width:0">
       <div style="font-size:12px;font-weight:700;color:#0c4a6e;direction:ltr;text-align:left">${sanitize(user.displayName || user.username)}</div>
       <div style="font-size:10px;color:#64748b;direction:ltr;text-align:left">@${sanitize(user.username)}</div>
@@ -252,9 +293,7 @@ function _setStatus(msg, tone) {
   const el = document.getElementById('auth-status');
   if (!el) return;
   el.textContent = msg || '';
-  el.style.color = tone === 'error'   ? '#991b1b'
-                  : tone === 'success' ? '#059669'
-                  : '#64748b';
+  el.style.color = tone === 'error' ? '#991b1b' : tone === 'success' ? '#059669' : '#64748b';
 }
 
 function _switchTab(which) {
@@ -268,10 +307,10 @@ function _switchTab(which) {
   // Also restyle tab buttons
   Array.from(tabs.querySelectorAll('button')).forEach((b) => {
     const target = b.dataset.action || '';
-    const active = (target === 'auth-tab-login'    && isLogin) ||
-                   (target === 'auth-tab-register' && !isLogin);
+    const active =
+      (target === 'auth-tab-login' && isLogin) || (target === 'auth-tab-register' && !isLogin);
     b.style.background = active ? '#fff' : 'transparent';
-    b.style.color      = active ? '#0f172a' : '#64748b';
+    b.style.color = active ? '#0f172a' : '#64748b';
     b.style.fontWeight = active ? '700' : '400';
   });
   _setStatus('');
@@ -279,8 +318,11 @@ function _switchTab(which) {
 
 async function _handleLogin() {
   const u = (document.getElementById('auth-li-user') || {}).value || '';
-  const p = (document.getElementById('auth-li-pwd')  || {}).value || '';
-  if (!u || !p) { _setStatus('נא למלא שם משתמש וסיסמה', 'error'); return; }
+  const p = (document.getElementById('auth-li-pwd') || {}).value || '';
+  if (!u || !p) {
+    _setStatus('נא למלא שם משתמש וסיסמה', 'error');
+    return;
+  }
   _setStatus('מתחבר…');
   const r = await authLogin(u, p);
   if (!r.ok) {
@@ -289,7 +331,7 @@ async function _handleLogin() {
       locked: 'יותר מדי ניסיונות כושלים. נסה שוב בעוד 15 דקות.',
       bad_response: 'שגיאת רשת — נסה שוב',
     };
-    _setStatus(map[r.error] || r.message || ('שגיאה: ' + r.error), 'error');
+    _setStatus(map[r.error] || r.message || 'שגיאה: ' + r.error, 'error');
     return;
   }
   setAuthSession(r.username, r.display_name);
@@ -305,9 +347,12 @@ async function _handleLogin() {
 
 async function _handleRegister() {
   const u = (document.getElementById('auth-rg-user') || {}).value || '';
-  const p = (document.getElementById('auth-rg-pwd')  || {}).value || '';
+  const p = (document.getElementById('auth-rg-pwd') || {}).value || '';
   const n = (document.getElementById('auth-rg-name') || {}).value || '';
-  if (!u || !p) { _setStatus('שם משתמש וסיסמה הם שדות חובה', 'error'); return; }
+  if (!u || !p) {
+    _setStatus('שם משתמש וסיסמה הם שדות חובה', 'error');
+    return;
+  }
   _setStatus('יוצר חשבון…');
   const r = await authRegister(u, p, n);
   if (!r.ok) {
@@ -317,7 +362,7 @@ async function _handleRegister() {
       username_taken: 'שם המשתמש כבר תפוס',
       bad_response: 'שגיאת רשת — נסה שוב',
     };
-    _setStatus(map[r.error] || r.message || ('שגיאה: ' + r.error), 'error');
+    _setStatus(map[r.error] || r.message || 'שגיאה: ' + r.error, 'error');
     return;
   }
   // Auto-login after register (the RPC already verifies password hash).
@@ -384,13 +429,26 @@ export function bindAuthEvents() {
     if (!t) return;
     const a = t.dataset.action;
     switch (a) {
-      case 'auth-tab-login':    _switchTab('login');    break;
-      case 'auth-tab-register': _switchTab('register'); break;
-      case 'auth-do-login':     _handleLogin();         break;
-      case 'auth-do-register':  _handleRegister();      break;
-      case 'auth-change-pwd':   _handleChangePassword();break;
-      case 'auth-logout':       _handleLogout();        break;
-      default: return;
+      case 'auth-tab-login':
+        _switchTab('login');
+        break;
+      case 'auth-tab-register':
+        _switchTab('register');
+        break;
+      case 'auth-do-login':
+        _handleLogin();
+        break;
+      case 'auth-do-register':
+        _handleRegister();
+        break;
+      case 'auth-change-pwd':
+        _handleChangePassword();
+        break;
+      case 'auth-logout':
+        _handleLogout();
+        break;
+      default:
+        return;
     }
   });
 }
