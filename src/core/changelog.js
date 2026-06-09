@@ -5,60 +5,63 @@
 // IMPORTANT: drift guards (tests/changelogDrift.test.js) read this file
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
-export const CHANGELOG={
+export const CHANGELOG = {
+  '10.4.45': [
+    'fix(account): sync the Anthropic API key to the account at save time (#353 sibling, Geri v10.64.160). The v10.4.44 security fix removed _apikey from the cloud backup, which also severed the only WRITE path into app_users.api_key (the sync_api_key_from_backup trigger fed off backup writes) — a key saved or rotated after .44 stayed localStorage-only, so auth_login_user restored a stale or null key on the next device (the Codex P2 on #167). Now settings-save-api-key / settings-remove-api-key save locally FIRST (never network-blocked), then for logged-in users sync via the existing auth_set_api_key RPC (SECURITY DEFINER, re-auth required — password collected with window.prompt, the _handleChangePassword pattern). Cancel = device-only with explicit toast; RPC failure keeps the local save and warns; guests keep the old behavior. Empty key clears the account copy. Round-2 Codex P2s folded in: (a) the legacy backup _apikey restore in applyRestorePayload is now FILL-ONLY (a backup _apikey is pre-.44-stale by definition, so it never clobbers a present key); (b) the has-key settings state gained a logged-in-only sync-to-account button (settings-sync-api-key) so a key saved before this release can be pushed to the account without remove + re-enter. tests/apikeyAccountSync.test.js pins wiring + ordering + both P2 fixes + the .44 regression locks. Trinity 10.4.44 to 10.4.45.',
+  ],
   '10.4.44': [
-    'fix(security): stop cloud-syncing the Anthropic API key. backup_get/backup_set are SECURITY DEFINER with no caller-identity check, so the synced backup blob (which included _apikey) was readable by anyone who could guess a username id using only the public anon key. Since auth_login_user already returns api_key on a password-checked login, syncing it in the backup was redundant. Removed _apikey from the cloudBackup payload (_bundled) so new backups no longer carry the secret; the restore-read path stays for backward compatibility and login still restores the key, so no feature is lost. Existing rows scrubbed server-side separately. New tests/apikeyExposureGuard.test.js pins both halves. Sibling of Geri v10.64.158 / FM v1.26.1. Trinity 10.4.43 to 10.4.44.'
+    'fix(security): stop cloud-syncing the Anthropic API key. backup_get/backup_set are SECURITY DEFINER with no caller-identity check, so the synced backup blob (which included _apikey) was readable by anyone who could guess a username id using only the public anon key. Since auth_login_user already returns api_key on a password-checked login, syncing it in the backup was redundant. Removed _apikey from the cloudBackup payload (_bundled) so new backups no longer carry the secret; the restore-read path stays for backward compatibility and login still restores the key, so no feature is lost. Existing rows scrubbed server-side separately. New tests/apikeyExposureGuard.test.js pins both halves. Sibling of Geri v10.64.158 / FM v1.26.1. Trinity 10.4.43 to 10.4.44.',
   ],
   '10.4.43': [
-    'content(highyield): +236 AI-generated high-yield board MCQs in a NEW separate bank (data/highyield.json, tag AI-2026-hy) loaded additively by data-loader.js and labeled AI High-Yield in the quiz UI for transparency. Deliberately NOT merged into data/questions.json, so the count-lock + the cross-repo corpus-manifest/Geri-syllabus contract stay untouched (questions.json still 1556). Pipeline: scripts/gen_highyield.mjs (Toranot proxy, Harrison 22e) then scripts/verify_questions.mjs key/explanation judge (0/310 conflicts) then scripts/audit_keys_blind.mjs blind board-evidence audit (opus); 74 disagreement/low-confidence flags HELD OUT pending human key review. Trinity 10.4.42 to 10.4.43.'
+    'content(highyield): +236 AI-generated high-yield board MCQs in a NEW separate bank (data/highyield.json, tag AI-2026-hy) loaded additively by data-loader.js and labeled AI High-Yield in the quiz UI for transparency. Deliberately NOT merged into data/questions.json, so the count-lock + the cross-repo corpus-manifest/Geri-syllabus contract stay untouched (questions.json still 1556). Pipeline: scripts/gen_highyield.mjs (Toranot proxy, Harrison 22e) then scripts/verify_questions.mjs key/explanation judge (0/310 conflicts) then scripts/audit_keys_blind.mjs blind board-evidence audit (opus); 74 disagreement/low-confidence flags HELD OUT pending human key review. Trinity 10.4.42 to 10.4.43.',
   ],
   '10.4.42': [
-    'chore(a11y/docs): sibling-parity polish from the 2026-06-05 audit. (1) Converted 5 hard-coded dir="rtl" containers to dir="auto" (study_plan/index.js x4, ui/quiz-view.js loading text x1) — pure-Hebrew today so zero visual change, but matches the Geri/FM a11y convention so a future English/drug-name interpolation derives its own base direction instead of inheriting forced RTL. (2) Documented the EXAM_YEARS comment: the bare 2020 token is an intentional source-data gap (month not printed on the available booklet), not a stale TODO, and the t field legitimately carries Harrison + Exam (20 curated supplemental Qs) tags outside EXAM_YEARS. 0 data/answer-key changes; 1556 unchanged. Trinity 10.4.41->10.4.42.'
+    'chore(a11y/docs): sibling-parity polish from the 2026-06-05 audit. (1) Converted 5 hard-coded dir="rtl" containers to dir="auto" (study_plan/index.js x4, ui/quiz-view.js loading text x1) — pure-Hebrew today so zero visual change, but matches the Geri/FM a11y convention so a future English/drug-name interpolation derives its own base direction instead of inheriting forced RTL. (2) Documented the EXAM_YEARS comment: the bare 2020 token is an intentional source-data gap (month not printed on the available booklet), not a stale TODO, and the t field legitimately carries Harrison + Exam (20 curated supplemental Qs) tags outside EXAM_YEARS. 0 data/answer-key changes; 1556 unchanged. Trinity 10.4.41->10.4.42.',
   ],
   '10.4.41': [
-    'fix(data): repair 4 intra-word spaced-Hebrew FRACTURES — a lone NON-prefix Hebrew letter wedged inside a word (a class the a/b detector rules missed) — verified against the source exam-booklet VISUAL renders (fitz): idx334 "צ נתורים"→"צנתורים" (catheters, Q102/2022-Jun), idx442 "לאר ת ריטיס"→"לארתריטיס" (septic arthritis, Q66/2023-Jun), idx752 "א הי"→"היא" (trazodone is the drug of choice, Q41/2025-Jun — a multiset-preserving reorder), idx860 "בס י כוי"→"בסיכוי" (ARTESIA no difference in chance, Q149/2025-Jun). All pure-despace or Hebrew-letter-multiset-preserved; 0 answer-key changes; Q count unchanged (1556). Extended spacedHebrewGuard with rule (c) — a lone word-final-form letter (ךםןףץ) is always a fractured word-final letter (zero false positives; sibling-parity with Geriatrics/FamilyMedicine). ALLOWLIST stays EMPTY. tests/fractureRepair.test.js pins the 4. Trinity 10.4.40->10.4.41.'
+    'fix(data): repair 4 intra-word spaced-Hebrew FRACTURES — a lone NON-prefix Hebrew letter wedged inside a word (a class the a/b detector rules missed) — verified against the source exam-booklet VISUAL renders (fitz): idx334 "צ נתורים"→"צנתורים" (catheters, Q102/2022-Jun), idx442 "לאר ת ריטיס"→"לארתריטיס" (septic arthritis, Q66/2023-Jun), idx752 "א הי"→"היא" (trazodone is the drug of choice, Q41/2025-Jun — a multiset-preserving reorder), idx860 "בס י כוי"→"בסיכוי" (ARTESIA no difference in chance, Q149/2025-Jun). All pure-despace or Hebrew-letter-multiset-preserved; 0 answer-key changes; Q count unchanged (1556). Extended spacedHebrewGuard with rule (c) — a lone word-final-form letter (ךםןףץ) is always a fractured word-final letter (zero false positives; sibling-parity with Geriatrics/FamilyMedicine). ALLOWLIST stays EMPTY. tests/fractureRepair.test.js pins the 4. Trinity 10.4.40->10.4.41.',
   ],
   '10.4.40': [
-    'fix(data): RECONSTRUCT all 14 quarantined ו/ה-ambiguous + scrambled spaced-Hebrew questions from their source exam booklets (InternalMedicine/exams/) via the render-the-clean-visual-layer method (Geriatrics PR #316) — each page rendered @300–600 DPI, the clean visual Hebrew read directly, stem + every option transcribed verbatim. Repairs went beyond the flagged span where the booklet dictated: ו word-final reorders ("ו איז"→"איזו", idx 776/789/836/851/855), ה suffix backward-glue ("מחלק ה"→"מחלקה" idx 759, "באיז ה"→"באיזה" idx 833), a displaced ה ("מ ה בין טיפולים"→"מבין הטיפולים" idx 824), BIDI punctuation regrouping ("(Death Rattle)" idx 779, \'"רפליקטיבי"?\' idx 836, ע"י idx 807, period idx 851), a parser-bleed (idx 851 o[3] "Prednisone שאלות על מאמרים"→"Prednisone" — a section header had merged into the option), and a letter scramble (idx 1544 o[2] "י לי ע ת"→"עליית"). idx 836 keeps "חיוביות" exactly as the booklet prints it (visual wins over grammar). Answer keys (c) UNCHANGED for all 14; Hebrew-letter multiset preserved everywhere except the 851 bleed; Q count unchanged (1556). spacedHebrewGuard ALLOWLIST now EMPTY — the dataset is fully clean of spaced-Hebrew. Trinity 10.4.39->10.4.40.'
+    'fix(data): RECONSTRUCT all 14 quarantined ו/ה-ambiguous + scrambled spaced-Hebrew questions from their source exam booklets (InternalMedicine/exams/) via the render-the-clean-visual-layer method (Geriatrics PR #316) — each page rendered @300–600 DPI, the clean visual Hebrew read directly, stem + every option transcribed verbatim. Repairs went beyond the flagged span where the booklet dictated: ו word-final reorders ("ו איז"→"איזו", idx 776/789/836/851/855), ה suffix backward-glue ("מחלק ה"→"מחלקה" idx 759, "באיז ה"→"באיזה" idx 833), a displaced ה ("מ ה בין טיפולים"→"מבין הטיפולים" idx 824), BIDI punctuation regrouping ("(Death Rattle)" idx 779, \'"רפליקטיבי"?\' idx 836, ע"י idx 807, period idx 851), a parser-bleed (idx 851 o[3] "Prednisone שאלות על מאמרים"→"Prednisone" — a section header had merged into the option), and a letter scramble (idx 1544 o[2] "י לי ע ת"→"עליית"). idx 836 keeps "חיוביות" exactly as the booklet prints it (visual wins over grammar). Answer keys (c) UNCHANGED for all 14; Hebrew-letter multiset preserved everywhere except the 851 bleed; Q count unchanged (1556). spacedHebrewGuard ALLOWLIST now EMPTY — the dataset is fully clean of spaced-Hebrew. Trinity 10.4.39->10.4.40.',
   ],
   '10.4.39': [
-    'fix(data): repair 11 more intra-word spaced-Hebrew questions via surgical PURE de-spacing — a single UNAMBIGUOUS Hebrew prefix (ב/ל/מ/כ) cleaved from its word, e.g. "ב טיפול"→"בטיפול", "מ בין"→"מבין", "ל גרום"→"לגרום". Provably space-only: 0 character changes, 0 answer-key changes, Q count unchanged (1556). idx 84/205/398/413/517/714/723/761/834/860/861. Surfaced by Codex IM #157 P2 — the prior >=2-consecutive-singles detector missed single-prefix splits; tests/spacedHebrewGuard.test.js now flags both patterns. Only ב/ל/מ/כ are auto-glued: ו and ה are AMBIGUOUS (ו can be word-final, e.g. "ו איז"=split of "איזו"; ה can be a SUFFIX, e.g. "מחלק ה"→"מחלקה", "באיז ה"→"באיזה") so gluing them forward makes non-words — Codex IM #158 P2 caught three. The 14 ו/ה-ambiguous + scrambled cases (451/499/743/759/776/779/789/807/824/833/836/851/855/1544) are QUARANTINED for source-PDF reconstruction + sign-off (Geri #316). Trinity 10.4.38->10.4.39.'
+    'fix(data): repair 11 more intra-word spaced-Hebrew questions via surgical PURE de-spacing — a single UNAMBIGUOUS Hebrew prefix (ב/ל/מ/כ) cleaved from its word, e.g. "ב טיפול"→"בטיפול", "מ בין"→"מבין", "ל גרום"→"לגרום". Provably space-only: 0 character changes, 0 answer-key changes, Q count unchanged (1556). idx 84/205/398/413/517/714/723/761/834/860/861. Surfaced by Codex IM #157 P2 — the prior >=2-consecutive-singles detector missed single-prefix splits; tests/spacedHebrewGuard.test.js now flags both patterns. Only ב/ל/מ/כ are auto-glued: ו and ה are AMBIGUOUS (ו can be word-final, e.g. "ו איז"=split of "איזו"; ה can be a SUFFIX, e.g. "מחלק ה"→"מחלקה", "באיז ה"→"באיזה") so gluing them forward makes non-words — Codex IM #158 P2 caught three. The 14 ו/ה-ambiguous + scrambled cases (451/499/743/759/776/779/789/807/824/833/836/851/855/1544) are QUARANTINED for source-PDF reconstruction + sign-off (Geri #316). Trinity 10.4.38->10.4.39.',
   ],
   '10.4.38': [
-    'fix(data): repair intra-word spaced-Hebrew (PDF/BIDI extraction artifact) in 3 questions via surgical PURE de-spacing — only spaces removed, 0 character changes, 0 answer-key (c) changes: idx 415 "ציטוגנטי ו ת"→"ציטוגנטיות", idx 743 "מ י ימת"→"מיימת", idx 800 "ת ו פע ו ת"→"תופעות" + "ל טיפול"→"לטיפול". New tests/spacedHebrewGuard.test.js ratchet (ported from Geriatrics v10.64.145) flags any future spaced-Hebrew. 3 entangled cases (idx 807 \'ע י\'→\'ע"י\', 824 \'מ ה בין\'→\'מבין\', 1544 scrambled letters before "נוגדנים") are QUARANTINED in the guard allowlist pending reconstruction from the source exam PDFs (InternalMedicine/exams/) — a verbatim-source read needing sign-off, like Geriatrics #316. Question count unchanged (1556).'
+    'fix(data): repair intra-word spaced-Hebrew (PDF/BIDI extraction artifact) in 3 questions via surgical PURE de-spacing — only spaces removed, 0 character changes, 0 answer-key (c) changes: idx 415 "ציטוגנטי ו ת"→"ציטוגנטיות", idx 743 "מ י ימת"→"מיימת", idx 800 "ת ו פע ו ת"→"תופעות" + "ל טיפול"→"לטיפול". New tests/spacedHebrewGuard.test.js ratchet (ported from Geriatrics v10.64.145) flags any future spaced-Hebrew. 3 entangled cases (idx 807 \'ע י\'→\'ע"י\', 824 \'מ ה בין\'→\'מבין\', 1544 scrambled letters before "נוגדנים") are QUARANTINED in the guard allowlist pending reconstruction from the source exam PDFs (InternalMedicine/exams/) — a verbatim-source read needing sign-off, like Geriatrics #316. Question count unchanged (1556).',
   ],
   '10.4.37': [
-    'fix(dark): core content was invisible in dark mode. The Harrison in-app reader prose, study notes, flashcard fronts, and section headings hardcode a dark inline color (#1e293b/#0f172a) that collides 1:1 with the dark `.card`/`.fc`/body background → text colour == background → invisible. A light-island scan (hunting hardcoded *light* backgrounds) structurally cannot see this inverse bug, so the 2026-05-31 dark-mode audit missed it (it was live since long before). theme.css now rescues the hardcoded dark inline colours to light text under `body.dark`, with `:not([style*=background])` skipping legitimate light-islands (code blocks, note editors, overlays). Verified on the live deployed reader (real chapter prose flips #1e293b→#e2e8f0). Suite-wide P1; companion to FamilyMedicine v1.25.6 + Geriatrics.'
+    'fix(dark): core content was invisible in dark mode. The Harrison in-app reader prose, study notes, flashcard fronts, and section headings hardcode a dark inline color (#1e293b/#0f172a) that collides 1:1 with the dark `.card`/`.fc`/body background → text colour == background → invisible. A light-island scan (hunting hardcoded *light* backgrounds) structurally cannot see this inverse bug, so the 2026-05-31 dark-mode audit missed it (it was live since long before). theme.css now rescues the hardcoded dark inline colours to light text under `body.dark`, with `:not([style*=background])` skipping legitimate light-islands (code blocks, note editors, overlays). Verified on the live deployed reader (real chapter prose flips #1e293b→#e2e8f0). Suite-wide P1; companion to FamilyMedicine v1.25.6 + Geriatrics.',
   ],
   '10.4.36': [
-    'chore: code hygiene — (1) the toast helper used the invalid CSS `direction:auto` (no such keyword → the declaration is dropped → English toasts inherited the page RTL); replaced with `unicode-bidi:plaintext`. (2) the loading skeleton referenced undefined `--fg2` / `--fg3` CSS custom properties (invalid color → dropped); replaced with literal slate. (3) removed the frozen BUILD_HASH constant (hardcoded to 2026-04-15, shown as a misleading "build 20260415" in Settings) — the app version already identifies the build. From the 2026-05-31 read-only audit.'
+    'chore: code hygiene — (1) the toast helper used the invalid CSS `direction:auto` (no such keyword → the declaration is dropped → English toasts inherited the page RTL); replaced with `unicode-bidi:plaintext`. (2) the loading skeleton referenced undefined `--fg2` / `--fg3` CSS custom properties (invalid color → dropped); replaced with literal slate. (3) removed the frozen BUILD_HASH constant (hardcoded to 2026-04-15, shown as a misleading "build 20260415" in Settings) — the app version already identifies the build. From the 2026-05-31 read-only audit.',
   ],
   '10.4.35': [
-    'fix(events): handler hygiene — killed the #ct double-fire class. All five initXxxEvents bind to the same #ct container, so any data-action handled in two of them fired twice per click (outcome order-dependent). Renamed the library "jump to quiz by year" action (filter-year -> goto-quiz-year) so it no longer collides with the quiz year-filter toggle; removed the redundant duplicate handlers in track-view (share-app / dismiss / start-mini-exam — the quiz-view and app.js body listeners already catch them via bubbling); and removed 4 dead handler cases never emitted (submit-report, ai-autopsy, toggle-autopsy, goto-quiz-topic). New delegationCollision.test.js guards that no data-action is handled in >1 init. From the 2026-05-31 read-only audit.'
+    'fix(events): handler hygiene — killed the #ct double-fire class. All five initXxxEvents bind to the same #ct container, so any data-action handled in two of them fired twice per click (outcome order-dependent). Renamed the library "jump to quiz by year" action (filter-year -> goto-quiz-year) so it no longer collides with the quiz year-filter toggle; removed the redundant duplicate handlers in track-view (share-app / dismiss / start-mini-exam — the quiz-view and app.js body listeners already catch them via bubbling); and removed 4 dead handler cases never emitted (submit-report, ai-autopsy, toggle-autopsy, goto-quiz-topic). New delegationCollision.test.js guards that no data-action is handled in >1 init. From the 2026-05-31 read-only audit.',
   ],
   '10.4.34': [
-    'fix(dark): dark-mode light-island fixes — several surfaces shipped inline light backgrounds (#fff / #fef2f2 / #fffbeb) that overrode body.dark .card or inherited a light bg, so in dark mode they rendered as bright islands: the general-notes textarea + panel, the per-question note cards (More tab), the "questions due" alert (Track tab), and the chat error bubble. Added body.dark overrides in theme.css (with gnotes-panel / qnote-card / due-alert class hooks), matching the existing v10.4.2 attribute-selector idiom. From the 2026-05-31 read-only audit.'
+    'fix(dark): dark-mode light-island fixes — several surfaces shipped inline light backgrounds (#fff / #fef2f2 / #fffbeb) that overrode body.dark .card or inherited a light bg, so in dark mode they rendered as bright islands: the general-notes textarea + panel, the per-question note cards (More tab), the "questions due" alert (Track tab), and the chat error bubble. Added body.dark overrides in theme.css (with gnotes-panel / qnote-card / due-alert class hooks), matching the existing v10.4.2 attribute-selector idiom. From the 2026-05-31 read-only audit.',
   ],
   '10.4.33': [
-    'fix(bidi): Harrison reader renders English chapter prose/titles LTR — the chapter title, section headings, and body <p> carried no dir, so English text inherited the page dir="rtl" (right-anchored, justify-from-right, punctuation/number reordering). Added dir="auto" + unicode-bidi:plaintext (text-align:start on the prose) so each block derives its own base direction from content — English now reads left-to-right. From the 2026-05-31 read-only audit.'
+    'fix(bidi): Harrison reader renders English chapter prose/titles LTR — the chapter title, section headings, and body <p> carried no dir, so English text inherited the page dir="rtl" (right-anchored, justify-from-right, punctuation/number reordering). Added dir="auto" + unicode-bidi:plaintext (text-align:start on the prose) so each block derives its own base direction from content — English now reads left-to-right. From the 2026-05-31 read-only audit.',
   ],
   '10.4.32': [
-    'a11y: accessible names for icon-only controls — the image-remove ✕ button (data-action=remove-img) gained aria-label/title="הסר תמונה" (it deletes the attached question image; previously announced only as "✕"), and the two unlabeled ⓘ tooltip toggles in the quiz builder (cover-answers + 90s-timer) gained aria-labels, matching the sudden-death / pomodoro ⓘ siblings that were already labeled. From the 2026-05-31 read-only audit.'
+    'a11y: accessible names for icon-only controls — the image-remove ✕ button (data-action=remove-img) gained aria-label/title="הסר תמונה" (it deletes the attached question image; previously announced only as "✕"), and the two unlabeled ⓘ tooltip toggles in the quiz builder (cover-answers + 90s-timer) gained aria-labels, matching the sudden-death / pomodoro ⓘ siblings that were already labeled. From the 2026-05-31 read-only audit.',
   ],
   '10.4.31': [
-    'fix(ui): sticky header restored — removed the inline style="position:relative" on the .hdr div that was overriding the stylesheet .hdr{position:sticky;top:0}. The relative positioning was a leftover from the v10.4.28 flexbox refactor (it was needed when .dm-btn used position:absolute; .dm-btn is now position:static, so the inline relative was both unnecessary and harmful). The toolbar (dark/settings/help/account) now stays pinned while scrolling a long quiz+explanation page. From the 2026-05-31 read-only audit.'
+    'fix(ui): sticky header restored — removed the inline style="position:relative" on the .hdr div that was overriding the stylesheet .hdr{position:sticky;top:0}. The relative positioning was a leftover from the v10.4.28 flexbox refactor (it was needed when .dm-btn used position:absolute; .dm-btn is now position:static, so the inline relative was both unnecessary and harmful). The toolbar (dark/settings/help/account) now stays pinned while scrolling a long quiz+explanation page. From the 2026-05-31 read-only audit.',
   ],
   '10.4.30': [
-    'fix(ref): source-link wrong-chapter fix — 6 topics (Hypertension, Dermatology, Allergy/Immunology, Perioperative, Toxicology, Vascular) had TOPIC_REF.ch=56 (Fluid & Electrolyte) — a placeholder unrelated to the topic — so the "📖 Source" chip + "read chapter" button + daily-plan "Open" opened the WRONG Harrison chapter on ~300 questions. The in-app reader holds only a 69-chapter curated subset with no covering chapter for these 6 topics, so per "no source > wrong source" the refs were REMOVED (resolveSource→null → no chip) rather than re-pointed to another guess. The correct ch:56 topics (Electrolytes, Fluids/Volume) are unchanged. From the 2026-05-31 read-only audit. No question content touched.'
+    'fix(ref): source-link wrong-chapter fix — 6 topics (Hypertension, Dermatology, Allergy/Immunology, Perioperative, Toxicology, Vascular) had TOPIC_REF.ch=56 (Fluid & Electrolyte) — a placeholder unrelated to the topic — so the "📖 Source" chip + "read chapter" button + daily-plan "Open" opened the WRONG Harrison chapter on ~300 questions. The in-app reader holds only a 69-chapter curated subset with no covering chapter for these 6 topics, so per "no source > wrong source" the refs were REMOVED (resolveSource→null → no chip) rather than re-pointed to another guess. The correct ch:56 topics (Electrolytes, Fluids/Volume) are unchanged. From the 2026-05-31 read-only audit. No question content touched.',
   ],
   '10.4.29': [
-    '⚡ ביצועים: הוסר preload מיותר של shared/fsrs.js שגרם לאזהרת "preloaded but not used" ×4 בכל טעינה בקונסול. הסקריפט החוסם שמטעין את fsrs.js וסדר הטעינה (fsrsLoadOrder) נשמרו ללא שינוי; הקונסול נקי מאזהרות.'
+    '⚡ ביצועים: הוסר preload מיותר של shared/fsrs.js שגרם לאזהרת "preloaded but not used" ×4 בכל טעינה בקונסול. הסקריפט החוסם שמטעין את fsrs.js וסדר הטעינה (fsrsLoadOrder) נשמרו ללא שינוי; הקונסול נקי מאזהרות.',
   ],
   '10.4.28': [
-    '🧱 הכותרת נבנתה מחדש (flexbox) — אייקוני הכלים (חשבון / עזרה / הגדרות / מצב כהה) עברו משכבה אבסולוטית לשורת flex, כך שאינם חופפים עוד לכותרת "Pnimit Mega" ולשורת התאריך/גרסה.'
+    '🧱 הכותרת נבנתה מחדש (flexbox) — אייקוני הכלים (חשבון / עזרה / הגדרות / מצב כהה) עברו משכבה אבסולוטית לשורת flex, כך שאינם חופפים עוד לכותרת "Pnimit Mega" ולשורת התאריך/גרסה.',
   ],
   '10.4.27': [
-    'fix(data): q137 (microcytic-anemia vignette, idx 137) had a duplicate answer option — both option C and option D read Thalassemia Minor. Replaced option C with Anemia of chronic disease so all four options are distinct; the correct answer is unchanged (Thalassemia Minor). No other questions touched.'
+    'fix(data): q137 (microcytic-anemia vignette, idx 137) had a duplicate answer option — both option C and option D read Thalassemia Minor. Replaced option C with Anemia of chronic disease so all four options are distinct; the correct answer is unchanged (Thalassemia Minor). No other questions touched.',
   ],
   '10.4.26': [
     'תוקן באג קריטי שגרם לקריסה (is not a function) בכפתור בדוק ובחישובי מנוע החזרה FSRS. ספריית fsrs.js המשותפת נטענה בעיכוב ורצה אחרי קוד האפליקציה במקום לפניו, כך שהפונקציות של מנוע החזרה לא היו זמינות. כעת היא נטענת לפני האפליקציה. תיקון זהה לזה שבוצע באפליקציית Mishpacha.',
@@ -91,7 +94,7 @@ export const CHANGELOG={
     '🔑 _handleLogin reads api_key from auth_login_user response — saves a cloudRestore round-trip on flaky networks. Companion to the 2026-05-06 Supabase migration that added api_key column to app_users + auto-sync trigger from cloudBackup writes. _handleLogin now calls setApiKey(r.api_key) on successful login, AFTER setAuthSession (typeof guard for backwards compat with older RPC versions). Empty string clears (parity with backup-payload-based path which still works in parallel). Sibling-paired with Geri v10.64.50 / Mishpacha v1.21.14 — all three apps share the auth_login_user RPC contract on Supabase project krmlzwwelqvlfslwltol.',
   ],
   '10.4.16': [
-    '🛡️ Pre-emptive defensive toLowerCase guards in src/ui/more-view.js. The FM 7-hour chaos run on 2026-05-05 caught 4,890 pageerrors from item.q.toLowerCase()/n.topic.toLowerCase()/d.name.toLowerCase() crashes when any data record had a missing field. Pre-emptively wrapped the same-shape search code with (field||\'\').toLowerCase() before chaos hits IM. Sibling-shared with FM v1.21.13 (a). One bad data record poisoned every keystroke in FM; this defense ensures IM cannot regress the same way.',
+    "🛡️ Pre-emptive defensive toLowerCase guards in src/ui/more-view.js. The FM 7-hour chaos run on 2026-05-05 caught 4,890 pageerrors from item.q.toLowerCase()/n.topic.toLowerCase()/d.name.toLowerCase() crashes when any data record had a missing field. Pre-emptively wrapped the same-shape search code with (field||'').toLowerCase() before chaos hits IM. Sibling-shared with FM v1.21.13 (a). One bad data record poisoned every keystroke in FM; this defense ensures IM cannot regress the same way.",
   ],
   '10.4.15': [
     '🐛 P0 fix — startTimedQ ReferenceError in engine.js. The setTimeout closure called bare startTimedQ but engine.js does not import it; on tab-switch + return the timed-quiz countdown threw ReferenceError silently, leaving the question frozen. Fix: bind startTimedQ on G in app.js after import, replace setTimeout(startTimedQ, 100) with setTimeout(()=>G.startTimedQ&&G.startTimedQ(), 100). Same fix shipped sibling-paired in FM v1.21.13 (c).',
@@ -117,7 +120,7 @@ export const CHANGELOG={
     '🔤 remapExplanationLetters lookahead generalized — broader `(?=[^א-ת]|$)` pattern from FM v1.21.8 / Geri v10.64.23. Catches "תשובה אcorrect" form (Hebrew letter directly followed by ASCII letter) that v10.4.9\'s narrower char class missed. 2 new regression tests.',
   ],
   '10.4.9': [
-    '🔤 remapExplanationLetters fix — explanations referencing options as bare labels (`**א\' שגויה**`, `ב\' נכונה`) were not remapped after option shuffle, only the explicit `תשובה X\'` form was. After shuffle, users saw wrong letter cross-references in the per-option breakdown. Single-pass regex with two-branch alternation now handles both forms; mid-word gershayim (e.g. `מג\'ורי`) preserved via lookbehind. Same bug + fix as Geriatrics v10.64.22 (where it was first reported by user). 7 new regression tests in tests/remapExplanationLetters.test.js.',
+    "🔤 remapExplanationLetters fix — explanations referencing options as bare labels (`**א' שגויה**`, `ב' נכונה`) were not remapped after option shuffle, only the explicit `תשובה X'` form was. After shuffle, users saw wrong letter cross-references in the per-option breakdown. Single-pass regex with two-branch alternation now handles both forms; mid-word gershayim (e.g. `מג'ורי`) preserved via lookbehind. Same bug + fix as Geriatrics v10.64.22 (where it was first reported by user). 7 new regression tests in tests/remapExplanationLetters.test.js.",
   ],
   '10.4.8': [
     '🎯 First structured exam-key audit for IM — built dataset→IMA-PDF Q-num mapping using the 2026-05-03 cross-specialty bundle parser as candidate source (token-overlap scoring, ported from Geri v3 augmenter). Mapped 673 of 947 IMA-tagged Qs (71%; remaining 274 are extreme curator paraphrases or sessions where the bundle parser had lower extraction success).',
@@ -130,7 +133,7 @@ export const CHANGELOG={
     '🪝 Internal — אין שינוי ב-shared/fsrs.js (md5 cea66a0435… byte-identical), אין שינוי ב-engine, ב-data, או ב-tests. שינויים בלבד: pnimit-mega.html (preload tag), src/ui/quiz-view.js (skeleton early-return).',
   ],
   '10.4.5': [
-    '🩹 תיקון תוכן (3 SEVERE) — IDX 1 (PUD ללא H. pylori/NSAID): תוקן Whipple→Crohn לפי Harrison 22e ch.317. IDX 8 (CPAP adherence): תוקן 60-70%→40-60% בהסבר (לפי הספרות העדכנית). IDX 9 (RA mechanism): נכתב מחדש ה-explanation להגן על IL-6 receptor (אופציה ב\') במקום IL-2 (סתירה פנימית קודמת בין c=1 ל-e).',
+    "🩹 תיקון תוכן (3 SEVERE) — IDX 1 (PUD ללא H. pylori/NSAID): תוקן Whipple→Crohn לפי Harrison 22e ch.317. IDX 8 (CPAP adherence): תוקן 60-70%→40-60% בהסבר (לפי הספרות העדכנית). IDX 9 (RA mechanism): נכתב מחדש ה-explanation להגן על IL-6 receptor (אופציה ב') במקום IL-2 (סתירה פנימית קודמת בין c=1 ל-e).",
     '🛡️ Internal — אין שינוי ב-engine, ב-shared/fsrs.js או ב-tests. תיקון תוכן בלבד ב-data/questions.json (idx 1, 8, 9).',
   ],
   '10.4.4': [
@@ -153,7 +156,7 @@ export const CHANGELOG={
   ],
   '10.4.0': [
     '☁️ Auto-restore-on-login — מתחבר במכשיר חדש שאין בו עדיין נתונים? אנחנו מציעים לשחזר אוטומטית מהענן (תיבת דו-שיח אחת, שתי כפתורים: "שחזר" / "לא עכשיו"). הצעה מופיעה רק כש-(א) זה login, לא register; (ב) המכשיר ריק לחלוטין — qOk+qNo===0 ואין נתוני SR; (ג) קיים גיבוי בענן עבור שם המשתמש; (ד) לא ביקשנו את אותו דבר במכשיר הזה בעבר. סימון "לא להציג שוב" נשמר ב-localStorage לפי (מכשיר, שם משתמש), אז ההפעלה היא חד-פעמית גם אם בוחרים "לא עכשיו".',
-    '🔌 Auth events — auth.js פולט כעת אירועי `pnimit:auth` (CustomEvent על `window`) + API פנימי `subscribeAuthEvents(handler)`. פעולות: login / register / logout / change-password. מאפשר למודולים אחרים להגיב למעברי auth ללא תלות ב-UI. Mirror של ward-helper v1.32.0\'s `subscribeAuthChanges` ושל Mishpacha v1.18.0 — שמירה על עקביות ה-API בין 4 ה-PWAs.',
+    "🔌 Auth events — auth.js פולט כעת אירועי `pnimit:auth` (CustomEvent על `window`) + API פנימי `subscribeAuthEvents(handler)`. פעולות: login / register / logout / change-password. מאפשר למודולים אחרים להגיב למעברי auth ללא תלות ב-UI. Mirror של ward-helper v1.32.0's `subscribeAuthChanges` ושל Mishpacha v1.18.0 — שמירה על עקביות ה-API בין 4 ה-PWAs.",
     '🪝 Internal — `cloud.js` מייצא כעת `peekCloudBackup()` (RPC backup_get ללא UI) ו-`applyRestorePayload(rowData)` (מיזוג G.S עם הגנת prototype-pollution דרך `filterRestorePayload`). `cloudRestore()` עבר refactor להשתמש ב-`applyRestorePayload`. New module `src/features/post-login-restore.js` + new test `tests/postLoginRestore.test.js` (14 cases). אין שינוי ב-shared/fsrs.js.',
   ],
   '10.3.0': [
@@ -190,12 +193,12 @@ export const CHANGELOG={
     '   • Read = ה-Library הקיים (Harrison reader · Articles · Past Exams) — בלי שינוי',
     '   • Cards = מועבר מ-Learn→Cards (FSRS spaced repetition) — בלי שינוי בלוגיקה',
     '   • Notes = מועבר מ-Learn→Study (Clinical Study Notes — תוכן קריאה לפי נושא)',
-    '🪝 Internal — חדש G.S.libSub (default \'read\'). מיגרציה: G.tab===\'learn\' & learnSub===\'flash\' → tab=\'lib\', libSub=\'cards\'; אחרת libSub=\'notes\'. data/tabs.json מצומצם ל-4 entries (Quiz / Library / Track / More). תת-טאב נשמר ב-G.S.libSub. data-action="lib-sub" handler ב-#ct delegation. אין שינוי ב-shared/fsrs.js.',
+    "🪝 Internal — חדש G.S.libSub (default 'read'). מיגרציה: G.tab==='learn' & learnSub==='flash' → tab='lib', libSub='cards'; אחרת libSub='notes'. data/tabs.json מצומצם ל-4 entries (Quiz / Library / Track / More). תת-טאב נשמר ב-G.S.libSub. data-action=\"lib-sub\" handler ב-#ct delegation. אין שינוי ב-shared/fsrs.js.",
     '🧪 Tests — tabs.length expectations עברו 5 → 4 ב-3 בדיקות (textbookChapters, expandedDataIntegrity ×2). expected core tabs רשימה צומצמה.',
   ],
   '9.97.0': [
     '🗑️ הוסרו תת-טאבים שכפלו אפליקציות אחרות — 🧮 Calc (CrCl / CHA₂DS₂-VASc / CURB-65 / PADUA) ב-Track→More הוסר; 💊 Drug Lookup ב-Learn הוסר. ward-helper וה-formulary של שערי-צדק כבר מספקים את אותו ערך עם הקשר קליני אמיתי. נתוני G.DRUGS עדיין נטענים — חיפוש חוצה-בנק ב-More→Search ממשיך להציג תרופות.',
-    '🪝 Internal — נמחקו renderCalc / calcUp / renderDrugs / drugSearch + מאזיני calc-num / calc-check / drug-search. G.S.calcVals הוסר מ-globals defaults. G.moreSub default \'calc\' → \'search\'. מיגרציה: G.moreSub===\'calc\' → \'search\'; G.learnSub===\'drugs\' → \'study\'. אין שינוי ב-shared/fsrs.js.',
+    "🪝 Internal — נמחקו renderCalc / calcUp / renderDrugs / drugSearch + מאזיני calc-num / calc-check / drug-search. G.S.calcVals הוסר מ-globals defaults. G.moreSub default 'calc' → 'search'. מיגרציה: G.moreSub==='calc' → 'search'; G.learnSub==='drugs' → 'study'. אין שינוי ב-shared/fsrs.js.",
   ],
   '9.96.0': [
     '⚙️ הגדרות חדשות — כפתור גלגל שיניים בכותרת פותח חלון מודאלי שמרכז: חשבון, ערכת נושא, API key, ניהול דאטה (ייצוא/ייבוא/ענן/איפוס), פידבק, אודות. סגירה ב-✕, ESC, או לחיצה ברקע. בסיס למיגרציה הבאה (#69 → להוציא Calc + Drug Lookup; #70 → איחוד Learn ל-Library).',
@@ -207,7 +210,7 @@ export const CHANGELOG={
   ],
   '9.94.0': [
     '🗂️ Track tab — שכתוב מבנה ל-4 sub-tabs (Progress / Plan / Exam / More). הגלילה האנכית של 12 כרטיסיות הוחלפה במבנה ממוקד שבו כל sub-tab מחזיק 3-4 כרטיסיות ונכנס ב-~1.5 viewports במובייל.',
-    '   • Progress: 4 stat tiles · SRS due alert · Topic Mastery Heatmap · Today\'s Session · Activity (30 days) · Leaderboard',
+    "   • Progress: 4 stat tiles · SRS due alert · Topic Mastery Heatmap · Today's Session · Activity (30 days) · Leaderboard",
     '   • Plan: Study Plan tiers · Priority Matrix · Weak Spots Map · Confidence Matrix',
     '   • Exam: Exam date / Daily Plan · Exam Trend · Rescue Drill · Cheat Sheet export · IMA Archive',
     '   • More: Spaced Reading Due · Bookmarks · Syllabus completion · Study Journal · API Key · Data Management · Version footer',
@@ -226,250 +229,248 @@ export const CHANGELOG={
     '🪝 Internal — new modules src/ui/heatmap.js, src/ui/wrong-review.js, src/ui/source-link.js. אין שינוי ב-shared/fsrs.js.',
   ],
   '9.86.0': [
-    '📅 תכנית לימוד בתוך האפליקציה — Settings → 📅 תכנית לימוד. בוחרים תאריך בחינה, שעות לימוד שבועיות (1-20), שבועות חזרה (1-6); המנוע מחלק את 24 הנושאים לפי תדירות אמפירית מ-1,556 שאלות עבר ובונה לוח שבועי. JS port verbatim של allocate_hours + schedule מ-auto-audit/scripts/generate_study_plan.py — fixture חוצה-שפות מאמת התאמה byte-identical (top-5 שעות + week_used לכל תא ≤ 1e-9). שמירה בענן דרך RPC SECURITY DEFINER (study_plan_upsert / study_plan_get) על טבלה משותפת public.study_plans (key (username, app)); אורחים יוצרים תכנית מקומית עם רמז להתחבר. ייצוא .ics צד-לקוח לכל לוחות השנה (Google / Outlook / Apple) — אירועי שבוע + 3 מוקים + יום הבחינה. Mirror של Mishpacha v1.9.1; הטבלה + ה-RPCs כבר רצים על הפרויקט המשותף krmlzwwelqvlfslwltol (האפליקציה רק קוראת להם עם app=\'pnimit\').',
+    "📅 תכנית לימוד בתוך האפליקציה — Settings → 📅 תכנית לימוד. בוחרים תאריך בחינה, שעות לימוד שבועיות (1-20), שבועות חזרה (1-6); המנוע מחלק את 24 הנושאים לפי תדירות אמפירית מ-1,556 שאלות עבר ובונה לוח שבועי. JS port verbatim של allocate_hours + schedule מ-auto-audit/scripts/generate_study_plan.py — fixture חוצה-שפות מאמת התאמה byte-identical (top-5 שעות + week_used לכל תא ≤ 1e-9). שמירה בענן דרך RPC SECURITY DEFINER (study_plan_upsert / study_plan_get) על טבלה משותפת public.study_plans (key (username, app)); אורחים יוצרים תכנית מקומית עם רמז להתחבר. ייצוא .ics צד-לקוח לכל לוחות השנה (Google / Outlook / Apple) — אירועי שבוע + 3 מוקים + יום הבחינה. Mirror של Mishpacha v1.9.1; הטבלה + ה-RPCs כבר רצים על הפרויקט המשותף krmlzwwelqvlfslwltol (האפליקציה רק קוראת להם עם app='pnimit').",
   ],
   '9.85.0': [
     '👤 חשבונות משתמש — שם משתמש + סיסמה לחברי הצוות. Powered by Supabase pgcrypto bcrypt דרך RPC SECURITY DEFINER (auth_register_user / auth_login_user / auth_change_password). שם המשתמש הופך ל-uid: ההתקדמות, לוח התוצאות והגיבוי בענן עוקבים אחריך בין מכשירים. משתמשים אורחים (uid אקראי) ממשיכים לעבוד כרגיל — אין מיגרציה הכרחית. Lockout אחרי 5 נסיונות כושלים. Settings → 👤 חשבון. Mirror של Mishpacha v1.8.0 — נחלק את ה-app_users table באותו פרויקט Supabase, אז חשבון אחד פותח את שלוש האפליקציות.',
   ],
-    '9.84.1': [
-      '🐛 callAI singleton AbortController fix (mirror of Geriatrics v10.38.2). G._aiAbortController הוחלף ב-per-call AbortController + 30s safety timeout. בקשות מקבילות (bulk callers, רצף קליקים מהיר) לא מבטלות זו את זו יותר. preventive port — לא דווח באג ב-Pnimit אך אותו שורש קוד = אותו פגם.',
-    ],
-    '9.84': [
-      '🐞 Debug console polish: report format עבר ל-=== DEBUG REPORT === בסגנון plain-text section headers (במקום markdown #/##), כולל URL ו-time ISO. הוספת window.__debug API: __debug.show() / __debug.report() / __debug.buffer / __debug.clear(). MAX_NETWORK 50→100, MAX_ACTIONS 50→100. לוגיקת click-action מזהה כעת data-action ו-onclick=fnName(...) ומדגים אותם בלוג. tests/debugConsole.test.js + docs/DEBUG_CONSOLE.md מקובץ סטנדרטי לכל שלושת ה-PWAs.',
-    ],
-    '9.83': [
-      '🐛 Built-in debug console: 5 הקשות ברצף (תוך 3 שניות) על הפינה הימנית-עליונה של המסך פותחות panel דיבוג חי. מציג: APP/SW versions, מצב נוכחי (tab/libSec/pool/qi/QZ), 10 שגיאות אחרונות עם stack traces, 50 שורות console (בצבעים לפי level), 20 קריאות fetch אחרונות (status+ms+URL), 30 פעולות משתמש אחרונות. כפתור "📋 Copy" מעתיק הכל כ-markdown ללוח. מצמצם את צורך USB-debugging מהטלפון.',
-      '🪝 Hooks: src/debug/console.js — first import ב-src/ui/app.js כך ש-console.{log,info,warn,error,debug} + window.fetch + onerror + unhandledrejection נעטפים לפני יתר ה-modules. document click capture (capture phase) רושם target+data-action+text. window.__debug_open() זמין מ-DevTools console.',
-      '🔧 Sibling-port (matches Geriatrics v10.38.0). אין שינוי בלוגיקת האפליקציה — רק תוספת observability טהורה. Bundle size delta ≈ 7KB gz.',
-    ],
-    '9.82': [
-      '🔬 Sanity-check correction על v9.81: התיקון הכירורגי על idx 510 (Q142 ב-2023-Jun, "מה הפרעת החומצה-בסיס") יצר distractor פיקטיבי במקום לשחזר מ-PDF המקור. cross-reference מול exams/2023_jun_questions.pdf חשף שהאופציה האמיתית היא "metabolic acidosis" (פשוט), לא "high AG metabolic acidosis בלבד" שהוצע על בסיס reasoning קליני בלבד.',
-      '✅ אומת מול answer_key המקורי: Q142 → ב, תואם ל-bank c=1. שלוש האופציות האחרות (o[1..3]) תואמות ל-PDF ב/ג/ד מילה-במילה. רק o[0] היה פיקטיבי, וכעת תוקן.',
-      '⚠️ הלקח: בעתיד, אם מקור PDF זמין ב-exams/, יש לחלץ ממנו לפני reconstruction מ-context קליני. הכלל "פיו ר היגיינה, לא יצירה" צריך להיות מחייב גם בתיקונים נקודתיים.',
-      '📝 פערים שנותרו ב-Q142 (out-of-scope לתיקון הזה): stem חסר labs (Albumin 3.2, pCO2 53, Lactate תקין) שהיו ב-PDF המקור, וטמפרטורה 38°C במקום 39°C — באגי parser מקוריים שדורשים מעבר מקיף יותר.',
-    ],
-    '9.81': [
-      '🔍 ביקורת רוחב היסטורית של Parser Bleed (תאומת ל-Geriatrics v10.34, commit ca12e96). אותו פייפליין parsing עברי IMA RTL מזין את שני המאגרים — אם השגיאה התרחשה שם, חזקה שהתרחשה גם כאן. הסריקה מצאה רק שאלה אחת (idx 510, t=2023-Jun): שאלה על הפרעת חומצה-בסיס שבה תוצאות בדיקה גופנית + מעבדה + פרגמנט שאלה התמזגו לאופציה א\'. תיקון כירורגי: הטקסט הזולג הועבר ל-stem, אופציה א\' הוחלפה ב-distractor פלאוסבילי.',
-      '🛡️ tests/parserBleedGuard.test.js: 3 טסטים חדשים — (a) אין שאלת past-exam עם next-Q-stem-bleed pattern אחרי תו 30 (b) אין footer cruft (date+exam-header) (c) אין אופציה past-exam מעל 250 תווים. הטסט נועל את הבנק הנקי ולא יאפשר לבאג להופיע בייבוא בחינות עתידיות.',
-      '📊 Scope of damage: 1 אופציה זוהמה (לעומת 318 ב-Geriatrics) — Pnimit הרבה יותר נקייה. ספירות לא השתנו (1556 שאלות, אותם ti, אותם c). זוהי ניקוי data-integrity טהור.',
-      '🔢 No whitelist needed: LEGIT_LONG_OPTION_INDICES = empty set. אם בעתיד נוסיף שאלת השוואת-מטופלים לגיטימית, יש להוסיף את ה-index שלה לסט עם תיעוד בקומנט.',
-    ],
-    '9.80': [
-      '🔇 Sibling-drift fix (matches § C FamilyMedicine v1.5.0) — DEV-gated 3 production console.log calls: data-loader.js × 2 ("Loaded N user-generated questions" + "Data loaded: N questions, N notes"), sw-update.js × 1 ("Deleted old cache: X"). Mishpacha already shipped this pattern; Pnimit was still leaking. All three now quiet in production, still visible under `import.meta.env.DEV`.',
-    ],
-    '9.79': [
-      '🔤 BIDI hygiene pass (matches § C FamilyMedicine v1.3.4) — .heb class no longer force-sets direction:rtl; now uses unicode-bidi:plaintext + text-align:start. Each paragraph\'s base direction is computed from its own first strong character per the Unicode Bidi Algorithm. Hebrew stays right-aligned, English-majority content (AI explanations, drug names) no longer reflows RTL inside Hebrew-font containers.',
-      '🔤 Quiz chrome — AI-flag banner + imgDep banner + teach-back textarea + teach-back header: dir="rtl" → dir="auto" + unicode-bidi:plaintext. Interpolated eFlag text wrapped in <bdi> so English error strings don\'t reorder into surrounding Hebrew.',
-    ],
-    '9.78': [
-      '🔑 Rotated SUPA_ANON from legacy JWT anon to new-format publishable key (sb_publishable_*) — matches § B Toranot, § C FamilyMedicine, § D Geriatrics on the shared Supabase project. Drift-prevention comment added.',
-    ],
-    '9.76': [
-      '↩ הוחזרו כתובות Supabase לסכמת public (internal_medicine schema לא היה חשוף ב-PostgREST, כתיבות החזירו 406 מאז merge של PR #42 ב-17:45 UTC). כל פיצ׳רי הגיבוי, הפידבק והליידרבורד פעילים שוב.',
-      '🔒 תיקון במקביל לגריאטריה (v10.2) — אותה בעיה, אותו פיתרון.',
-    ],
-    '9.73': [
-      '🔧 Oct24: 4 שאלות עם stem corrupt תוקנו (Q29 "הנ" strays + "נפיחות"→"מיימת", Q38 "נערה" מיותר, Q66 "בן 14" שהיה צריך להיות "תמונה 14", Q67 bidi spacing).',
-      '✅ תמיכה בתשובות כפולות (c_accept): 5 שאלות Oct24 עם multi-accept לפי מפתח התשובות הרשמי — Q22 EGPA (א+ד), Q23 סרקואיד (ב+ג), Q37 דימום דליות (ב+ד), Q41 C.septicum (ג+ד), Q67 טחול (כל 4 התשובות — נפסלה).',
-      '⏳ Oct24 חסר שאלה אחת (Q90, IPF/PFT) — ממתין ל-ingestion מה-PDF.',
-    ],
-    '9.72': [
-      '🧹 ניקיון: 3 placeholder תמונות פגומות (data:image/svg+xml עם viewBox ריק) הוסרו משדה img. משתמשים ראו תמונות שבורות ב-2 שאלות Jun2025 + 1 Harrison עד עכשיו.',
-      '📊 Audit תמונות: 160/1541 (10.4%) עם img אמיתי. Gap של 18 שאלות עם reference תמונה בטקסט אך ללא img — לא ניתן לפתור ללא PDF source images.',
-      '📚 +11 missing IMA Q2020 questions (Q28,41,50,57,64,81,106-110) reconstructed from official PDFs via Sonnet 4.5 — 2020 session now complete 150/150',
-      '✅ Tests: 456 pass, version 9.71 → 9.72.',
-    ],
-    '9.71': [
-      '🔬 AI scan של 1,541 שאלות — 206 סומנו ב-eFlag (ההסבר אולי לא מתאים לתשובה הנכונה). באדג׳ אדום עם סיבת ה-AI + כפתור ✓ לניקוי לאחר בדיקה ידנית.',
-      '⚠️ 8 שאלות תלויות-תמונה (imgDep) מסומנות גם הן עם כפתור ✓ מאומת.',
-    ],
-    '9.71-dup': [
-      '🔍 AI audit על 1,541 הסברים: 206 סומנו עם eFlag (ההסבר לא תואם לתשובה הנכונה). באדג\' אדום + כפתור "✓ אמת" לאחר חשיפת התשובה.',
-      '⚠️ 8 שאלות תלויות-תמונה סומנו עם באדג\' אמבר (imgDep) + כפתור "✓ מאומת" לניקוי.',
-      '✓ Mark-verified buttons: imgDep + eFlag — לחיצה אחת לניקוי הסימון.',
-    ],
-    '9.70': [
-      '↔️ BIDI audit מקיף: heDir מיושם בכל render site של תוכן עברית/אנגלית מעורב — flashcards, אופציות quiz + on-call, הסברים q.e, AI explain, autopsy cards + fallback, chat (user + assistant), teach-back, qnotes, library preview, search results, note previews.',
-      '🔒 סיבוב unicode-bidi:plaintext על בלוקים רב-פסקתיים כדי שפסקאות המתחילות באנגלית (IgG4-RD, MEN1, CT) לא יהפכו את הצד של שאר הפסקה.',
-    ],
-    '9.69': [
-      '🔍 תמונות נפתחות בזום מלא בלחיצה (היה חסר CSS ל-overlay).',
-      '↔️ תיקון BIDI מקיף: כיוון טקסט מחושב לפי יחס עברית/אנגלית (heDir) במקום dir="auto". קלפי Distractor Autopsy, הסברים המתחילים ב-IgG4/MEN1/CT, שאלות ב-Library preview — כולם שומרים כעת על כיוון טקסט נכון.',
-    ],
-    '9.68': [
-      '⚡ FSRS now deadline-aware: once an exam date is set, card intervals are capped by difficulty bucket (weak 30% / normal 60% / strong 85% of remaining days) so every card gets a pre-exam review.',
-      '🎯 מבחן סימולציה — בחירת שנה ספציפית (2020/2021-Jun/2022-Jun/2023-Jun/2024-May/2024-Oct/2025-Jun) בנוסף לתמהיל המציאותי.',
-      '🔁 Replay wrong answers from the most recent mock — one-tap drill from the mock result modal and from the daily plan.',
-      '☁️ Cloud backup now bundles mock history + session snapshots, so cross-device restore preserves your mock trend.',
-    ],
-    '9.67': [
-      '⬆️ כפתור "הבאה" הועבר לראש אזור התשובה',
-      '✎ אייקון הערה ו-★ אייקון סימניה ברורים יותר (עיגולים צבעוניים)',
-      '📊 אייקון טאב Track תוקן (היה מוצג פגום)',
-      '📓 עמוד יומן לימוד — עוצב מחדש, כפתור "תרגל הכל"'
-    ],
-    '9.66': [
-      '📋 עזרה ורשימת שינויים בעברית מלאה',
-      '🔢 ספירות דינמיות (שאלות, פלאשקארדים)'
-    ],
-    '9.65': [
-      '📝 הערות אישיות — כפתור בכל שאלה פותח הערה פרטית',
-      '📓 פנקס כללי ב-Notes עם ייצוא לקובץ',
-      '🔖 רשימת כל ההערות עם מעבר לשאלה'
-    ],
-    '9.64': [
-      '🔔 התראות לא חוסמות במקום חלוניות מערכת',
-      '🧹 ניקוי handlers יתומים ו-imports לא בשימוש'
-    ],
-    '9.63': [
-      '🔀 חצי "קודמת" ו"הבאה" תוקנו לכיוון עברי',
-      '📱 סיום מבחן במודאל מעוצב'
-    ],
-    '9.62': [
-      '🌙 מצב כהה ומצב לימוד — תיקוני צבע לכל הכפתורים אחרי מענה'
-    ],
-    '9.61': [
-      '⬅️ כפתור "קודמת" נוסף — אפשר לחזור לשאלה קודמת ולראות את התשובה שבחרת',
-      '🍎 תאימות iOS — שורת סטטוס כהה, מניעת זום לא רצוי',
-      '🔤 גופן Heebo ראשי לרינדור עברי איכותי'
-    ],
-    '9.60': [
-      '🚫 הפרומפט לדירוג ביטחון הוסר — זרימת המענה ישירה',
-      '📏 כפתורים גדולים יותר (44 פיקסל) למגע במובייל'
-    ],
-    '9.59': [
-      '🐛 פריסה אחרי מענה — הכפתורים לא נדחסים לעמודה צרה',
-      '🗺️ הסבר הנושא הנכון מוצג אחרי תשובה',
-      '⬆️ כפתור "הבאה" ברור ובולט'
-    ],
-    '9.58': [
-      '🎨 מערכת עיצוב חדשה — ערכת צבעים כחול/ירוק לפנימית',
-      '🔤 גופנים מקומיים (ללא תלות ב-Google Fonts, עובד אופליין)',
-      '🛡️ הידוק CSP',
-      '♿ כיבוד prefers-reduced-motion'
-    ],
-    '9.57': [
-      '🙈 מצב מבחן לא חושף תשובה עד הסוף',
-      '📊 Exam Trend כולל 2023-Jun',
-      '🗺 Weak Spots Map — תאים עם ניסיון אחד מוצגים באפור',
-      '🍎 תאימות iOS למכשירים עם notch'
-    ],
-    '9.56': [
-      '🔒 הגנת דה-דופ חזקה יותר',
-      '📮 דיווחי פידבק כוללים hash לזיהוי דיווחים חוזרים'
-    ],
-    '9.55': [
-      '🔬 Distractor Autopsy — פעיל תמיד: אחרי כל תשובה רואים למה כל דיסטרקטור שגוי',
-      'נתונים מוכנים מראש לאופליין',
-      'גיבוי AI לשאלות ללא ניתוח מוכן'
-    ],
-    '9.54': [
-      '"Why did I get it wrong?" — כבר לא חוסם את כפתור "הבאה"',
-      'טסט חדש: בדיקת כיסוי TOPIC_REF',
-      'Pre-push hook לבדיקות innerHTML',
-      'ניקוי הערות ישנות'
-    ],
-    '9.53': [
-      'UX: "How sure are you?" (😬 🤔 😎) כבר לא חוסם את כפתור בדוק — הפך לאופציונלי. אפשר עדיין ללחוץ על אחת האמוג\'ים כדי לעקוב אחרי ביטחון, אבל לא חייבים.',
-      'תיקון: כפתור "Read: Harrison Ch X — you\'re weak here" מנווט עכשיו ישירות לפרק הספציפי (נפתח Harrison chapter viewer עם התוכן) במקום סתם לפתוח את מדף הספרייה'
-    ],
-    '9.52': [
-      'סטנדרטיזציית תגיות מבחן לפורמט קנוני YYYY-Mon (Jun21→2021-Jun, Jun22→2022-Jun, Jun23→2023-Jun, May24→2024-May, Oct24→2024-Oct, Jun25→2025-Jun)',
-      'מיגרציית localStorage אוטומטית עם סנטינל __tagMigrationV1 — משתמשים קיימים לא מאבדים נתונים',
-      'סנכרון canonical JSONs תחת scripts/exam_audit/canonical/ לתגיות החדשות',
-      'עדכון pills סינון ב-quiz-view + Track heatmap בהתאם',
-      'בדיקות רגרסיה מעודכנות ל-PAST_EXAM_TAGS החדש'
-    ],
-    '9.51': [
-      'תיקון קריטי: שוחזרו 603 שאלות נוספות במבחנים ישנים (2020, Jun21-Jun25) — רווחים חסרים, ספרות הפוכות, שברי שאלות שקרו לשאלה הבאה',
-      'הסרת שאלה כפולה ב-2020 (Q35/Q1531 עם תשובות נכונות סותרות)',
-      'אבטחת Supabase: הוסרה הרשאת DELETE על pnimit_backups ו-samega_backups — מונע מחיקה זדונית של גיבויי משתמשים',
-      'אבטחת Supabase: איחוד פוליסות כפולות ב-shlav_feedback (3→1)',
-      'תוספת 36 בדיקות רגרסיה חדשות ב-CI — תופסות פגמים כמו mojibake, כפילויות, שבר שאלות, סנכרון canonical',
-      'Canonical JSONs חודשו מ-data/questions.json הנקיה'
-    ],
-    '9.50': [
-      'תיקון קריטי: 192 שאלות במבחני May24 ו-Oct24 היו מושחתות (הקידוד של ð במקום נ) — כולן שוחזרו במלואן בעברית נקייה',
-      'הסרת שאלה כפולה ב-Oct24 (Tumor Lysis Syndrome)',
-      'סה"כ שאלות: 1,542 (מ-1,543, אחת כפולה הוסרה)'
-    ],
-    '9.49': [
-      'תיקון באג "setFilt is not defined" — טאבי מבחנים שוב עובדים',
-      'בחירה מרובה של שנות מבחן — ניתן לסמן כמה שנים יחד (Jun22+Jun23+May24…)',
-      'סנכרון גרסת cache של SW עם APP_VERSION בזמן build',
-      'תיקון imports חסרים ב-quiz-view.js (10+ פונקציות)'
-    ],
-    '9.48': [
-      '39 תמונות נוספות קושרו לשאלות (Pnimit 7.9% → 10.5% צפיפות)',
-      'Oct24 אלבום: 22 עמודים הועלו ל-Supabase, 18 שאלות עם תמונה כעת',
-      'Jun25: 3 תמונות חדשות (שאלות 124, 136, 138)',
-      'May24: 12 תמונות מ-orphaned uploads קושרו',
-      'Jun23: 5 תמונות מ-orphaned uploads קושרו (ECG, פריחות, ספירומטריה, CXR+ECG)'
-    ],
-    '9.47': [
-      'Leaderboard: מיון לפי דיוק אמיתי (accuracy) במקום readiness',
-      'Leaderboard: שליפת accuracy מ-Supabase (generated column)',
-      'ניקוי Supabase: הסרת שורות עם פחות מ-20 תשובות'
-    ],
-    '9.46': [
-      'Leaderboard: הצגת דיוק אמיתי (correct/answered) במקום readiness מטעה',
-      'Leaderboard: guard — דורש ≥20 תשובות + est. score תקף לפני submit',
-      'Leaderboard: הקשחת קריאת שדות + res.ok check'
-    ],
-    '9.45': [
-      'תיקון לולאת עדכון — באנר "עדכון זמין" לא נעלם',
-      'תיקון מחיקת cache לפני reload'
-    ],
-    '9.44': [
-      'ניקוי window bindings — הסרת renderTabs מיותר (17 → 16)',
-      'עדכון README ו-CLAUDE.md למבנה מודולרי'
-    ],
-    '9.43': [
-      'העברת כל התמונות המקומיות ל-Supabase',
-      'כל 116 התמונות מוגשות כעת מ-Supabase'
-    ],
-    '9.42': [
-      'קישור תמונות מבחנים ל-Supabase (Jun21 + Jun24)',
-      'העברת תמונות מקומיות ל-Supabase URLs',
-      '14 תמונות חדשות ממבחן יוני 2024'
-    ],
-'9.40':[
-'🖼️ +20 image-based questions from Jun 2021 past exam (ECG, smear, CXR, CT-PE, fundoscopy, derm, echo) — 73 → 93 images (6.3%)',
-'📚 +143 Harrison-based questions across 10 weak topics (Valvular, ICU, Derm, Allergy, Fluids, Pain, Periop, Tox, Onc, Vascular) — total 1452',
-'🔧 Fixed 4 questions with duplicate/empty options (Q135, Q280, Q308, Q342)',
-'🗑️ OSCE dead code removed, dead Med Basket/Lab/Aging CSS removed (~2.3KB)',
-'🧪 Test coverage +33 — AI proxy routing, sanitization, SRS/FSRS, CSP tests',
-],
-'9.39':[
-'🔒 XSS: sanitize AI-generated question fields in quizMeOnChapter',
-'🔒 XSS: sanitize leaderboard data from Supabase',
-'🐛 Cloud backup: check PATCH response status before showing success',
-'🧹 Remove 7 dead functions: queueBackgroundSync, toggleAskAI, submitAskAI, copyDiagnostics, togOT, togOck, renderSyllabus',
-],
-'9.38':['🛡️ Fix: guarded all localStorage parses — corrupted state no longer bricks boot','🔧 Fix: user-generated questions persist across reload','🔧 Fix: service worker skips POST, uses navigate mode, no wrong JSON fallback'],
-'9.37':['🔧 FSRS-4.5 extracted to shared/fsrs.js — shared engine Phase 1','📦 shared/fsrs.js loaded as external script, cached by SW','🔗 isChronicFail() now shared between apps','⚡ srScore() upgraded: fsrsRating parameter for confidence-based scheduling'],
-'9.36':['🚨 Fix syntax error in getWeakTopics — app was stuck loading'],
-'9.35':['🚨 Critical fix: restore data loader — app was showing blank screen','🔄 Revert accidental deletion of boot sequence, version check, background sync'],
-'9.34':['🐛 Fix: calcEstScore was using 40-topic Geriatrics FREQ array instead of 24-topic EXAM_FREQ — scores now accurate','📊 Analytics key metrics row (Est. Score, Streak, Answered, Accuracy) at top of Track tab','🗺️ Topic Mastery Heatmap — clickable tiles showing per-topic accuracy','📈 SRS due alert with quick-review button','🔧 Added getStudyStreak() for accurate streak from dailyAct'],
-'9.33':[
-'🐛 Changelog Fix — תצוגת changelog תקינה במקום קוד גולמי',
-'🐛 Quiz Fix — תיקון stats.map crash שגרם לשגיאות בכפתורים',
-'🐛 IDB Init Fix — תיקון _dataPromise hoisting error'
-],
-'9.31':[
-'📊 1,169 \u05e9\u05d0\u05dc\u05d5\u05ea \u2014 All questions tagged by 24 subspecialties',
-'💊 Drugs Tab \u2014 Drug checker with ACB scores, Beers flags, STOPP interactions',
-'🔒 Security \u2014 AI response sanitization for XSS protection',
-'📄 Articles \u2014 10 required NEJM/Lancet articles',
-'\u2705 AI Proxy \u2014 All AI features work without a personal API key'
-],
-'9.32':[
-'🚨 Rescue Drill \u2014 Focused practice on your 3 weakest topics',
-'📅 Activity Calendar \u2014 30-day question activity heatmap',
-'📖 Spaced Reading \u2014 Track chapter reads + 30-day re-read reminders',
-'🏆 Leaderboard \u2014 Anonymous global rankings via Supabase',
-'💡 Feedback System \u2014 Submit feedback with AI acknowledgment',
-'🗂️ Tab Consolidation \u2014 10 \u2192 5 tabs: Quiz, Learn, Library, Track, More',
-'📋 Dynamic Changelog \u2014 Version history in help overlay'
-]
+  '9.84.1': [
+    '🐛 callAI singleton AbortController fix (mirror of Geriatrics v10.38.2). G._aiAbortController הוחלף ב-per-call AbortController + 30s safety timeout. בקשות מקבילות (bulk callers, רצף קליקים מהיר) לא מבטלות זו את זו יותר. preventive port — לא דווח באג ב-Pnimit אך אותו שורש קוד = אותו פגם.',
+  ],
+  9.84: [
+    '🐞 Debug console polish: report format עבר ל-=== DEBUG REPORT === בסגנון plain-text section headers (במקום markdown #/##), כולל URL ו-time ISO. הוספת window.__debug API: __debug.show() / __debug.report() / __debug.buffer / __debug.clear(). MAX_NETWORK 50→100, MAX_ACTIONS 50→100. לוגיקת click-action מזהה כעת data-action ו-onclick=fnName(...) ומדגים אותם בלוג. tests/debugConsole.test.js + docs/DEBUG_CONSOLE.md מקובץ סטנדרטי לכל שלושת ה-PWAs.',
+  ],
+  9.83: [
+    '🐛 Built-in debug console: 5 הקשות ברצף (תוך 3 שניות) על הפינה הימנית-עליונה של המסך פותחות panel דיבוג חי. מציג: APP/SW versions, מצב נוכחי (tab/libSec/pool/qi/QZ), 10 שגיאות אחרונות עם stack traces, 50 שורות console (בצבעים לפי level), 20 קריאות fetch אחרונות (status+ms+URL), 30 פעולות משתמש אחרונות. כפתור "📋 Copy" מעתיק הכל כ-markdown ללוח. מצמצם את צורך USB-debugging מהטלפון.',
+    '🪝 Hooks: src/debug/console.js — first import ב-src/ui/app.js כך ש-console.{log,info,warn,error,debug} + window.fetch + onerror + unhandledrejection נעטפים לפני יתר ה-modules. document click capture (capture phase) רושם target+data-action+text. window.__debug_open() זמין מ-DevTools console.',
+    '🔧 Sibling-port (matches Geriatrics v10.38.0). אין שינוי בלוגיקת האפליקציה — רק תוספת observability טהורה. Bundle size delta ≈ 7KB gz.',
+  ],
+  9.82: [
+    '🔬 Sanity-check correction על v9.81: התיקון הכירורגי על idx 510 (Q142 ב-2023-Jun, "מה הפרעת החומצה-בסיס") יצר distractor פיקטיבי במקום לשחזר מ-PDF המקור. cross-reference מול exams/2023_jun_questions.pdf חשף שהאופציה האמיתית היא "metabolic acidosis" (פשוט), לא "high AG metabolic acidosis בלבד" שהוצע על בסיס reasoning קליני בלבד.',
+    '✅ אומת מול answer_key המקורי: Q142 → ב, תואם ל-bank c=1. שלוש האופציות האחרות (o[1..3]) תואמות ל-PDF ב/ג/ד מילה-במילה. רק o[0] היה פיקטיבי, וכעת תוקן.',
+    '⚠️ הלקח: בעתיד, אם מקור PDF זמין ב-exams/, יש לחלץ ממנו לפני reconstruction מ-context קליני. הכלל "פיו ר היגיינה, לא יצירה" צריך להיות מחייב גם בתיקונים נקודתיים.',
+    '📝 פערים שנותרו ב-Q142 (out-of-scope לתיקון הזה): stem חסר labs (Albumin 3.2, pCO2 53, Lactate תקין) שהיו ב-PDF המקור, וטמפרטורה 38°C במקום 39°C — באגי parser מקוריים שדורשים מעבר מקיף יותר.',
+  ],
+  9.81: [
+    "🔍 ביקורת רוחב היסטורית של Parser Bleed (תאומת ל-Geriatrics v10.34, commit ca12e96). אותו פייפליין parsing עברי IMA RTL מזין את שני המאגרים — אם השגיאה התרחשה שם, חזקה שהתרחשה גם כאן. הסריקה מצאה רק שאלה אחת (idx 510, t=2023-Jun): שאלה על הפרעת חומצה-בסיס שבה תוצאות בדיקה גופנית + מעבדה + פרגמנט שאלה התמזגו לאופציה א'. תיקון כירורגי: הטקסט הזולג הועבר ל-stem, אופציה א' הוחלפה ב-distractor פלאוסבילי.",
+    '🛡️ tests/parserBleedGuard.test.js: 3 טסטים חדשים — (a) אין שאלת past-exam עם next-Q-stem-bleed pattern אחרי תו 30 (b) אין footer cruft (date+exam-header) (c) אין אופציה past-exam מעל 250 תווים. הטסט נועל את הבנק הנקי ולא יאפשר לבאג להופיע בייבוא בחינות עתידיות.',
+    '📊 Scope of damage: 1 אופציה זוהמה (לעומת 318 ב-Geriatrics) — Pnimit הרבה יותר נקייה. ספירות לא השתנו (1556 שאלות, אותם ti, אותם c). זוהי ניקוי data-integrity טהור.',
+    '🔢 No whitelist needed: LEGIT_LONG_OPTION_INDICES = empty set. אם בעתיד נוסיף שאלת השוואת-מטופלים לגיטימית, יש להוסיף את ה-index שלה לסט עם תיעוד בקומנט.',
+  ],
+  '9.80': [
+    '🔇 Sibling-drift fix (matches § C FamilyMedicine v1.5.0) — DEV-gated 3 production console.log calls: data-loader.js × 2 ("Loaded N user-generated questions" + "Data loaded: N questions, N notes"), sw-update.js × 1 ("Deleted old cache: X"). Mishpacha already shipped this pattern; Pnimit was still leaking. All three now quiet in production, still visible under `import.meta.env.DEV`.',
+  ],
+  9.79: [
+    "🔤 BIDI hygiene pass (matches § C FamilyMedicine v1.3.4) — .heb class no longer force-sets direction:rtl; now uses unicode-bidi:plaintext + text-align:start. Each paragraph's base direction is computed from its own first strong character per the Unicode Bidi Algorithm. Hebrew stays right-aligned, English-majority content (AI explanations, drug names) no longer reflows RTL inside Hebrew-font containers.",
+    '🔤 Quiz chrome — AI-flag banner + imgDep banner + teach-back textarea + teach-back header: dir="rtl" → dir="auto" + unicode-bidi:plaintext. Interpolated eFlag text wrapped in <bdi> so English error strings don\'t reorder into surrounding Hebrew.',
+  ],
+  9.78: [
+    '🔑 Rotated SUPA_ANON from legacy JWT anon to new-format publishable key (sb_publishable_*) — matches § B Toranot, § C FamilyMedicine, § D Geriatrics on the shared Supabase project. Drift-prevention comment added.',
+  ],
+  9.76: [
+    '↩ הוחזרו כתובות Supabase לסכמת public (internal_medicine schema לא היה חשוף ב-PostgREST, כתיבות החזירו 406 מאז merge של PR #42 ב-17:45 UTC). כל פיצ׳רי הגיבוי, הפידבק והליידרבורד פעילים שוב.',
+    '🔒 תיקון במקביל לגריאטריה (v10.2) — אותה בעיה, אותו פיתרון.',
+  ],
+  9.73: [
+    '🔧 Oct24: 4 שאלות עם stem corrupt תוקנו (Q29 "הנ" strays + "נפיחות"→"מיימת", Q38 "נערה" מיותר, Q66 "בן 14" שהיה צריך להיות "תמונה 14", Q67 bidi spacing).',
+    '✅ תמיכה בתשובות כפולות (c_accept): 5 שאלות Oct24 עם multi-accept לפי מפתח התשובות הרשמי — Q22 EGPA (א+ד), Q23 סרקואיד (ב+ג), Q37 דימום דליות (ב+ד), Q41 C.septicum (ג+ד), Q67 טחול (כל 4 התשובות — נפסלה).',
+    '⏳ Oct24 חסר שאלה אחת (Q90, IPF/PFT) — ממתין ל-ingestion מה-PDF.',
+  ],
+  9.72: [
+    '🧹 ניקיון: 3 placeholder תמונות פגומות (data:image/svg+xml עם viewBox ריק) הוסרו משדה img. משתמשים ראו תמונות שבורות ב-2 שאלות Jun2025 + 1 Harrison עד עכשיו.',
+    '📊 Audit תמונות: 160/1541 (10.4%) עם img אמיתי. Gap של 18 שאלות עם reference תמונה בטקסט אך ללא img — לא ניתן לפתור ללא PDF source images.',
+    '📚 +11 missing IMA Q2020 questions (Q28,41,50,57,64,81,106-110) reconstructed from official PDFs via Sonnet 4.5 — 2020 session now complete 150/150',
+    '✅ Tests: 456 pass, version 9.71 → 9.72.',
+  ],
+  9.71: [
+    '🔬 AI scan של 1,541 שאלות — 206 סומנו ב-eFlag (ההסבר אולי לא מתאים לתשובה הנכונה). באדג׳ אדום עם סיבת ה-AI + כפתור ✓ לניקוי לאחר בדיקה ידנית.',
+    '⚠️ 8 שאלות תלויות-תמונה (imgDep) מסומנות גם הן עם כפתור ✓ מאומת.',
+  ],
+  '9.71-dup': [
+    '🔍 AI audit על 1,541 הסברים: 206 סומנו עם eFlag (ההסבר לא תואם לתשובה הנכונה). באדג\' אדום + כפתור "✓ אמת" לאחר חשיפת התשובה.',
+    '⚠️ 8 שאלות תלויות-תמונה סומנו עם באדג\' אמבר (imgDep) + כפתור "✓ מאומת" לניקוי.',
+    '✓ Mark-verified buttons: imgDep + eFlag — לחיצה אחת לניקוי הסימון.',
+  ],
+  '9.70': [
+    '↔️ BIDI audit מקיף: heDir מיושם בכל render site של תוכן עברית/אנגלית מעורב — flashcards, אופציות quiz + on-call, הסברים q.e, AI explain, autopsy cards + fallback, chat (user + assistant), teach-back, qnotes, library preview, search results, note previews.',
+    '🔒 סיבוב unicode-bidi:plaintext על בלוקים רב-פסקתיים כדי שפסקאות המתחילות באנגלית (IgG4-RD, MEN1, CT) לא יהפכו את הצד של שאר הפסקה.',
+  ],
+  9.69: [
+    '🔍 תמונות נפתחות בזום מלא בלחיצה (היה חסר CSS ל-overlay).',
+    '↔️ תיקון BIDI מקיף: כיוון טקסט מחושב לפי יחס עברית/אנגלית (heDir) במקום dir="auto". קלפי Distractor Autopsy, הסברים המתחילים ב-IgG4/MEN1/CT, שאלות ב-Library preview — כולם שומרים כעת על כיוון טקסט נכון.',
+  ],
+  9.68: [
+    '⚡ FSRS now deadline-aware: once an exam date is set, card intervals are capped by difficulty bucket (weak 30% / normal 60% / strong 85% of remaining days) so every card gets a pre-exam review.',
+    '🎯 מבחן סימולציה — בחירת שנה ספציפית (2020/2021-Jun/2022-Jun/2023-Jun/2024-May/2024-Oct/2025-Jun) בנוסף לתמהיל המציאותי.',
+    '🔁 Replay wrong answers from the most recent mock — one-tap drill from the mock result modal and from the daily plan.',
+    '☁️ Cloud backup now bundles mock history + session snapshots, so cross-device restore preserves your mock trend.',
+  ],
+  9.67: [
+    '⬆️ כפתור "הבאה" הועבר לראש אזור התשובה',
+    '✎ אייקון הערה ו-★ אייקון סימניה ברורים יותר (עיגולים צבעוניים)',
+    '📊 אייקון טאב Track תוקן (היה מוצג פגום)',
+    '📓 עמוד יומן לימוד — עוצב מחדש, כפתור "תרגל הכל"',
+  ],
+  9.66: ['📋 עזרה ורשימת שינויים בעברית מלאה', '🔢 ספירות דינמיות (שאלות, פלאשקארדים)'],
+  9.65: [
+    '📝 הערות אישיות — כפתור בכל שאלה פותח הערה פרטית',
+    '📓 פנקס כללי ב-Notes עם ייצוא לקובץ',
+    '🔖 רשימת כל ההערות עם מעבר לשאלה',
+  ],
+  9.64: ['🔔 התראות לא חוסמות במקום חלוניות מערכת', '🧹 ניקוי handlers יתומים ו-imports לא בשימוש'],
+  9.63: ['🔀 חצי "קודמת" ו"הבאה" תוקנו לכיוון עברי', '📱 סיום מבחן במודאל מעוצב'],
+  9.62: ['🌙 מצב כהה ומצב לימוד — תיקוני צבע לכל הכפתורים אחרי מענה'],
+  9.61: [
+    '⬅️ כפתור "קודמת" נוסף — אפשר לחזור לשאלה קודמת ולראות את התשובה שבחרת',
+    '🍎 תאימות iOS — שורת סטטוס כהה, מניעת זום לא רצוי',
+    '🔤 גופן Heebo ראשי לרינדור עברי איכותי',
+  ],
+  '9.60': [
+    '🚫 הפרומפט לדירוג ביטחון הוסר — זרימת המענה ישירה',
+    '📏 כפתורים גדולים יותר (44 פיקסל) למגע במובייל',
+  ],
+  9.59: [
+    '🐛 פריסה אחרי מענה — הכפתורים לא נדחסים לעמודה צרה',
+    '🗺️ הסבר הנושא הנכון מוצג אחרי תשובה',
+    '⬆️ כפתור "הבאה" ברור ובולט',
+  ],
+  9.58: [
+    '🎨 מערכת עיצוב חדשה — ערכת צבעים כחול/ירוק לפנימית',
+    '🔤 גופנים מקומיים (ללא תלות ב-Google Fonts, עובד אופליין)',
+    '🛡️ הידוק CSP',
+    '♿ כיבוד prefers-reduced-motion',
+  ],
+  9.57: [
+    '🙈 מצב מבחן לא חושף תשובה עד הסוף',
+    '📊 Exam Trend כולל 2023-Jun',
+    '🗺 Weak Spots Map — תאים עם ניסיון אחד מוצגים באפור',
+    '🍎 תאימות iOS למכשירים עם notch',
+  ],
+  9.56: ['🔒 הגנת דה-דופ חזקה יותר', '📮 דיווחי פידבק כוללים hash לזיהוי דיווחים חוזרים'],
+  9.55: [
+    '🔬 Distractor Autopsy — פעיל תמיד: אחרי כל תשובה רואים למה כל דיסטרקטור שגוי',
+    'נתונים מוכנים מראש לאופליין',
+    'גיבוי AI לשאלות ללא ניתוח מוכן',
+  ],
+  9.54: [
+    '"Why did I get it wrong?" — כבר לא חוסם את כפתור "הבאה"',
+    'טסט חדש: בדיקת כיסוי TOPIC_REF',
+    'Pre-push hook לבדיקות innerHTML',
+    'ניקוי הערות ישנות',
+  ],
+  9.53: [
+    'UX: "How sure are you?" (😬 🤔 😎) כבר לא חוסם את כפתור בדוק — הפך לאופציונלי. אפשר עדיין ללחוץ על אחת האמוג\'ים כדי לעקוב אחרי ביטחון, אבל לא חייבים.',
+    'תיקון: כפתור "Read: Harrison Ch X — you\'re weak here" מנווט עכשיו ישירות לפרק הספציפי (נפתח Harrison chapter viewer עם התוכן) במקום סתם לפתוח את מדף הספרייה',
+  ],
+  9.52: [
+    'סטנדרטיזציית תגיות מבחן לפורמט קנוני YYYY-Mon (Jun21→2021-Jun, Jun22→2022-Jun, Jun23→2023-Jun, May24→2024-May, Oct24→2024-Oct, Jun25→2025-Jun)',
+    'מיגרציית localStorage אוטומטית עם סנטינל __tagMigrationV1 — משתמשים קיימים לא מאבדים נתונים',
+    'סנכרון canonical JSONs תחת scripts/exam_audit/canonical/ לתגיות החדשות',
+    'עדכון pills סינון ב-quiz-view + Track heatmap בהתאם',
+    'בדיקות רגרסיה מעודכנות ל-PAST_EXAM_TAGS החדש',
+  ],
+  9.51: [
+    'תיקון קריטי: שוחזרו 603 שאלות נוספות במבחנים ישנים (2020, Jun21-Jun25) — רווחים חסרים, ספרות הפוכות, שברי שאלות שקרו לשאלה הבאה',
+    'הסרת שאלה כפולה ב-2020 (Q35/Q1531 עם תשובות נכונות סותרות)',
+    'אבטחת Supabase: הוסרה הרשאת DELETE על pnimit_backups ו-samega_backups — מונע מחיקה זדונית של גיבויי משתמשים',
+    'אבטחת Supabase: איחוד פוליסות כפולות ב-shlav_feedback (3→1)',
+    'תוספת 36 בדיקות רגרסיה חדשות ב-CI — תופסות פגמים כמו mojibake, כפילויות, שבר שאלות, סנכרון canonical',
+    'Canonical JSONs חודשו מ-data/questions.json הנקיה',
+  ],
+  '9.50': [
+    'תיקון קריטי: 192 שאלות במבחני May24 ו-Oct24 היו מושחתות (הקידוד של ð במקום נ) — כולן שוחזרו במלואן בעברית נקייה',
+    'הסרת שאלה כפולה ב-Oct24 (Tumor Lysis Syndrome)',
+    'סה"כ שאלות: 1,542 (מ-1,543, אחת כפולה הוסרה)',
+  ],
+  9.49: [
+    'תיקון באג "setFilt is not defined" — טאבי מבחנים שוב עובדים',
+    'בחירה מרובה של שנות מבחן — ניתן לסמן כמה שנים יחד (Jun22+Jun23+May24…)',
+    'סנכרון גרסת cache של SW עם APP_VERSION בזמן build',
+    'תיקון imports חסרים ב-quiz-view.js (10+ פונקציות)',
+  ],
+  9.48: [
+    '39 תמונות נוספות קושרו לשאלות (Pnimit 7.9% → 10.5% צפיפות)',
+    'Oct24 אלבום: 22 עמודים הועלו ל-Supabase, 18 שאלות עם תמונה כעת',
+    'Jun25: 3 תמונות חדשות (שאלות 124, 136, 138)',
+    'May24: 12 תמונות מ-orphaned uploads קושרו',
+    'Jun23: 5 תמונות מ-orphaned uploads קושרו (ECG, פריחות, ספירומטריה, CXR+ECG)',
+  ],
+  9.47: [
+    'Leaderboard: מיון לפי דיוק אמיתי (accuracy) במקום readiness',
+    'Leaderboard: שליפת accuracy מ-Supabase (generated column)',
+    'ניקוי Supabase: הסרת שורות עם פחות מ-20 תשובות',
+  ],
+  9.46: [
+    'Leaderboard: הצגת דיוק אמיתי (correct/answered) במקום readiness מטעה',
+    'Leaderboard: guard — דורש ≥20 תשובות + est. score תקף לפני submit',
+    'Leaderboard: הקשחת קריאת שדות + res.ok check',
+  ],
+  9.45: ['תיקון לולאת עדכון — באנר "עדכון זמין" לא נעלם', 'תיקון מחיקת cache לפני reload'],
+  9.44: [
+    'ניקוי window bindings — הסרת renderTabs מיותר (17 → 16)',
+    'עדכון README ו-CLAUDE.md למבנה מודולרי',
+  ],
+  9.43: ['העברת כל התמונות המקומיות ל-Supabase', 'כל 116 התמונות מוגשות כעת מ-Supabase'],
+  9.42: [
+    'קישור תמונות מבחנים ל-Supabase (Jun21 + Jun24)',
+    'העברת תמונות מקומיות ל-Supabase URLs',
+    '14 תמונות חדשות ממבחן יוני 2024',
+  ],
+  '9.40': [
+    '🖼️ +20 image-based questions from Jun 2021 past exam (ECG, smear, CXR, CT-PE, fundoscopy, derm, echo) — 73 → 93 images (6.3%)',
+    '📚 +143 Harrison-based questions across 10 weak topics (Valvular, ICU, Derm, Allergy, Fluids, Pain, Periop, Tox, Onc, Vascular) — total 1452',
+    '🔧 Fixed 4 questions with duplicate/empty options (Q135, Q280, Q308, Q342)',
+    '🗑️ OSCE dead code removed, dead Med Basket/Lab/Aging CSS removed (~2.3KB)',
+    '🧪 Test coverage +33 — AI proxy routing, sanitization, SRS/FSRS, CSP tests',
+  ],
+  9.39: [
+    '🔒 XSS: sanitize AI-generated question fields in quizMeOnChapter',
+    '🔒 XSS: sanitize leaderboard data from Supabase',
+    '🐛 Cloud backup: check PATCH response status before showing success',
+    '🧹 Remove 7 dead functions: queueBackgroundSync, toggleAskAI, submitAskAI, copyDiagnostics, togOT, togOck, renderSyllabus',
+  ],
+  9.38: [
+    '🛡️ Fix: guarded all localStorage parses — corrupted state no longer bricks boot',
+    '🔧 Fix: user-generated questions persist across reload',
+    '🔧 Fix: service worker skips POST, uses navigate mode, no wrong JSON fallback',
+  ],
+  9.37: [
+    '🔧 FSRS-4.5 extracted to shared/fsrs.js — shared engine Phase 1',
+    '📦 shared/fsrs.js loaded as external script, cached by SW',
+    '🔗 isChronicFail() now shared between apps',
+    '⚡ srScore() upgraded: fsrsRating parameter for confidence-based scheduling',
+  ],
+  9.36: ['🚨 Fix syntax error in getWeakTopics — app was stuck loading'],
+  9.35: [
+    '🚨 Critical fix: restore data loader — app was showing blank screen',
+    '🔄 Revert accidental deletion of boot sequence, version check, background sync',
+  ],
+  9.34: [
+    '🐛 Fix: calcEstScore was using 40-topic Geriatrics FREQ array instead of 24-topic EXAM_FREQ — scores now accurate',
+    '📊 Analytics key metrics row (Est. Score, Streak, Answered, Accuracy) at top of Track tab',
+    '🗺️ Topic Mastery Heatmap — clickable tiles showing per-topic accuracy',
+    '📈 SRS due alert with quick-review button',
+    '🔧 Added getStudyStreak() for accurate streak from dailyAct',
+  ],
+  9.33: [
+    '🐛 Changelog Fix — תצוגת changelog תקינה במקום קוד גולמי',
+    '🐛 Quiz Fix — תיקון stats.map crash שגרם לשגיאות בכפתורים',
+    '🐛 IDB Init Fix — תיקון _dataPromise hoisting error',
+  ],
+  9.31: [
+    '📊 1,169 \u05e9\u05d0\u05dc\u05d5\u05ea \u2014 All questions tagged by 24 subspecialties',
+    '💊 Drugs Tab \u2014 Drug checker with ACB scores, Beers flags, STOPP interactions',
+    '🔒 Security \u2014 AI response sanitization for XSS protection',
+    '📄 Articles \u2014 10 required NEJM/Lancet articles',
+    '\u2705 AI Proxy \u2014 All AI features work without a personal API key',
+  ],
+  9.32: [
+    '🚨 Rescue Drill \u2014 Focused practice on your 3 weakest topics',
+    '📅 Activity Calendar \u2014 30-day question activity heatmap',
+    '📖 Spaced Reading \u2014 Track chapter reads + 30-day re-read reminders',
+    '🏆 Leaderboard \u2014 Anonymous global rankings via Supabase',
+    '💡 Feedback System \u2014 Submit feedback with AI acknowledgment',
+    '🗂️ Tab Consolidation \u2014 10 \u2192 5 tabs: Quiz, Learn, Library, Track, More',
+    '📋 Dynamic Changelog \u2014 Version history in help overlay',
+  ],
 };

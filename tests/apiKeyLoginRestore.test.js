@@ -28,9 +28,12 @@ describe('IM _apikey cloud-sync (v10.4.44 security fix supersedes v10.4.14)', ()
   // v10.4.14 synced _apikey in the backup payload; v10.4.44 removed it because
   // backup_get/set are SECURITY DEFINER with no identity check, so the synced key
   // was username-guess-readable on the anon key. See tests/apikeyExposureGuard.test.js.
-  it('cloud.js imports setApiKey (restore path) but no longer imports getApiKey', () => {
+  // v10.4.45 (#353 round-2): getApiKey is imported again — but ONLY as the
+  // fill-only guard on the legacy restore (never to build the backup payload;
+  // the payload lock below is the real invariant).
+  it('cloud.js imports setApiKey (restore path); getApiKey only feeds the fill-only guard', () => {
     expect(cloudJs).toMatch(/import\s+\{[^}]*setApiKey[^}]*\}\s+from\s+['"]\.\.\/core\/utils\.js['"]/);
-    expect(cloudJs).not.toMatch(/import\s+\{[^}]*getApiKey[^}]*\}\s+from\s+['"]\.\.\/core\/utils\.js['"]/);
+    expect(cloudJs).toContain("if (typeof rowData._apikey === 'string' && !getApiKey()) setApiKey(rowData._apikey);");
   });
 
   it('cloudBackup bundle does NOT include _apikey (key no longer synced)', () => {

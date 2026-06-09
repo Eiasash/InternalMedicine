@@ -8,7 +8,7 @@
 import G from '../core/globals.js';
 import { sanitize, getApiKey, setApiKey, toast } from '../core/utils.js';
 import { APP_VERSION, LS, SUPA_URL, SUPA_ANON } from '../core/constants.js';
-import { renderAuthSection, bindAuthEvents } from '../features/auth.js';
+import { renderAuthSection, bindAuthEvents, syncApiKeyToAccount } from '../features/auth.js';
 import { getCurrentUser } from '../features/auth.js';
 import { renderStudyPlanSection, bindStudyPlanEvents } from '../features/study_plan/index.js';
 
@@ -69,13 +69,17 @@ function _renderNotifSection() {
 
   let permHint = '';
   if (!_notifSupported) {
-    permHint = '<div style="font-size:10px;color:#94a3b8;margin-top:6px">הדפדפן לא תומך בהתראות.</div>';
+    permHint =
+      '<div style="font-size:10px;color:#94a3b8;margin-top:6px">הדפדפן לא תומך בהתראות.</div>';
   } else if (browserPerm === 'denied') {
-    permHint = '<div style="font-size:10px;color:#dc2626;margin-top:6px">ההרשאה נחסמה בדפדפן. פתח הגדרות אתר כדי לאפשר מחדש.</div>';
+    permHint =
+      '<div style="font-size:10px;color:#dc2626;margin-top:6px">ההרשאה נחסמה בדפדפן. פתח הגדרות אתר כדי לאפשר מחדש.</div>';
   } else if (optIn && browserPerm === 'granted') {
-    permHint = '<div style="font-size:10px;color:#059669;margin-top:6px">✓ תזכורת תישלח בשעה 07:00 כשיש שאלות לחזרה.</div>';
+    permHint =
+      '<div style="font-size:10px;color:#059669;margin-top:6px">✓ תזכורת תישלח בשעה 07:00 כשיש שאלות לחזרה.</div>';
   } else if (optIn && browserPerm !== 'granted') {
-    permHint = '<div style="font-size:10px;color:#b45309;margin-top:6px">ההרשאה טרם ניתנה — לחץ שוב כדי לבקש.</div>';
+    permHint =
+      '<div style="font-size:10px;color:#b45309;margin-top:6px">ההרשאה טרם ניתנה — לחץ שוב כדי לבקש.</div>';
   }
 
   return `
@@ -101,7 +105,11 @@ function _renderNotifSection() {
 function renderSettingsBody() {
   const isDark = document.body.classList.contains('dark');
   const storedKey = getApiKey();
-  const buildDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  const buildDate = new Date().toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
 
   return `
 <div class="settings-backdrop" data-action="close-settings" aria-hidden="true"></div>
@@ -145,17 +153,23 @@ function renderSettingsBody() {
       <div class="sec-s" style="margin-bottom:6px">API Key (for AI features only — לא נדרש לגיבוי / not required for cloud backup)</div>
       <div class="sec-s" style="margin-bottom:10px">Anthropic API key — מאוחסן בדפדפן בלבד</div>
       <div class="card" style="padding:14px">
-        ${storedKey
-          ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        ${
+          storedKey
+            ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
                <div style="flex:1;font-size:11px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;padding:6px 10px;color:#065f46">✅ API key מוגדר (sk-...${sanitize(storedKey.slice(-6))})</div>
                <button class="btn btn-o" style="font-size:11px;min-height:36px" data-action="settings-remove-api-key" aria-label="Remove API key">הסר</button>
-             </div>`
-          : `<div style="padding:8px 10px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;font-size:10px;color:#065f46;margin-bottom:10px">✅ AI פועל דרך proxy — לא צריך מפתח אישי. אפשר להוסיף כגיבוי. <a href="https://console.anthropic.com/keys" target="_blank" style="color:#d97706;font-weight:700">קבל מפתח ↗</a></div>
+             </div>${
+               getCurrentUser()
+                 ? `<button class="btn" style="font-size:11px;min-height:36px;width:100%;margin-bottom:8px;background:#f0f9ff;color:#075985;border:1px solid #bae6fd" data-action="settings-sync-api-key" aria-label="סנכרן את המפתח לחשבון">🔄 סנכרן את המפתח לחשבון</button>`
+                 : ''
+             }`
+            : `<div style="padding:8px 10px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;font-size:10px;color:#065f46;margin-bottom:10px">✅ AI פועל דרך proxy — לא צריך מפתח אישי. אפשר להוסיף כגיבוי. <a href="https://console.anthropic.com/keys" target="_blank" style="color:#d97706;font-weight:700">קבל מפתח ↗</a></div>
              <div style="display:flex;gap:8px;margin-bottom:8px">
                <input id="settings-api-key-input" type="password" placeholder="sk-ant-..." class="calc-in" style="flex:1;margin:0;font-size:11px" aria-label="Claude API key">
                <button class="btn btn-p" style="font-size:11px;min-height:36px" data-action="settings-save-api-key" aria-label="Save API key">שמור</button>
-             </div>`}
-        <div style="font-size:9px;color:#94a3b8">API key נשמר ב-localStorage בלבד · לא נשלח לשרתים של האפליקציה</div>
+             </div>`
+        }
+        <div style="font-size:9px;color:#94a3b8">API key נשמר ב-localStorage · בחשבון מחובר תוצע שמירה גם בחשבון (עם אישור סיסמה) כדי שהמפתח יעבור איתך בין מכשירים</div>
       </div>
     </section>
 
@@ -260,25 +274,68 @@ async function handleSettingsAction(action, btn) {
   }
   if (action === 'settings-save-api-key') {
     const v = document.getElementById('settings-api-key-input')?.value?.trim();
-    if (v) { setApiKey(v); toast('API key נשמר', 'success'); refreshSettings(); }
+    if (v) {
+      // Local save FIRST — never blocked by the network (#353).
+      setApiKey(v);
+      const r = await syncApiKeyToAccount(v);
+      if (r.ok) toast('🔑 המפתח נשמר וסונכרן לחשבון', 'success');
+      else if (r.error === 'cancelled') toast('המפתח נשמר במכשיר זה בלבד', 'info');
+      else if (r.error === 'not_logged_in') toast('API key נשמר', 'success');
+      else toast('המפתח נשמר מקומית — הסנכרון לחשבון נכשל (' + (r.error || '') + ')', 'warn');
+      refreshSettings();
+    }
     return;
   }
   if (action === 'settings-remove-api-key') {
     setApiKey('');
+    const r = await syncApiKeyToAccount('');
+    if (r.ok) toast('🔑 המפתח הוסר גם מהחשבון', 'success');
+    else if (r.error === 'cancelled') toast('המפתח הוסר מהמכשיר בלבד — עותק החשבון נשאר', 'info');
+    else if (r.error !== 'not_logged_in')
+      toast('המפתח הוסר מקומית — ההסרה מהחשבון נכשלה (' + (r.error || '') + ')', 'warn');
     refreshSettings();
     return;
   }
-  if (action === 'settings-export-progress') { window.exportProgress?.(); return; }
-  if (action === 'settings-import-progress') { window.importProgress?.(); return; }
-  if (action === 'settings-cloud-backup')    { window.cloudBackup?.(); return; }
-  if (action === 'settings-cloud-restore')   { window.cloudRestore?.(); return; }
-  if (action === 'settings-reset-all') {
-    if (confirm('Reset ALL data? This cannot be undone.')) {
-      localStorage.removeItem(LS); location.reload();
+  if (action === 'settings-sync-api-key') {
+    // #353 round-2: push an ALREADY-saved key to the account (no remove+re-enter).
+    const k = getApiKey();
+    if (k) {
+      const r = await syncApiKeyToAccount(k);
+      if (r.ok) toast('🔑 המפתח סונכרן לחשבון', 'success');
+      else if (r.error === 'cancelled') toast('הסנכרון בוטל — המפתח נשאר במכשיר זה', 'info');
+      else if (r.error !== 'not_logged_in')
+        toast('הסנכרון לחשבון נכשל (' + (r.error || '') + ')', 'warn');
+      refreshSettings();
     }
     return;
   }
-  if (action === 'settings-force-update') { window.applyUpdate?.(); return; }
+  if (action === 'settings-export-progress') {
+    window.exportProgress?.();
+    return;
+  }
+  if (action === 'settings-import-progress') {
+    window.importProgress?.();
+    return;
+  }
+  if (action === 'settings-cloud-backup') {
+    window.cloudBackup?.();
+    return;
+  }
+  if (action === 'settings-cloud-restore') {
+    window.cloudRestore?.();
+    return;
+  }
+  if (action === 'settings-reset-all') {
+    if (confirm('Reset ALL data? This cannot be undone.')) {
+      localStorage.removeItem(LS);
+      location.reload();
+    }
+    return;
+  }
+  if (action === 'settings-force-update') {
+    window.applyUpdate?.();
+    return;
+  }
   if (action === 'settings-submit-feedback') {
     submitSettingsFeedback();
     return;
@@ -288,12 +345,17 @@ async function handleSettingsAction(action, btn) {
 async function submitSettingsFeedback() {
   const type = document.getElementById('settings-fb-type')?.value || 'other';
   const text = document.getElementById('settings-fb-text')?.value?.trim();
-  if (!text) { toast('כתוב את הפידבק', 'info'); return; }
+  if (!text) {
+    toast('כתוב את הפידבק', 'info');
+    return;
+  }
   const user = getCurrentUser();
-  const uid = user?.username || ('guest-' + (localStorage.getItem('pnimit_guest_id') || ''));
+  const uid = user?.username || 'guest-' + (localStorage.getItem('pnimit_guest_id') || '');
   const entry = { type, text, ts: Date.now(), version: APP_VERSION, uid };
   let fb = [];
-  try { fb = JSON.parse(localStorage.getItem('pnimit_fb_sent') || '[]'); } catch (e) {}
+  try {
+    fb = JSON.parse(localStorage.getItem('pnimit_fb_sent') || '[]');
+  } catch (e) {}
   fb.push(entry);
   localStorage.setItem('pnimit_fb_sent', JSON.stringify(fb));
   // v10.4.12 fix — bug 3 from 2026-05-03 mobile session: POST /pnimit_feedback returned 400
@@ -304,26 +366,38 @@ async function submitSettingsFeedback() {
   try {
     const payload = {
       // Sibling-canonical column names (matches mishpacha_feedback schema):
-      type, text, ts: entry.ts, version: APP_VERSION, uid,
+      type,
+      text,
+      ts: entry.ts,
+      version: APP_VERSION,
+      uid,
       // Legacy column names previously sent by IM (kept for compat with any older schema):
-      message: text, app_version: APP_VERSION,
+      message: text,
+      app_version: APP_VERSION,
     };
     const res = await fetch(SUPA_URL + '/rest/v1/pnimit_feedback', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'apikey': SUPA_ANON,
-        'Authorization': 'Bearer ' + SUPA_ANON,
-        'Prefer': 'return=minimal',
+        apikey: SUPA_ANON,
+        Authorization: 'Bearer ' + SUPA_ANON,
+        Prefer: 'return=minimal',
       },
       body: JSON.stringify(payload),
     });
-    if (!res.ok) { _fbOk = false; }
-  } catch (e) { _fbOk = false; }
+    if (!res.ok) {
+      _fbOk = false;
+    }
+  } catch (e) {
+    _fbOk = false;
+  }
   if (_fbOk) {
     toast('תודה — הפידבק נשמר', 'success');
   } else {
-    toast('❌ שליחת המשוב נכשלה — נסה שוב מאוחר יותר\nFeedback submission failed — try again later', 'error');
+    toast(
+      '❌ שליחת המשוב נכשלה — נסה שוב מאוחר יותר\nFeedback submission failed — try again later',
+      'error',
+    );
   }
   const ta = document.getElementById('settings-fb-text');
   if (ta) ta.value = '';
@@ -346,7 +420,11 @@ export async function toggleNotifOptIn() {
   // Turning on — request permission if not yet granted.
   let perm = Notification.permission;
   if (perm === 'default') {
-    try { perm = await Notification.requestPermission(); } catch (e) { perm = 'denied'; }
+    try {
+      perm = await Notification.requestPermission();
+    } catch (e) {
+      perm = 'denied';
+    }
   }
   G.S.notifOptIn = perm === 'granted';
   G.save();
