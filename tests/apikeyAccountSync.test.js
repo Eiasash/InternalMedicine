@@ -74,9 +74,18 @@ describe('#353 — API-key account sync (IM port)', () => {
     );
   });
 
+  it('has-key state offers a sync-to-account button for logged-in users (#353 P2)', () => {
+    expect(overlay).toContain('data-action="settings-sync-api-key"');
+    const start = overlay.indexOf("if (action === 'settings-sync-api-key')");
+    expect(start).toBeGreaterThan(-1);
+    const block = overlay.slice(start, overlay.indexOf("if (action === 'settings-export-progress')"));
+    expect(block).toContain('getApiKey()');
+    expect(block).toContain('syncApiKeyToAccount(k)');
+  });
+
   it('v10.4.44 regression locks stay intact (no _apikey back in the backup payload)', () => {
     expect(cloud).not.toMatch(/_bundled\s*=\s*\{[^}]*_apikey[^}]*\}/);
-    expect(cloud).toContain("if (typeof rowData._apikey === 'string') setApiKey(rowData._apikey);");
+    expect(cloud).toContain("if (typeof rowData._apikey === 'string' && !getApiKey()) setApiKey(rowData._apikey);");
     expect(auth).toContain("if (typeof r.api_key === 'string') setApiKey(r.api_key);");
   });
 });
