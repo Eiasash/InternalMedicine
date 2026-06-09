@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { SUPA_URL, SUPA_ANON, TOPICS, APP_VERSION } from '../core/constants.js';
-import { sanitize, toast, getApiKey, setApiKey } from '../core/utils.js';
+import { sanitize, toast, setApiKey } from '../core/utils.js';
 import { callAI } from '../ai/client.js';
 import { calcEstScore } from '../ui/track-view.js';
 import { getTopicStats } from '../sr/spaced-repetition.js';
@@ -155,10 +155,12 @@ export async function cloudBackup(){
     try{sessions=JSON.parse(localStorage.getItem('pnimit_sessions')||'[]');}catch(e){}
     // v10.4.14: include the user's Anthropic API key in the cloud backup so it
     // travels with their account across devices — sibling-paired with Geriatrics
-    // v10.64.48 / FamilyMedicine v1.21.6. Plaintext-in-jsonb (RLS keeps it
-    // user-private). Restored via applyRestorePayload below on cross-device login.
-    const _apikey=getApiKey();
-    const _bundled={...G.S,_mockHist:mockHist,_sessions:sessions,_apikey};
+    // v10.4.44 (security): _apikey REMOVED from the cloud-sync payload. backup_get/
+    // backup_set are SECURITY DEFINER with no caller-identity check, so a synced key
+    // was readable by username-guess with only the anon key. Redundant anyway —
+    // auth_login_user returns api_key on a password-checked login. Restore-read kept
+    // below for backward compat. Sibling of Geri v10.64.158 / FM v1.26.1.
+    const _bundled={...G.S,_mockHist:mockHist,_sessions:sessions};
     // v10.4.13 (Track-Q sibling propagation): write path migrated to SECURITY
     // DEFINER RPC backup_set, mirroring the Phase-2 read path (backup_get).
     // Direct PostgREST INSERT was returning 401/PG-42501 under the new
