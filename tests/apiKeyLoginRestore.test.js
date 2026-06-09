@@ -24,16 +24,18 @@ const utilsJs = readFileSync(resolve(rootDir, 'src/core/utils.js'), 'utf-8');
 const engineJs = readFileSync(resolve(rootDir, 'src/quiz/engine.js'), 'utf-8');
 const appJs = readFileSync(resolve(rootDir, 'src/ui/app.js'), 'utf-8');
 
-describe('IM v10.4.14 — _apikey in cloudBackup payload', () => {
-  it('cloud.js imports getApiKey + setApiKey from utils', () => {
-    expect(cloudJs).toMatch(/import\s+\{[^}]*getApiKey[^}]*\}\s+from\s+['"]\.\.\/core\/utils\.js['"]/);
+describe('IM _apikey cloud-sync (v10.4.44 security fix supersedes v10.4.14)', () => {
+  // v10.4.14 synced _apikey in the backup payload; v10.4.44 removed it because
+  // backup_get/set are SECURITY DEFINER with no identity check, so the synced key
+  // was username-guess-readable on the anon key. See tests/apikeyExposureGuard.test.js.
+  it('cloud.js imports setApiKey (restore path) but no longer imports getApiKey', () => {
     expect(cloudJs).toMatch(/import\s+\{[^}]*setApiKey[^}]*\}\s+from\s+['"]\.\.\/core\/utils\.js['"]/);
+    expect(cloudJs).not.toMatch(/import\s+\{[^}]*getApiKey[^}]*\}\s+from\s+['"]\.\.\/core\/utils\.js['"]/);
   });
 
-  it('cloudBackup bundle includes _apikey: getApiKey()', () => {
-    // Pattern: const _apikey=getApiKey(); ... _bundled={...G.S, ..., _apikey}
-    expect(cloudJs).toMatch(/_apikey\s*=\s*getApiKey\(\)/);
-    expect(cloudJs).toContain('_apikey');
+  it('cloudBackup bundle does NOT include _apikey (key no longer synced)', () => {
+    expect(cloudJs).not.toMatch(/_apikey\s*=\s*getApiKey\(\)/);
+    expect(cloudJs).not.toMatch(/_bundled\s*=\s*\{[^}]*_apikey[^}]*\}/);
   });
 
   it('applyRestorePayload restores rowData._apikey via setApiKey', () => {
