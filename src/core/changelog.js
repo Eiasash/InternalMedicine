@@ -6,6 +6,12 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG = {
+  '10.4.48': [
+    'fix(track): clarify the stats donut semantics — the headline accuracy is now current question-status accuracy (correct / answered) while historical attempt accuracy remains a secondary detail, both computed from G.S.sr. Trinity 10.4.47 to 10.4.48.',
+  ],
+  '10.4.47': [
+    'feat(track): add a Hebrew סטטיסטיקה sub-tab with a correct/wrong/unanswered progress donut and attempt accuracy computed from G.S.sr; wired through the existing Track sub-tab dispatcher and track event delegation without duplicating the heatmap or priority matrix. Trinity 10.4.46 to 10.4.47.',
+  ],
   '10.4.46': [
     'ui(theme): medexams-style retheme — teal/turquoise primary (--sky #13a99c, --em #0e8c81, pnimit-skin --app-primary #0e8c81) + warm-gold accent (--amb #e8a13a) + medexams red (--red #d6453d), teal-tinted selected-answer + hover, softer 12px cards, teal focus ring. The two pnimit-skin a11y overrides (.pill.on bg + .tabs button.on text) and the skip-link moved from blue-700 to dark teal #0a5d54 (7.76:1, still AAA). No layout/markup/content change. Sibling of Geri v10.64.167 / FM. Trinity 10.4.45 to 10.4.46.',
   ],
