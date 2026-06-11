@@ -553,11 +553,87 @@ export function renderStudyPlan(){
 }
 
 // ===== Track sub-tab body builders (v9.94.0) =====
-// renderTrack splits its formerly 12-card vertical scroll into 4 focused
-// sub-tabs (Progress / Plan / Exam / More). Sub-tab persisted in
+// renderTrack splits its formerly 12-card vertical scroll into 5 focused
+// sub-tabs (Progress / Stats / Plan / Exam / More). Sub-tab persisted in
 // G.S.trackSubtab. Each helper builds one body section. All cards are
 // unchanged from the pre-9.94 layout — they're only regrouped, not
 // redesigned. Mirror of learn-sub / more-sub dispatch pattern in app.js.
+
+
+export function getTrackStatsDonutData(){
+  const sr=G.S&&G.S.sr?G.S.sr:{};
+  const total=Array.isArray(G.QZ)?G.QZ.length:0;
+  let correct=0;
+  let wrong=0;
+  let attemptTotal=0;
+  let attemptCorrect=0;
+
+  Object.entries(sr).forEach(([idx,d])=>{
+    if(!G.QZ[Number(idx)]||!d)return;
+    const tot=Number(d.tot)||0;
+    const hasAnswered=tot>0||d.n!==undefined;
+    if(!hasAnswered)return;
+    if(Number(d.n)>0)correct++;
+    else wrong++;
+    if(tot>0){
+      const ok=Math.max(0,Math.min(Number(d.ok)||0,tot));
+      attemptTotal+=tot;
+      attemptCorrect+=ok;
+    }
+  });
+
+  const answered=correct+wrong;
+  const unanswered=Math.max(0,total-answered);
+  const accuracy=answered?Math.round(correct/answered*100):null;
+  const attemptAccuracy=attemptTotal?Math.round(attemptCorrect/attemptTotal*100):null;
+  return{total,correct,wrong,unanswered,answered,attemptTotal,attemptCorrect,accuracy,attemptAccuracy};
+}
+
+function _donutSegmentPct(value,total){
+  return total?Math.round(value/total*100):0;
+}
+
+function _trackStatsBody(){
+  const st=getTrackStatsDonutData();
+  const correctPct=_donutSegmentPct(st.correct,st.total);
+  const wrongPct=_donutSegmentPct(st.wrong,st.total);
+  const unansweredPct=_donutSegmentPct(st.unanswered,st.total);
+  const correctEnd=correctPct;
+  const wrongEnd=correctPct+wrongPct;
+  const donutBg=st.total?
+    `conic-gradient(#16a34a 0 ${correctEnd}%, #dc2626 ${correctEnd}% ${wrongEnd}%, #e2e8f0 ${wrongEnd}% 100%)`:
+    '#e2e8f0';
+  const accuracyText=st.accuracy===null?'—':st.accuracy+'%';
+  const completionPct=_donutSegmentPct(st.answered,st.total);
+  const remaining=Math.max(0,st.total-st.answered);
+
+  return `<div class="card" dir="auto" style="padding:16px;margin-bottom:12px;text-align:center;unicode-bidi:plaintext">
+<div style="font-size:13px;font-weight:800;color:#0f172a;margin-bottom:4px">סטטיסטיקת התקדמות</div>
+<div style="font-size:10px;color:#64748b;margin-bottom:16px">סיכום נכון / שגוי / טרם נענה לפי נתוני החזרה המרווחת</div>
+<div style="display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap">
+  <div role="img" aria-label="${correctPct}% נכון, ${wrongPct}% שגוי, ${unansweredPct}% טרם נענה" style="width:168px;height:168px;border-radius:50%;background:${donutBg};display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(15,23,42,.06)">
+    <div style="width:106px;height:106px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(15,23,42,.08)">
+      <div style="font-size:28px;font-weight:900;color:${st.accuracy===null?'#94a3b8':st.accuracy>=70?'#059669':st.accuracy>=50?'#d97706':'#dc2626'}">${accuracyText}</div>
+      <div style="font-size:10px;color:#64748b;font-weight:700">דיוק שאלות</div>
+      <div style="font-size:9px;color:#94a3b8;margin-top:2px">${st.attemptAccuracy===null?'—':st.attemptAccuracy+'%'} דיוק ניסיונות</div>
+    </div>
+  </div>
+  <div style="min-width:190px;max-width:260px;flex:1;text-align:right">
+    <div style="display:grid;grid-template-columns:1fr;gap:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:10px;background:#f0fdf4;border:1px solid #bbf7d0"><span style="font-size:11px;font-weight:700;color:#166534">● נכון</span><span style="font-size:12px;font-weight:800;color:#166534">${st.correct} (${correctPct}%)</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:10px;background:#fef2f2;border:1px solid #fecaca"><span style="font-size:11px;font-weight:700;color:#991b1b">● שגוי</span><span style="font-size:12px;font-weight:800;color:#991b1b">${st.wrong} (${wrongPct}%)</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0"><span style="font-size:11px;font-weight:700;color:#475569">● טרם נענה</span><span style="font-size:12px;font-weight:800;color:#475569">${st.unanswered} (${unansweredPct}%)</span></div>
+    </div>
+  </div>
+</div>
+<div style="margin-top:16px;padding-top:12px;border-top:1px solid #f1f5f9;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+  <div><div style="font-size:18px;font-weight:900;color:#0ea5e9">${completionPct}%</div><div style="font-size:9px;color:#64748b">כיסוי</div></div>
+  <div><div style="font-size:18px;font-weight:900;color:#7c3aed">${st.answered}</div><div style="font-size:9px;color:#64748b">שאלות שנענו</div></div>
+  <div><div style="font-size:18px;font-weight:900;color:#f59e0b">${remaining}</div><div style="font-size:9px;color:#64748b">נותרו</div></div>
+</div>
+${remaining?'<button data-action="goto-quiz-build" data-filt="all" class="btn btn-p" style="margin-top:14px;font-size:11px;padding:8px 14px">המשך תרגול</button>':''}
+</div>`;
+}
 
 function _trackProgressBody(){
   // Progress: stat tiles + due alert + Topic Mastery Heatmap +
@@ -825,6 +901,7 @@ export function renderTrack(){
   const sub=G.S.trackSubtab||'progress';
   const subBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
     [{id:'progress',ic:'📊',l:'Progress'},
+     {id:'stats',ic:'🍩',l:'סטטיסטיקה'},
      {id:'plan',ic:'🎯',l:'Plan'},
      {id:'exam',ic:'📅',l:'Exam'},
      {id:'more',ic:'📚',l:'Reference'}].map(s=>
@@ -832,6 +909,7 @@ export function renderTrack(){
     ).join('')+'</div>';
   let body;
   if(sub==='progress')body=_trackProgressBody();
+  else if(sub==='stats')body=_trackStatsBody();
   else if(sub==='plan')body=_trackPlanBody();
   else if(sub==='exam')body=_trackExamBody();
   else if(sub==='more')body=_trackMoreBody();
