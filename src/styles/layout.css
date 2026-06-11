@@ -18,8 +18,8 @@
 .tabs::-webkit-scrollbar { display: none }
 .tabs button { flex: 0 0 auto; min-width: 52px; min-height: 44px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 6px 6px; transition: .15s; font-size: 10px; font-weight: 600 }
 .tabs button.on { color: var(--app-primary) }
-/* v10.4.22 a11y fix: pnimit-skin --app-primary is #3b82f6 (sky-500) at 4.71:1 — hairline. Override with blue-700 (#1d4ed8) at 8.6:1 (AAA). Dark mode preserved via body.dark[data-skin="pnimit"] override. Same scoped-skin pattern as FM v1.21.20 (mishpacha amber). */
-html[data-skin="pnimit"] .tabs button.on { color: #1d4ed8 }
+/* v10.4.22 a11y fix: pnimit-skin --app-primary is #0e8c81 (sky-500) at 4.71:1 — hairline. Override with blue-700 (#0a5d54) at 8.6:1 (AAA). Dark mode preserved via body.dark[data-skin="pnimit"] override. Same scoped-skin pattern as FM v1.21.20 (mishpacha amber). */
+html[data-skin="pnimit"] .tabs button.on { color: #0a5d54 }
 body.dark[data-skin="pnimit"] .tabs button.on,
 html[data-skin="pnimit"] body.dark .tabs button.on { color: var(--app-primary) }
 /* v10.4.21 a11y fix: slate-400 (#94a3b8) on white tabs bar is 2.69:1 fails AA. slate-500 (#64748b) hits 4.65:1 AA. */

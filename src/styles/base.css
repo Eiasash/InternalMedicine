@@ -2,11 +2,11 @@
 * { box-sizing: border-box; margin: 0; padding: 0 }
 
 :root {
-  --sky: 59 130 246;
-  --em: 16 185 129;
+  --sky: 19 169 156;
+  --em: 14 140 129;
   --sl8: 30 41 59;
-  --red: 239 68 68;
-  --amb: 245 158 11;
+  --red: 214 69 61;
+  --amb: 232 161 58;
 }
 
 body {

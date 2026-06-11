@@ -38,10 +38,10 @@ describe('a11y v10.4.21 — html dir + headerVer', () => {
 });
 
 describe('a11y v10.4.21 — utilities.css', () => {
-  it('skip-link bg is #2563eb (4.78:1 AA), not #3b82f6 (3.68:1)', () => {
+  it('skip-link bg is teal #0a5d54 (7.76:1 AAA), not light sky #3b82f6 (3.68:1)', () => {
     const m = utilitiesCss.match(/\.skip-link\s*\{[^}]+\}/);
     expect(m).toBeTruthy();
-    expect(m[0]).toContain('background: #2563eb');
+    expect(m[0]).toContain('background: #0a5d54');
     expect(m[0]).not.toContain('background: #3b82f6');
   });
 
@@ -104,13 +104,13 @@ describe('a11y v10.4.22 — residual contrast clears', () => {
     expect(quizViewJs).not.toMatch(/color:\$\{[^}]*qnotes[^}]*\?'#92400e':'#64748b'\}/);
   });
 
-  it('pnimit-skin .tabs button.on scoped override uses blue-700 (#1d4ed8, 8.6:1 AAA)', () => {
-    expect(layoutCss).toMatch(/html\[data-skin="pnimit"\]\s+\.tabs button\.on\s*\{\s*color:\s*#1d4ed8\s*\}/);
+  it('pnimit-skin .tabs button.on scoped override uses dark teal (#0a5d54, 7.76:1 AAA)', () => {
+    expect(layoutCss).toMatch(/html\[data-skin="pnimit"\]\s+\.tabs button\.on\s*\{\s*color:\s*#0a5d54\s*\}/);
     expect(layoutCss).toMatch(/body\.dark\[data-skin="pnimit"\]\s+\.tabs button\.on[^{]*\{\s*color:\s*var\(--app-primary\)\s*\}/);
   });
 
-  it('pnimit-skin .pill.on scoped override uses blue-700 background (#1d4ed8, 8.6:1 with white)', () => {
-    expect(componentsCss).toMatch(/html\[data-skin="pnimit"\]\s+\.pill\.on\s*\{\s*background:\s*#1d4ed8\s*\}/);
+  it('pnimit-skin .pill.on scoped override uses dark teal background (#0a5d54, 7.76:1 with white)', () => {
+    expect(componentsCss).toMatch(/html\[data-skin="pnimit"\]\s+\.pill\.on\s*\{\s*background:\s*#0a5d54\s*\}/);
     expect(componentsCss).toMatch(/body\.dark\[data-skin="pnimit"\]\s+\.pill\.on[^{]*\{\s*background:\s*var\(--app-primary\)\s*\}/);
   });
 
