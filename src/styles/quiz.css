@@ -1,8 +1,8 @@
 /* === Question Options === */
 .qo { position: relative; width: 100%; text-align: right; padding: 12px 14px; border-radius: 12px; border: 2px solid #e2e8f0; font-size: 12px; line-height: 1.6; transition: .15s; margin-bottom: 6px; font-family: 'Heebo', sans-serif; display: flex; align-items: center; min-height: 44px }
-.qo:not(.lk):hover { border-color: #bae6fd; background: #f0f9ff }
+.qo:not(.lk):hover { border-color: #a8e0d8; background: #eefaf8 }
 .qo:active:not(.lk) { transform: scale(.99) }
-.qo.sel { border-color: rgb(var(--sky)); background: #eff6ff }
+.qo.sel { border-color: rgb(var(--sky)); background: #e8f7f4 }
 .qo.ok { border-color: rgb(var(--em)); background: #ecfdf5; color: #065f46 }
 .qo.no { border-color: rgb(var(--red)); background: #fef2f2; color: #991b1b }
 .qo.dim { border-color: #f1f5f9; color: #cbd5e1 }
