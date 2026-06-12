@@ -76,6 +76,7 @@ body.dark [data-action="diff-rating"][data-d="med"][style*="fef9c3"]  { backgrou
 body.dark [data-action="diff-rating"][data-d="hard"][style*="fecaca"] { background: #450a0a !important; color: #fca5a5 !important }
 body.dark [data-action="prev-q"]                              { background: #1e293b !important; color: #cbd5e1 !important; border-color: #334155 !important }
 body.dark [data-action="give-up"]                             { background: #451a03 !important; color: #fde68a !important }
+body.dark .quiz-primary-actions                               { background: linear-gradient(to top, #1e293b 0%, #1e293b 78%, rgba(30,41,59,.94) 100%); border-top-color: #334155 }
 
 /* Dark: light-island fixes — inline #fff / #fef2f2 / #fffbeb surfaces that
    override body.dark .card or inherit a light bg (v10.4.34, 2026-05-31 audit) */

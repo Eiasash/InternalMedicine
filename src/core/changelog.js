@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG = {
+  '10.4.51': [
+    'ui(quiz-mobile): keep the primary answer actions above the fixed bottom tab bar on phones. The Quiz check / give-up row is now class-driven and sticky at mobile width with extra content-bottom clearance plus dark-mode parity, so the bottom nav no longer covers the action buttons on long first-screen questions. Added regression guards for the action classes and mobile clearance CSS. No question content, answer keys, explanations, source mappings, or audit queues changed. Trinity 10.4.50 to 10.4.51.',
+  ],
   '10.4.50': [
     'ui(quiz): polish Quiz filter controls after the Study/Track IA pass. Interactive filter pills now render as real buttons with pressed state, native button chrome reset, stable touch sizing, and keyboard semantics. The Due review pill is emitted only from the live due-count path, preventing duplicate Due controls in the filter row. Added regression guards for semantic filter buttons, single Due source, and pill button reset styling. No question content, answer keys, explanations, source mappings, or audit queues changed. Trinity 10.4.49 to 10.4.50.',
   ],
