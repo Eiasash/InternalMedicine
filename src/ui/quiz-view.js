@@ -268,7 +268,7 @@ const _trapCount=G.QZ.filter((_,i)=>isExamTrap(i)).length;
 const _aiCount=G.QZ.filter(q=>q.t==='Harrison').length;
 const _yearSel=Array.isArray(G.years)?G.years:[];
 const _inYearMode=G.filt==='years'&&_yearSel.length>0;
-const filts=[['all',`הכל (${G.QZ.length})`],['2020','20'],['2021-Jun','Jun21'],['2022-Jun','Jun22'],['2023-Jun','Jun23'],['2024-May','May24'],['2024-Oct','Oct24'],['2025-Jun','Jun25'],...(_aiCount>0?[['Harrison',`🤖 AI (${_aiCount})`]]:[]),['hard','🔥 קשות'],['slow','⏱️ איטיות'],['weak','🎯 חלשות'],['due','🔄 לחזרה'],...(_trapCount>0?[['traps',`🪤 מלכודות (${_trapCount})`]]:[]),['nbs','🎯 השלב הבא']];
+const filts=[['all',`הכל (${G.QZ.length})`],['2020','20'],['2021-Jun','Jun21'],['2022-Jun','Jun22'],['2023-Jun','Jun23'],['2024-May','May24'],['2024-Oct','Oct24'],['2025-Jun','Jun25'],...(_aiCount>0?[['Harrison',`🤖 AI (${_aiCount})`]]:[]),['hard','🔥 קשות'],['slow','⏱️ איטיות'],['weak','🎯 חלשות'],...(_trapCount>0?[['traps',`🪤 מלכודות (${_trapCount})`]]:[]),['nbs','🎯 השלב הבא']];
 // Rescue Drill pill
 const _weakForPill=getWeakTopics(3);
 if(_weakForPill.length&&_weakForPill[0].pct!==null&&_weakForPill[0].pct<65)filts.push(['rescue','🚨 חילוץ']);
@@ -276,20 +276,21 @@ if(dueN>0)filts.push(['due',`🔄 לחזרה (${dueN})`]);
 // Wrong-answer review pill (persistent across reloads via IDB)
 const _wrongN=wrongCount();
 if(_wrongN>0)filts.push(['wrong',`❌ סקור טעויות (${_wrongN})`]);
+const pillButton=(attrs,label,on=false,style='')=>`<button type="button" class="pill ${on?'on':''}" aria-pressed="${on?'true':'false'}"${style?` style="${style}"`:''} ${attrs}>${label}</button>`;
 filts.forEach(([f,l])=>{
-if(f==='rescue')h+=`<span class="pill ${G.filt==='rescue'?'on':''}" data-action="filter-rescue">${l}</span>`;
-else if(f==='wrong')h+=`<span class="pill ${G.filt==='wrong'?'on':''}" data-action="filter-wrong">${l}</span>`;
-else if(f==='nbs')h+=`<span class="pill ${G.filt==='nbs'?'on':''}" data-action="filter-nbs">${l}</span>`;
+if(f==='rescue')h+=pillButton('data-action="filter-rescue"', l, G.filt==='rescue');
+else if(f==='wrong')h+=pillButton('data-action="filter-wrong"', l, G.filt==='wrong');
+else if(f==='nbs')h+=pillButton('data-action="filter-nbs"', l, G.filt==='nbs');
 else if(EXAM_YEARS.includes(f)){
   const _yOn=_yearSel.includes(f);
-  h+=`<span class="pill ${_yOn?'on':''}" data-action="filter-year" data-f="${f}" title="לחץ להחלפה — בחירה מרובה אפשרית">${l}${_yOn?' ✓':''}</span>`;
+  h+=pillButton(`data-action="filter-year" data-f="${f}" title="לחץ להחלפה — בחירה מרובה אפשרית"`, `${l}${_yOn?' ✓':''}`, _yOn);
 }
-else if(f==='all')h+=`<span class="pill ${G.filt==='all'&&!_inYearMode?'on':''}" data-action="filter" data-f="${f}">${l}</span>`;
-else h+=`<span class="pill ${G.filt===f&&G.filt!=='topic'?'on':''}" data-action="filter" data-f="${f}">${l}</span>`;
+else if(f==='all')h+=pillButton(`data-action="filter" data-f="${f}"`, l, G.filt==='all'&&!_inYearMode);
+else h+=pillButton(`data-action="filter" data-f="${f}"`, l, G.filt===f&&G.filt!=='topic');
 });
 // "Clear years" pill, visible only when ≥2 years are selected to reduce clutter
 if(_yearSel.length>=2){
-  h+=`<span class="pill" style="background:#fef2f2;color:#dc2626" data-action="filter-year-clear" title="נקה סינון שנים">✕ ${_yearSel.length} שנים</span>`;
+  h+=pillButton('data-action="filter-year-clear" title="נקה סינון שנים"', `✕ ${_yearSel.length} שנים`, false, 'background:#fef2f2;color:#dc2626');
 }
 h+=`</div>`;
 // Mode toggles — Distractor Autopsy is always on (rendered on every reveal), no toggle

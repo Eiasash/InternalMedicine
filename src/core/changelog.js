@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG = {
+  '10.4.50': [
+    'ui(quiz): polish Quiz filter controls after the Study/Track IA pass. Interactive filter pills now render as real buttons with pressed state, native button chrome reset, stable touch sizing, and keyboard semantics. The Due review pill is emitted only from the live due-count path, preventing duplicate Due controls in the filter row. Added regression guards for semantic filter buttons, single Due source, and pill button reset styling. No question content, answer keys, explanations, source mappings, or audit queues changed. Trinity 10.4.49 to 10.4.50.',
+  ],
   '10.4.49': [
     'ui(ia): move active study workflows out of Track and into Study Today. Study now opens Today by default with plan, due review, exam-date/daily-plan, rescue drill, cheat-sheet export, reading due, bookmarks, syllabus, and journal; Track is analytics-only with progress/stats/plan/exam analytics and no Reference workflow tab. Share App Link now lives in Settings About, and visible Pomodoro / Sudden Death / On-call launch controls were removed while Mock and exam workflows remain. No question content, answer keys, explanations, or audit queues changed. Trinity 10.4.48 to 10.4.49.',
   ],
