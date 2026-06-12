@@ -85,10 +85,10 @@ describe('a11y v10.4.21 — JS render inline-style fixes', () => {
     expect(quizViewJs).not.toMatch(/data-action="give-up"[^>]*background:#fff3e0;color:#d97706/);
   });
 
-  it('"💀 Sudden Death" button uses red-700 (#b91c1c, 6.27:1 AA), not red-600 (#dc2626)', () => {
-    // Line ~264 start-sd button
-    expect(quizViewJs).toMatch(/data-action="start-sd"[^>]*background:#fef2f2;color:#b91c1c/);
-    expect(quizViewJs).not.toMatch(/data-action="start-sd"[^>]*background:#fef2f2;color:#dc2626/);
+  it('keeps retired mode launch buttons out of the visible quiz controls', () => {
+    expect(quizViewJs).not.toMatch(/data-action="start-sd"[^>]*>/);
+    expect(quizViewJs).not.toMatch(/data-action="start-oncall"[^>]*>/);
+    expect(quizViewJs).not.toMatch(/data-action="start-pomo"[^>]*>/);
   });
 });
 

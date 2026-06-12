@@ -635,13 +635,137 @@ ${remaining?'<button data-action="goto-quiz-build" data-filt="all" class="btn bt
 </div>`;
 }
 
+export function renderDueReviewCard(){
+  const dueN=getDueQuestions().length;
+  if(dueN<=0)return '';
+  return `<div class="card due-alert" style="padding:12px;margin-bottom:8px;background:#fef2f2;border:1px solid #fecaca">
+<div style="display:flex;align-items:center;gap:8px">
+<span style="font-size:18px">🔔</span>
+<div style="flex:1"><div style="font-size:12px;font-weight:700;color:#dc2626">${dueN} questions due for review</div>
+<div style="font-size:10px;color:#64748b">Spaced repetition items ready now</div></div>
+<button data-action="goto-quiz-build" data-filt="due" class="btn" style="font-size:10px;padding:6px 12px;background:#dc2626;color:#fff;border:none;border-radius:8px">Review</button>
+</div></div>`;
+}
+
+function _examDateWorkbenchCard(){
+  if(!G.S.examDate&&!localStorage.getItem('pnimit_exam_date')){
+    return `<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
+<div style="font-size:12px;font-weight:700;margin-bottom:6px">When is your exam?</div>
+<button class="btn btn-p" data-action="set-exam-date" style="font-size:11px">Set Exam Date</button>
+</div>`;
+  }
+  let h=renderDailyPlan();
+  h+=`<div style="text-align:center;margin-bottom:10px"><button data-action="set-exam-date" style="font-size:9px;color:#94a3b8;background:none;border:none;cursor:pointer;text-decoration:underline">Change exam date</button></div>`;
+  return h;
+}
+
+function _rescueDrillCard(){
+  const _weakTopics=getWeakTopics(3);
+  if(!_weakTopics.length||_weakTopics[0].pct===null||_weakTopics[0].pct>=65)return '';
+  return `<div class="card" style="padding:14px;margin-bottom:10px;background:linear-gradient(135deg,#fef2f2,#fffbeb);border:1px solid #fecaca">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-size:24px">🚨</span>
+<div style="flex:1">
+<div style="font-weight:700;font-size:12px;color:#dc2626">Rescue Drill</div>
+<div style="font-size:10px;color:#64748b">${_weakTopics.map(w=>TOPICS[w.ti]+' ('+w.pct+'%)').join(' · ')}</div>
+</div>
+<button data-action="rescue-drill" class="btn" style="font-size:11px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:10px;font-weight:700">GO</button>
+</div></div>`;
+}
+
+function _cheatSheetExportCard(){
+  return `<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
+<button class="btn btn-d" data-action="export-cheat-sheet" style="font-size:11px" aria-label="Export cheat sheet">Export Weak Topics Cheat Sheet</button>
+<div style="font-size:9px;color:#94a3b8;margin-top:4px">Print-ready 2-page summary of your 15 weakest topics</div>
+</div>`;
+}
+
+function _readingDueCard(){
+  const _harDue=getChaptersDueForReading('har',30);
+  if(!_harDue.length)return '';
+  let h=`<div class="card" style="padding:14px;margin-bottom:10px">
+<div style="font-size:12px;font-weight:700;margin-bottom:8px">Chapters Due for Re-Reading</div>`;
+  _harDue.slice(0,5).forEach(c=>{
+    const _chData=G._harData&&G._harData[c.ch];
+    const _title=_chData?_chData.title:'Ch '+c.ch;
+    h+=`<div data-action="open-chapter-due" data-ch="${c.ch}" style="font-size:10px;padding:4px 0;cursor:pointer;color:#64748b;border-bottom:1px solid #f8fafc">Ch ${c.ch}: ${_title} <span style="color:#7c3aed;font-weight:700">(${c.daysSince}d ago)</span></div>`;
+  });
+  h+=`</div>`;
+  return h;
+}
+
+function _bookmarkReviewCard(){
+  const bkCount=Object.values(G.S.bk).filter(Boolean).length;
+  if(bkCount<=0)return '';
+  const _byTopic={};
+  Object.entries(G.S.bk).filter(([,v])=>v).forEach(([k])=>{
+    const q=G.QZ[k];if(!q)return;
+    const tp=TOPICS[q.ti]||'Other';
+    if(!_byTopic[tp])_byTopic[tp]=[];
+    _byTopic[tp].push({k:k,q:q});
+  });
+  const _topicKeys=Object.keys(_byTopic);
+  let h='';
+  if(_topicKeys.length>1){
+    h+='<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">Bookmark Folders</div>';
+    _topicKeys.forEach(function(topic){
+      var fk='bkf_'+topic.replace(/[^a-z0-9]/gi,'_');
+      var open=G.S[fk];
+      var qs=_byTopic[topic];
+      h+='<div style="margin-bottom:6px">';
+      h+='<div data-action="bk-toggle" data-key="'+fk+'" style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#f8fafc;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600" role="button" tabindex="0" aria-expanded="'+(open?'true':'false')+'" aria-label="'+topic+'">';
+      h+='<span>'+topic+' ('+qs.length+')</span><span>'+(open?'Collapse':'Open')+'</span></div>';
+      if(open){qs.forEach(function(e){h+='<div style="padding:6px 12px;font-size:10px;border-bottom:1px solid #f1f5f9" class="heb" dir="'+heDir(e.q.q)+'">'+e.q.q.substring(0,90)+'...</div>';});}
+      h+='</div>';
+    });
+    h+='</div>';
+  }else{
+    h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">Bookmarked (${bkCount})</div>`;
+    Object.entries(G.S.bk).filter(([,v])=>v).slice(0,10).forEach(([k])=>{
+      const q=G.QZ[k];if(q)h+=`<div style="font-size:10px;padding:6px 0;border-bottom:1px solid #f8fafc" class="heb" dir="${heDir(q.q)}">${q.q.substring(0,80)}...</div>`;
+    });
+    h+=`</div>`;
+  }
+  return h;
+}
+
+function _syllabusChecklistCard(){
+  const done=Object.values(G.S.ck).filter(Boolean).length;
+  let h=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:10px">Syllabus (${done}/${TOPICS.length})</div>`;
+  TOPICS.forEach((t,i)=>{h+=`<div class="topic${G.S.ck[i]?' done':''}" data-action="syl-check" data-i="${i}" style="display:${G.S._sylOpen?'flex':'none'}" role="checkbox" aria-checked="${G.S.ck[i]?'true':'false'}" tabindex="0" aria-label="${t}">
+<input type="checkbox" ${G.S.ck[i]?'checked':''} readonly style="width:13px;height:13px" tabindex="-1"><span>${t}</span></div>`;});
+  h+=`<div data-action="syl-toggle" style="text-align:center;padding:8px;cursor:pointer;font-size:10px;color:rgb(var(--sky));font-weight:600" role="button" tabindex="0" aria-expanded="${G.S._sylOpen}" aria-label="Toggle syllabus topics">${G.S._sylOpen?'Collapse':'Show '+TOPICS.length+' topics'}</div>`;
+  h+=`</div>`;
+  return h;
+}
+
+function _studyJournalCard(){
+  return `<div class="card" style="padding:14px;margin-top:12px">
+<div style="font-weight:700;font-size:12px;margin-bottom:10px">Study Journal</div>
+${renderWrongAnswerLog()}
+</div>`;
+}
+
+export function renderStudyDashboard(){
+  let h='';
+  h+=renderDueReviewCard();
+  h+=renderStudyPlan();
+  h+=_examDateWorkbenchCard();
+  h+=_rescueDrillCard();
+  h+=_cheatSheetExportCard();
+  h+=_readingDueCard();
+  h+=_bookmarkReviewCard();
+  h+=_syllabusChecklistCard();
+  h+=_studyJournalCard();
+  return h;
+}
+
 function _trackProgressBody(){
-  // Progress: stat tiles + due alert + Topic Mastery Heatmap +
+  // Progress: stat tiles + Topic Mastery Heatmap +
   // Today's Session + 30-day Activity calendar + Leaderboard.
   const tot=G.S.qOk+G.S.qNo;
   const pctN=tot?Math.round(G.S.qOk/tot*100):0;
   const pct=tot?pctN+'%':'—';
-  const dueN=getDueQuestions().length;
   const readiness=calcEstScore();
   const streak=getStudyStreak();
   let h=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
@@ -662,15 +786,6 @@ function _trackProgressBody(){
 <div style="font-size:9px;color:#64748b">Accuracy</div>
 </div>
 </div>`;
-  if(dueN>0){
-    h+=`<div class="card due-alert" style="padding:12px;margin-bottom:8px;background:#fef2f2;border:1px solid #fecaca">
-<div style="display:flex;align-items:center;gap:8px">
-<span style="font-size:18px">🔔</span>
-<div style="flex:1"><div style="font-size:12px;font-weight:700;color:#dc2626">${dueN} questions due for review</div>
-<div style="font-size:10px;color:#64748b">Spaced repetition items ready now</div></div>
-<button data-action="goto-quiz-build" data-filt="due" class="btn" style="font-size:10px;padding:6px 12px;background:#dc2626;color:#fff;border:none;border-radius:8px">▶ Review</button>
-</div></div>`;
-  }
   h+=renderTopicHeatmap();
   h+=renderSessionCard();
   // Activity Calendar (30 days)
@@ -700,9 +815,8 @@ function _trackProgressBody(){
 }
 
 function _trackPlanBody(){
-  // Plan: Study Plan tiers + Priority Matrix + Weak Spots Map + Confidence Matrix.
-  let h=renderStudyPlan();
-  h+=renderPriorityMatrix();
+  // Plan: Priority Matrix + Weak Spots Map + Confidence Matrix.
+  let h=renderPriorityMatrix();
   // Weak Spots Map (year × topic heatmap, collapsible)
   const years=[...new Set(G.QZ.map(q=>q.t))].sort();
   const heatData=[];
@@ -774,50 +888,7 @@ function _trackPlanBody(){
 }
 
 function _trackExamBody(){
-  // Exam: Set Exam Date OR Daily Plan + Exam Trend + Rescue Drill +
-  // Cheat Sheet export + Change-date link + IMA Exam Archive.
-  let h='';
-  if(!G.S.examDate&&!localStorage.getItem('pnimit_exam_date')){
-    h+=`<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
-<div style="font-size:12px;font-weight:700;margin-bottom:6px">📅 When is your exam?</div>
-<button class="btn btn-p" data-action="set-exam-date" style="font-size:11px">Set Exam Date</button>
-</div>`;
-  }else{
-    h+=renderDailyPlan();
-  }
-  h+=renderExamTrendCard();
-  // Rescue Drill CTA — only when weakest topic <65%
-  const _weakTopics=getWeakTopics(3);
-  if(_weakTopics.length&&_weakTopics[0].pct!==null&&_weakTopics[0].pct<65){
-    h+=`<div class="card" style="padding:14px;margin-bottom:10px;background:linear-gradient(135deg,#fef2f2,#fffbeb);border:1px solid #fecaca">
-<div style="display:flex;align-items:center;gap:10px">
-<span style="font-size:24px">🚨</span>
-<div style="flex:1">
-<div style="font-weight:700;font-size:12px;color:#dc2626">Rescue Drill</div>
-<div style="font-size:10px;color:#64748b">${_weakTopics.map(w=>TOPICS[w.ti]+' ('+w.pct+'%)').join(' · ')}</div>
-</div>
-<button data-action="rescue-drill" class="btn" style="font-size:11px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:10px;font-weight:700">GO</button>
-</div></div>`;
-  }
-  // Cheat Sheet export
-  h+=`<div class="card" style="padding:14px;margin-bottom:10px;text-align:center">
-<button class="btn btn-d" data-action="export-cheat-sheet" style="font-size:11px" aria-label="Export cheat sheet">📄 Export Weak Topics Cheat Sheet</button>
-<div style="font-size:9px;color:#94a3b8;margin-top:4px">Print-ready 2-page summary of your 15 weakest topics</div>
-</div>`;
-  // Change exam date
-  if(G.S.examDate||localStorage.getItem('pnimit_exam_date')){
-    h+=`<div style="text-align:center;margin-bottom:10px"><button data-action="set-exam-date" style="font-size:9px;color:#94a3b8;background:none;border:none;cursor:pointer;text-decoration:underline">📅 Change exam date</button></div>`;
-  }
-  // IMA Exam Archive
-  h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">📥 IMA Exam Archive</div><div style="font-size:10px">`;
-  [["2022","639899_34c9618e-ff88-4811-84d5-ba1fdd9d5f1c","639902_9a12e7aa-9876-40e1-bdea-0786dc417406"],
-  ["2023","639904_14aa53eb-d114-4ab8-8bfe-938b32d02fc0","639907_33601987-d23e-4f5f-8180-53890b2cfcb4"],
-  ["May 24","652285_f10c088f-c183-4f9c-8324-b37bedabe522","652288_5f94445c-1fe5-4207-bd42-e223be8064a0"],
-  ["Sep 24","652291_5946c97e-78c1-4920-81e3-1081d46fdb6e","652294_46e7d570-db16-4307-b4f1-66f002ed456e"],
-  ["Jun 25","749665_d23a3de1-a2af-4467-b2b0-71f297f6b800","766892_d886488d-27d3-487c-8088-56f67ae43409"],
-  ].forEach(([y,q,a])=>{h+=`<div style="display:flex;gap:8px;padding:3px 0"><b style="width:48px">${y}</b><a href="https://ima-files.s3.amazonaws.com/${q}.pdf" target="_blank" style="color:rgb(var(--sky));text-decoration:underline">שאלון</a><a href="https://ima-files.s3.amazonaws.com/${a}.pdf" target="_blank" style="color:rgb(var(--sky));text-decoration:underline">תשובות</a></div>`;});
-  h+=`</div></div>`;
-  return h;
+  return renderExamTrendCard();
 }
 
 function _trackMoreBody(){
@@ -898,13 +969,13 @@ export function renderTrack(){
   // Sub-tab dispatcher (v9.94.0). Mirror of learn-sub / more-sub
   // dispatch in app.js render(). Persists choice in G.S.trackSubtab so
   // it survives reload. Each sub-tab body fits ~1.5 mobile viewports.
-  const sub=G.S.trackSubtab||'progress';
+  const allowed=['progress','stats','plan','exam'];
+  const sub=allowed.includes(G.S.trackSubtab)?G.S.trackSubtab:'progress';
   const subBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
     [{id:'progress',ic:'📊',l:'Progress'},
      {id:'stats',ic:'🍩',l:'סטטיסטיקה'},
      {id:'plan',ic:'🎯',l:'Plan'},
-     {id:'exam',ic:'📅',l:'Exam'},
-     {id:'more',ic:'📚',l:'Reference'}].map(s=>
+     {id:'exam',ic:'📅',l:'Exam'}].map(s=>
       '<button data-action="track-subtab" data-sub="'+s.id+'" style="flex:1;min-height:44px;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(sub===s.id?'700':'400')+';cursor:pointer;background:'+(sub===s.id?'#fff':'transparent')+';color:'+(sub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(sub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
     ).join('')+'</div>';
   let body;
@@ -912,7 +983,6 @@ export function renderTrack(){
   else if(sub==='stats')body=_trackStatsBody();
   else if(sub==='plan')body=_trackPlanBody();
   else if(sub==='exam')body=_trackExamBody();
-  else if(sub==='more')body=_trackMoreBody();
   else body=_trackProgressBody();
   return subBar+body;
 }
