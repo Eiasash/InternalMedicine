@@ -200,7 +200,7 @@ const q=G.QZ[G.sdPool[G.sdQi]];
 let h=`<div class="sudden-death-banner"><span style="font-weight:700;font-size:13px">💀 Sudden Death</span>
 <span style="font-size:16px;font-weight:700">🔥 ${G.sdStreak}</span>
 <button class="btn" style="background:rgba(255,255,255,.2);color:#fff;font-size:10px;padding:4px 10px" data-action="quit-sd" aria-label="Quit sudden death mode">Quit</button></div>`;
-h+=`<div class="card" style="padding:16px">`;
+h+=`<div class="card quiz-card" style="padding:16px">`;
 if(G.timedMode&&!G.ans){
   h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
 <span id="timed-count" style="font-size:11px;font-weight:700;color:#64748b;min-width:24px">${G.timedSec}s</span>
@@ -312,7 +312,7 @@ h+=`</div>`;
 }
 if(!G.pool.length){h+=`<div class="card" style="padding:24px;text-align:center"><p style="font-size:13px;color:#94a3b8">${G.filt==='due'?'🎉 No questions due for review!':'No questions match this filter.'}</p></div>`;return h;}
 h+=`<div class="progress-bar"><div class="fill" style="width:${Math.round((G.qi+1)/G.pool.length*100)}%"></div></div>`;
-h+=`<div class="card" style="padding:16px">`;
+h+=`<div class="card quiz-card" style="padding:16px">`;
 if(G.timedMode&&!G.ans){
   h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
 <span id="timed-count" style="font-size:11px;font-weight:700;color:#64748b;min-width:24px">${G.timedSec}s</span>
@@ -344,10 +344,10 @@ const blurCls=G.blindRecall&&!G.ans&&origI!==G.sel?' qo-blur':'';
 const autopsyCls=(G.autopsyMode&&G.ans&&!G.examMode&&!isOk(q,origI)&&origI===G.autopsyDistractor)?' distractor-highlight':'';
 h+=`<button class="${cls}${blurCls}${autopsyCls}" data-action="pick" data-i="${origI}" dir="${heDir(o)}"><span>${o}</span>${q.oi&&q.oi[origI]?'<img src="'+sanitize(q.oi[origI])+'" alt="" style="max-width:100%;max-height:120px;margin-top:6px;border-radius:6px" loading="lazy">':''}</button>`;
 });
-h+=`<div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">`;
+h+=`<div class="quiz-answer-stack">`;
 if(!G.ans){
 const _confLabel='';
-h+=`<div style="display:flex;gap:6px;align-items:center"><button class="btn btn-p" data-action="check-answer"${G.sel===null?' disabled':''} aria-label="בדוק — check answer" style="flex:1;min-height:44px">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" data-action="give-up" style="background:#fff3e0;color:#92400e;font-size:11px;padding:6px 14px;min-height:44px" aria-label="לא יודע — show me the answer">👁 לא יודע</button>`;h+=`</div>`;}
+h+=`<div class="quiz-primary-actions"><button class="btn btn-p" data-action="check-answer"${G.sel===null?' disabled':''} aria-label="בדוק — check answer" style="flex:1;min-height:44px">${_confLabel} בדוק</button>`;if(!G.examMode)h+=`<button class="btn" data-action="give-up" style="background:#fff3e0;color:#92400e;font-size:11px;padding:6px 14px;min-height:44px" aria-label="לא יודע — show me the answer">👁 לא יודע</button>`;h+=`</div>`;}
 else{
 // POST-ANSWER: Next button FIRST
 h+=`<div style="display:flex;gap:6px;align-items:stretch;margin-bottom:8px">`;

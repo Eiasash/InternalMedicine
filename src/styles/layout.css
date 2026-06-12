@@ -28,6 +28,9 @@ html[data-skin="pnimit"] body.dark .tabs button.on { color: var(--app-primary) }
 
 /* === Content Area === */
 .ct { max-width: 640px; margin: 0 auto; padding: 12px 12px 80px }
+@media (max-width: 600px) {
+  .ct { padding-bottom: calc(110px + env(safe-area-inset-bottom)) }
+}
 
 /* === Section Headers === */
 .sec-t { font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 3px }
