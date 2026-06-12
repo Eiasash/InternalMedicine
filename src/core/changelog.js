@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG = {
+  '10.4.52': [
+    'ui(study): deepen the Study dashboard button cleanup. The Today Study Plan now uses classed step rows with full-width mobile tap targets instead of tiny inline Start/Open chips, Study Plan row actions use shared grid button classes, and Study Plan tiers default collapsed so the screen no longer opens as a wall of repeated action buttons. Added regression guards for daily-plan actions, Study Plan action classes, mobile tap targets, and compact tier defaults. No question content, answer keys, explanations, source mappings, or audit queues changed. Trinity 10.4.51 to 10.4.52.',
+  ],
   '10.4.51': [
     'ui(quiz-mobile): keep the primary answer actions above the fixed bottom tab bar on phones. The Quiz check / give-up row is now class-driven and sticky at mobile width with extra content-bottom clearance plus dark-mode parity, so the bottom nav no longer covers the action buttons on long first-screen questions. Added regression guards for the action classes and mobile clearance CSS. No question content, answer keys, explanations, source mappings, or audit queues changed. Trinity 10.4.50 to 10.4.51.',
   ],
