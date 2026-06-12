@@ -261,8 +261,6 @@ h+=`<div style="display:flex;justify-content:space-between;align-items:center;ma
 <div class="sec-t">חידון</div>
 <div style="display:flex;gap:4px;flex-wrap:wrap">
 <button data-action="start-exam" class="btn btn-d" style="font-size:10px;padding:5px 12px" aria-label="מבחן (150 שאלות) — התחל מבחן מלא של 150 שאלות">📋 מבחן (150)</button><button data-action="start-mock" class="btn btn-d" style="font-size:10px;padding:5px 12px;background:#7c3aed;color:#fff" aria-label="סימולציה (100 שאלות) — התחל מבחן סימולציה של 100 שאלות">🎯 סימולציה (100)</button>
-<span class="tt-wrap"><button data-action="start-sd" class="btn" style="font-size:10px;padding:5px 12px;background:#fef2f2;color:#b91c1c" aria-label="התחל מצב מוות פתאומי">💀 מוות פתאומי</button><button data-action="start-oncall" class="btn" style="font-size:10px;padding:5px 12px;background:#0f172a;color:#7dd3fc" aria-label="התחל מצב תורנות">🌙 תורנות</button><button class="tt-icon" tabindex="0" aria-label="מידע על מצב מוות פתאומי">ⓘ</button><div class="tt-box">תשובה שגויה אחת מסיימת את המשחק. בונה לחץ של תנאי מבחן.</div></span>
-${!G.pomoActive?'<span class="tt-wrap"><button data-action="start-pomo" class="btn" style="font-size:10px;padding:5px 12px;background:#ecfdf5;color:#047857" aria-label="התחל טיימר פומודורו">⏱️ פומודורו</button><button class="tt-icon" tabindex="0" aria-label="מידע על טיימר פומודורו">ⓘ</button><div class="tt-box">25 דק׳ ריכוז / 5 דק׳ הפסקה. עוזר לשמור על ריכוז.</div></span>':''}
 </div>
 </div>`;
 h+=`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">`;
