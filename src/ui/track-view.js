@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { TOPICS, EXAM_FREQ, APP_VERSION } from '../core/constants.js';
-import { heDir } from '../core/utils.js';
+import { heDir, sanitize } from '../core/utils.js';
 import { getDueQuestions, getWeakTopics, getStudyStreak, getTopicStats, isExamTrap, getChaptersDueForReading } from '../sr/spaced-repetition.js';
 import { setFilt, startTopicMiniExam, buildPool } from '../quiz/engine.js';
 import { buildRescuePool } from '../sr/spaced-repetition.js';
@@ -179,25 +179,31 @@ const tSt=getTopicStats();
 const weakest=TOPICS.map((t,i)=>({name:t,i,s:tSt[i]||{ok:0,no:0,tot:0}})).filter(p=>p.s.tot>=3).sort((a,b)=>{
 const pa=a.s.tot?a.s.ok/a.s.tot:0,pb=b.s.tot?b.s.ok/b.s.tot:0;return pa-pb;}).slice(0,3);
 const trapCount=G.QZ.filter((_,i)=>isExamTrap(i)).length;
+const planAction=(kind,attrs,label)=>`<button type="button" class="daily-plan-action daily-plan-action--${kind}" ${attrs}>${label}</button>`;
+const planStep=(num,copy,action='',done=false)=>`<div class="daily-plan-step${done?' daily-plan-step--done':''}">
+<div class="daily-plan-num">${num}</div>
+<div class="daily-plan-copy">${copy}</div>
+${action?`<div class="daily-plan-control">${action}</div>`:''}
+</div>`;
 let h=`<div class="card" style="padding:14px;margin-bottom:10px;border-left:4px solid #059669">
 <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:#059669">📋 Today's Study Plan</div>`;
 if(daysLeft!==null)h+=`<div style="font-size:10px;color:#64748b;margin-bottom:10px">${daysLeft} days to exam · ${new Date(examDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}${(function(){try{let w=0;const f=window.fsrsInterval,wf=window.fsrsIntervalWithDeadline;if(!f||!wf)return '';for(let i=0;i<G.QZ.length;i++){const sr=G.S.sr[i];if(sr&&sr.fsrsS&&sr.fsrsD){if(wf(sr.fsrsS,sr.fsrsD,1)<f(sr.fsrsS))w++;}}return w>0?` · <span style="color:#d97706">⚡ ${w} cards compressed</span>`:'';}catch(e){return '';}})()}</div>`;
-h+=`<div style="font-size:11px;line-height:2">`;
+h+=`<div class="daily-plan-steps">`;
 // Step 1: Due questions
-if(dueN>0)h+=`<div>1️⃣ <b>${dueN} due questions</b> (~${Math.round(dueN*1.5)} min) <button data-action="goto-quiz" data-filt="due" style="font-size:9px;padding:2px 8px;background:#eff6ff;color:#3b82f6;border:none;border-radius:6px;cursor:pointer">▶ Start</button></div>`;
-else h+=`<div>1️⃣ ✅ No questions due — you're caught up!</div>`;
+if(dueN>0)h+=planStep('1',`<b>${dueN} due questions</b><span class="daily-plan-meta">~${Math.round(dueN*1.5)} min</span>`,planAction('quiz','data-action="goto-quiz" data-filt="due"','Start'));
+else h+=planStep('1','✅ No questions due - you are caught up','',true);
 // Step 2: Weakest topic
 if(weakest.length){
 const w=weakest[0];
 const wPct=w.s.tot?Math.round(w.s.ok/w.s.tot*100):0;
 const ref=TOPIC_REF[w.i];
-h+=`<div>2️⃣ Read: <b>${w.name}</b> (${wPct}% accuracy, ${G.QZ.filter(q=>q.ti===w.i).length} questions) ${ref?`<button data-action="goto-lib-harrison" style="font-size:9px;padding:2px 8px;background:#ede9fe;color:#7c3aed;border:none;border-radius:6px;cursor:pointer">📖 Open</button>`:''}</div>`;
-h+=`<div>3️⃣ Drill: <b>20q mini-exam on ${w.name}</b> <button data-action="start-mini-exam" data-ti="${w.i}" style="font-size:9px;padding:2px 8px;background:#dcfce7;color:#166534;border:none;border-radius:6px;cursor:pointer">🎯 Start</button></div>`;
+h+=planStep('2',`Read <b>${sanitize(w.name)}</b><span class="daily-plan-meta">${wPct}% accuracy · ${G.QZ.filter(q=>q.ti===w.i).length} questions</span>`,ref?planAction('read','data-action="goto-lib-harrison"','Open'):'');
+h+=planStep('3',`Drill <b>20q mini-exam on ${sanitize(w.name)}</b>`,planAction('drill',`data-action="start-mini-exam" data-ti="${w.i}"`,'Start'));
 }
 // Step 3: Traps
-if(trapCount>0)h+=`<div>4️⃣ Review <b>${trapCount} trap questions</b> <button data-action="goto-quiz" data-filt="traps" style="font-size:9px;padding:2px 8px;background:#fffbeb;color:#92400e;border:none;border-radius:6px;cursor:pointer">🪤 Start</button></div>`;
+if(trapCount>0)h+=planStep('4',`Review <b>${trapCount} trap questions</b>`,planAction('trap','data-action="goto-quiz" data-filt="traps"','Start'));
 // Step 4: Replay last mock wrong (if any)
-try{const _mh=JSON.parse(localStorage.getItem('pnimit_mock_hist')||'[]');const _last=_mh[_mh.length-1];const _wn=_last&&_last.wrongIdxs?_last.wrongIdxs.length:0;if(_wn>0){const _dt=new Date(_last.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});h+=`<div>5️⃣ Replay <b>${_wn} wrong answers</b> from mock on ${_dt} <button data-action="replay-last-mock-wrong" style="font-size:9px;padding:2px 8px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer">🔁 Start</button></div>`;}}catch(e){}
+try{const _mh=JSON.parse(localStorage.getItem('pnimit_mock_hist')||'[]');const _last=_mh[_mh.length-1];const _wn=_last&&_last.wrongIdxs?_last.wrongIdxs.length:0;if(_wn>0){const _dt=new Date(_last.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});h+=planStep('5',`Replay <b>${_wn} wrong answers</b><span class="daily-plan-meta">mock on ${_dt}</span>`,planAction('replay','data-action="replay-last-mock-wrong"','Start'));}}catch(e){}
 h+=`</div></div>`;
 return h;
 }
@@ -482,7 +488,7 @@ export function renderStudyPlan(){
 
     // Tiers
     STUDY_PLAN.forEach(tier => {
-      const tierOpen = G.S['sp_t' + tier.tier] !== undefined ? G.S['sp_t' + tier.tier] : true;
+      const tierOpen = G.S['sp_t' + tier.tier] !== undefined ? G.S['sp_t' + tier.tier] : false;
 
       // Count topics for this tier
       let tierTopics = 0, tierChecked = 0;
@@ -531,11 +537,11 @@ export function renderStudyPlan(){
             ${accBadge}
             <span style="color:#94a3b8;font-size:9px;white-space:nowrap">${topic.hrs}</span>
             </div>
-            <div style="display:flex;gap:4px;padding:0 8px 6px 36px;flex-wrap:wrap">
-            ${HAR_CHAPTERS[topic.n]?`<button data-action="sp-open-chapter" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#b45309;cursor:pointer;white-space:nowrap">📕 Ch ${HAR_CHAPTERS[topic.n].ch}</button>`:""}
-            <button data-action="sp-open-notes" data-ti="${topic.ti}" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#0D7377;cursor:pointer;white-space:nowrap" aria-label="Open notes for ${topic.n.replace(/'/g,'')}">📖 Notes</button>
-            <button data-action="sp-quiz" data-ti="${topic.ti}" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#3b82f6;cursor:pointer;white-space:nowrap" aria-label="Quiz ${topic.n.replace(/'/g,'')}">📝 Quiz</button>
-            <button data-action="sp-summarize" data-topic="${topic.n.replace(/'/g,'&apos;')}" style="font-size:9px;padding:3px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#7c3aed;cursor:pointer;white-space:nowrap" aria-label="AI summary of ${topic.n.replace(/'/g,'')}">🤖 Summarize</button>
+            <div class="sp-actions">
+            ${HAR_CHAPTERS[topic.n]?`<button class="sp-action sp-action--chapter" data-action="sp-open-chapter">📕 Ch ${HAR_CHAPTERS[topic.n].ch}</button>`:""}
+            <button class="sp-action sp-action--notes" data-action="sp-open-notes" data-ti="${topic.ti}" aria-label="Open notes for ${topic.n.replace(/'/g,'')}">📖 Notes</button>
+            <button class="sp-action sp-action--quiz" data-action="sp-quiz" data-ti="${topic.ti}" aria-label="Quiz ${topic.n.replace(/'/g,'')}">📝 Quiz</button>
+            <button class="sp-action sp-action--ai" data-action="sp-summarize" data-topic="${topic.n.replace(/'/g,'&apos;')}" aria-label="AI summary of ${topic.n.replace(/'/g,'')}">🤖 Summarize</button>
             </div>
             </div>`;
           });

@@ -13,3 +13,36 @@
 
 /* === Leaderboard === */
 .leaderboard-row { display: flex; justify-content: space-between; padding: 6px 10px; border-bottom: 1px solid #f1f5f9; font-size: 11px }
+
+/* === Daily Study Plan Actions === */
+.daily-plan-steps { display: grid; gap: 8px; margin-top: 10px }
+.daily-plan-step { display: grid; grid-template-columns: 26px minmax(0, 1fr) minmax(92px, auto); gap: 8px; align-items: center; padding: 8px 10px; border: 1px solid #e2e8f0; border-radius: 10px; background: #fff }
+.daily-plan-step--done { background: #f8fafc; color: #64748b }
+.daily-plan-num { width: 24px; height: 24px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; background: #ecfdf5; color: #047857; font-size: 11px; font-weight: 800 }
+.daily-plan-copy { min-width: 0; font-size: 11px; line-height: 1.45; color: #1e293b }
+.daily-plan-step--done .daily-plan-copy { color: #64748b }
+.daily-plan-meta { display: block; margin-top: 2px; font-size: 9px; color: #64748b }
+.daily-plan-control { display: flex; justify-content: flex-end }
+.daily-plan-action { min-height: 38px; min-width: 88px; padding: 7px 12px; border: 1px solid transparent; border-radius: 8px; font-family: inherit; font-size: 11px; font-weight: 800; line-height: 1.2; cursor: pointer }
+.daily-plan-action--quiz { color: #1d4ed8; background: #eff6ff; border-color: #bfdbfe }
+.daily-plan-action--read { color: #7c3aed; background: #f5f3ff; border-color: #ddd6fe }
+.daily-plan-action--drill { color: #166534; background: #dcfce7; border-color: #bbf7d0 }
+.daily-plan-action--trap { color: #92400e; background: #fffbeb; border-color: #fde68a }
+.daily-plan-action--replay { color: #dc2626; background: #fee2e2; border-color: #fecaca }
+.daily-plan-action:focus-visible { outline: 2px solid rgb(var(--sky)); outline-offset: 2px }
+
+/* === Study Plan Row Actions === */
+.sp-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 0 8px 8px 36px }
+.sp-action { min-height: 38px; padding: 7px 8px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; font-family: inherit; font-size: 10px; font-weight: 700; line-height: 1.2; text-align: center; white-space: normal; cursor: pointer }
+.sp-action--chapter { color: #b45309; background: #fffbeb; border-color: #fde68a }
+.sp-action--notes { color: #0f766e; background: #ecfdf5; border-color: #99f6e4 }
+.sp-action--quiz { color: #1d4ed8; background: #eff6ff; border-color: #bfdbfe }
+.sp-action--ai { color: #7c3aed; background: #f5f3ff; border-color: #ddd6fe }
+.sp-action:focus-visible { outline: 2px solid rgb(var(--sky)); outline-offset: 2px }
+
+@media (max-width: 520px) {
+  .daily-plan-step { grid-template-columns: 24px minmax(0, 1fr); align-items: stretch }
+  .daily-plan-control { grid-column: 1 / -1; justify-content: stretch }
+  .daily-plan-action { width: 100%; min-height: 42px }
+  .sp-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-inline-start: 8px }
+}
