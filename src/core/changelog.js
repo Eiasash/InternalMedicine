@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG = {
+  '10.4.49': [
+    'ui(ia): move active study workflows out of Track and into Study Today. Study now opens Today by default with plan, due review, exam-date/daily-plan, rescue drill, cheat-sheet export, reading due, bookmarks, syllabus, and journal; Track is analytics-only with progress/stats/plan/exam analytics and no Reference workflow tab. Share App Link now lives in Settings About, and visible Pomodoro / Sudden Death / On-call launch controls were removed while Mock and exam workflows remain. No question content, answer keys, explanations, or audit queues changed. Trinity 10.4.48 to 10.4.49.',
+  ],
   '10.4.48': [
     'fix(track): clarify the stats donut semantics — the headline accuracy is now current question-status accuracy (correct / answered) while historical attempt accuracy remains a secondary detail, both computed from G.S.sr. Trinity 10.4.47 to 10.4.48.',
   ],
