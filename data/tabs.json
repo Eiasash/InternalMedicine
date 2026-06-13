@@ -1,22 +1,22 @@
 [
   {
     "id": "quiz",
-    "ic": "📝",
-    "l": "חידון"
+    "ic": "Q",
+    "l": "Quiz"
   },
   {
-    "id": "lib",
-    "ic": "📚",
+    "id": "study",
+    "ic": "S",
     "l": "Study"
   },
   {
     "id": "track",
-    "ic": "📊",
-    "l": "מעקב"
+    "ic": "T",
+    "l": "Track"
   },
   {
-    "id": "more",
-    "ic": "⚙️",
-    "l": "עוד"
+    "id": "settings",
+    "ic": "G",
+    "l": "Settings"
   }
 ]
