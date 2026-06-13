@@ -111,45 +111,13 @@ describe('24-topic contract', () => {
 });
 
 // =============================================================
-// 2. HARRISON_PDF_MAP integrity — every PDF must exist on disk
+// 2. HARRISON_PDF_MAP — must stay EMPTY (copyright remediation, 2026-06)
+//    Serving Harrison chapter PDFs from the app was removed; this guards
+//    against ever re-introducing copyrighted-PDF serving.
 // =============================================================
-describe('HARRISON_PDF_MAP integrity', () => {
-  it('has at least 60 chapter mappings', () => {
-    expect(Object.keys(HARRISON_PDF_MAP).length).toBeGreaterThanOrEqual(60);
-  });
-
-  it('every referenced PDF exists on disk', () => {
-    const missing = [];
-    for (const [ch, p] of Object.entries(HARRISON_PDF_MAP)) {
-      const abs = resolve(rootDir, p);
-      if (!existsSync(abs)) missing.push({ ch, p });
-    }
-    expect(missing, `missing PDFs: ${JSON.stringify(missing)}`).toEqual([]);
-  });
-
-  it('every chapter key parses as a positive integer', () => {
-    Object.keys(HARRISON_PDF_MAP).forEach((ch) => {
-      const n = Number(ch);
-      expect(Number.isInteger(n), `non-int ch key: ${ch}`).toBe(true);
-      expect(n).toBeGreaterThan(0);
-    });
-  });
-
-  it('every PDF path starts with harrison/ and ends in .pdf', () => {
-    Object.values(HARRISON_PDF_MAP).forEach((p) => {
-      expect(p.startsWith('harrison/'), `bad prefix: ${p}`).toBe(true);
-      expect(p.endsWith('.pdf'), `bad suffix: ${p}`).toBe(true);
-    });
-  });
-
-  it('no URL-encoded escape sequences leaked into paths (regression: %23U00e9 was %-encoded by mistake in pre-v10.4.2)', () => {
-    // Filenames may contain raw # but never URL-encoded sequences like %23,
-    // %20, %2F — those were copy-paste artifacts in the v10.4.1 map.
-    Object.values(HARRISON_PDF_MAP).forEach((p) => {
-      expect(p.includes('%23'), `URL-encoded # in: ${p}`).toBe(false);
-      expect(p.includes('%20'), `URL-encoded space in: ${p}`).toBe(false);
-      expect(p.includes('%2F'), `URL-encoded slash in: ${p}`).toBe(false);
-    });
+describe('HARRISON_PDF_MAP copyright guard', () => {
+  it('is empty — copyrighted Harrison PDFs are intentionally not served', () => {
+    expect(Object.keys(HARRISON_PDF_MAP).length).toBe(0);
   });
 });
 
