@@ -169,18 +169,7 @@ export async function aiSummarizeChapter(chNum,chTitle){
   const box=document.getElementById('quiz-me-box');
   if(!box)return;
   box.innerHTML='<div style="text-align:center;padding:16px;color:#64748b">⏳ מסכם את הפרק...</div>';
-  let chText='';
-  const harCh=G._harData&&G._harData[chNum];
-  if(harCh&&harCh.sections){
-    chText=harCh.sections.slice(0,8).map(s=>{
-      const body=Array.isArray(s.content)?s.content.join(' '):(s.content||'');
-      return s.title+(body?': '+body.slice(0,300):'');
-    }).join('\n').slice(0,3500);
-  }
-  const prompt=`You are summarizing Harrison's Internal Medicine Ch ${chNum}: ${chTitle} for the Israeli internal medicine board exam (שלב א׳ פנימית).
-
-Chapter content:
-${chText||'Chapter '+chNum+': '+chTitle}
+  const prompt=`You are summarizing Harrison's Internal Medicine Ch ${chNum}: ${chTitle} for the Israeli internal medicine board exam (שלב א׳ פנימית). The chapter text is supplied to you as authoritative reference context.
 
 Create a board-focused summary in HEBREW with:
 1. 5-7 key facts/thresholds the examiner will test (specific numbers, criteria)
@@ -189,7 +178,7 @@ Create a board-focused summary in HEBREW with:
 
 Format as clean bullet points. Be concise and high-yield.`;
   try{
-    const txt=await callAI([{role:'user',content:prompt}],800,'sonnet');
+    const txt=await callAI([{role:'user',content:prompt}],800,'sonnet',{book:'harrison',chapter:Number(chNum)});
     box.innerHTML=`<div style="margin-top:12px;padding:14px;background:#f0fdf4;border-radius:10px;border-left:4px solid #059669">
 <div style="font-weight:700;font-size:12px;color:#065f46;margin-bottom:8px">📝 Board Summary — Ch ${sanitize(String(chNum))}: ${sanitize(chTitle)}</div>
 <div style="font-size:11px;line-height:1.8;direction:rtl;text-align:right;white-space:pre-wrap">${sanitize(txt)}</div>
@@ -204,21 +193,7 @@ export async function quizMeOnChapter(chNum,chTitle){
   // safe-innerhtml: chNum is always an integer from parseInt() / G.harChOpen — no user input path.
   if(el){el.innerHTML='<div style="text-align:center;padding:20px;color:#64748b">⏳ Generating questions from Ch '+chNum+'...</div>';}
   // Get chapter text from already-loaded data
-  let chapterText='';
-  const harCh=G._harData&&G._harData[chNum];
-  if(harCh&&harCh.sections){
-    chapterText=harCh.sections.slice(0,6).map(s=>{
-      const body=Array.isArray(s.content)?s.content.join(' '):(s.content||'');
-      return s.title+': '+body;
-    }).join('\n').slice(0,3000);
-  }
-  if(!chapterText){
-    chapterText="Harrison's Internal Medicine Chapter "+chNum+": "+chTitle;
-  }
-  const prompt=`You are an Israeli internal medicine board examiner writing MCQ for the שלב א׳ exam.
-
-Based on this chapter content from Harrison's Internal Medicine Ch ${chNum} (${chTitle}):
-${chapterText}
+  const prompt=`You are an Israeli internal medicine board examiner writing MCQ for the שלב א׳ exam. The chapter text from Harrison's Internal Medicine Ch ${chNum} (${chTitle}) is supplied to you as authoritative reference context.
 
 Generate 3 original MCQ questions NOT already in the question bank. Each question must:
 1. Test a specific fact, threshold, or mechanism from this chapter
@@ -230,7 +205,7 @@ Return ONLY valid JSON array:
 [{"q":"question text","o":["A. opt","B. opt","C. opt","D. opt","E. opt"],"c":0,"e":"הסבר בעברית"}]
 c = 0-based index of correct answer. No markdown, no preamble.`;
   try{
-    const txt=await callAI([{role:'user',content:prompt}],1200,'sonnet');
+    const txt=await callAI([{role:'user',content:prompt}],1200,'sonnet',{book:'harrison',chapter:Number(chNum)});
     const clean=txt.replace(/```json|```/g,'').trim();
     const qs=JSON.parse(clean);
     // Display the generated questions
@@ -277,10 +252,11 @@ h+=`<span class="pill ${G.libSec===t.id?'on':''}" style="white-space:nowrap;font
 });
 h+=`</div>`;
 
+const HAR_TITLE={};[...SYL_HAR_ALL,...SYL_HAR_BASE].forEach(c=>{HAR_TITLE[String(c.ch)]=c.t;});
 // ===== HARRISON IN-APP READER =====
 if(G.libSec==='harrison'){
-if(G.harChOpen!==null&&G._harData&&G._harData[String(G.harChOpen)]){
-const ch=G._harData[String(G.harChOpen)];
+if(G.harChOpen!==null){
+const ch={title:HAR_TITLE[String(G.harChOpen)]||('Chapter '+G.harChOpen)};
 const allSylChNums=[...SYL_HAR_ALL,...SYL_HAR_BASE].map(c=>c.ch).sort((a,b)=>a-b);
 const curIdx=allSylChNums.indexOf(G.harChOpen);
 const prevCh=curIdx>0?allSylChNums[curIdx-1]:null;
@@ -310,10 +286,7 @@ ${_tpct!==null?`<span style="font-weight:700;color:${_tpct>=70?'#059669':_tpct>=
 <button data-action="drill-topic" data-ti="${_chTopicIdx}" style="margin-left:auto;font-size:10px;padding:4px 10px;background:#7c3aed;color:#fff;border:none;border-radius:6px;cursor:pointer">▶ Drill</button>
 </div>`;
 }
-ch.sections.forEach(sec=>{
-if(sec.title){h+=`<div dir="auto" style="font-size:13px;font-weight:800;color:#7c3aed;margin:18px 0 8px;padding-bottom:4px;border-bottom:2px solid #ede9fe;unicode-bidi:plaintext">${sec.title}</div>`;}
-sec.content.forEach(p=>{h+=`<p dir="auto" style="font-size:11.5px;line-height:1.9;color:#1e293b;margin:0 0 10px;text-align:start;unicode-bidi:plaintext">${p}</p>`;});
-});
+h+=`<div style="font-size:11px;color:#64748b;line-height:1.7;text-align:right" dir="rtl">📝 סיכום AI ממוקד-מבחן לפרק ${G.harChOpen} מופק אוטומטית למעלה. לחץ 🧠 ליצירת שאלות תרגול. הטקסט המלא של הפרק אינו נכלל באפליקציה.</div>`;
 h+=`</div>`;
 }else if(G._harLoading){
 h+=`<div class="card" style="padding:40px;text-align:center"><div style="font-size:13px;color:#64748b">⏳ Loading Harrison's chapter...</div></div>`;
@@ -325,8 +298,7 @@ h+=`<div class="card" style="padding:14px">
 <div style="font-size:10px;color:#64748b;margin-bottom:12px">${allSylChs.length} required chapters · <span style="color:#7c3aed">purple</span> = all examinees · <span style="color:#06b6d4">teal</span> = base track only</div>`;
 allSylChs.forEach(c=>{
 const isAll=allChNums.includes(c.ch);
-const harCh=G._harData&&G._harData[String(c.ch)];
-const wc=harCh?`~${Math.round(harCh.wordCount/250)} min`:'tap to load';
+const wc='tap to open';
 h+=`<div data-action="open-chapter" data-ch="${c.ch}" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer">
 <span style="background:${isAll?'#7c3aed':'#06b6d4'};color:#fff;font-size:10px;font-weight:700;padding:4px 8px;border-radius:8px;min-width:42px;text-align:center">Ch ${c.ch}</span>
 <div style="flex:1;min-width:0">
@@ -397,19 +369,11 @@ return h;
 export async function openHarrisonChapter(ch){
 G.harChOpen=ch;
 trackChapterRead('har',ch);
-if(G._harData){G.render();return;}
-if(G._harLoading)return;
-G._harLoading=true;
 G.render();
-try{
-const r=await fetch('harrison_chapters.json');
-G._harData=await r.json();
-}catch(e){
-console.error('Failed to load Harrison chapters',e);
-G._harData={};
-}
-G._harLoading=false;
-G.render();
+// Verbatim text is no longer bundled; show a grounded AI board summary instead.
+// Grounding happens server-side in the proxy keyed by chapter number.
+const _t=([...SYL_HAR_ALL,...SYL_HAR_BASE].find(c=>String(c.ch)===String(ch))||{}).t||('Chapter '+ch);
+aiSummarizeChapter(ch,_t);
 }
 
 // ===== FLASHCARDS =====
@@ -442,12 +406,12 @@ export function initLibraryEvents(container) {
       openHarrisonChapter(parseInt(el.dataset.ch, 10));
     }
     else if (action === 'quiz-chapter') {
-      const ch = G._harData && G._harData[String(G.harChOpen)];
-      if (ch) quizMeOnChapter(G.harChOpen, ch.title);
+      const _t=([...SYL_HAR_ALL,...SYL_HAR_BASE].find(c=>String(c.ch)===String(G.harChOpen))||{}).t||('Chapter '+G.harChOpen);
+      quizMeOnChapter(G.harChOpen, _t);
     }
     else if (action === 'summarize-chapter') {
-      const ch = G._harData && G._harData[String(G.harChOpen)];
-      if (ch) aiSummarizeChapter(G.harChOpen, ch.title);
+      const _t=([...SYL_HAR_ALL,...SYL_HAR_BASE].find(c=>String(c.ch)===String(G.harChOpen))||{}).t||('Chapter '+G.harChOpen);
+      aiSummarizeChapter(G.harChOpen, _t);
     }
     else if (action === 'drill-topic') {
       const ti = parseInt(el.dataset.ti, 10);

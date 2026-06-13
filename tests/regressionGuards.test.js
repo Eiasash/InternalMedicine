@@ -439,8 +439,9 @@ describe('service worker — dev/build consistency', () => {
 
 // ─────────────────────────────────────────────────────────────
 // Library AI chapter-context guard (regression for dead window._libData).
-// aiSummarizeChapter + quizMeOnChapter must read chapter text from the
-// actually-loaded G._harData, not the never-assigned window._libData.
+// COPYRIGHT GUARD: aiSummarizeChapter + quizMeOnChapter must NOT embed verbatim
+// chapter text in the prompt. Chapter text lives server-side only; the client
+// passes a ground:{book,chapter} directive and the proxy injects the text.
 describe('library-view AI chapter context', () => {
   const src = readFile('src/ui/library-view.js');
 
@@ -448,18 +449,25 @@ describe('library-view AI chapter context', () => {
     expect(src).not.toMatch(/window\._libData/);
   });
 
-  test('aiSummarizeChapter reads chapter sections from G._harData', () => {
-    const fn = src.match(/export async function aiSummarizeChapter[\s\S]*?^}/m)?.[0];
-    expect(fn, 'aiSummarizeChapter function').toBeTruthy();
-    expect(fn).toMatch(/G\._harData\s*\[\s*chNum\s*\]/);
-    expect(fn).toMatch(/\.sections/);
+  test('library-view ships no verbatim chapter text (no _harData slicing, no JSON fetch)', () => {
+    expect(src).not.toMatch(/\.sections\s*\.\s*(slice|forEach|map)/);
+    expect(src).not.toMatch(/fetch\(\s*['"]harrison_chapters\.json/);
   });
 
-  test('quizMeOnChapter reads chapter sections from G._harData', () => {
+  test('aiSummarizeChapter grounds server-side via ground:{book,chapter}', () => {
+    const fn = src.match(/export async function aiSummarizeChapter[\s\S]*?^}/m)?.[0];
+    expect(fn, 'aiSummarizeChapter function').toBeTruthy();
+    expect(fn).toMatch(/book\s*:\s*['"]harrison['"]/);
+    expect(fn).toMatch(/chapter\s*:\s*Number\(chNum\)/);
+    expect(fn).not.toMatch(/\.sections/);
+  });
+
+  test('quizMeOnChapter grounds server-side via ground:{book,chapter}', () => {
     const fn = src.match(/export async function quizMeOnChapter[\s\S]*?^}/m)?.[0];
     expect(fn, 'quizMeOnChapter function').toBeTruthy();
-    expect(fn).toMatch(/G\._harData\s*\[\s*chNum\s*\]/);
-    expect(fn).toMatch(/\.sections/);
+    expect(fn).toMatch(/book\s*:\s*['"]harrison['"]/);
+    expect(fn).toMatch(/chapter\s*:\s*Number\(chNum\)/);
+    expect(fn).not.toMatch(/\.sections/);
   });
 });
 

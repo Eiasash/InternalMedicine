@@ -10,13 +10,8 @@ npx vite build
 # 2. Copy static assets that Vite doesn't process
 echo "→ Copying static assets..."
 cp -r data/ dist/data/
-cp harrison_chapters.json dist/
 cp -r shared/ dist/shared/
-cp -r exams/ dist/exams/
-cp -r articles/ dist/articles/
-cp -r harrison/ dist/harrison/
 cp -r questions/ dist/questions/
-cp -r syllabus/ dist/syllabus/
 cp manifest.json dist/manifest.json
 cp index.html dist/index.html
 
@@ -30,7 +25,7 @@ sed -i 's|href="[^"]*manifest[^"]*\.json"|href="manifest.json"|' dist/pnimit-meg
 # similar per-file errors while returning 0 at the invocation level. Assert
 # every static-asset sub-tree that landed in dist/ matches its source count.
 echo "→ Verifying static-asset parity (src vs dist)..."
-for d in data shared exams harrison articles goroll docs/references/afp_hari questions syllabus; do
+for d in data shared questions; do
   dst=$(basename "$d")
   if [ -d "$d" ] && [ -d "dist/$dst" ]; then
     src_count=$(find "$d" -type f | wc -l)
@@ -57,7 +52,7 @@ echo "  → CACHE=pnimit-v${APP_VER}"
 cat > dist/sw.js << SWEOF
 const CACHE='pnimit-v${APP_VER}';
 const SHELL_URLS=['pnimit-mega.html','manifest.json','shared/fsrs.js','shared/tokens.css','shared/install-promo.js','shared/install-promo-config.js'];
-const DATA_URLS=['data/questions.json','data/highyield.json','data/topics.json','data/notes.json','data/drugs.json','data/flashcards.json','data/tabs.json','harrison_chapters.json'];
+const DATA_URLS=['data/questions.json','data/highyield.json','data/topics.json','data/notes.json','data/drugs.json','data/flashcards.json','data/tabs.json'];
 const ALL_URLS=[...SHELL_URLS,...DATA_URLS];
 
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ALL_URLS)).then(()=>self.skipWaiting())));
@@ -163,4 +158,4 @@ echo "Key files:"
 ls -lh dist/pnimit-mega.html dist/sw.js dist/manifest.json dist/assets/*.js dist/assets/*.css 2>/dev/null
 echo ""
 echo "Static assets:"
-du -sh dist/data/ dist/harrison_chapters.json dist/shared/ dist/exams/ dist/articles/ dist/harrison/ dist/questions/ dist/syllabus/ 2>/dev/null
+du -sh dist/data/ dist/shared/ dist/questions/ 2>/dev/null || true
