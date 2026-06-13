@@ -178,12 +178,12 @@ export function renderStudyPlanSection() {
 
   <div style="display:flex;gap:6px;flex-wrap:wrap">
     <button class="btn btn-p" data-action="sp-generate" ${_state.generating ? 'disabled' : ''}
-      style="flex:1;font-size:12px;min-height:42px;font-weight:700">
+      style="flex:1;font-size:12px;min-height:44px;font-weight:700">
       ${_state.generating ? '⏳ יוצר…' : '✨ צור תכנית'}
     </button>
     ${_state.display ? `
     <button class="btn" data-action="sp-export-ics"
-      style="font-size:11px;min-height:42px;background:#ecfeff;color:#155e75;border:1px solid #a5f3fc;padding:8px 14px">
+      style="font-size:11px;min-height:44px;background:#ecfeff;color:#155e75;border:1px solid #a5f3fc;padding:8px 14px">
       📅 ייצא ל-Calendar (.ics)
     </button>` : ''}
   </div>

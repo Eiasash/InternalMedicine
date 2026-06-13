@@ -25,7 +25,7 @@ describe('mobile quiz bottom-nav clearance', () => {
 
     expect(quizViewJs).toContain('<div class="quiz-answer-stack">');
     expect(quizViewJs).toContain('<div class="quiz-primary-actions">');
-    expect(quizCardCount).toBeGreaterThanOrEqual(2);
+    expect(quizCardCount).toBe(1);
     expect(quizViewJs).not.toContain('<div class="card" style="padding:16px">');
     expect(quizViewJs).not.toContain('<div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">');
     expect(quizViewJs).not.toContain('class="quiz-answer-actions"');

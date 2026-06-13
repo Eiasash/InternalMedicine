@@ -8,7 +8,7 @@ import '../core/data-loader.js'; // side-effect: populates G.QZ, G.TABS, etc.
 import '../clock.js'; // side-effect: header clock (#hdr-sub)
 import { getDueQuestions } from '../sr/spaced-repetition.js';
 import { setTopicFilt,
-         renderOnCall, _storeDiff,
+         _storeDiff,
          replayMockWrong, replayLastMockWrong } from '../quiz/engine.js';
 import { requestWakeLock } from '../quiz/modes.js';
 import { submitLeaderboardScore, showLeaderboard, renderFeedback,
@@ -49,7 +49,7 @@ function renderStudyTools(){
   const tool=['search','cards','chat'].includes(G.S.studyTool)?G.S.studyTool:'search';
   const toolBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f8fafc;border-radius:12px">'+
   [{id:'search',ic:'F',l:'Search'},{id:'cards',ic:'C',l:'Cards'},{id:'chat',ic:'A',l:'Chat'}].map(s=>
-    '<button data-action="study-tool" data-tool="'+s.id+'" style="flex:1;min-height:44px;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(tool===s.id?'700':'400')+';cursor:pointer;background:'+(tool===s.id?'#fff':'transparent')+';color:'+(tool===s.id?'#0f172a':'#64748b')+';box-shadow:'+(tool===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
+    '<button data-action="study-tool" data-tool="'+s.id+'" style="flex:1;min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(tool===s.id?'700':'400')+';cursor:pointer;background:'+(tool===s.id?'#fff':'transparent')+';color:'+(tool===s.id?'#0f172a':'#64748b')+';box-shadow:'+(tool===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
   const body=tool==='cards'?renderFlash():tool==='chat'?renderChat():renderSearch();
   return toolBar+body;
@@ -66,7 +66,7 @@ const focused=document.activeElement?.id;
 const sv={srchi:document.getElementById('srchi')?.value,nfilt:document.getElementById('nfilt')?.value,dsrch:document.getElementById('dsrch')?.value};
 if(G.tab!==G.lastTab){el.classList.remove('fade-in');void el.offsetWidth;el.classList.add('fade-in');window.scrollTo({top:0});G.lastTab=G.tab;}
 switch(G.tab){
-case'quiz':el.innerHTML=G.onCallMode?renderOnCall():renderQuiz();break;
+case'quiz':el.innerHTML=renderQuiz();break;
 case'learn':
   // v10.0 (PR #70): Learn tab merged into Library. learnSub='flash' → Library Cards;
   // 'study' or anything else → Library Notes (clinical study notes).
@@ -82,7 +82,7 @@ case'lib':
   {const _libSub=G.S.libSub||'today';
   const _libBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
   [{id:'today',ic:'T',l:'Today'},{id:'read',ic:'R',l:'Read'},{id:'notes',ic:'N',l:'Notes'},{id:'tools',ic:'X',l:'Tools'}].map(s=>
-    '<button data-action="lib-sub" data-sub="'+s.id+'" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(_libSub===s.id?'700':'400')+';cursor:pointer;background:'+(_libSub===s.id?'#fff':'transparent')+';color:'+(_libSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(_libSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
+    '<button data-action="lib-sub" data-sub="'+s.id+'" style="flex:1;min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(_libSub===s.id?'700':'400')+';cursor:pointer;background:'+(_libSub===s.id?'#fff':'transparent')+';color:'+(_libSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(_libSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
   let _libBody;
   if(_libSub==='today')_libBody=renderStudyDashboard();
@@ -217,7 +217,7 @@ const sec=(title,icon,color,items)=>`<div style="margin-bottom:14px">
 ov.innerHTML=`<div style="max-width:420px;margin:0 auto;background:#fff;border-radius:16px;padding:20px;color:#1e293b;font-size:11px;line-height:1.7">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
 <div style="font-size:16px;font-weight:800">🏥 Pnimit Mega</div>
-<button data-action="close-help" style="background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8" aria-label="Close help">✕</button>
+<button data-action="close-help" style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8" aria-label="Close help">✕</button>
 </div>
 <div style="font-size:10px;color:#64748b;margin-bottom:16px">Israeli Internal Medicine Board Exam Prep (שלב א׳ פנימית) · P0064-2025 · Harrison's 22e · Works Offline</div>
 <div style="padding:10px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:10px;margin-bottom:14px">
@@ -262,7 +262,7 @@ ${sec('Progress Tracking','📊','#f59e0b',
 </div>
 <div style="text-align:center;font-size:9px;color:#94a3b8;line-height:1.5">
 صدقة جارية الى من نحب<br>Ceaseless Charity — To the People That We Love<br><br>
-<button data-action="share-app" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:6px 16px;font-size:10px;font-weight:600;cursor:pointer" aria-label="Share app with friends">📤 Share with Friends</button>
+<button data-action="share-app" style="min-height:44px;background:#059669;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:10px;font-weight:600;cursor:pointer" aria-label="Share app with friends">📤 Share with Friends</button>
 </div>
 </div>`;
 document.body.appendChild(ov);

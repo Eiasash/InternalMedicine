@@ -96,7 +96,7 @@ function _renderNotifSection() {
         <button data-action="settings-toggle-notif-opt-in"
                 ${canToggle ? '' : 'disabled'}
                 aria-pressed="${optIn}"
-                style="background:${optIn ? '#059669' : '#cbd5e1'};color:#fff;border:none;border-radius:999px;padding:6px 14px;font-size:11px;font-weight:700;cursor:${canToggle ? 'pointer' : 'not-allowed'};opacity:${canToggle ? '1' : '.5'}">
+                style="display:inline-flex;align-items:center;justify-content:center;min-height:44px;background:${optIn ? '#059669' : '#cbd5e1'};color:#fff;border:none;border-radius:999px;padding:6px 14px;font-size:11px;font-weight:700;cursor:${canToggle ? 'pointer' : 'not-allowed'};opacity:${canToggle ? '1' : '.5'}">
           ${optIn ? 'פעיל' : 'כבוי'}
         </button>
       </div>`;
@@ -138,7 +138,7 @@ function renderSettingsBody() {
           <div style="font-weight:700;font-size:13px">${isDark ? '🌙 Dark mode' : '☀️ Light mode'}</div>
           <div style="font-size:11px;color:#64748b;margin-top:4px">לחץ כדי להחליף</div>
         </div>
-        <button class="btn btn-p" data-action="settings-toggle-dark" aria-pressed="${isDark}" style="font-size:11px;min-height:36px;min-width:80px">
+        <button class="btn btn-p" data-action="settings-toggle-dark" aria-pressed="${isDark}" style="font-size:11px;min-height:44px;min-width:80px">
           ${isDark ? '☀️ Light' : '🌙 Dark'}
         </button>
       </div>
@@ -157,16 +157,16 @@ function renderSettingsBody() {
           storedKey
             ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
                <div style="flex:1;font-size:11px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;padding:6px 10px;color:#065f46">✅ API key מוגדר (sk-...${sanitize(storedKey.slice(-6))})</div>
-               <button class="btn btn-o" style="font-size:11px;min-height:36px" data-action="settings-remove-api-key" aria-label="Remove API key">הסר</button>
+               <button class="btn btn-o" style="font-size:11px;min-height:44px" data-action="settings-remove-api-key" aria-label="Remove API key">הסר</button>
              </div>${
                getCurrentUser()
-                 ? `<button class="btn" style="font-size:11px;min-height:36px;width:100%;margin-bottom:8px;background:#f0f9ff;color:#075985;border:1px solid #bae6fd" data-action="settings-sync-api-key" aria-label="סנכרן את המפתח לחשבון">🔄 סנכרן את המפתח לחשבון</button>`
+                 ? `<button class="btn" style="font-size:11px;min-height:44px;width:100%;margin-bottom:8px;background:#f0f9ff;color:#075985;border:1px solid #bae6fd" data-action="settings-sync-api-key" aria-label="סנכרן את המפתח לחשבון">🔄 סנכרן את המפתח לחשבון</button>`
                  : ''
              }`
-            : `<div style="padding:8px 10px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;font-size:10px;color:#065f46;margin-bottom:10px">✅ AI פועל דרך proxy — לא צריך מפתח אישי. אפשר להוסיף כגיבוי. <a href="https://console.anthropic.com/keys" target="_blank" style="color:#d97706;font-weight:700">קבל מפתח ↗</a></div>
+            : `<div style="padding:8px 10px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px;font-size:10px;color:#065f46;margin-bottom:10px">✅ AI פועל דרך proxy — לא צריך מפתח אישי. אפשר להוסיף כגיבוי. <a href="https://console.anthropic.com/keys" target="_blank" style="display:inline-flex;align-items:center;min-height:44px;color:#d97706;font-weight:700">קבל מפתח ↗</a></div>
              <div style="display:flex;gap:8px;margin-bottom:8px">
                <input id="settings-api-key-input" type="password" placeholder="sk-ant-..." class="calc-in" style="flex:1;margin:0;font-size:11px" aria-label="Claude API key">
-               <button class="btn btn-p" style="font-size:11px;min-height:36px" data-action="settings-save-api-key" aria-label="Save API key">שמור</button>
+               <button class="btn btn-p" style="font-size:11px;min-height:44px" data-action="settings-save-api-key" aria-label="Save API key">שמור</button>
              </div>`
         }
         <div style="font-size:9px;color:#94a3b8">API key נשמר ב-localStorage · בחשבון מחובר תוצע שמירה גם בחשבון (עם אישור סיסמה) כדי שהמפתח יעבור איתך בין מכשירים</div>
@@ -202,7 +202,7 @@ function renderSettingsBody() {
           <option value="other">💬 אחר</option>
         </select>
         <textarea id="settings-fb-text" dir="auto" placeholder="תאר את ההצעה / הבאג / השאלה..." style="width:100%;min-height:80px;padding:10px;border:1px solid #e2e8f0;border-radius:10px;font-size:12px;font-family:inherit;resize:vertical;margin-bottom:8px"></textarea>
-        <button class="btn btn-p" data-action="settings-submit-feedback" style="width:100%;min-height:38px;font-size:12px;font-weight:700">📤 שלח</button>
+        <button class="btn btn-p" data-action="settings-submit-feedback" style="width:100%;min-height:44px;font-size:12px;font-weight:700">📤 שלח</button>
       </div>
     </section>
 

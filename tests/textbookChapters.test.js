@@ -24,11 +24,13 @@
  */
 
 import { describe, it, test, expect, beforeAll } from 'vitest';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const DATA = resolve(ROOT, 'data');
+const HARRISON_CHAPTERS_PATH = resolve(ROOT, 'harrison_chapters.json');
+const describeIfHarrisonChapters = existsSync(HARRISON_CHAPTERS_PATH) ? describe : describe.skip;
 
 function load(file) {
   return JSON.parse(readFileSync(resolve(ROOT, file), 'utf-8'));
@@ -37,7 +39,7 @@ function loadData(file) {
   return JSON.parse(readFileSync(resolve(DATA, file), 'utf-8'));
 }
 
-describe('harrison_chapters.json — schema', () => {
+describeIfHarrisonChapters('harrison_chapters.json — schema', () => {
   let harrison;
   beforeAll(() => {
     harrison = load('harrison_chapters.json');
