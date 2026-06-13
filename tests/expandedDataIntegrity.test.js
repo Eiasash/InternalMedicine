@@ -249,9 +249,9 @@ describe("tabs.json — app navigation", () => {
     expect(dupes, `Duplicate tab IDs: ${dupes.join(", ")}`).toEqual([]);
   });
 
-  it("tab IDs include expected core tabs (Learn merged into Library v10.0)", () => {
+  it("tab IDs include expected core tabs (shared four-tab shell)", () => {
     const ids = tabs.map(t => t.id);
-    const expected = ["quiz", "lib", "track", "more"];
+    const expected = ["quiz", "study", "track", "settings"];
     expected.forEach(tabId => {
       expect(ids, `Missing expected tab: ${tabId}`).toContain(tabId);
     });
