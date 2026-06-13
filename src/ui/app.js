@@ -38,11 +38,27 @@ import { openSettings, bindSettingsEvents, refreshSettings } from './settings-ov
 export function renderTabs(){
 // safe-innerhtml: G.TABS is a hardcoded array of tab definitions (id/label/icon); no user input
 document.getElementById('tb').innerHTML=G.TABS.map(t=>{
-  const sel=t.id===G.tab;
+  const activeTab=G.tab==='lib'?'study':G.tab;
+  const sel=t.id===activeTab;
   return `<button class="${sel?'on':''}" data-action="go" data-tab="${t.id}" role="tab" aria-selected="${sel}" aria-label="${t.l}"><span class="ic">${t.ic}</span>${t.l}</button>`;
 }).join('');
 }
 export function go(t){G.tab=t;renderTabs();render()}
+
+function renderStudyTools(){
+  const tool=['search','cards','chat'].includes(G.S.studyTool)?G.S.studyTool:'search';
+  const toolBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f8fafc;border-radius:12px">'+
+  [{id:'search',ic:'F',l:'Search'},{id:'cards',ic:'C',l:'Cards'},{id:'chat',ic:'A',l:'Chat'}].map(s=>
+    '<button data-action="study-tool" data-tool="'+s.id+'" style="flex:1;min-height:44px;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(tool===s.id?'700':'400')+';cursor:pointer;background:'+(tool===s.id?'#fff':'transparent')+';color:'+(tool===s.id?'#0f172a':'#64748b')+';box-shadow:'+(tool===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
+  ).join('')+'</div>';
+  const body=tool==='cards'?renderFlash():tool==='chat'?renderChat():renderSearch();
+  return toolBar+body;
+}
+
+function renderSettingsTab(){
+  setTimeout(openSettings,0);
+  return '<div class="sec-t">Settings</div><div class="sec-s">Account, sync, data, reminders, API, feedback, app links, and update tools live here.</div><div class="card" style="padding:16px;text-align:center"><button class="btn btn-p" data-action="open-settings" style="min-height:44px">Open Settings</button></div>';
+}
 
 export function render(){
 const el=document.getElementById('ct');
@@ -65,13 +81,13 @@ case'drugs':G.tab='lib';G.S.libSub='read';el.innerHTML='';render();break;
 case'lib':
   {const _libSub=G.S.libSub||'today';
   const _libBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
-  [{id:'today',ic:'📌',l:'Today'},{id:'read',ic:'📖',l:'Read'},{id:'cards',ic:'🃏',l:'Cards'},{id:'notes',ic:'📝',l:'Notes'}].map(s=>
+  [{id:'today',ic:'T',l:'Today'},{id:'read',ic:'R',l:'Read'},{id:'notes',ic:'N',l:'Notes'},{id:'tools',ic:'X',l:'Tools'}].map(s=>
     '<button data-action="lib-sub" data-sub="'+s.id+'" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(_libSub===s.id?'700':'400')+';cursor:pointer;background:'+(_libSub===s.id?'#fff':'transparent')+';color:'+(_libSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(_libSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
   ).join('')+'</div>';
   let _libBody;
   if(_libSub==='today')_libBody=renderStudyDashboard();
-  else if(_libSub==='cards')_libBody=renderFlash();
   else if(_libSub==='notes')_libBody=renderStudy();
+  else if(_libSub==='tools'||_libSub==='cards')_libBody=renderStudyTools();
   else _libBody=renderLibrary();
   el.innerHTML=_libBar+_libBody;}break; // safe-innerhtml: _libBar is static HTML; _libBody from internal render*() functions (no user input)
 case'articles':G.libSec='articles';G.tab='lib';G.S.libSub='read';el.innerHTML='';render();break;
@@ -80,23 +96,15 @@ case'track':
     saveSessionSummary();G._sessionSaved=true;
   }
   el.innerHTML=renderTrack();break;
+case'settings':
+  el.innerHTML=renderSettingsTab();break;
 case'more':
-  {// Migration: 'calc' sub-tab was removed in v9.97 (PR #69 — Calculators duplicated ward-helper / SZMC formulary).
-  // 'calc' removed v9.97 (PR #69); 'settings' merged into the gear-icon overlay v10.3.0 (PR #77).
-  if(G.moreSub==='calc'||G.moreSub==='settings')G.moreSub='search';
-  const _moreBar='<div style="display:flex;gap:4px;margin-bottom:12px;padding:4px;background:#f1f5f9;border-radius:12px">'+
-  [{id:'search',ic:'🔍',l:'Search'},{id:'notes',ic:'📝',l:'Notes'},{id:'chat',ic:'💬',l:'Chat'},{id:'feedback',ic:'💡',l:'Feedback'}].map(s=>
-    '<button data-action="more-sub" data-sub="'+s.id+'" style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:'+(G.moreSub===s.id?'700':'400')+';cursor:pointer;background:'+(G.moreSub===s.id?'#fff':'transparent')+';color:'+(G.moreSub===s.id?'#0f172a':'#64748b')+';box-shadow:'+(G.moreSub===s.id?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+s.ic+' '+s.l+'</button>'
-  ).join('')+'</div>';
-  let _mBody='';
-  if(G.moreSub==='search')_mBody=renderSearch();
-  else if(G.moreSub==='notes')_mBody=renderNotes();
-  else if(G.moreSub==='chat')_mBody=renderChat();
-  else if(G.moreSub==='feedback')_mBody=renderFeedback();
-  el.innerHTML=_moreBar+_mBody;}break; // safe-innerhtml: _moreBar is static HTML; _mBody from internal render*() functions (no user input)
-case'calc':G.tab='more';G.moreSub='search';el.innerHTML='';render();break; // legacy — calc removed v9.97
-case'search':G.tab='more';G.moreSub='search';el.innerHTML='';render();break;
-case'chat':G.tab='more';G.moreSub='chat';el.innerHTML='';render();break;
+  if(G.moreSub==='feedback'){G.tab='settings';el.innerHTML='';render();break;}
+  if(G.moreSub==='notes'){G.tab='lib';G.S.libSub='notes';el.innerHTML='';render();break;}
+  G.tab='lib';G.S.libSub='tools';G.S.studyTool=G.moreSub==='chat'?'chat':'search';el.innerHTML='';render();break;
+case'calc':G.tab='lib';G.S.libSub='tools';G.S.studyTool='search';el.innerHTML='';render();break; // legacy
+case'search':G.tab='lib';G.S.libSub='tools';G.S.studyTool='search';el.innerHTML='';render();break;
+case'chat':G.tab='lib';G.S.libSub='tools';G.S.studyTool='chat';el.innerHTML='';render();break;
 case'book':case'syl':G.tab='lib';G.S.libSub='read';el.innerHTML='';render();break;
 default:G.tab='quiz';el.innerHTML=renderQuiz();break;
 }

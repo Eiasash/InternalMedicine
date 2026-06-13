@@ -179,7 +179,16 @@ jobs:
 
       # ── Cross-Repo Syllabus Sync (network) ──
       - name: Verify Geri syllabus Pnimit matches IM corpus
-        run: node scripts/check-syllabus-sync.cjs
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch origin "${{ github.base_ref }}" --depth=1
+            changed="$(git diff --name-only FETCH_HEAD HEAD)"
+            if ! printf '%s\n' "$changed" | grep -Eq '^(data/questions\.json|data/\.corpus_manifest\.json)$'; then
+              echo "Skipping cross-repo syllabus sync: no corpus manifest/question changes in this PR."
+              exit 0
+            fi
+          fi
+          node scripts/check-syllabus-sync.cjs
 
       # ── Install + Test + Build ──
       - name: Install dependencies
