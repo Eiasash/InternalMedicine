@@ -39,8 +39,26 @@ jobs:
         with:
           path: dist
 
+  pages-status:
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.check.outputs.enabled }}
+    steps:
+      - name: Check GitHub Pages availability
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api "repos/${{ github.repository }}/pages" >/dev/null 2>&1; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "GitHub Pages is not enabled or is unsupported for this private repo plan; skipping deploy."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
   deploy:
-    needs: build
+    needs: [build, pages-status]
+    if: needs.pages-status.outputs.enabled == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
