@@ -12,8 +12,8 @@ export function renderNotes(){
     <textarea id="gnotes-ta" dir="auto" placeholder="כתוב הערות, רשמים, פרלים מרפואה... הכל נשמר בדפדפן שלך."
       style="width:100%;min-height:180px;resize:vertical;font-family:Heebo,Inter,sans-serif;border:1px solid #e2e8f0;border-radius:10px;padding:10px;font-size:12px;line-height:1.7;background:#fff;color:#0f172a">${sanitize(G.S.gnotes||'')}</textarea>
     <div style="display:flex;gap:6px;margin-top:8px;align-items:center">
-      <button class="btn btn-p" data-action="save-gnotes" style="flex:1;font-size:11px;min-height:40px">💾 שמור</button>
-      <button class="btn" data-action="export-gnotes" style="font-size:11px;min-height:40px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0">📤 ייצא</button>
+      <button class="btn btn-p" data-action="save-gnotes" style="flex:1;font-size:11px;min-height:44px">💾 שמור</button>
+      <button class="btn" data-action="export-gnotes" style="font-size:11px;min-height:44px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0">📤 ייצא</button>
       <span id="gnotes-status" style="font-size:10px;color:#94a3b8;margin-right:auto"></span>
     </div>
   </div>`;
@@ -29,8 +29,8 @@ export function renderNotes(){
         <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;text-align:right" dir="${heDir(preview)}">${sanitize(preview)}${q.q.length>80?'…':''}</div>
         <div style="font-size:11px;color:#0f172a;text-align:right;line-height:1.6;margin-bottom:6px;white-space:pre-wrap" dir="${heDir(txt)}">${sanitize(txt)}</div>
         <div style="display:flex;gap:6px">
-          <button class="btn" data-action="jump-to-q" data-idx="${idx}" style="font-size:10px;padding:6px 10px;min-height:32px;background:var(--app-primary);color:var(--app-on-primary)">↵ עבור לשאלה</button>
-          <button class="btn" data-action="del-qnote-idx" data-idx="${idx}" style="font-size:10px;padding:6px 10px;min-height:32px;background:#fef2f2;color:#991b1b">🗑️ מחק</button>
+          <button class="btn" data-action="jump-to-q" data-idx="${idx}" style="font-size:10px;padding:6px 10px;min-height:44px;background:var(--app-primary);color:var(--app-on-primary)">↵ עבור לשאלה</button>
+          <button class="btn" data-action="del-qnote-idx" data-idx="${idx}" style="font-size:10px;padding:6px 10px;min-height:44px;background:#fef2f2;color:#991b1b">🗑️ מחק</button>
         </div>
       </div>`;
     });

@@ -9,9 +9,10 @@
 .hdr-ver { font-size: 10px; font-weight: 500; line-height: 1; color: #cbd5e1; margin-top: 2px }
 /* v10.4.28: icons are flex items in .dm-row (was position:absolute right:Npx, which
    overlapped the RTL title/date). Ported from FM v1.25.4. */
-.dm-row { display: flex; align-items: center; gap: 5px; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; max-width: 55% }
-.dm-btn { position: static; transform: none; font-size: 14px; padding: 0; opacity: .9; color: #fff; background: rgba(255,255,255,0.12); border: none; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; flex: 0 0 auto }
+.dm-row { display: flex; align-items: center; gap: 5px; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; max-width: 60% }
+.dm-btn { position: static; transform: none; font-size: 14px; padding: 0; opacity: .9; color: #fff; background: rgba(255,255,255,0.12); border: none; border-radius: 50%; width: 44px; height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; flex: 0 0 auto; box-sizing: border-box }
 .dm-btn:hover { opacity: 1; background: rgba(255,255,255,0.18) }
+.dm-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px }
 
 /* === Bottom Tabs === */
 .tabs { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e2e8f0; display: flex; z-index: 50; box-shadow: 0 -2px 10px rgba(0,0,0,.06); padding-bottom: max(4px, env(safe-area-inset-bottom)); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none }

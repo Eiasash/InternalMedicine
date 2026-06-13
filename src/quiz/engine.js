@@ -1,15 +1,14 @@
 import G from '../core/globals.js';
 import { TOPICS, EXAM_FREQ, EXAM_YEARS } from '../core/constants.js';
-import { sanitize, fmtT, toast, heDir, isOk } from "../core/utils.js";
+import { fmtT, toast, isOk } from "../core/utils.js";
 import { getDueQuestions, getTopicStats, isExamTrap, srScore } from '../sr/spaced-repetition.js';
-import { callAI } from '../ai/client.js';
 import { aiAutopsy } from '../ai/explain.js';
 import { buildWrongPool, recordResult } from '../ui/wrong-review.js';
 
 // Quiz engine — extracted from pnimit-mega.html
 // Depends on: G.S, G.save (state.js), G.QZ, TOPICS, EXAM_FREQ (constants.js),
 //   getDueQuestions, getTopicStats, isExamTrap, srScore (spaced-repetition.js),
-//   sanitize, fmtT, callAI (utils.js/client.js)
+//   fmtT (utils.js)
 // References at runtime: G.render, G._exCache, aiAutopsy, G.teachBackState (main script)
 
 // ===== QUIZ ENGINE =====
@@ -132,78 +131,6 @@ export function toggleYearFilt(year){
 }
 export function clearYearFilt(){G.years=[];if(G.filt==='years')G.filt='all';buildPool();G.render();}
 
-// ===== ON-CALL FLIP CARD MODE =====
-export function startOnCallMode(){G.onCallMode=true;G.flipRevealed=false;G.filt='due';buildPool();if(!G.pool.length){G.filt='weak';buildPool();}if(!G.pool.length){G.filt='all';buildPool();}G.render();}
-export function exitOnCallMode(){G.onCallMode=false;G.flipRevealed=false;G.render();}
-export function flipCard(){G.flipRevealed=true;G.render();}
-export function onCallPick(correct){
-  G.sel=correct?G.QZ[G.pool[G.qi]].c:((G.QZ[G.pool[G.qi]].c+1)%G.QZ[G.pool[G.qi]].o.length);
-  checkMockIntercept();G.ans=true;
-  const q=G.QZ[G.pool[G.qi]];
-  if(correct){G.S.qOk++;srScore(G.pool[G.qi],true);}
-  else{G.S.qNo++;srScore(G.pool[G.qi],false);}
-  G.save();
-  setTimeout(()=>{
-    G.qi++;if(G.qi>=G.pool.length)G.qi=0;
-    G.sel=null;G.ans=false;G.flipRevealed=false;G.autopsyDistractor=-1;G.teachBackState=null;
-    G.render();
-  },600);
-}
-export function renderOnCall(){
-  if(!G.pool.length)return '<div style="padding:40px;text-align:center;color:#94a3b8">No questions available</div>';
-  const qIdx=G.pool[G.qi];const q=G.QZ[qIdx];
-  const TOPICS_L=TOPICS;
-  const topic=q.ti>=0?TOPICS_L[q.ti]:'';
-  const correct=q.o[q.c];
-  let h='<div style="min-height:100vh;padding:16px;display:flex;flex-direction:column;gap:12px">';
-  // Header
-  h+=`<div style="display:flex;justify-content:space-between;align-items:center">
-    <div style="font-size:11px;color:#64748b">${G.qi+1}/${G.pool.length} · ${G.filt}</div>
-    <button data-action="exit-oncall" style="font-size:11px;padding:4px 10px;background:#f1f5f9;border:none;border-radius:8px;cursor:pointer" aria-label="Exit on-call mode">✕ Exit</button>
-  </div>`;
-  // Topic tag
-  if(topic)h+=`<div style="font-size:10px;background:#f0fdf4;color:#166534;padding:3px 10px;border-radius:20px;display:inline-block;align-self:flex-start;font-weight:600">${topic}</div>`;
-  // Question card - large text
-  h+=`<div style="background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.08);flex:1;cursor:${G.flipRevealed?'default':'pointer'}" ${G.flipRevealed?'':'data-action="flip-card" role="button" tabindex="0" aria-label="Flip card to reveal answer"'}>
-    <div style="font-size:16px;line-height:1.6;font-weight:500;text-align:right;margin-bottom:${G.flipRevealed?'16px':'0'}" dir="${heDir(q.q)}">${q.q}</div>`;
-  if(!G.flipRevealed){
-    h+=`<div style="text-align:center;margin-top:20px;color:#94a3b8;font-size:13px">👆 tap to reveal answer</div>`;
-  } else {
-    // Show correct answer prominently
-    h+=`<div style="background:#dcfce7;border-radius:12px;padding:14px;margin-bottom:12px">
-      <div style="font-size:10px;color:#166534;font-weight:700;margin-bottom:6px">✓ CORRECT ANSWER</div>
-      <div style="font-size:14px;font-weight:600;text-align:right" dir="${heDir(correct)}">${correct}</div>
-    </div>`;
-    // Explanation if available
-    const ex=G._exCache&&G._exCache[qIdx];
-    if(ex){h+=`<div style="font-size:12px;color:#475569;line-height:1.7;text-align:right;border-top:1px solid #e2e8f0;padding-top:10px;unicode-bidi:plaintext" dir="${heDir(ex)}">${ex}</div>`;}
-    else{h+=`<button data-action="explain-oncall" data-idx="${qIdx}" id="oc-exp-${qIdx}" style="font-size:11px;padding:5px 12px;background:#eff6ff;color:#3b82f6;border:none;border-radius:8px;cursor:pointer;margin-bottom:8px">🤖 הסבר AI</button><div id="oc-exp-box-${qIdx}"></div>`;}
-  }
-  h+=`</div>`;
-  // Rate buttons (only after flip)
-  if(G.flipRevealed){
-    h+=`<div style="display:flex;gap:12px">
-      <button data-action="oncall-pick" data-correct="false" style="flex:1;padding:18px;background:#fef2f2;color:#dc2626;border:none;border-radius:16px;font-size:28px;font-weight:700;cursor:pointer;min-height:64px" aria-label="Wrong answer">✗</button>
-      <button data-action="oncall-pick" data-correct="true" style="flex:1;padding:18px;background:#f0fdf4;color:#16a34a;border:none;border-radius:16px;font-size:28px;font-weight:700;cursor:pointer;min-height:64px" aria-label="Correct answer">✓</button>
-    </div>`;
-  }
-  h+=`</div>`;
-  return h;
-}
-export async function runExplainOnCall(qIdx){
-  const btn=document.getElementById('oc-exp-'+qIdx);
-  const box=document.getElementById('oc-exp-box-'+qIdx);
-  if(!btn||!box)return;
-  btn.textContent='⏳ ...';btn.disabled=true;
-  const q=G.QZ[qIdx];const correct=q.o[q.c];
-  try{
-    const txt=await callAI([{role:'user',content:'ANSWER KEY: The correct answer is DEFINITIVELY "'+correct+'".\n\nהסבר בעברית (3-4 משפטים) למה זו התשובה הנכונה. עגן בתשובה הנכונה. שאלה: '+q.q+'\nתשובה נכונה: '+correct}],400,'sonnet');
-    G._exCache[qIdx]=txt;try{localStorage.setItem('pnimit_ex',JSON.stringify(G._exCache));}catch(e){}
-    // safe-innerhtml: heDir returns only 'rtl'|'ltr'|'auto'; txt goes through sanitize()
-    box.innerHTML='<div style="font-size:12px;color:#475569;line-height:1.7;text-align:right;margin-top:8px;unicode-bidi:plaintext" dir="'+heDir(txt)+'">'+sanitize(txt)+'</div>';
-    btn.remove();
-  }catch(e){btn.textContent='🤖 הסבר AI';btn.disabled=false;}
-}
 export function pick(i){if(G.ans)return;G.sel=i;G.render()}
 export function _storeDiff(qIdx,d){if(!G.S.sr[qIdx])G.S.sr[qIdx]={ef:2.5,n:0,next:0,ts:[],at:0,tot:0,ok:0};G.S.sr[qIdx].diff=d;G.save();}
 export function check(){

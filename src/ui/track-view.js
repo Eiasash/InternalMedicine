@@ -740,7 +740,7 @@ function _syllabusChecklistCard(){
   let h=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:10px">Syllabus (${done}/${TOPICS.length})</div>`;
   TOPICS.forEach((t,i)=>{h+=`<div class="topic${G.S.ck[i]?' done':''}" data-action="syl-check" data-i="${i}" style="display:${G.S._sylOpen?'flex':'none'}" role="checkbox" aria-checked="${G.S.ck[i]?'true':'false'}" tabindex="0" aria-label="${t}">
 <input type="checkbox" ${G.S.ck[i]?'checked':''} readonly style="width:13px;height:13px" tabindex="-1"><span>${t}</span></div>`;});
-  h+=`<div data-action="syl-toggle" style="text-align:center;padding:8px;cursor:pointer;font-size:10px;color:rgb(var(--sky));font-weight:600" role="button" tabindex="0" aria-expanded="${G.S._sylOpen}" aria-label="Toggle syllabus topics">${G.S._sylOpen?'Collapse':'Show '+TOPICS.length+' topics'}</div>`;
+  h+=`<div data-action="syl-toggle" style="min-height:44px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;cursor:pointer;font-size:10px;color:rgb(var(--sky));font-weight:600" role="button" tabindex="0" aria-expanded="${G.S._sylOpen}" aria-label="Toggle syllabus topics">${G.S._sylOpen?'Collapse':'Show '+TOPICS.length+' topics'}</div>`;
   h+=`</div>`;
   return h;
 }
@@ -813,7 +813,7 @@ function _trackProgressBody(){
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
 <span style="font-size:14px">🏆</span>
 <div style="font-size:12px;font-weight:700;flex:1">Leaderboard</div>
-<button data-action="show-leaderboard" style="font-size:9px;padding:4px 10px;background:#f59e0b;color:#fff;border:none;border-radius:6px;cursor:pointer">Refresh</button>
+<button class="btn btn-p" data-action="show-leaderboard" style="font-size:11px;min-height:44px;padding:8px 12px;background:#f59e0b;color:#fff;border:none;border-radius:8px;cursor:pointer">Refresh</button>
 </div>
 <div id="leaderboard-box" style="font-size:10px;color:#94a3b8;text-align:center">Tap refresh to load</div>
 </div>`;
@@ -951,7 +951,7 @@ function _trackMoreBody(){
   h+=`<div class="card" style="padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:10px">📋 Syllabus (${done}/${TOPICS.length})</div>`;
   TOPICS.forEach((t,i)=>{h+=`<div class="topic${G.S.ck[i]?' done':''}" data-action="syl-check" data-i="${i}" style="display:${G.S._sylOpen?'flex':'none'}" role="checkbox" aria-checked="${G.S.ck[i]?'true':'false'}" tabindex="0" aria-label="${t}">
 <input type="checkbox" ${G.S.ck[i]?'checked':''} readonly style="width:13px;height:13px" tabindex="-1"><span>${t}</span></div>`;});
-  h+=`<div data-action="syl-toggle" style="text-align:center;padding:8px;cursor:pointer;font-size:10px;color:rgb(var(--sky));font-weight:600" role="button" tabindex="0" aria-expanded="${G.S._sylOpen}" aria-label="Toggle syllabus topics">${G.S._sylOpen?'▲ Collapse':'▼ Show '+TOPICS.length+' topics'}</div>`;
+  h+=`<div data-action="syl-toggle" style="min-height:44px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;cursor:pointer;font-size:10px;color:rgb(var(--sky));font-weight:600" role="button" tabindex="0" aria-expanded="${G.S._sylOpen}" aria-label="Toggle syllabus topics">${G.S._sylOpen?'▲ Collapse':'▼ Show '+TOPICS.length+' topics'}</div>`;
   h+=`</div>`;
   // Study Journal
   h+=`<div class="card" style="padding:14px;margin-top:12px">

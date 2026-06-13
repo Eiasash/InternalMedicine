@@ -112,7 +112,7 @@ export function renderWrongAnswerLog(){
   if(totalProblem>0){
     h+=`<div style="padding:10px 12px;background:#f1f5f9;border-radius:10px;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
 <div style="flex:1;font-size:11px;color:#475569;line-height:1.5"><b style="color:#0f172a">${totalProblem}</b> שאלות דורשות חזרה · ${chronic.length} כרוניות · ${recentWrong.length} אחרונות</div>
-<button class="btn btn-p" style="font-size:11px;padding:8px 14px;min-height:36px" data-action="retry-wrong" aria-label="Retry wrong questions">🔄 תרגל הכל</button>
+<button class="btn btn-p" style="font-size:11px;padding:8px 14px;min-height:44px" data-action="retry-wrong" aria-label="Retry wrong questions">🔄 תרגל הכל</button>
 </div>`;
   }
 
@@ -390,7 +390,6 @@ export function initLibraryEvents(container) {
       const idx = parseInt(el.dataset.idx, 10);
       G.filt = 'all'; G.pool = [idx]; G.qi = 0;
       G.sel = null; G.ans = false;
-      if (el.dataset.flip) G.flipRevealed = false;
       G.tab = 'quiz'; G.render();
     }
     else if (action === 'add-qs') {

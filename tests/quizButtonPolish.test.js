@@ -19,7 +19,7 @@ describe('Quiz button polish guards', () => {
   });
 
   it('defines the due-review filter exactly once so the row cannot duplicate it', () => {
-    const dueDefinitions = quizViewJs.match(/\['due',/g) || [];
+    const dueDefinitions = quizViewJs.match(/data-f="due"/g) || [];
     expect(dueDefinitions.length).toBe(1);
   });
 

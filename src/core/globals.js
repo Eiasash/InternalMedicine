@@ -17,7 +17,6 @@ const G = {
   // === Quiz engine (engine.js) ===
   qi: 0, sel: null, ans: false, pool: [], filt: 'all', topicFilt: -1, years: [],
   examMode: false, examTimer: null, examSec: 0,
-  onCallMode: false, flipRevealed: false,
   timedMode: false, timedSec: 90, timedInt: null, timedPaused: false,
   _optShuffle: null,
   _sessionOk: 0, _sessionNo: 0, _sessionBest: {}, _sessionWorse: {},
@@ -29,15 +28,12 @@ const G = {
   mockExamResults: null,
 
   // === Quiz modes (modes.js) ===
-  sdMode: false, sdStreak: 0, sdPool: [], sdQi: 0,
-  sdLeaderboard: [],
   blindRecall: false,
   // autopsyMode is always on — distractor autopsy renders whenever G.ans && !G.examMode.
   // autopsyIdx / autopsyDistractor retained for backwards-compat with legacy highlight CSS.
   autopsyMode: true, autopsyIdx: -1, autopsyDistractor: -1,
   isSpeaking: false,
   voiceListening: false, voiceTranscript: '',
-  pomoActive: false, pomoSec: 3000, pomoBreak: false, pomoBreakSec: 300, pomoInterval: null,
   wakeLock: null,
 
   // === AI (explain.js) ===
@@ -55,6 +51,7 @@ const G = {
   srchQ: '',
   chatLoading: false,
   lastTab: null,
+  quizFiltersOpen: false,
 
   // === Functions set at runtime ===
   render: null,
