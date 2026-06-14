@@ -81,6 +81,29 @@
   margin-bottom: 0;
 }
 
+.settings-section button,
+.settings-section .btn,
+.settings-section a.btn,
+.settings-section input,
+.settings-section select,
+.settings-util-action {
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+.settings-section button,
+.settings-section .btn,
+.settings-section a.btn,
+.settings-util-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-section input[type="range"] {
+  padding-block: 12px;
+}
+
 /* Lock body scroll while overlay is open */
 body.settings-open {
   overflow: hidden;

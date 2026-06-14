@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG = {
+  '10.4.55': [
+    'ui(a11y): finish the Settings touch-target pass. Overlay buttons, account/API inputs, feedback select, study-plan date/range controls, Share App Link, Force Update, and sibling-app utility links now use a scoped 44px minimum target. No question content, answer keys, explanations, source mappings, or audit queues changed. Trinity 10.4.54 to 10.4.55.',
+  ],
   '10.4.54': [
     'ui(quiz): replace the crowded Quiz filter wall with a compact summary plus an advanced Filters drawer. Visible controls are now Quiz, Mock, Full 150q, Filters, and conditional Review wrong; year/topic/source/hard/slow/weak/due/traps/NBS/timed/cover-options live in the drawer with 44px touch targets and dark-mode parity. Dormant Pomodoro, Sudden Death, and On-Call code paths/state/CSS were removed from active IM code. No question content, answer keys, explanations, source mappings, or audit queues changed. Trinity 10.4.53 to 10.4.54.',
   ],

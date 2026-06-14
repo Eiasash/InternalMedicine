@@ -218,9 +218,9 @@ function renderSettingsBody() {
           <div style="margin-top:8px">صدقة جارية الى من نحب</div>
         </div>
         <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-          <button data-action="settings-share-app" style="font-size:10px;padding:5px 14px;background:#f59e0b;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">📤 Share App Link</button>
-          <button data-action="settings-force-update" style="font-size:10px;padding:5px 14px;background:#4f46e5;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">🔄 Force Update</button>
-          <a href="https://eiasash.github.io/Geriatrics/" target="_blank" rel="noopener" style="font-size:10px;padding:5px 14px;background:#0D7377;color:#fff;border:none;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">🩺 Geriatrics →</a>
+          <button class="settings-util-action" data-action="settings-share-app" style="font-size:10px;padding:5px 14px;background:#f59e0b;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">📤 Share App Link</button>
+          <button class="settings-util-action" data-action="settings-force-update" style="font-size:10px;padding:5px 14px;background:#4f46e5;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">🔄 Force Update</button>
+          <a class="settings-util-action" href="https://eiasash.github.io/Geriatrics/" target="_blank" rel="noopener" style="font-size:10px;padding:5px 14px;background:#0D7377;color:#fff;border:none;border-radius:8px;text-decoration:none;font-weight:600">🩺 Geriatrics →</a>
         </div>
       </div>
     </section>
