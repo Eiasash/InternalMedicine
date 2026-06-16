@@ -17,9 +17,9 @@
       "q": "למה עלול לגרום המשלב התרופתי שלverapamil וdigoxin ?",
       "o": [
         "עליה בריכוז ה- digoxin",
-        "עליה ב ריכוז ה- verapamil",
+        "עליה בריכוז ה- verapamil",
         "ירידה בריכוז ה- digoxin",
-        "ירידה ב ריכוז ה- verapamil"
+        "ירידה בריכוז ה- verapamil"
       ],
       "c": 0,
       "t": "2025-Jun",
@@ -398,7 +398,7 @@
         "מטופל מבוגר",
         "מטופל עם ערכי בילירובין תקינים",
         "מטופל עם הרחבת דרכי מרה",
-        "מטופל עם מ י ימת"
+        "מטופל עם מיימת"
       ],
       "c": 1,
       "t": "2025-Jun",
@@ -606,8 +606,8 @@
       "o": [
         "LP",
         "Brain CT venography",
-        "רמתhydroxychloroquine",
-        "רמתmethotrexate"
+        "רמת hydroxychloroquine",
+        "רמת methotrexate"
       ],
       "c": 1,
       "t": "2025-Jun",
@@ -864,10 +864,10 @@
     "67": {
       "q": "איזה מבין הטיפולים הבאים הוא הטיפול המקובל בנשימה רועשת (Death Rattle) בסוף החיים?",
       "o": [
-        "אינהלציותmorphine",
-        "אינהלציותipratropium",
-        "ביצוע סאקשן בעדינות לפינוי הפרשות מ חלל הפה",
-        "מדבקתscopolamine"
+        "אינהלציות morphine",
+        "אינהלציות ipratropium",
+        "ביצוע סאקשן בעדינות לפינוי הפרשות מחלל הפה",
+        "מדבקת scopolamine"
       ],
       "c": 3,
       "t": "2025-Jun",
@@ -1810,7 +1810,7 @@
         "Hydroxychloroquine",
         "Methotrexate",
         "Adalimumab",
-        "Prednisone שאלות על מאמרים"
+        "Prednisone"
       ],
       "c": 1,
       "t": "2025-Jun",
@@ -1861,8 +1861,8 @@
       "o": [
         "הובילה לשיפור במדדי איכות חיים",
         "העלתה מספר אירועים אריתמיים",
-        "בטוח ה כמו המשך הטיפול ו מפחיתה תופעות לוואי",
-        "כמעט ו הצליחה להדגים אי נחיתות לגבי התוצא הראשוני של המחקר"
+        "בטוחה כמו המשך הטיפול ומפחיתה תופעות לוואי",
+        "כמעט והצליחה להדגים אי נחיתות לגבי התוצא הראשוני של המחקר"
       ],
       "c": 3,
       "t": "2025-Jun",
@@ -1979,6 +1979,6 @@
     "source": "data/questions.json (post-AI-reconstruction)",
     "ai_cleaned": true,
     "updated": "2026-06-16",
-    "note": "q-stems re-baselined to data/questions.json for 16 v10.4.38-41 Hebrew reconstructions (auto-audit FP fix)"
+    "note": "q-stems re-baselined to data/questions.json for 16 v10.4.38-41 Hebrew reconstructions (auto-audit FP fix) | +o/c synced for 6 entries (Codex P1: full re-snapshot)"
   }
 }
