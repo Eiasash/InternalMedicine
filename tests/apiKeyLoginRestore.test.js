@@ -30,10 +30,13 @@ describe('IM _apikey cloud-sync (v10.4.44 security fix supersedes v10.4.14)', ()
   // was username-guess-readable on the anon key. See tests/apikeyExposureGuard.test.js.
   // v10.4.45 (#353 round-2): getApiKey is imported again — but ONLY as the
   // fill-only guard on the legacy restore (never to build the backup payload;
-  // the payload lock below is the real invariant).
-  it('cloud.js imports setApiKey (restore path); getApiKey only feeds the fill-only guard', () => {
+  // the payload lock below is the real invariant). v10.4.57 round-2 (Codex P2 on
+  // #191) adds an isMarkedBadApiKey gate so a restore of a just-revoked key is
+  // skipped rather than re-arming the stale-key loop.
+  it('cloud.js imports setApiKey (restore path); getApiKey + bad-key marker guard the fill-only restore', () => {
     expect(cloudJs).toMatch(/import\s+\{[^}]*setApiKey[^}]*\}\s+from\s+['"]\.\.\/core\/utils\.js['"]/);
-    expect(cloudJs).toContain("if (typeof rowData._apikey === 'string' && !getApiKey()) setApiKey(rowData._apikey);");
+    expect(cloudJs).toMatch(/import\s+\{[^}]*isMarkedBadApiKey[^}]*\}\s+from\s+['"]\.\.\/core\/utils\.js['"]/);
+    expect(cloudJs).toContain("if (typeof rowData._apikey === 'string' && !getApiKey() && !isMarkedBadApiKey(rowData._apikey)) setApiKey(rowData._apikey);");
   });
 
   it('cloudBackup bundle does NOT include _apikey (key no longer synced)', () => {

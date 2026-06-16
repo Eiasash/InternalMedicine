@@ -1,6 +1,6 @@
 import G from '../core/globals.js';
 import { SUPA_URL, SUPA_ANON, TOPICS, APP_VERSION } from '../core/constants.js';
-import { sanitize, toast, getApiKey, setApiKey } from '../core/utils.js';
+import { sanitize, toast, getApiKey, setApiKey, isMarkedBadApiKey } from '../core/utils.js';
 import { callAI } from '../ai/client.js';
 import { calcEstScore } from '../ui/track-view.js';
 import { getTopicStats } from '../sr/spaced-repetition.js';
@@ -310,7 +310,10 @@ export function applyRestorePayload(rowData) {
   // #353 round-2 (Codex P2 on Geri #354): FILL-ONLY — a backup _apikey is by
   // definition pre-.44-stale (new backups no longer carry it), so it must never
   // clobber a present key (login already restored the fresher account copy).
-  if (typeof rowData._apikey === 'string' && !getApiKey()) setApiKey(rowData._apikey);
+  // v10.4.57 round-2 (Codex P2 on #191): also skip a key that's been marked bad by
+  // a direct 401 — a legacy restore of the just-revoked key would otherwise re-arm
+  // the stale-key loop (and erase the marker via setApiKey).
+  if (typeof rowData._apikey === 'string' && !getApiKey() && !isMarkedBadApiKey(rowData._apikey)) setApiKey(rowData._apikey);
   const validated = filterRestorePayload(rowData, new Set(Object.keys(G.S)));
   Object.assign(G.S, validated);
   G.save();

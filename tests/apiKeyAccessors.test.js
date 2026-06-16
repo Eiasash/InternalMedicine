@@ -7,7 +7,7 @@
  * (pnimit_apikey), trim on set, and clear-on-empty — independent of cloud.js.
  */
 import { describe, it, expect, beforeEach } from 'vitest';
-import { getApiKey, setApiKey } from '../src/core/utils.js';
+import { getApiKey, setApiKey, markBadApiKey, isMarkedBadApiKey } from '../src/core/utils.js';
 
 function installLocalStorageShim() {
   const store = new Map();
@@ -40,5 +40,22 @@ describe('API key accessors (utils.js)', () => {
     setApiKey('');
     expect(store.has('pnimit_apikey')).toBe(false);
     expect(getApiKey()).toBe('');
+  });
+
+  // v10.4.57 round-2 (Codex P2 on #191): re-saving the SAME marked-bad key must
+  // keep the known-bad marker, so a legacy cloud-restore of the just-revoked key
+  // can't silently erase the guard and re-arm the stale-key loop.
+  it('setApiKey re-saving the marked-bad key preserves the marker', () => {
+    markBadApiKey('sk-ant-dead');
+    expect(isMarkedBadApiKey('sk-ant-dead')).toBe(true);
+    setApiKey('  sk-ant-dead  '); // trims to the marked value
+    expect(isMarkedBadApiKey('sk-ant-dead')).toBe(true); // marker survives
+  });
+
+  it('setApiKey saving a genuinely different key clears the marker', () => {
+    markBadApiKey('sk-ant-dead');
+    setApiKey('sk-ant-fresh');
+    expect(isMarkedBadApiKey('sk-ant-dead')).toBe(false);
+    expect(getApiKey()).toBe('sk-ant-fresh');
   });
 });

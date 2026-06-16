@@ -92,7 +92,10 @@ describe('#353 — API-key account sync (IM port)', () => {
 
   it('v10.4.44 regression locks stay intact (no _apikey back in the backup payload)', () => {
     expect(cloud).not.toMatch(/_bundled\s*=\s*\{[^}]*_apikey[^}]*\}/);
-    expect(cloud).toContain("if (typeof rowData._apikey === 'string' && !getApiKey()) setApiKey(rowData._apikey);");
+    // v10.4.57 round-2 (Codex P2 on #191): the legacy cloud-restore is now also
+    // gated by isMarkedBadApiKey so a restore of the just-revoked key can't re-arm
+    // the stale-key loop (and erase the marker via setApiKey).
+    expect(cloud).toContain("if (typeof rowData._apikey === 'string' && !getApiKey() && !isMarkedBadApiKey(rowData._apikey)) setApiKey(rowData._apikey);");
     // v10.4.57: restore now also skips a key a direct 401 proved dead (Codex P2,
     // PR #191) — the setApiKey(r.api_key) write is still here, gated by the marker.
     expect(auth).toContain(
