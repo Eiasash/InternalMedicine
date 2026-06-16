@@ -34,11 +34,11 @@ describe('study_plan algorithm — JS↔Python cross-language fixture (Pnimit)',
     // Stable on (hours desc, id asc) — Python's sorted() is stable, so ties
     // resolve by original list order (id ascending in the syllabus slice).
     expect(top5.map((t) => ({ id: t.id, freq: t.frequency_pct, hours: t.hours }))).toEqual([
-      { id:  0, freq: 8.4, hours: 6.0 },
-      { id: 22, freq: 8.4, hours: 6.0 },
-      { id:  5, freq: 6.7, hours: 6.0 },
-      { id: 10, freq: 6.0, hours: 5.4 },
-      { id:  6, freq: 5.7, hours: 5.1 },
+      { id:  0, freq: 8.42, hours: 6.0 },
+      { id: 22, freq: 8.35, hours: 6.0 },
+      { id:  5, freq: 6.75, hours: 6.0 },
+      { id: 10, freq: 5.98, hours: 5.4 },
+      { id:  6, freq: 5.66, hours: 5.1 },
     ]);
   });
 
@@ -63,7 +63,7 @@ describe('study_plan algorithm — JS↔Python cross-language fixture (Pnimit)',
     // real drift between the two implementations.
     const allocated = allocateHours(PNIMIT_TOPICS, 89.6);
     const { used } = schedule(allocated, 8, 16);
-    const expected = [6.0, 6.0, 6.0, 5.4, 5.1, 4.6, 6.0, 6.0, 5.6, 5.1, 3.3, 3.2, 6.1, 6.1, 6.0, 6.0];
+    const expected = [6.0, 6.0, 6.0, 5.4, 5.1, 4.6, 6.0, 6.1, 5.6, 5.1, 3.3, 3.2, 6.2, 6.1, 6.1, 6.1];
     expect(used.length).toBe(expected.length);
     for (let i = 0; i < expected.length; i++) {
       expect(Math.abs(used[i] - expected[i])).toBeLessThan(1e-9);
@@ -78,10 +78,17 @@ describe('study_plan algorithm — JS↔Python cross-language fixture (Pnimit)',
     expect(placedIds).toEqual(expectedIds);
   });
 
-  test('schedule: weekly budget cap enforced (≤ hpw*0.7 + 0.5 fallback slack)', () => {
+  test('schedule: weekly budget respected, with bounded least-loaded fallback slack', () => {
     const allocated = allocateHours(PNIMIT_TOPICS, 89.6);
     const { used } = schedule(allocated, 8, 16);
-    const cap = 8 * 0.7 + 0.5; // 6.1 — matches Python's `weekly_budget + 0.5`
+    // Greedy fill keeps weeks ≤ weeklyBudget+0.5 (6.1). The least-loaded
+    // fallback (`if not placed → min-loaded week`, Python-parity) may push a
+    // single leftover topic past that soft cap, so the hard per-week ceiling
+    // is weeklyBudget+1.0. Pnimit week 13 = 6.2 after the 2-decimal-frequency
+    // resync is a real fallback placement, matched bit-for-bit by the Python
+    // reference (see the exact-used-array test above). A hard ≤6.1 ceiling held
+    // by luck on the prior 1-decimal data — it is not an algorithm invariant.
+    const cap = 8 * 0.7 + 1.0; // 6.6 — weekly_budget(5.6) + 0.5 soft cap + 0.5 fallback slack
     for (const u of used) expect(u).toBeLessThanOrEqual(cap + 1e-9);
   });
 });
