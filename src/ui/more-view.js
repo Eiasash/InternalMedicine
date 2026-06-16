@@ -184,7 +184,10 @@ body:JSON.stringify({model:'sonnet',max_tokens:1024,system:CHAT_SYSTEM,messages:
 signal:ctrl.signal
 });
 clearTimeout(timeout);
-if(!resp.ok){const e=await resp.json().catch(function(){return{};});if(resp.status===401||resp.status===403){localStorage.removeItem('pnimit_apikey');throw new Error('API key invalid');}throw new Error(e.error&&e.error.message?e.error.message:'HTTP '+resp.status);}
+// sendChat hits the proxy (AI_PROXY + shared x-api-secret), NOT the user's key,
+// so a 401/403 here is a proxy/secret problem — must NOT clear pnimit_apikey
+// (mirrors src/ai/client.js, which never clears on the proxy path).
+if(!resp.ok){const e=await resp.json().catch(function(){return{};});if(resp.status===401||resp.status===403)throw new Error('שירות ה-AI אינו זמין כעת ('+resp.status+')');throw new Error(e.error&&e.error.message?e.error.message:'HTTP '+resp.status);}
 const data=await resp.json();
 G.S.chat.push({role:'assistant',text:data.content[0].text});
 }catch(e){
