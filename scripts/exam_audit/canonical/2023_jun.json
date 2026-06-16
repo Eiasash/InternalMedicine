@@ -209,7 +209,7 @@
       "ti": 22
     },
     "17": {
-      "q": "כמה מ חולי סוכרת מפתחיםDiabetic nephropathy ?",
+      "q": "כמה מחולי סוכרת מפתחיםDiabetic nephropathy ?",
       "o": [
         "כ- 25%",
         "כ- 40%",
@@ -793,7 +793,7 @@
       "ti": 7
     },
     "61": {
-      "q": "מה הטיפול המתאים לאר ת ריטיס ספטית ללא סיבוכים סיסטמיים, כשבתרבית מדיקור הנוזלS. aureus רגיש ל- Methicillin ?",
+      "q": "מה הטיפול המתאים לארתריטיס ספטית ללא סיבוכים סיסטמיים, כשבתרבית מדיקור הנוזלS. aureus רגיש ל- Methicillin ?",
       "o": [
         "Oxacillin בהזרקה לתוך המפרק",
         "IV Oxacillin למשך שישה שבועות",
@@ -910,7 +910,7 @@
       "ti": 10
     },
     "70": {
-      "q": "מה ה אינדיקציה ה עיקרית לביצועEndobronchial Ultrasound Guided Transbronchial Needle Aspiration ( EBUS-TBNA ?)",
+      "q": "מה האינדיקציה העיקרית לביצוע Endobronchial Ultrasound Guided Transbronchial Needle Aspiration (EBUS-TBNA)?",
       "o": [
         "הגדלת חד צדדית של בלוטות לימפה מדיאסטינליות",
         "זיהום ממושך במדוכא חיסון שאינו מגיב לטיפול",
@@ -1534,7 +1534,7 @@
       "ti": 4
     },
     "118": {
-      "q": "מה גורם ה סיכון המשמעותי ל - Vascular calcifications ועלייה בתמותה קרדיו - ו סקולרית בחולים עםEnd Stage Kidney Disease ?",
+      "q": "מה גורם הסיכון המשמעותי ל- Vascular calcifications ועלייה בתמותה קרדיו-וסקולרית בחולים עם End Stage Kidney Disease?",
       "o": [
         "Low bone turnover",
         "Hypocalcemia",
@@ -1924,7 +1924,7 @@
       "ti": 0
     },
     "148": {
-      "q": "מה לא אופייני כממצא בבדיקה, המופיע בתמונה, של חולים עם שחמת כבד? (שאלה תלוית תמונה)",
+      "q": "מה לא אופייני כממצא בבדיקה גופנית של חולים עם שחמת כבד (תמונה 4)?",
       "o": [
         "תמונה א (ממצא פיזיקלי של שחמת)",
         "תמונה ב (ממצא פיזיקלי של שחמת)",
@@ -1937,7 +1937,7 @@
       "ti": 2
     },
     "149": {
-      "q": "בת 55 הסובלת מקוצר נשימה במאמצים מינימאליים, עוברת צנתור ימני לצורך בירור יתר לחץ דם ריאתי. ידוע על יתר לחץ דם לא מאוזן ומחלה מיטרלית ראומטית עם פרפור כרוני. איזו תוצאה מהצנתור תכוון למחלת הבסיס? (wedge pressure mmHg / תנגודת ריאתית ביחידות ווד, תקין עד 3)",
+      "q": "בת 55 הסובלת מקוצר נשימה במאמצים מינימאליים, עוברת צנתור ימני לצורך בירור יתר ל\"ד ריאתי. ידוע על יתר ל\"ד לא מאוזן ומחלה מיטרלית ראומטית עם פרפור כרוני. איזו תוצאה תכוון למחלת הבסיס?",
       "o": [
         "Wedge 20, PVR 4",
         "Wedge 12, PVR 4",
@@ -1950,7 +1950,7 @@
       "ti": 10
     },
     "150": {
-      "q": "איזה תרשים נשימה (flow-volume loop) מתאים לבת 35 עם Goiter (זפק)? (שאלה תלוית תמונה)",
+      "q": "איזה תרשים נשימה (flow-volume loop, תמונה 19) מתאים לבת 35 עם Goiter?",
       "o": [
         "תרשים א (variable extrathoracic obstruction — flattening של inspiratory limb)",
         "תרשים ב (fixed obstruction — flattening של שני ה-limbs)",
@@ -1966,6 +1966,8 @@
   "stats": {
     "total": 147,
     "source": "data/questions.json (post-AI-reconstruction)",
-    "ai_cleaned": true
+    "ai_cleaned": true,
+    "updated": "2026-06-16",
+    "note": "q-stems re-baselined to data/questions.json for 7 v10.4.38-41 Hebrew reconstructions (auto-audit FP fix)"
   }
 }

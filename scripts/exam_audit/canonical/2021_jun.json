@@ -1554,7 +1554,7 @@
       "ti": 1
     },
     "119": {
-      "q": "מה מ בין הבאים לא נחשב ( כטיפול מרפאCurative) ב- HCC ?",
+      "q": "מה מבין הבאים לא נחשב ( כטיפול מרפאCurative) ב- HCC ?",
       "o": [
         "Liver Transplantation",
         "Chemoembolization",
@@ -1963,6 +1963,8 @@
   "stats": {
     "total": 149,
     "source": "data/questions.json (post-AI-reconstruction)",
-    "ai_cleaned": true
+    "ai_cleaned": true,
+    "updated": "2026-06-16",
+    "note": "q-stems re-baselined to data/questions.json for 1 v10.4.38-41 Hebrew reconstructions (auto-audit FP fix)"
   }
 }
