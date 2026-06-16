@@ -25,7 +25,7 @@ describe('API key is not cloud-synced (security)', () => {
     expect(cloud).not.toContain('const _apikey=getApiKey()');
   });
 
-  it('still restores _apikey from legacy backups — but FILL-ONLY (never clobbers a present key, #353 P2)', () => {
-    expect(cloud).toContain("if (typeof rowData._apikey === 'string' && !getApiKey()) setApiKey(rowData._apikey);");
+  it('still restores _apikey from legacy backups — but FILL-ONLY and skips a marked-bad key (never clobbers a present key, #353 P2; #191 round-2 marker gate)', () => {
+    expect(cloud).toContain("if (typeof rowData._apikey === 'string' && !getApiKey() && !isMarkedBadApiKey(rowData._apikey)) setApiKey(rowData._apikey);");
   });
 });
