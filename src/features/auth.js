@@ -14,7 +14,7 @@
 //     next session starts clean (does not bleed back into the previous account).
 
 import { SUPA_URL, SUPA_ANON } from '../core/constants.js';
-import { sanitize, toast, setApiKey } from '../core/utils.js';
+import { sanitize, toast, setApiKey, isMarkedBadApiKey } from '../core/utils.js';
 
 const AUTH_LS_KEY = 'pnimit_authUser';
 const UID_LS_KEY = 'pnimit_uid';
@@ -346,7 +346,9 @@ async function _handleLogin() {
   // migration 2026-05-06). If the user has an api key on file, restore it
   // directly — saves a separate cloudRestore round-trip on flaky networks.
   // typeof check keeps backward compat with older auth_login_user RPC versions.
-  if (typeof r.api_key === 'string') setApiKey(r.api_key);
+  // v10.4.57: but skip a key a direct 401 already proved dead (markBadApiKey),
+  // else the account copy re-arms the stale-key loop on every login/new device.
+  if (typeof r.api_key === 'string' && !isMarkedBadApiKey(r.api_key)) setApiKey(r.api_key);
   _dispatchAuthEvent('login');
   toast('✅ התחברת בהצלחה: ' + (r.display_name || r.username), 'success');
   if (window.G && typeof window.G.render === 'function') window.G.render();

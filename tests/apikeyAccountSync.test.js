@@ -93,6 +93,10 @@ describe('#353 — API-key account sync (IM port)', () => {
   it('v10.4.44 regression locks stay intact (no _apikey back in the backup payload)', () => {
     expect(cloud).not.toMatch(/_bundled\s*=\s*\{[^}]*_apikey[^}]*\}/);
     expect(cloud).toContain("if (typeof rowData._apikey === 'string' && !getApiKey()) setApiKey(rowData._apikey);");
-    expect(auth).toContain("if (typeof r.api_key === 'string') setApiKey(r.api_key);");
+    // v10.4.57: restore now also skips a key a direct 401 proved dead (Codex P2,
+    // PR #191) — the setApiKey(r.api_key) write is still here, gated by the marker.
+    expect(auth).toContain(
+      "if (typeof r.api_key === 'string' && !isMarkedBadApiKey(r.api_key)) setApiKey(r.api_key);"
+    );
   });
 });

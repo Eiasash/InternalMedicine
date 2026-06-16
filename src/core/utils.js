@@ -29,7 +29,17 @@ export function heDir(s){s=String(s||'');if(!s)return'auto';let he=0,en=0;for(le
 
 // API key management
 export function getApiKey(){return localStorage.getItem('pnimit_apikey')||'';}
-export function setApiKey(k){if(k)localStorage.setItem('pnimit_apikey',k.trim());else localStorage.removeItem('pnimit_apikey');}
+export function setApiKey(k){if(k){localStorage.setItem('pnimit_apikey',k.trim());clearBadApiKeyMarker();}else localStorage.removeItem('pnimit_apikey');}
+
+// "Known-bad key" marker. When a direct 401 clears the stored key, we record a
+// lightweight hash of that key so the login-restore path (auth.js) won't write
+// the same dead key back from the account copy and re-arm the stale-key loop.
+// Cleared whenever a genuinely new key is saved (setApiKey above) or an AI call
+// succeeds (callAI). Hash only — the key itself is never persisted in the marker.
+function _keyHash(k){let h=0;k=String(k||'');for(let i=0;i<k.length;i++){h=((h<<5)-h+k.charCodeAt(i))|0;}return String(h);}
+export function markBadApiKey(k){if(k)localStorage.setItem('pnimit_badapikey',_keyHash(k));}
+export function isMarkedBadApiKey(k){return!!k&&localStorage.getItem('pnimit_badapikey')===_keyHash(k);}
+export function clearBadApiKeyMarker(){localStorage.removeItem('pnimit_badapikey');}
 
 // Format seconds as H:MM:SS or MM:SS
 export function fmtT(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return(h?h+':':'')+String(m).padStart(2,'0')+':'+String(sc).padStart(2,'0')}

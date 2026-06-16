@@ -1,5 +1,5 @@
 import { AI_PROXY, AI_SECRET } from '../core/constants.js';
-import { getApiKey, setApiKey } from '../core/utils.js';
+import { getApiKey, setApiKey, markBadApiKey, clearBadApiKeyMarker } from '../core/utils.js';
 
 // AI client — extracted from pnimit-mega.html
 // Depends on: AI_PROXY, AI_SECRET (constants.js), getApiKey/setApiKey (utils.js)
@@ -9,7 +9,11 @@ import { getApiKey, setApiKey } from '../core/utils.js';
 // specific Hebrew-friendly hint so the user sees WHY the call failed instead
 // of a bare code. Sibling of Geriatrics' _aiErrFromStatus (shlav-a-mega.html).
 export function aiErrFromStatus(status){
-  if(status===401||status===403)return'API '+status+' — מפתח API לא תקין';
+  if(status===401)return'API 401 — מפתח API לא תקין';
+  // 403 from direct Anthropic is permission_error (valid key, no access to the
+  // model/resource) — NOT a bad key. Surface it distinctly so the user fixes
+  // access/billing instead of re-entering a key that is fine.
+  if(status===403)return'API 403 — אין הרשאה למשאב/מודל זה';
   if(status===429)return'API 429 — חריגה ממכסה, נסה שוב בעוד רגע';
   if(status>=500&&status<600)return'API '+status+' — שירות לא זמין כרגע';
   return'API '+status;
@@ -51,15 +55,20 @@ if(e&&e.name==='AbortError')throw e;
 throw new Error('Network error — check your connection');
 }
 if(!r.ok){
-// 401/403 on the DIRECT call means the user's stored key is bad — clear it so
-// the next attempt re-prompts instead of silently looping on a dead key. (The
-// proxy path above uses the shared x-api-secret, so its 401/403 is NOT the
-// user's key and is intentionally not treated this way.) Mirrors the existing
-// more-view.js chat handler and Geriatrics' callAI.
-if(r.status===401||r.status===403)setApiKey('');
+// 401 on the DIRECT call means the user's stored key is genuinely bad (auth
+// failure) — clear it so the next attempt re-prompts instead of silently
+// looping on a dead key, and mark it so the account-restore path (auth.js)
+// won't write the same dead key back. 403 is permission_error (a VALID key
+// lacking model/resource access), so we must NOT clear it — that would turn a
+// permission/billing problem into a re-enter-key loop. (The proxy path above
+// uses the shared x-api-secret, so its 401/403 is NOT the user's key and is
+// intentionally untouched.) Mirrors more-view.js chat handler / Geriatrics callAI.
+if(r.status===401){markBadApiKey(apiKey);setApiKey('');}
 throw new Error(aiErrFromStatus(r.status));
 }
 const d=await r.json();
+// A successful call proves the key is good — drop any stale bad-key marker.
+clearBadApiKeyMarker();
 return d.content?.[0]?.text||'';
 }finally{clearTimeout(_timeoutId);}
 }

@@ -8,14 +8,16 @@
  *      message instead of a bare "API NNN" — so the UI surfaces a concrete
  *      cause+code (key/auth, rate-limit, server) rather than a dead 'שגיאה'.
  *   2. When the DIRECT api.anthropic.com call (the path that uses the user's
- *      stored pnimit_apikey) returns 401/403, callAI clears the stored key so
- *      the user is re-prompted next time instead of silently looping on a dead
- *      key. A proxy 401/403 must NOT clear the key (the proxy uses the shared
- *      x-api-secret, not the user's key).
+ *      stored pnimit_apikey) returns 401, callAI clears the stored key so the
+ *      user is re-prompted next time instead of silently looping on a dead key,
+ *      and marks it bad so the account-restore path won't write it back. A
+ *      direct 403 is permission_error (a VALID key lacking model/resource
+ *      access) — the key is KEPT. A proxy 401/403 must NOT clear the key (the
+ *      proxy uses the shared x-api-secret, not the user's key).
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { aiErrFromStatus, callAI } from '../src/ai/client.js';
-import { getApiKey, setApiKey } from '../src/core/utils.js';
+import { getApiKey, setApiKey, isMarkedBadApiKey, markBadApiKey } from '../src/core/utils.js';
 
 function installLocalStorageShim() {
   const store = new Map();
@@ -33,9 +35,14 @@ function installLocalStorageShim() {
 const PROXY_DOWN = { ok: false, status: 502, json: async () => ({}) };
 
 describe('aiErrFromStatus mapping', () => {
-  it('401 / 403 → invalid-key hint, preserving the code', () => {
+  it('401 → invalid-key hint, preserving the code', () => {
     expect(aiErrFromStatus(401)).toBe('API 401 — מפתח API לא תקין');
-    expect(aiErrFromStatus(403)).toBe('API 403 — מפתח API לא תקין');
+  });
+
+  it('403 → permission/access-denied hint (NOT invalid-key), preserving the code', () => {
+    expect(aiErrFromStatus(403)).toBe('API 403 — אין הרשאה למשאב/מודל זה');
+    // 403 is permission_error, not an auth failure — must not be the key message.
+    expect(aiErrFromStatus(403)).not.toBe('API 403 — מפתח API לא תקין');
   });
 
   it('429 → rate-limit hint', () => {
@@ -74,7 +81,7 @@ describe('callAI direct-fetch error handling', () => {
     expect(getApiKey()).toBe('sk-ant-stalekey');
   });
 
-  it('clears the stored key on a direct-call 401', async () => {
+  it('clears AND marks-bad the stored key on a direct-call 401', async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(PROXY_DOWN)
@@ -84,17 +91,22 @@ describe('callAI direct-fetch error handling', () => {
     );
     expect(getApiKey()).toBe('');
     expect(store.has('pnimit_apikey')).toBe(false);
+    // The dead key is marked so account-restore (auth.js) won't write it back.
+    expect(isMarkedBadApiKey('sk-ant-stalekey')).toBe(true);
   });
 
-  it('clears the stored key on a direct-call 403', async () => {
+  it('does NOT clear the key on a direct-call 403 (permission_error, valid key)', async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(PROXY_DOWN)
       .mockResolvedValueOnce({ ok: false, status: 403, json: async () => ({}) });
     await expect(callAI([{ role: 'user', content: 'hi' }])).rejects.toThrow(
-      'API 403 — מפתח API לא תקין'
+      'API 403 — אין הרשאה למשאב/מודל זה'
     );
-    expect(getApiKey()).toBe('');
+    // 403 = permission/model-access problem, not a bad key — the key survives
+    // and is NOT marked bad.
+    expect(getApiKey()).toBe('sk-ant-stalekey');
+    expect(isMarkedBadApiKey('sk-ant-stalekey')).toBe(false);
   });
 
   it('does NOT clear the key on a non-auth 5xx', async () => {
@@ -108,18 +120,82 @@ describe('callAI direct-fetch error handling', () => {
     expect(getApiKey()).toBe('sk-ant-stalekey');
   });
 
-  it('does NOT clear the key when only the PROXY 401s and the proxy then succeeds (proxy uses shared secret, not the user key)', async () => {
-    // Proxy returns 401 (shared-secret problem, not the user's key) — but here
-    // we model the proxy recovering by having the SECOND proxy-shaped response
-    // unused; the guard under test is that a proxy non-ok status alone never
-    // touches the stored key. We assert via a proxy-success-after-throwaway.
-    globalThis.fetch = vi.fn().mockResolvedValueOnce({
+  it('does NOT clear the key when the PROXY 401s and the direct fallback then succeeds (proxy uses shared secret, not the user key)', async () => {
+    // Real control flow: callAI hits the proxy FIRST. A proxy non-ok status
+    // (here 401 — a shared-secret problem, NOT the user's key) is logged and
+    // falls through to the direct api.anthropic.com call using the stored key.
+    // The direct call succeeds, so the stored key must be untouched — proving a
+    // proxy 401 never clears pnimit_apikey.
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 401, json: async () => ({}) }) // proxy 401
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({ content: [{ text: 'ok from direct fallback' }] }),
+      }); // direct success
+    const out = await callAI([{ role: 'user', content: 'hi' }]);
+    expect(out).toBe('ok from direct fallback');
+    expect(globalThis.fetch).toHaveBeenCalledTimes(2); // proxy then direct
+    expect(getApiKey()).toBe('sk-ant-stalekey'); // untouched by the proxy 401
+  });
+});
+
+// Finding #4 (Codex P2): a direct 401 marks the key bad so the account-restore
+// path (auth.js: `if (typeof r.api_key === 'string' && !isMarkedBadApiKey(...))`)
+// won't write the same dead key back from app_users on the next login/device.
+// The marker is dropped the moment a genuinely new key is saved or an AI call
+// succeeds, so a later-corrected account key restores normally.
+describe('bad-key marker lifecycle (account-restore guard)', () => {
+  beforeEach(() => {
+    installLocalStorageShim();
+    setApiKey('sk-ant-stalekey');
+    vi.restoreAllMocks();
+  });
+
+  it('a direct 401 marks the cleared key so login-restore would skip it', async () => {
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce(PROXY_DOWN)
+      .mockResolvedValueOnce({ ok: false, status: 401, json: async () => ({}) });
+    await expect(callAI([{ role: 'user', content: 'hi' }])).rejects.toThrow();
+    // This is exactly what auth.js:_handleLogin checks before setApiKey(r.api_key).
+    expect(isMarkedBadApiKey('sk-ant-stalekey')).toBe(true);
+  });
+
+  it('saving a genuinely new key clears the marker (account copy can restore again)', async () => {
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce(PROXY_DOWN)
+      .mockResolvedValueOnce({ ok: false, status: 401, json: async () => ({}) });
+    await expect(callAI([{ role: 'user', content: 'hi' }])).rejects.toThrow();
+    expect(isMarkedBadApiKey('sk-ant-stalekey')).toBe(true);
+    setApiKey('sk-ant-freshkey');
+    expect(isMarkedBadApiKey('sk-ant-stalekey')).toBe(false);
+  });
+
+  it('a successful DIRECT AI call clears the marker (positive proof the key is good)', async () => {
+    // First: a direct 401 marks the key bad.
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce(PROXY_DOWN)
+      .mockResolvedValueOnce({ ok: false, status: 401, json: async () => ({}) });
+    await expect(callAI([{ role: 'user', content: 'hi' }])).rejects.toThrow();
+    expect(isMarkedBadApiKey('sk-ant-stalekey')).toBe(true);
+    // setApiKey itself clears the marker, so re-mark afterwards to isolate that
+    // it is callAI's DIRECT-SUCCESS path that clears it (not the save).
+    setApiKey('sk-ant-stalekey');
+    markBadApiKey('sk-ant-stalekey');
+    expect(isMarkedBadApiKey('sk-ant-stalekey')).toBe(true);
+    // Proxy down → direct call (using the stored key) now succeeds, e.g. access
+    // was restored on the account side. That is positive proof the key works.
+    globalThis.fetch = vi.fn().mockResolvedValueOnce(PROXY_DOWN).mockResolvedValueOnce({
       ok: true,
       status: 200,
-      json: async () => ({ content: [{ text: 'ok from proxy' }] }),
+      json: async () => ({ content: [{ text: 'works now' }] }),
     });
     const out = await callAI([{ role: 'user', content: 'hi' }]);
-    expect(out).toBe('ok from proxy');
-    expect(getApiKey()).toBe('sk-ant-stalekey'); // untouched
+    expect(out).toBe('works now');
+    expect(isMarkedBadApiKey('sk-ant-stalekey')).toBe(false);
   });
 });
