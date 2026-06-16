@@ -1,7 +1,7 @@
 {
   "schema": "corpus-manifest-v1",
   "repo": "InternalMedicine",
-  "total_questions": 1556,
+  "total_questions": 1557,
   "topics": [
     {
       "id": 0,
@@ -53,7 +53,7 @@
     },
     {
       "id": 12,
-      "n_questions": 64
+      "n_questions": 65
     },
     {
       "id": 13,

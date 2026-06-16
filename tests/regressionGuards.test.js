@@ -313,7 +313,7 @@ describe('questions.json — per-session counts locked', () => {
   beforeAll(() => { questions = loadJSON('data/questions.json'); });
 
   const EXPECTED = {
-    '2020': 150, '2021-Jun': 149, '2022-Jun': 148, '2023-Jun': 150,
+    '2020': 151, '2021-Jun': 149, '2022-Jun': 148, '2023-Jun': 150,
     '2024-May': 99, '2024-Oct': 100, '2025-Jun': 151, 'Harrison': 589, 'Exam': 20,
   };
 
@@ -322,8 +322,8 @@ describe('questions.json — per-session counts locked', () => {
     expect(count).toBe(n);
   });
 
-  test('total question count is exactly 1541', () => {
-    expect(questions.length).toBe(1556);
+  test('total question count is exactly 1557', () => {
+    expect(questions.length).toBe(1557);
   });
 });
 

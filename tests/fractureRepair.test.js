@@ -33,7 +33,7 @@ describe('intra-word fracture repair ratchet (IM)', () => {
     });
   });
 
-  it('count unchanged (1556) — fixes were pure-despace/multiset, no add/drop', () => {
-    expect(QZ.length).toBe(1556);
+  it('total question count baseline (1557 — v10.4.57 re-added 2020 Q51)', () => {
+    expect(QZ.length).toBe(1557);
   });
 });

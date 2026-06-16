@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG = {
+  '10.4.57': [
+    'content(2020): re-add the real booklet Q51 — a 70F with a pacemaker and MRSA bacteremia, asking the preferred management (answer א: early complete device+lead extraction + endocarditis-guideline antibiotics; Harrison ref 930). It had been lost when #188 restored Q50 into the shared slot. Stem + 4 options transcribed verbatim from exams/2020_questions.pdf (the prior degraded reconstruction even had a wrong option — "50 יום" vs the booklet "14 יום"); answer א from exams/2020_answers.pdf. Appended to questions.json + the canonical 2020.json (full sweep stays 0 divergences); 2020 is now 151 and total 1557 (both Q50 and Q51 present). Count locks + session map updated. Trinity 10.4.56 to 10.4.57. NOTE: the 2020 answer key has 150 Qs, so 151 may indicate a residual spurious among the older 2020 items — flagged for a separate full reconciliation.',
+  ],
   '10.4.56': [
     'content(2020): restore the missing IMA Q2020 colorectal-cancer-screening question (booklet Q50, IBD surveillance-interval table; answer key ד) at idx 44. That slot had regressed to a degraded, e_issue-flagged generic "pacemaker pocket/lead infection" reconstruction (with a mismatched st="obstructive_lung" tag), which had displaced the real Q50 — surfaced by the auto-audit canonical probe (IM #185). Stem + 4 options transcribed verbatim from exams/2020_questions.pdf; correct answer ד (Left-sided UC, dx 15y, screen q1-2y) read from exams/2020_answers.pdf (Harrison ref 2208). 2020 stays 150/150; total 1556 unchanged (1-for-1 replace). Trinity 10.4.55 to 10.4.56.',
   ],
