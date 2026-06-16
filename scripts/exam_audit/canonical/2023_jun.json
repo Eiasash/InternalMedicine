@@ -209,7 +209,7 @@
       "ti": 22
     },
     "17": {
-      "q": "כמה מ חולי סוכרת מפתחיםDiabetic nephropathy ?",
+      "q": "כמה מחולי סוכרת מפתחיםDiabetic nephropathy ?",
       "o": [
         "כ- 25%",
         "כ- 40%",
@@ -793,7 +793,7 @@
       "ti": 7
     },
     "61": {
-      "q": "מה הטיפול המתאים לאר ת ריטיס ספטית ללא סיבוכים סיסטמיים, כשבתרבית מדיקור הנוזלS. aureus רגיש ל- Methicillin ?",
+      "q": "מה הטיפול המתאים לארתריטיס ספטית ללא סיבוכים סיסטמיים, כשבתרבית מדיקור הנוזלS. aureus רגיש ל- Methicillin ?",
       "o": [
         "Oxacillin בהזרקה לתוך המפרק",
         "IV Oxacillin למשך שישה שבועות",
@@ -910,12 +910,12 @@
       "ti": 10
     },
     "70": {
-      "q": "מה ה אינדיקציה ה עיקרית לביצועEndobronchial Ultrasound Guided Transbronchial Needle Aspiration ( EBUS-TBNA ?)",
+      "q": "מה האינדיקציה העיקרית לביצוע Endobronchial Ultrasound Guided Transbronchial Needle Aspiration (EBUS-TBNA)?",
       "o": [
         "הגדלת חד צדדית של בלוטות לימפה מדיאסטינליות",
         "זיהום ממושך במדוכא חיסון שאינו מגיב לטיפול",
-        "סקיר ת הריאות במחלות פרנכימטיות וביופסיה",
-        "חשד ל מחלת ריאות אינטרסטיציאלית"
+        "סקירת הריאות במחלות פרנכימטיות וביופסיה",
+        "חשד למחלת ריאות אינטרסטיציאלית"
       ],
       "c": 0,
       "t": "2023-Jun",
@@ -1534,7 +1534,7 @@
       "ti": 4
     },
     "118": {
-      "q": "מה גורם ה סיכון המשמעותי ל - Vascular calcifications ועלייה בתמותה קרדיו - ו סקולרית בחולים עםEnd Stage Kidney Disease ?",
+      "q": "מה גורם הסיכון המשמעותי ל- Vascular calcifications ועלייה בתמותה קרדיו-וסקולרית בחולים עם End Stage Kidney Disease?",
       "o": [
         "Low bone turnover",
         "Hypocalcemia",
@@ -1677,9 +1677,9 @@
       "ti": 10
     },
     "129": {
-      "q": "בן 45, מובא לחדר המיון מעורפל הכרה, נראה מוזנח ומכוסה בקיא",
+      "q": "בן 45, מובא לחדר המיון מעורפל הכרה, נראה מוזנח ומכוסה בקיא. בבדיקה: ל\"ד 90/60 ממ\"כ, דופק 120 לדקה, חום 38°C, סטורציה 94% באוויר חדר, חרחורים מעל חצי ריאה ימנית. מה הפרעת החומצה-בסיס על פי בדיקות המעבדה? Na 148 mEq/L, pH 7.25, K 2.9 mEq/L, HCO₃ 15 mEq/L, Cl 95 mEq/L, pCO₂ 30 mmHg, Albumin 3.2 gr/dL, Lactate תקין. metabolic acidosis",
       "o": [
-        "בבדיקה: ל\"ד 90/60 ממ\"כ, דופק 120 לדקה, חום 38°C, סטורציה 94% באוויר חדר, חרחורים מעל חצי ריאה ימנית. מה הפרעת החומצה-בסיס על פי בדיקות המעבדה? Na 148 mEq/L, pH 7.25, K 2.9 mEq/L, HCO₃ 15 mEq/L, Cl 95 mEq/L, pCO₂ 30 mmHg, Albumin 3.2 gr/dL, Lactate תקין. metabolic acidosis",
+        "metabolic acidosis",
         "metabolic alkalosis+high AG metabolic acidosis+respiratory acidosis",
         "high AG metabolic acidosis+normal AG metabolic acidosis",
         "respiratory acidosis+metabolic alkalosis"
@@ -1924,12 +1924,12 @@
       "ti": 0
     },
     "148": {
-      "q": "מה לא אופייני כממצא בבדיקה, המופיע בתמונה, של חולים עם שחמת כבד? (שאלה תלוית תמונה)",
+      "q": "מה לא אופייני כממצא בבדיקה גופנית של חולים עם שחמת כבד (תמונה 4)?",
       "o": [
-        "תמונה א (ממצא פיזיקלי של שחמת)",
-        "תמונה ב (ממצא פיזיקלי של שחמת)",
-        "תמונה ג (ממצא פיזיקלי של שחמת)",
-        "תמונה ד (ממצא שאינו אופייני לשחמת)"
+        "Spider angiomas על עור החזה",
+        "Palmar erythema",
+        "Parotid gland enlargement",
+        "Heberden's nodes"
       ],
       "c": 3,
       "t": "2023-Jun",
@@ -1937,12 +1937,12 @@
       "ti": 2
     },
     "149": {
-      "q": "בת 55 הסובלת מקוצר נשימה במאמצים מינימאליים, עוברת צנתור ימני לצורך בירור יתר לחץ דם ריאתי. ידוע על יתר לחץ דם לא מאוזן ומחלה מיטרלית ראומטית עם פרפור כרוני. איזו תוצאה מהצנתור תכוון למחלת הבסיס? (wedge pressure mmHg / תנגודת ריאתית ביחידות ווד, תקין עד 3)",
+      "q": "בת 55 הסובלת מקוצר נשימה במאמצים מינימאליים, עוברת צנתור ימני לצורך בירור יתר ל\"ד ריאתי. ידוע על יתר ל\"ד לא מאוזן ומחלה מיטרלית ראומטית עם פרפור כרוני. איזו תוצאה תכוון למחלת הבסיס?",
       "o": [
-        "Wedge 20, PVR 4",
-        "Wedge 12, PVR 4",
-        "Wedge 20, PVR 2.5",
-        "Wedge 14, PVR 2.5"
+        "Wedge pressure 20 mmHg / תנגודת ריאתית 4 יח' ווד",
+        "Wedge pressure 12 mmHg / תנגודת ריאתית 4 יח' ווד",
+        "Wedge pressure 20 mmHg / תנגודת ריאתית 2.5 יח' ווד",
+        "Wedge pressure 14 mmHg / תנגודת ריאתית 2.5 יח' ווד"
       ],
       "c": 2,
       "t": "2023-Jun",
@@ -1950,14 +1950,14 @@
       "ti": 10
     },
     "150": {
-      "q": "איזה תרשים נשימה (flow-volume loop) מתאים לבת 35 עם Goiter (זפק)? (שאלה תלוית תמונה)",
+      "q": "איזה תרשים נשימה (flow-volume loop, תמונה 19) מתאים לבת 35 עם Goiter?",
       "o": [
-        "תרשים א (variable extrathoracic obstruction — flattening של inspiratory limb)",
-        "תרשים ב (fixed obstruction — flattening של שני ה-limbs)",
-        "תרשים ג (variable intrathoracic obstruction — flattening של expiratory limb)",
-        "תרשים ד (תקין)"
+        "Flow-volume loop תקין",
+        "שטוח של הזרוע האינספירטורית (variable extrathoracic obstruction)",
+        "שטוח של הזרוע האקספירטורית (variable intrathoracic obstruction)",
+        "שטוח דו-צדדי של שתי הזרועות (fixed upper airway obstruction)"
       ],
-      "c": 0,
+      "c": 1,
       "t": "2023-Jun",
       "e": "זפק (Goiter) הוא לחץ חיצוני על הטרכיאה מחוץ לבית החזה (extrathoracic). בבדיקת flow-volume loop זה מתבטא כ-variable extrathoracic obstruction: בשאיפה הלחץ התוך-טרכיאלי שלילי יחסית לאטמוספירה ומקל על הקריסה, כך שה-inspiratory limb שטוח (plateau). ה-expiratory limb תקין כי בנשיפה הלחץ החיובי פותח את הטרכיאה. תשובה ב (fixed) מתאימה להיצרות קבועה שאינה משתנה עם מחזור הנשימה (למשל tracheal stenosis פוסט-אינטובציה). תשובה ג (intrathoracic) מתאימה ל-tracheomalacia או גידול תוך-חזי. תשובה ד (תקין) לא מתאים בנוכחות תסמינים.",
       "ti": 10
@@ -1966,6 +1966,8 @@
   "stats": {
     "total": 147,
     "source": "data/questions.json (post-AI-reconstruction)",
-    "ai_cleaned": true
+    "ai_cleaned": true,
+    "updated": "2026-06-16",
+    "note": "q-stems re-baselined to data/questions.json for 7 v10.4.38-41 Hebrew reconstructions (auto-audit FP fix) | +Q129 stem un-truncated (parse-artifact FP, idx510) | +o/c synced for 5 entries (Codex P1: full re-snapshot)"
   }
 }
