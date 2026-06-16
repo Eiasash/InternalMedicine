@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG = {
+  '10.4.56': [
+    'content(2020): restore the missing IMA Q2020 colorectal-cancer-screening question (booklet Q50, IBD surveillance-interval table; answer key ד) at idx 44. That slot had regressed to a degraded, e_issue-flagged generic "pacemaker pocket/lead infection" reconstruction (with a mismatched st="obstructive_lung" tag), which had displaced the real Q50 — surfaced by the auto-audit canonical probe (IM #185). Stem + 4 options transcribed verbatim from exams/2020_questions.pdf; correct answer ד (Left-sided UC, dx 15y, screen q1-2y) read from exams/2020_answers.pdf (Harrison ref 2208). 2020 stays 150/150; total 1556 unchanged (1-for-1 replace). Trinity 10.4.55 to 10.4.56.',
+  ],
   '10.4.55': [
     'ui(a11y): finish the Settings touch-target pass. Overlay buttons, account/API inputs, feedback select, study-plan date/range controls, Share App Link, Force Update, and sibling-app utility links now use a scoped 44px minimum target. No question content, answer keys, explanations, source mappings, or audit queues changed. Trinity 10.4.54 to 10.4.55.',
   ],
