@@ -189,7 +189,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 ├── questions/images/            # 134 question images
 ├── syllabus/P0064-2025.pdf     # Official IMA syllabus
 │
-├── tests/                      # 838 tests across 54 files
+├── tests/                      # 838 tests across 67 files
 │   ├── dataIntegrity.test.js   # Question schema, duplicates, topic coverage
 │   ├── appIntegrity.test.js    # Module structure, SW version sync, security
 │   ├── appLogic.test.js        # Core quiz logic patterns
@@ -358,7 +358,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Past exams | 7 sessions (2020–2025) |
 | Harrison chapters | ~69 PDFs |
 | Articles | 10 |
-| Test files | 54 |
+| Test files | 67 |
 | Tests | 838 |
 | CI workflows | 5 (ci, integrity-guard, weekly-audit, deploy, notify-auto-audit) |
 
