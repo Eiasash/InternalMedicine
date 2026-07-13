@@ -1,67 +1,67 @@
 {
   "schema": "corpus-manifest-v1",
   "repo": "InternalMedicine",
-  "total_questions": 1556,
+  "total_questions": 1706,
   "topics": [
     {
       "id": 0,
-      "n_questions": 131
+      "n_questions": 139
     },
     {
       "id": 1,
-      "n_questions": 68
+      "n_questions": 71
     },
     {
       "id": 2,
-      "n_questions": 34
+      "n_questions": 37
     },
     {
       "id": 3,
-      "n_questions": 59
-    },
-    {
-      "id": 4,
-      "n_questions": 30
-    },
-    {
-      "id": 5,
-      "n_questions": 105
-    },
-    {
-      "id": 6,
-      "n_questions": 88
-    },
-    {
-      "id": 7,
-      "n_questions": 62
-    },
-    {
-      "id": 8,
-      "n_questions": 52
-    },
-    {
-      "id": 9,
-      "n_questions": 41
-    },
-    {
-      "id": 10,
-      "n_questions": 93
-    },
-    {
-      "id": 11,
-      "n_questions": 52
-    },
-    {
-      "id": 12,
       "n_questions": 64
     },
     {
+      "id": 4,
+      "n_questions": 34
+    },
+    {
+      "id": 5,
+      "n_questions": 127
+    },
+    {
+      "id": 6,
+      "n_questions": 99
+    },
+    {
+      "id": 7,
+      "n_questions": 70
+    },
+    {
+      "id": 8,
+      "n_questions": 60
+    },
+    {
+      "id": 9,
+      "n_questions": 46
+    },
+    {
+      "id": 10,
+      "n_questions": 103
+    },
+    {
+      "id": 11,
+      "n_questions": 57
+    },
+    {
+      "id": 12,
+      "n_questions": 83
+    },
+    {
       "id": 13,
-      "n_questions": 79
+      "n_questions": 98
     },
     {
       "id": 14,
-      "n_questions": 36
+      "n_questions": 41
     },
     {
       "id": 15,
@@ -69,11 +69,11 @@
     },
     {
       "id": 16,
-      "n_questions": 54
+      "n_questions": 55
     },
     {
       "id": 17,
-      "n_questions": 53
+      "n_questions": 56
     },
     {
       "id": 18,
@@ -81,7 +81,7 @@
     },
     {
       "id": 19,
-      "n_questions": 53
+      "n_questions": 57
     },
     {
       "id": 20,
@@ -89,15 +89,15 @@
     },
     {
       "id": 21,
-      "n_questions": 56
+      "n_questions": 58
     },
     {
       "id": 22,
-      "n_questions": 130
+      "n_questions": 132
     },
     {
       "id": 23,
-      "n_questions": 53
+      "n_questions": 56
     }
   ]
 }

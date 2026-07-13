@@ -33,7 +33,7 @@ describe('intra-word fracture repair ratchet (IM)', () => {
     });
   });
 
-  it('count unchanged (1556) — fixes were pure-despace/multiset, no add/drop', () => {
-    expect(QZ.length).toBe(1556);
+  it('count 1706 (1556 base + 150 for 2026-Jun) — parser fixes were pure-despace/multiset, no add/drop', () => {
+    expect(QZ.length).toBe(1706);
   });
 });

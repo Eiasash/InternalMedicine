@@ -78,7 +78,7 @@ describe('questions.json — encoding integrity', () => {
 // ─────────────────────────────────────────────────────────────
 describe('questions.json — formatting quality', () => {
   let questions;
-  const PAST_EXAM_TAGS = ['2020', '2021-Jun', '2022-Jun', '2023-Jun', '2024-May', '2024-Oct', '2025-Jun'];
+  const PAST_EXAM_TAGS = ['2020', '2021-Jun', '2022-Jun', '2023-Jun', '2024-May', '2024-Oct', '2025-Jun', '2026-Jun'];
   beforeAll(() => { questions = loadJSON('data/questions.json'); });
 
   // Catches "בן58" → should be "בן 58". Ratchet at exact 0 — past-exam
@@ -244,7 +244,7 @@ describe('questions.json — structural invariants', () => {
   });
 
   test('all tags are from known set', () => {
-    const ALLOWED = new Set(['2020', '2021-Jun', '2022-Jun', '2023-Jun', '2024-May', '2024-Oct', '2025-Jun', 'Harrison', 'Exam']);
+    const ALLOWED = new Set(['2020', '2021-Jun', '2022-Jun', '2023-Jun', '2024-May', '2024-Oct', '2025-Jun', '2026-Jun', 'Harrison', 'Exam']);
     const unknown = new Set();
     questions.forEach(q => {
       if (q.t && !ALLOWED.has(q.t)) unknown.add(q.t);
@@ -314,7 +314,7 @@ describe('questions.json — per-session counts locked', () => {
 
   const EXPECTED = {
     '2020': 150, '2021-Jun': 149, '2022-Jun': 148, '2023-Jun': 150,
-    '2024-May': 99, '2024-Oct': 100, '2025-Jun': 151, 'Harrison': 589, 'Exam': 20,
+    '2024-May': 99, '2024-Oct': 100, '2025-Jun': 151, '2026-Jun': 150, 'Harrison': 589, 'Exam': 20,
   };
 
   test.each(Object.entries(EXPECTED))('session %s has exactly %s questions', (tag, n) => {
@@ -322,8 +322,8 @@ describe('questions.json — per-session counts locked', () => {
     expect(count).toBe(n);
   });
 
-  test('total question count is exactly 1541', () => {
-    expect(questions.length).toBe(1556);
+  test('total question count is exactly 1706', () => {
+    expect(questions.length).toBe(1706);
   });
 });
 

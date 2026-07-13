@@ -31,7 +31,7 @@ function loadJSON(rel) { return JSON.parse(readFileSync(resolve(ROOT, rel), 'utf
 
 const PAST_EXAM_TAGS = new Set([
   '2020', '2021-Jun', '2022-Jun', '2023-Jun',
-  '2024-May', '2024-Oct', '2025-Jun',
+  '2024-May', '2024-Oct', '2025-Jun', '2026-Jun',
 ]);
 
 // Legitimately long options: stable bank indices for 4-patient comparison Qs
