@@ -60,6 +60,28 @@ export async function getUser() {
   return session?.user ?? null;
 }
 
+/**
+ * P0 secret-cutover (runbook §3): mint the `Authorization: Bearer` value for the
+ * /api/claude proxy so the shared x-api-secret can leave the client bundle.
+ *   - A user with an existing GoTrue/OAuth session reuses THAT token.
+ *   - Guests and custom `auth_login_user` users (no GoTrue session) get an
+ *     anonymous GoTrue session purely to obtain a proxy token.
+ * This is safe re: the existing flows: this Supabase client is the auth-only
+ * GoTrue client — the custom auth_login_user login and the leaderboard/feedback/
+ * backup writes go via raw REST with the anon key, so they are unaffected by the
+ * anonymous sign-in here. signInAnonymously runs only when there is NO session.
+ */
+export async function getProxyBearer() {
+  const supabase = await getSupabase();
+  let { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    const { data, error } = await supabase.auth.signInAnonymously();
+    if (error || !data.session) throw error ?? new Error('anonymous sign-in failed');
+    session = data.session;
+  }
+  return `Bearer ${session.access_token}`;
+}
+
 /** Subscribe to auth state changes. Returns { data: { subscription } }. */
 export function onAuthStateChange(callback) {
   // Lazy init — getSupabase() is async, so we need to handle this carefully
