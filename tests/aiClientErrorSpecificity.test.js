@@ -16,6 +16,16 @@
  *      proxy uses the shared x-api-secret, not the user's key).
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+// P0 cutover: callAI now mints an anonymous-Supabase proxy Bearer via
+// getProxyBearer(). Stub it so tests don't hit real GoTrue / the https CDN
+// import of supabase-js (which Node's ESM loader rejects). Partial mock keeps
+// every other supabaseAuth export real.
+vi.mock('../src/services/supabaseAuth.js', async (importOriginal) => {
+  const actual = await importOriginal();
+  return { ...actual, getProxyBearer: async () => 'Bearer test-jwt' };
+});
+
 import { aiErrFromStatus, callAI } from '../src/ai/client.js';
 import { getApiKey, setApiKey, isMarkedBadApiKey, markBadApiKey } from '../src/core/utils.js';
 

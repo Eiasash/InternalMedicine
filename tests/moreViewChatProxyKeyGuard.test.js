@@ -17,6 +17,13 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 vi.mock('../src/quiz/modes.js', () => ({ startVoiceParser: vi.fn() }));
 vi.mock('../src/features/cloud.js', () => ({ submitFeedbackForm: vi.fn() }));
 vi.mock('../src/ai/client.js', () => ({ callAI: vi.fn() }));
+// P0 cutover: sendChat now mints an anon-Supabase proxy Bearer via
+// getProxyBearer(). Stub it so the test doesn't hit real GoTrue / the https CDN
+// import of supabase-js (which Node's ESM loader rejects).
+vi.mock('../src/services/supabaseAuth.js', async (importOriginal) => {
+  const actual = await importOriginal();
+  return { ...actual, getProxyBearer: async () => 'Bearer test-jwt' };
+});
 
 import G from '../src/core/globals.js';
 import { sendChat } from '../src/ui/more-view.js';

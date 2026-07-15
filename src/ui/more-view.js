@@ -1,6 +1,7 @@
 import G from '../core/globals.js';
 import { sanitize, toast, heDir } from '../core/utils.js';
-import { AI_PROXY, AI_SECRET } from '../core/constants.js';
+import { AI_PROXY } from '../core/constants.js';
+import { getProxyBearer } from '../services/supabaseAuth.js';
 import { startVoiceParser } from '../quiz/modes.js';
 import { submitFeedbackForm } from '../features/cloud.js';
 
@@ -177,9 +178,10 @@ const messages=history.filter(function(m){return m.role==='user'||m.role==='assi
 try{
 const ctrl=new AbortController();
 const timeout=setTimeout(function(){ctrl.abort();},45000);
+const _authz=await getProxyBearer();
 const resp=await fetch(AI_PROXY,{
 method:'POST',
-headers:{'Content-Type':'application/json','x-api-secret':AI_SECRET},
+headers:{'Content-Type':'application/json','Authorization':_authz},
 body:JSON.stringify({model:'sonnet',max_tokens:1024,system:CHAT_SYSTEM,messages:messages}),
 signal:ctrl.signal
 });
