@@ -1,6 +1,9 @@
 // Bridge: re-export shared/fsrs.js globals as ES module imports.
 // shared/fsrs.js loads as a plain <script> tag (shared with Geriatrics repo).
-const w = window;
+// In the browser `window` is always defined; fall back to globalThis in
+// non-window contexts (Node/vitest) so importing this bridge never throws a
+// ReferenceError before the FSRS globals are seeded.
+const w = typeof window !== 'undefined' ? window : globalThis;
 export const FSRS_W = w.FSRS_W;
 export const FSRS_DECAY = w.FSRS_DECAY;
 export const FSRS_FACTOR = w.FSRS_FACTOR;

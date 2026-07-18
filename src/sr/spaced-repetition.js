@@ -66,7 +66,17 @@ G.save();
 // isChronicFail() loaded from shared/fsrs.js
 export function getDueQuestions(){
 const now=Date.now();
-return Object.entries(G.S.sr).filter(([k,v])=>v.next<=now).map(([k])=>parseInt(k)).slice(0,20);
+// Most-overdue-first: sort by scheduled `next` ascending BEFORE capping at 20,
+// so a review session surfaces the questions that have been due longest.
+// (Previously sliced in numeric-index order, which hid older-due items whenever
+// more than 20 were due.)
+return Object.entries(G.S.sr).filter(([k,v])=>v.next<=now).sort((a,b)=>(a[1].next||0)-(b[1].next||0)).map(([k])=>parseInt(k)).slice(0,20);
+}
+// True (unbounded) count of due questions. Badges must reflect the real backlog,
+// not min(20, ...) — getDueQuestions() caps its POOL at 20 but the COUNT should not.
+export function getDueCount(){
+const now=Date.now();
+return Object.entries(G.S.sr).filter(([k,v])=>v.next<=now).length;
 }
 // ===== RESCUE DRILL =====
 export function getWeakTopics(n=3){

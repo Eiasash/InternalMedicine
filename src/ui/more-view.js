@@ -4,6 +4,8 @@ import { AI_PROXY } from '../core/constants.js';
 import { getProxyBearer } from '../services/supabaseAuth.js';
 import { startVoiceParser } from '../quiz/modes.js';
 import { submitFeedbackForm } from '../features/cloud.js';
+import { srScore } from '../sr/spaced-repetition.js';
+import { recordResult } from './wrong-review.js';
 
 export function renderNotes(){
   const qnoteEntries=Object.entries(G.S.qnotes||{}).filter(([k,v])=>v&&v.trim());
@@ -114,14 +116,20 @@ return h;
 export function showAnswerHardFail(){
 if(G.ans)return;
 const q=G.QZ[G.pool[G.qi]];
-G.sel=q.c;G.ans=true;
+const idx=G.pool[G.qi];
+// "Give up / show me the answer" = a miss. Reveal the correct answer WITHOUT
+// crediting a pick: sel=-1 is a sentinel (no selection), so the render
+// highlights the correct option but never shows the "you picked correctly"
+// state. Route scoring through the SAME wrong-answer path as check():
+// srScore(idx,false) (FSRS rating Again) + recordResult(idx,false) (enrol in
+// wrong-review) — instead of the old ad-hoc SM-2 ef nudge that bypassed FSRS
+// scheduling and never enrolled the question for review.
+G.sel=-1;G.ans=true;
 if(!G.examMode){
 G.S.qNo++;
 if(q.ti>=0){if(!G.S.tpNo)G.S.tpNo={};if(!G.S.tpNo[q.ti])G.S.tpNo[q.ti]=0;G.S.tpNo[q.ti]++;}
-const _srk=String(G.pool[G.qi]);
-if(!G.S.sr[_srk])G.S.sr[_srk]={ef:2.5,n:0,next:0};
-G.S.sr[_srk].ef=Math.max(1.3,(G.S.sr[_srk].ef||2.5)-0.3);
-G.S.sr[_srk].n=0;G.S.sr[_srk].next=Date.now();
+srScore(idx,false);
+recordResult(idx,false);
 }
 G.save();G.render();
 }

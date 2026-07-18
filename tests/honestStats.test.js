@@ -49,19 +49,32 @@ beforeEach(() => {
   }
 });
 
+// IM-1 (2026-07-15): calcEstScore now reads LIVE topic stats via getTopicStats()
+// (derived from G.S.sr), NOT the never-written G.S.ts. Seed answered cards on
+// G.S.sr so getTopicStats() yields the intended per-topic {ok,no,tot}; an sr
+// entry counts as ok when d.n>0, keyed by G.QZ[idx].ti.
+function seedTopicAnswers(ti, correctCount, total) {
+  for (let j = 0; j < total; j++) {
+    const idx = 1000 + ti * 100 + j; // dedicated index space, away from beforeEach seed
+    G.QZ[idx] = { ti, q: 's' + ti + '_' + j, o: ['a', 'b', 'c', 'd'], c: 0 };
+    const correct = j < correctCount;
+    G.S.sr[idx] = { n: correct ? 1 : 0, tot: 1, ok: correct ? 1 : 0 };
+  }
+}
+
 describe('honest stats — calcEstScore', () => {
   it('returns null for completely empty state (zero answers)', () => {
     expect(calcEstScore()).toBeNull();
   });
 
   it('returns null when only 1 topic has data', () => {
-    G.S.ts[0] = { ok: 5, tot: 10, no: 5 };
+    seedTopicAnswers(0, 5, 10);
     expect(calcEstScore()).toBeNull();
   });
 
   it('returns null when only 2 topics have data (need ≥3)', () => {
-    G.S.ts[0] = { ok: 5, tot: 10, no: 5 };
-    G.S.ts[1] = { ok: 3, tot: 10, no: 7 };
+    seedTopicAnswers(0, 5, 10);
+    seedTopicAnswers(1, 3, 10);
     expect(calcEstScore()).toBeNull();
   });
 
@@ -72,9 +85,9 @@ describe('honest stats — calcEstScore', () => {
   });
 
   it('returns a real number once 3+ topics have ≥3 answers each', () => {
-    G.S.ts[0] = { ok: 3, tot: 3, no: 0 };
-    G.S.ts[1] = { ok: 3, tot: 3, no: 0 };
-    G.S.ts[2] = { ok: 3, tot: 3, no: 0 };
+    seedTopicAnswers(0, 3, 3);
+    seedTopicAnswers(1, 3, 3);
+    seedTopicAnswers(2, 3, 3);
     const score = calcEstScore();
     expect(score).not.toBeNull();
     expect(typeof score).toBe('number');
@@ -83,11 +96,11 @@ describe('honest stats — calcEstScore', () => {
   it('topics with <3 answers do NOT contribute to the score', () => {
     // Three topics with full data → score ≈ 100. Adding a fourth topic with
     // 1 wrong answer must NOT pull the score down (it should be excluded).
-    G.S.ts[0] = { ok: 3, tot: 3, no: 0 };
-    G.S.ts[1] = { ok: 3, tot: 3, no: 0 };
-    G.S.ts[2] = { ok: 3, tot: 3, no: 0 };
+    seedTopicAnswers(0, 3, 3);
+    seedTopicAnswers(1, 3, 3);
+    seedTopicAnswers(2, 3, 3);
     const baseScore = calcEstScore();
-    G.S.ts[3] = { ok: 0, tot: 1, no: 1 }; // <3 → must be ignored
+    seedTopicAnswers(3, 0, 1); // <3 tot -> excluded from the score
     expect(calcEstScore()).toBe(baseScore);
   });
 });
