@@ -17,7 +17,10 @@ import { readFileSync } from "fs";
 import { createHash } from "crypto";
 import { join } from "path";
 
-const CANONICAL_FSRS_MD5 = "71f9f2d406a1935911e86612439ea58a";
+// 2026-07-18: FSRS difficulty anchor corrected to D0_Easy. shared/fsrs.js now
+// mean-reverts difficulty toward FSRS_D0_EASY (~3.28, = fsrsInitNew(4).d) instead
+// of FSRS_W[4] (~7.21); pin bumped to the corrected canonical file.
+const CANONICAL_FSRS_MD5 = "7cb675ea3865d8accdc7bcd3a0cc5fa8";
 
 describe("FSRS canonical drift guard", () => {
   it("shared/fsrs.js md5 matches the pinned canonical value", () => {

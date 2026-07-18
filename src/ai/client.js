@@ -33,7 +33,19 @@ try{
 // P0 cutover (runbook §3): authenticate the proxy with a Supabase session JWT
 // (existing GoTrue/OAuth session, else an anonymous one) instead of the shared
 // x-api-secret that used to ship in the bundle.
-const _authz=await getProxyBearer();
+// IM-7 (2026-07-18): getProxyBearer() awaits getSession()/signInAnonymously()
+// and a dynamic https CDN import of supabase-js. The AbortController `signal`
+// below only covers the anthropic fetch — a hang INSIDE getProxyBearer (stuck
+// sign-in or CDN import) would hang callAI past the 30s request timeout. Race
+// the mint against an 8s reject so a stuck sign-in/import is treated as a proxy
+// failure: the rejection is caught below (it is NOT an AbortError) and callAI
+// falls through to the existing personal-key/direct path. Minting logic is
+// unchanged — only bounded here.
+let _bearerTimer;
+const _authz=await Promise.race([
+getProxyBearer(),
+new Promise((_,reject)=>{_bearerTimer=setTimeout(()=>reject(new Error('proxy_auth_timeout')),8000);})
+]).finally(()=>clearTimeout(_bearerTimer));
 const pr=await fetch(AI_PROXY,{
 method:'POST',
 headers:{'Content-Type':'application/json','Authorization':_authz},
