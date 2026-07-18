@@ -15,6 +15,11 @@ const FSRS_W = [
 const FSRS_DECAY = -0.5;
 const FSRS_FACTOR = 19 / 81;
 const FSRS_RETENTION = 0.90;
+// 2026-07-18: difficulty mean-reversion anchor corrected to D0_Easy (~3.28,
+// = fsrsInitNew(4).d), kept in sync with shared/fsrs.js. Previously this
+// extracted copy reverted D toward FSRS_W[4] (~7.21), which inflated difficulty
+// over repeated reviews and suppressed interval growth.
+const FSRS_D0_EASY = Math.min(10, Math.max(1, FSRS_W[4] - Math.exp(FSRS_W[5] * 3) + 1));
 
 // ─── Extracted pure functions ─────────────────────────────────────────────────
 
@@ -51,7 +56,7 @@ function fsrsUpdate(s, d, rPrev, rating) {
     newS = Math.max(0.1, newS);
   }
   const deltaD = -FSRS_W[6] * (rating - 3);
-  const mr = FSRS_W[7] * (FSRS_W[4] - d);
+  const mr = FSRS_W[7] * (FSRS_D0_EASY - d);
   newD = Math.min(10, Math.max(1, d + deltaD + mr));
   return { s: newS, d: newD };
 }

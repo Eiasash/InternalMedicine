@@ -117,6 +117,31 @@ G.pool=rescueQs;G.qi=0;G.sel=null;G.ans=false;
 G.filt='rescue';G.render();
 }
 // ===== ACTIVITY TRACKING =====
+// Local calendar day key (YYYY-MM-DD) from the user's wall clock, NOT UTC. The
+// day-streak boundary must follow LOCAL midnight so a late-evening study session
+// counts for "today" instead of rolling into the next UTC day.
+function localDayKey(ts){
+const d=ts==null?new Date():new Date(ts);
+const y=d.getFullYear();
+const m=String(d.getMonth()+1).padStart(2,'0');
+const day=String(d.getDate()).padStart(2,'0');
+return y+'-'+m+'-'+day;
+}
+// 2026-07-18 streak fix: advance the day-streak ONLY for a REAL study day.
+// Called from trackDailyActivity() (i.e. when a question is actually answered),
+// so merely opening the app can no longer inflate the streak. Idempotent within
+// a local day. G.S.streak is backed up and submitted to the leaderboard, so it
+// must track genuine activity on LOCAL days. This replaces the app-open
+// updateStreak IIFE in src/core/state.js, which bumped G.S.streak on the first
+// save() of each UTC calendar day regardless of whether the user studied.
+export function advanceStudyStreak(nowMs){
+const now=nowMs==null?Date.now():nowMs;
+const today=localDayKey(now);
+if(G.S.lastDay===today)return; // a study day is already counted for today
+const yest=localDayKey(now-86400000);
+G.S.streak=(G.S.lastDay===yest)?((G.S.streak||0)+1):1;
+G.S.lastDay=today;
+}
 export function trackDailyActivity(){
 if(!G.S.dailyAct)G.S.dailyAct={};
 const today=new Date().toISOString().slice(0,10);
@@ -124,6 +149,8 @@ if(!G.S.dailyAct[today])G.S.dailyAct[today]={q:0,ok:0};
 G.S.dailyAct[today].q++;
 const keys=Object.keys(G.S.dailyAct).sort();
 while(keys.length>90){delete G.S.dailyAct[keys.shift()];}
+// 2026-07-18: advance the leaderboard/backup streak ONLY on real activity.
+advanceStudyStreak();
 }
 // ===== SPACED READING TRACKER =====
 export function trackChapterRead(source,ch){

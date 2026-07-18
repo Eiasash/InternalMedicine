@@ -183,9 +183,9 @@ setTimeout(function(){const el=document.getElementById('chat-msgs');if(el)el.scr
 let history=G.S.chat.slice(-10);
 if(history.length>0&&history[0].role!=='user')history=history.slice(1);
 const messages=history.filter(function(m){return m.role==='user'||m.role==='assistant';}).map(function(m){return{role:m.role,content:m.text};});
-try{
 const ctrl=new AbortController();
 const timeout=setTimeout(function(){ctrl.abort();},45000);
+try{
 const _authz=await getProxyBearer();
 const resp=await fetch(AI_PROXY,{
 method:'POST',
@@ -193,7 +193,6 @@ headers:{'Content-Type':'application/json','Authorization':_authz},
 body:JSON.stringify({model:'sonnet',max_tokens:1024,system:CHAT_SYSTEM,messages:messages}),
 signal:ctrl.signal
 });
-clearTimeout(timeout);
 // sendChat hits the proxy (AI_PROXY + shared x-api-secret), NOT the user's key,
 // so a 401/403 here is a proxy/secret problem — must NOT clear pnimit_apikey
 // (mirrors src/ai/client.js, which never clears on the proxy path).
@@ -204,6 +203,11 @@ G.S.chat.push({role:'assistant',text:data.content[0].text});
 const offline=!navigator.onLine||e.message.includes('Failed to fetch');
 const timedOut=e.name==='AbortError';
 G.S.chat.push({role:'error',text:offline?'📡 אין חיבור לאינטרנט':timedOut?'⏱️ תם הזמן':'⚠️ '+sanitize(e.message)});
+}finally{
+// IM-7 (2026-07-18): always clear the 45s abort timer. Previously the only
+// clearTimeout sat on the success path, so a throw from getProxyBearer() or
+// fetch() skipped it and leaked a live timer that fired ctrl.abort() ~45s later.
+clearTimeout(timeout);
 }
 G.chatLoading=false;G.save();G.render();
 setTimeout(function(){const el=document.getElementById('chat-msgs');if(el)el.scrollTop=el.scrollHeight;},50);

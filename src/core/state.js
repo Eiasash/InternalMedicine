@@ -34,14 +34,15 @@ G.save=function(){clearTimeout(G._saveTimer);G._saveTimer=setTimeout(()=>{
     }
   }catch(e){}
   },150)};
-(function updateStreak(){
-const today=new Date().toISOString().slice(0,10);
-if(G.S.lastDay===today)return;
-const yest=new Date(Date.now()-86400000).toISOString().slice(0,10);
-if(G.S.lastDay===yest)G.S.streak++;
-else if(G.S.lastDay!==today)G.S.streak=1;
-G.S.lastDay=today;G.save();
-})();
+// 2026-07-18 streak fix: the day-streak is NO LONGER advanced here on app open.
+// This IIFE used to increment G.S.streak on the first save() of each UTC
+// calendar day — i.e. merely opening the app (with no answers) inflated the
+// streak, and it used UTC (toISOString) day boundaries. G.S.streak is backed up
+// and submitted to the leaderboard, so it must reflect genuine study. The streak
+// is now advanced ONLY on real study activity, on LOCAL calendar days, via
+// advanceStudyStreak()/trackDailyActivity() in src/sr/spaced-repetition.js. The
+// Track tab already derives its displayed streak from real activity
+// (getStudyStreak, dailyAct).
 
 // ===== INDEXEDDB MIGRATION =====
 const IDB_NAME='pnimit_mega_db',IDB_VER=1,IDB_STORE='state';

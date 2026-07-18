@@ -23,7 +23,9 @@ describe('AI Proxy Routing', () => {
   });
 
   it('callAI tries proxy first before direct API', () => {
-    const callAIBlock = allSource.slice(allSource.indexOf('async function callAI('), allSource.indexOf('async function callAI(') + 2000);
+    // 2026-07-18: window widened 2000->2800 to still span callAI after the IM-7
+    // getProxyBearer-timeout comment lengthened the function preamble (~600 chars).
+    const callAIBlock = allSource.slice(allSource.indexOf('async function callAI('), allSource.indexOf('async function callAI(') + 2800);
     // Proxy fetch comes before direct API fetch
     const proxyIdx = callAIBlock.indexOf('AI_PROXY');
     const directIdx = callAIBlock.indexOf('api.anthropic.com');
@@ -37,7 +39,7 @@ describe('AI Proxy Routing', () => {
   });
 
   it('callAI falls back to user API key when proxy fails', () => {
-    const callAIBlock = allSource.slice(allSource.indexOf('async function callAI('), allSource.indexOf('async function callAI(') + 2000);
+    const callAIBlock = allSource.slice(allSource.indexOf('async function callAI('), allSource.indexOf('async function callAI(') + 2800);
     expect(callAIBlock).toContain('getApiKey()');
     expect(callAIBlock).toContain("throw new Error('no_key')");
   });
