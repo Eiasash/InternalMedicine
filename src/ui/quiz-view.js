@@ -1,12 +1,12 @@
 import G from '../core/globals.js';
 import { SUPA_URL, SUPA_ANON, TOPICS, EXAM_YEARS } from '../core/constants.js';
 import { sanitize, heDir, fmtT, safeJSONParse, getOptShuffle, remapExplanationLetters, toast, isOk} from "../core/utils.js";
-import { getDueQuestions, getWeakTopics, isExamTrap, srScore, buildRescuePool } from '../sr/spaced-repetition.js';
+import { getDueCount, getWeakTopics, isExamTrap, srScore, buildRescuePool } from '../sr/spaced-repetition.js';
 import { isChronicFail } from '../sr/fsrs-bridge.js';
 import { renderExplainBox, toggleFlagExplain, explainWithAI, aiAutopsy, gradeTeachBack, startVoiceTeachBack } from '../ai/explain.js';
 import { TOPIC_REF } from './track-view.js';
 import { openHarrisonChapter } from './library-view.js';
-import { wrongCount, startWrongReview } from './wrong-review.js';
+import { wrongCount, startWrongReview, recordResult } from './wrong-review.js';
 import { renderSourceLink, openSourceForQuestion } from './source-link.js';
 import { buildPool, check, next, prev, pick, checkMockIntercept,
          setFilt, setTopicFilt, toggleYearFilt, clearYearFilt, startExam, startMockExam, startMockExamByTag, showMockExamPicker, startTopicMiniExam,
@@ -105,13 +105,20 @@ export function startTimedQ(){
     }
     if(G.timedSec<=0){
       clearInterval(G.timedInt);
-      // Auto-advance: show correct answer briefly then next
+      // Timeout = a miss. REVEAL the correct answer without crediting a pick:
+      // sel=-1 is a sentinel (no selection) so the render highlights the correct
+      // option but shows the neutral/incorrect feedback variant — NOT the
+      // "you picked correctly" state. checkMockIntercept() grades by
+      // isOk(q,G.sel); with the sentinel it records a miss (byTopic .no++), and
+      // recordResult(...,false) enrolls the question in wrong-review, matching
+      // the wrong-answer path in check(). (Previously sel was set to the correct
+      // index, so the UI showed it correct AND mock byTopic double-counted it.)
       if(!G.ans){
-        G.sel=G.QZ[G.pool[G.qi]]?.c??0;
+        G.sel=-1;
         checkMockIntercept();
         G.ans=true;
         const q=G.QZ[G.pool[G.qi]];
-        if(q){G.S.qNo++;srScore(G.pool[G.qi],false);}
+        if(q){G.S.qNo++;srScore(G.pool[G.qi],false);recordResult(G.pool[G.qi],false);}
         G.save();G.render();
       }
       setTimeout(()=>{if(G.timedMode)next();},1800);
@@ -287,7 +294,7 @@ if(!G.pool.length)buildPool();
 if(G.qi>=G.pool.length)G.qi=0;
 const q=G.QZ[G.pool[G.qi]];const tot=G.S.qOk+G.S.qNo;const pct=tot?Math.round(G.S.qOk/tot*100)+'%':'—';
 const bk=G.S.bk[G.pool[G.qi]];
-const dueN=getDueQuestions().length;
+const dueN=getDueCount();
 let h=G.examMode?(()=>{
   const answered=G.S.qOk+G.S.qNo;
   const isMock=!!G.mockExamResults;

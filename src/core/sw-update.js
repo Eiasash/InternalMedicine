@@ -24,6 +24,19 @@ export function showUpdateBanner() {
   document.body.prepend(b);
 }
 
+/**
+ * Dismiss the update banner and persist the dismissal under the SAME key that
+ * showUpdateBanner() checks (`_dismissKey`), so it stays dismissed for this app
+ * version. Fixes IM-3: the app.js click handler previously wrote an undefined
+ * `UPDATE_DISMISS_KEY`, so the dismissal never persisted and the banner
+ * reappeared on the next render.
+ */
+export function dismissUpdateBanner() {
+  try { localStorage.setItem(_dismissKey, '1'); } catch (e) { /* noop */ }
+  const b = document.getElementById('update-banner');
+  if (b) b.remove();
+}
+
 export function applyUpdate() {
   try { localStorage.removeItem(_dismissKey); } catch (e) { /* noop */ }
   (async () => {
@@ -45,8 +58,12 @@ export function applyUpdate() {
  * @returns {Promise<ServiceWorkerRegistration|null>}
  */
 export function initSWUpdate(appVersion) {
-  if (!('serviceWorker' in navigator)) return Promise.resolve(null);
+  // Derive the dismiss key FIRST — it does not depend on SW availability, and
+  // both showUpdateBanner() and dismissUpdateBanner() read this exact key. Set
+  // it before the guard so the key is always resolvable once initSWUpdate has
+  // run (app.js calls it at load), including in non-SW environments.
   _dismissKey = 'pnimit_update_dismissed_' + appVersion;
+  if (!('serviceWorker' in navigator)) return Promise.resolve(null);
 
   _hadController = !!navigator.serviceWorker.controller;
 

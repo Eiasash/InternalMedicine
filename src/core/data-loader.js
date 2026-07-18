@@ -121,7 +121,18 @@ G._dataPromise = (async function loadDataArrays() {
     }
     const _xp=safeJSONParse('pnimit_pending_qs',[]);
     const _xc=safeJSONParse('pnimit_custom_qs',[]);
-    const _xAll=[..._xp,..._xc].filter(q=>q&&typeof q.q==='string'&&Array.isArray(q.o)&&q.o.length===4&&Number.isInteger(q.c)&&q.c>=0&&q.c<=3&&typeof q.ti==='number');
+    // XSS hardening (IM-9): pnimit_custom_qs / pnimit_pending_qs are
+    // user-generated and were previously validated for SHAPE only, then
+    // rendered raw (quiz-view.js interpolates q.q / each option / q.e without
+    // escaping — trusted bundled data relies on that). Escape the free-text
+    // fields (q, every option, explanation) at MERGE time so a crafted local
+    // question can't inject markup. Bundled data rendering is left unchanged.
+    const _sanitizeUserQ=q=>{
+      const out={...q,q:sanitize(q.q),o:q.o.map(opt=>sanitize(opt))};
+      if(typeof q.e==='string')out.e=sanitize(q.e);
+      return out;
+    };
+    const _xAll=[..._xp,..._xc].filter(q=>q&&typeof q.q==='string'&&Array.isArray(q.o)&&q.o.length===4&&Number.isInteger(q.c)&&q.c>=0&&q.c<=3&&typeof q.ti==='number').map(_sanitizeUserQ);
     if(_xAll.length){G.QZ.push(..._xAll);if(import.meta.env.DEV)console.log('Loaded '+_xAll.length+' user-generated questions');}
     // High-yield AI bank (data/highyield.json, tag AI-2026-hy) — additive, non-fatal if absent.
     // A SEPARATE file, NOT merged into data/questions.json, so it leaves the count-lock + the cross-repo

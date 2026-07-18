@@ -6,7 +6,7 @@ import { toast, isOk} from "../core/utils.js";
 import { migrateToIDB } from '../core/state.js';
 import '../core/data-loader.js'; // side-effect: populates G.QZ, G.TABS, etc.
 import '../clock.js'; // side-effect: header clock (#hdr-sub)
-import { getDueQuestions } from '../sr/spaced-repetition.js';
+import { getDueCount, getTopicStats } from '../sr/spaced-repetition.js';
 import { setTopicFilt,
          _storeDiff,
          replayMockWrong, replayLastMockWrong } from '../quiz/engine.js';
@@ -186,7 +186,7 @@ export function takeWeeklySnapshot(){
     const weekKey='w_'+now.getFullYear()+'_'+Math.floor((now-new Date(now.getFullYear(),0,0))/(7*864e5));
     const snapshots=JSON.parse(localStorage.getItem('pnimit_weekly')||'{}');
     if(snapshots[weekKey])return; // already taken this week
-    const tSt=G.S&&G.S.ts?G.S.ts:{};
+    const tSt=getTopicStats();
     const snap={};
     for(let i=0;i<TOPICS.length;i++){const s=tSt[i]||{ok:0,no:0,tot:0};snap[i]=s.tot>=3?Math.round(s.ok/s.tot*100):null;}
     snapshots[weekKey]={date:now.toISOString(),acc:snap};
@@ -271,7 +271,7 @@ document.body.appendChild(ov);
 // PWA + Background Sync + Daily Notification
 // SW update banner + registration live in core/sw-update.js.
 // Kept here: daily-notification scheduling that needs getDueQuestions() from the app.
-import { initSWUpdate, applyUpdate } from '../core/sw-update.js';
+import { initSWUpdate, applyUpdate, dismissUpdateBanner } from '../core/sw-update.js';
 
 initSWUpdate(APP_VERSION).then(reg => {
   if (!reg) return;
@@ -284,7 +284,7 @@ initSWUpdate(APP_VERSION).then(reg => {
     if (now >= target) target.setDate(target.getDate() + 1);
     setTimeout(() => {
       if (G.S.notifOptIn && typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-        const dueN = getDueQuestions().length;
+        const dueN = getDueCount();
         if (dueN > 0 && reg.active) {
           reg.active.postMessage({ type: 'schedule-notification', dueCount: dueN });
         }
@@ -378,7 +378,7 @@ document.body.addEventListener('click', (e) => {
   if (el.dataset.action === 'close-help') { const ov = document.getElementById('help-overlay'); if (ov) ov.remove(); }
   else if (el.dataset.action === 'share-app') shareApp();
   else if (el.dataset.action === 'apply-update') applyUpdate();
-  else if (el.dataset.action === 'close-update-banner') { try{localStorage.setItem(UPDATE_DISMISS_KEY,'1');}catch(e){} const b = document.getElementById('update-banner'); if (b) b.remove(); }
+  else if (el.dataset.action === 'close-update-banner') { dismissUpdateBanner(); }
   else if (el.dataset.action === 'close-mock-modal') { const m = document.getElementById('mexModal'); if (m) m.remove(); }
   else if (el.dataset.action === 'replay-mock-wrong') { replayMockWrong(window.__pnimitLastMockWrong || []); }
   else if (el.dataset.action === 'replay-last-mock-wrong') { replayLastMockWrong(); }

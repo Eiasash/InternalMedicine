@@ -156,8 +156,12 @@ else{G.S.qNo++;
   srScore(G.pool[G.qi],false);
   recordResult(G.pool[G.qi],false);
   // Feature 1: store wrong reason later via onclick
-  const _apk='autopsy_'+G.pool[G.qi];
-  if(!G._exCache[_apk]){setTimeout(()=>aiAutopsy(G.pool[G.qi]),400);}
+  // Capture the answered question index NOW. The autopsy is deferred 400ms; if
+  // the user advances (G.qi changes) before it fires, re-reading G.pool[G.qi]
+  // at fire time would autopsy the WRONG question. Bind the index in the closure.
+  const _qi=G.pool[G.qi];
+  const _apk='autopsy_'+_qi;
+  if(!G._exCache[_apk]){setTimeout(()=>aiAutopsy(_qi),400);}
 }
 G.save();G.render();
 }
