@@ -1,7 +1,7 @@
 import G from '../core/globals.js';
 import { TOPICS, EXAM_FREQ, APP_VERSION } from '../core/constants.js';
 import { heDir, sanitize } from '../core/utils.js';
-import { getDueQuestions, getDueCount, getWeakTopics, getStudyStreak, getTopicStats, isExamTrap, getChaptersDueForReading } from '../sr/spaced-repetition.js';
+import { getDueQuestions, getDueCount, getWeakTopics, getStudyStreak, getTopicStats, isExamTrap, getChaptersDueForReading, getDailyActivity } from '../sr/spaced-repetition.js';
 import { setFilt, startTopicMiniExam, buildPool } from '../quiz/engine.js';
 import { buildRescuePool } from '../sr/spaced-repetition.js';
 import { renderWrongAnswerLog } from './library-view.js';
@@ -801,7 +801,9 @@ function _trackProgressBody(){
   for(let _i=29;_i>=0;_i--){
     const _d=new Date();_d.setDate(_d.getDate()-_i);
     const _dk=_d.toISOString().slice(0,10);
-    const _act=G.S.dailyAct&&G.S.dailyAct[_dk];
+    // Read-compatible: accept BOTH the new local key and the legacy UTC key so
+    // the calendar keeps showing activity recorded before the local-day switch.
+    const _act=getDailyActivity(_d);
     const _qc=_act?_act.q:0;
     const _int=_qc===0?0:_qc<5?1:_qc<15?2:_qc<30?3:4;
     const _cols=['#f1f5f9','#dcfce7','#86efac','#22c55e','#15803d'];

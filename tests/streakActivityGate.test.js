@@ -29,14 +29,30 @@ new Function(
     ' fsrsR, fsrsInterval, fsrsInitNew, fsrsUpdate, fsrsMigrateFromSM2, isChronicFail });'
 )(globalThis);
 
-let G, advanceStudyStreak, trackDailyActivity;
+let G, advanceStudyStreak, trackDailyActivity, getStudyStreak, getDailyActivity;
 
 beforeAll(async () => {
   G = (await import('../src/core/globals.js')).default;
   const mod = await import('../src/sr/spaced-repetition.js');
   advanceStudyStreak = mod.advanceStudyStreak;
   trackDailyActivity = mod.trackDailyActivity;
+  getStudyStreak = mod.getStudyStreak;
+  getDailyActivity = mod.getDailyActivity;
 });
+
+// Day keys computed the SAME way the readers do (local components vs UTC
+// toISOString), decrementing by local date so they line up with getStudyStreak's
+// backward walk regardless of the CI timezone.
+const localKeyBack = (back = 0) => {
+  const d = new Date();
+  d.setDate(d.getDate() - back);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+const utcKeyBack = (back = 0) => {
+  const d = new Date();
+  d.setDate(d.getDate() - back);
+  return d.toISOString().slice(0, 10);
+};
 
 beforeEach(() => {
   G.S = { streak: 0, lastDay: null, dailyAct: {} };
@@ -111,5 +127,52 @@ describe('regression guards: app-open path can no longer inflate the streak', ()
     expect(srSrc).toContain('advanceStudyStreak();'); // called inside trackDailyActivity
     // Streak day-key comes from local Date components, not toISOString (UTC).
     expect(srSrc).toContain('localDayKey');
+  });
+});
+
+// 2026-07-19: local-day transition for the activity calendar must be
+// READ-COMPATIBLE — new writes use the LOCAL key, but existing UTC-keyed history
+// must still count (no destructive migration).
+describe('dailyAct local-day transition: read-compatible, non-destructive', () => {
+  it('new activity is WRITTEN under the local calendar key', () => {
+    trackDailyActivity();
+    const keys = Object.keys(G.S.dailyAct);
+    expect(keys).toEqual([localKeyBack(0)]);
+    expect(G.S.dailyAct[localKeyBack(0)].q).toBe(1);
+  });
+
+  it('a day stored under the legacy UTC key still counts toward the streak', () => {
+    // Seed ONLY the legacy UTC keys for a 3-day run ending today. If getStudyStreak
+    // read only local keys it would miss these whenever local != UTC; the both-key
+    // reader must still count all three.
+    G.S = {
+      streak: 0,
+      lastDay: null,
+      dailyAct: {
+        [utcKeyBack(0)]: { q: 3, ok: 2 },
+        [utcKeyBack(1)]: { q: 1, ok: 1 },
+        [utcKeyBack(2)]: { q: 5, ok: 4 },
+      },
+    };
+    expect(getStudyStreak()).toBe(3);
+  });
+
+  it('getDailyActivity accepts BOTH the legacy UTC key and the new local key', () => {
+    const today = new Date();
+    // legacy UTC-keyed entry
+    G.S = { streak: 0, lastDay: null, dailyAct: { [utcKeyBack(0)]: { q: 7, ok: 2 } } };
+    expect(getDailyActivity(today)).toEqual({ q: 7, ok: 2 });
+    // new local-keyed entry
+    G.S = { streak: 0, lastDay: null, dailyAct: { [localKeyBack(0)]: { q: 9, ok: 4 } } };
+    expect(getDailyActivity(today)).toEqual({ q: 9, ok: 4 });
+  });
+
+  it('writing today does NOT delete/rename a pre-existing legacy UTC entry (non-destructive)', () => {
+    // A legacy entry for an earlier day stays intact after a new local-key write.
+    const legacy = utcKeyBack(5);
+    G.S = { streak: 0, lastDay: null, dailyAct: { [legacy]: { q: 4, ok: 3 } } };
+    trackDailyActivity();
+    expect(G.S.dailyAct[legacy]).toEqual({ q: 4, ok: 3 }); // untouched
+    expect(G.S.dailyAct[localKeyBack(0)].q).toBe(1); // today written under local key
   });
 });

@@ -91,8 +91,11 @@ if(!G.S.dailyAct)return G.S.streak||0;
 let streak=0;
 const d=new Date();
 for(let i=0;i<365;i++){
-  const key=d.toISOString().slice(0,10);
-  if(G.S.dailyAct[key]&&G.S.dailyAct[key].q>0)streak++;
+  // Read-compatible: a day counts if activity is stored under EITHER the new
+  // local key OR the legacy UTC key (getDailyActivity), so no stored streak
+  // history is lost during the local-day transition.
+  const act=getDailyActivity(d);
+  if(act&&act.q>0)streak++;
   else if(i>0)break;
   d.setDate(d.getDate()-1);
 }
@@ -127,6 +130,19 @@ const m=String(d.getMonth()+1).padStart(2,'0');
 const day=String(d.getDate()).padStart(2,'0');
 return y+'-'+m+'-'+day;
 }
+// Read-compatible day-activity lookup (2026-07-19 local-day transition). Activity
+// is WRITTEN under the LOCAL day key going forward, but entries recorded by
+// earlier builds use the legacy UTC (toISOString) key. Accept BOTH keys for a
+// given calendar day so existing stored history still counts — a NON-destructive
+// transition: legacy keys are read, never renamed or deleted. Returns the
+// activity record (or null); callers gate on `.q>0`.
+export function getDailyActivity(dateOrTs){
+if(!G.S.dailyAct)return null;
+const d=dateOrTs==null?new Date():(dateOrTs instanceof Date?dateOrTs:new Date(dateOrTs));
+const localKey=localDayKey(d.getTime());
+const utcKey=d.toISOString().slice(0,10);
+return G.S.dailyAct[localKey]||G.S.dailyAct[utcKey]||null;
+}
 // 2026-07-18 streak fix: advance the day-streak ONLY for a REAL study day.
 // Called from trackDailyActivity() (i.e. when a question is actually answered),
 // so merely opening the app can no longer inflate the streak. Idempotent within
@@ -144,7 +160,12 @@ G.S.lastDay=today;
 }
 export function trackDailyActivity(){
 if(!G.S.dailyAct)G.S.dailyAct={};
-const today=new Date().toISOString().slice(0,10);
+// 2026-07-19: write the activity day under the LOCAL calendar key (was UTC
+// toISOString), so the calendar + streak day-boundary is fully local-consistent
+// with advanceStudyStreak(). Reads accept BOTH the local and legacy UTC key
+// (getDailyActivity), so pre-existing UTC-keyed history is preserved — this is a
+// read-compatible transition, not a destructive migration.
+const today=localDayKey();
 if(!G.S.dailyAct[today])G.S.dailyAct[today]={q:0,ok:0};
 G.S.dailyAct[today].q++;
 const keys=Object.keys(G.S.dailyAct).sort();
