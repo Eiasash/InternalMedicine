@@ -461,7 +461,7 @@ async function callClaude(prompt, apiKey, useProxy) {
   };
 
   if (useProxy) {
-    body.secret = 'toranot-proxy-34207b1d12f35873d7f22d8ca0388b2a-r2';
+    body.secret = 'RETIRED_PROXY_SECRET_2026_07_19';
   }
 
   const headers = {
