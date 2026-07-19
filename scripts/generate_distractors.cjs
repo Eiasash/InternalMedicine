@@ -38,7 +38,7 @@ const DISTRACTORS_PATH = path.resolve(__dirname, '..', 'data', 'distractors.json
 
 const PROXY_HOST   = 'toranot.netlify.app';
 const PROXY_PATH   = '/api/claude';
-const PROXY_SECRET = 'toranot-proxy-34207b1d12f35873d7f22d8ca0388b2a-r2';
+const PROXY_SECRET = 'RETIRED_PROXY_SECRET_2026_07_19';
 
 const MODEL_MAP = {
   sonnet: 'claude-sonnet-4-6',
