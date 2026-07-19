@@ -74,22 +74,33 @@ export function remapExplanationLetters(text,shuf){
     if(i===-1||inv[i]===undefined)return orig;
     return arr[inv[i]];
   };
-  // (1) Latin "B"/"Answer C"
-  // (2) Hebrew "תשובה ב'" form
-  // (3) Hebrew bare label "א'/ב' שגויה" — letter+geresh used as bullet label.
-  //     Lookbehind (?<![א-ת]) excludes mid-word gershayim like "מג'ורי" (Major).
-  //     Lookahead requires geresh + whitespace/punct/EOL so foreign-sound markers
-  //     like "ג'נטיקה" (genetics) are also rejected.
-  // Single regex with alternation prevents double-remap.
-  // v10.4.9 — was missing form (3); ported from Geri v10.64.22.
-  // Lookahead `(?=[^א-ת]|$)` = "next char is not a Hebrew letter (or EOL)".
-  // Catches: geresh `'`, whitespace, ASCII letters, punct, EOL.
-  // Excludes: another Hebrew letter (so "תשובה בא" / "ג'נטיקה" stay untouched).
-  // Generalized in v10.4.10 — broader pattern from FM v1.21.8.
+  // G5 fix (2026-07-18): remap an option letter ONLY where it is ANCHORED to an
+  // explicit option keyword — a position where a MEDICAL token can never appear.
+  // The prior unguarded bare-Latin `\b[A-E]\b` remap corrupted medical tokens
+  // (vitamin C, 34°C, hepatitis B, class A, SARC-F "**C**", grade C…) whenever the
+  // deterministic option-shuffle moved that letter's index. Bare letters with NO
+  // option-keyword anchor are now HELD unchanged. Matches the approved
+  // Geriatrics-sibling anchor policy. Corpus-proven zero-corruption:
+  // tests/remapMedicalCorpus.test.js runs OLD-vs-NEW over every shipped
+  // explanation across seeded shuffles and asserts 0 medical-token changes.
+  //
+  // (1) Latin: option keyword ("answer"/"option"/"choice", incl. plural) directly
+  //     before the letter, separated only by whitespace / "(" / ":". Only an
+  //     UPPERCASE A-E is remapped. REPLACES the removed bare-Latin remap.
+  // (2) Hebrew: explicit option keyword (תשובה/תשובת/סעיף/אפשרות/מסיח) directly
+  //     before the letter, OR a bare Hebrew letter+geresh option label
+  //     ("א'/ב' שגויה") — geresh is itself an unambiguous option-label marker that
+  //     a medical token can never wear. Lookbehind (?<![א-ת]) excludes mid-word
+  //     gershayim ("מג'ורי" Major); lookahead (?=[^א-ת]|$) requires a non-Hebrew
+  //     follower so "ג'נטיקה" (genetics) is rejected. Single alternation prevents
+  //     double-remap.
   return text
-    .replace(/\b([A-E])\b/g,(m,l)=>remap(l,latin))
     .replace(
-      /(?:(תשובה\s*)([א-ה])(?=[^א-ת]|$)|(?<![א-ת])([א-ה])(['׳’])(?=[^א-ת]|$))/g,
+      /\b(answers?|options?|choices?)([\s(:]*)([A-E])\b/gi,
+      (m,kw,sep,l)=>kw+sep+(/[A-E]/.test(l)?remap(l,latin):l)
+    )
+    .replace(
+      /(?:(תשוב[הת]\s*|סעיף\s*|אפשרות\s*|מסיח\s*)([א-ה])(?=[^א-ת]|$)|(?<![א-ת])([א-ה])(['׳’])(?=[^א-ת]|$))/g,
       (m,p,l1,l2,ger)=>p?p+remap(l1,heb):remap(l2,heb)+ger
     );
 }
