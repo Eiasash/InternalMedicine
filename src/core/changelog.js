@@ -6,6 +6,9 @@
 // directly, so the 'export const CHANGELOG={' marker must stay literal.
 
 export const CHANGELOG = {
+  '10.4.61': [
+    'content(explanations): rewrote 6 explanations whose text argued for a clinically-wrong option while the answer key was correct (idx 36 the aldosterone:renin-raising drug is a beta-blocker not alpha-blocker; 52 non-smoker with nocturnal wheeze is asthma not COPD; 586 the meningococcal-specific risk is terminal-complement C5-9 deficiency not skull fracture; 698 the acid-base picture is a triple disorder with a concurrent metabolic alkalosis from vomiting; 1535 uncontrolled HIV CD4<100 is the transplant contraindication and EF 60% is normal; 1540 the true TAVR fact is that ~10% need a pacemaker). Keys and options unchanged. Trinity 10.4.60 to 10.4.61.',
+  ],
   '10.4.60': [
     'content(keys): corrected idx 1547 (Crohn NHL-risk) — the stored key and c_accept pointed at the claim that anti-TNF raises NHL more than azathioprine, but the established IBD-lymphoma association is with thiopurines (azathioprine), not anti-TNF, and the explanation itself refutes the anti-TNF claim. Realigned c and c_accept to the azathioprine option; a textbook-over-IMA-key correction. No stem, options, or explanation text changed. Trinity 10.4.59 to 10.4.60.',
   ],
