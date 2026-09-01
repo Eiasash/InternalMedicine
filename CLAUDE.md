@@ -356,7 +356,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Flashcards | 155 |
 | Drugs | 53 |
 | Question images | 162 (Supabase-hosted) |
-| Past exams | 8 sessions (2020–2026) |
+| Past exams | 7 sessions (2020–2025) |
 | Harrison chapters | ~69 PDFs |
 | Articles | 10 |
 | Test files | 77 |
