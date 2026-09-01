@@ -349,7 +349,7 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Functions | ~180 |
 | ES imports | 98 |
 | Window bindings | 16 (API surface; down from 72) |
-| Questions | 1,556 (all with explanations) |
+| Questions | 1,706 (all with explanations) |
 | AI-generated | 589 (tagged `Harrison`) |
 | Topics | 24 |
 | Notes | 24 |
