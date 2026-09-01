@@ -174,7 +174,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 │   └── build.sh                # Production build: vite build + copy static assets + generate prod SW
 │
 ├── data/                       # Runtime JSON data
-│   ├── questions.json          # 1556 MCQs
+│   ├── questions.json          # 1706 MCQs
 │   ├── topics.json             # 24 topic definitions
 │   ├── notes.json              # 24 study notes
 │   ├── drugs.json              # 53 drugs (Beers, ACB, STOPP)
@@ -189,7 +189,7 @@ Functions still on `window` due to circular import constraints or HTML shell usa
 ├── questions/images/            # 134 question images
 ├── syllabus/P0064-2025.pdf     # Official IMA syllabus
 │
-├── tests/                      # 838 tests across 67 files
+├── tests/                      # tests across 77 files
 │   ├── dataIntegrity.test.js   # Question schema, duplicates, topic coverage
 │   ├── appIntegrity.test.js    # Module structure, SW version sync, security
 │   ├── appLogic.test.js        # Core quiz logic patterns
@@ -303,9 +303,10 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | May 2024 | 99 | `2024-May` |
 | October 2024 | 100 | `2024-Oct` |
 | June 2025 | 151 | `2025-Jun` |
+| June 2026 | 150 | `2026-Jun` |
 | Exam (misc) | 20 | `Exam` |
 | Harrison (AI) | 589 | `Harrison` |
-| **Total** | **1556** | |
+| **Total** | **1706** | |
 
 ---
 
@@ -355,10 +356,10 @@ Push to `main` → `deploy.yml` runs: `npm ci` → `npm test` → `bash scripts/
 | Flashcards | 155 |
 | Drugs | 53 |
 | Question images | 162 (Supabase-hosted) |
-| Past exams | 7 sessions (2020–2025) |
+| Past exams | 8 sessions (2020–2026) |
 | Harrison chapters | ~69 PDFs |
 | Articles | 10 |
-| Test files | 67 |
+| Test files | 77 |
 | Tests | 838 |
 | CI workflows | 5 (ci, integrity-guard, weekly-audit, deploy, notify-auto-audit) |
 
