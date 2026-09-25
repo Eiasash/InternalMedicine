@@ -46,7 +46,7 @@ export function applyUpdate() {
         regs.forEach(r => { if (r.waiting) r.waiting.postMessage({ type: 'SKIP_WAITING' }); });
       }
       const ks = await caches.keys();
-      await Promise.all(ks.map(k => caches.delete(k)));
+      await Promise.all(ks.filter(k => k.startsWith('pnimit-')).map(k => caches.delete(k)));
     } catch (e) { console.warn('Cache clear error:', e); }
     window.location.reload();
   })();
