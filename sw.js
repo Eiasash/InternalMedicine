@@ -6,7 +6,7 @@ const FONT_URLS=['fonts/heebo-hebrew-400-normal.woff2','fonts/heebo-hebrew-500-n
 const ALL_URLS=[...HTML_URLS,...CSS_URLS,...JSON_DATA_URLS,...FONT_URLS];
 
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ALL_URLS)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('pnimit-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 
 function shouldUseCacheFirst(url){
   return JSON_DATA_URLS.some(pattern=>url.endsWith(pattern));
